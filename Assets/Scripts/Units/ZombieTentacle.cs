@@ -7,6 +7,10 @@ public class ZombieTentacle : UnitBase
 {
     public override void Attack()
     {
-        throw new System.NotImplementedException();
+        if (CanMeleeAttack)
+        {
+            MeleeAttack();
+            StartCoroutine(MeleeCooldownCoroutine());
+        }
     }
 }
