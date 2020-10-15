@@ -12,12 +12,16 @@ public class ZombieStronk : UnitBase
 
     public override void Start()
     {
-        Debug.LogError("MY UNIT BASE'S START DOES NOT RUN BECAUSE I AM OVERRIDING START MYSELF. FIX PLS");
+        base.Start();
         weapon.GetComponent<MeshFilter>().mesh = weaponMeshes[Random.Range(0, weaponMeshes.Length)];
     }
 
     public override void Attack()
     {
-        throw new System.NotImplementedException();
+        if (CanMeleeAttack)
+        {
+            MeleeAttack();
+            StartCoroutine(MeleeCooldownCoroutine());
+        }
     }
 }
