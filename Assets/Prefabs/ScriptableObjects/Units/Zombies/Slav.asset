@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e89c3c3a10cc3b446800946c17aaec15, type: 3}
+  m_Name: Slav
+  m_EditorClassIdentifier: 
+  name: Slav
+  unitPrefab:
+  - {fileID: 6625710095621646219, guid: e3e3d62aae2e5ef43afb9a3ebc341fc8, type: 3}
+  unitSprite: {fileID: 21300000, guid: 4cfccc8d4a655cc4a9b1196962ea0e28, type: 3}
+  energyCost: 10
+  refundAmount: 5
+  xpGain: 10
+  xpToUnlock: 100
+  xpToUpgrade: 100
+  starterUnit: 0
+  health: 100
+  isMelee: 1
+  isRanged: 0
+  hasSpecial: 0
+  meleeDamage: 10
+  meleeRange: 2
+  meleeCooldown: 1
+  rangedDamage: 0
+  minRange: 2
+  maxRange: 20
+  rangedCooldown: 5
+  specialCooldown: 20
+  movementSpeed: 4
+  chaseTime: 10
+  sightDistance: 20
+  eyeHeight: 2
+  viewAngle: 90
+  alertRadius: 20
+  canAlert: 1
+  idleSounds: []
+  footstepSounds: []
+  unitAnimator: {fileID: 9100000, guid: d44297d3fb196b148a10cee9e33225c2, type: 2}

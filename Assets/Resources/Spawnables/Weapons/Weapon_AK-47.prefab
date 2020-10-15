@@ -1,0 +1,406 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1786944948756500759
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5855217757016640747}
+  m_Layer: 0
+  m_Name: muzzle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5855217757016640747
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1786944948756500759}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.7231, y: 0.0549, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 3603589146719337508}
+  - {fileID: 9008896240550235369}
+  m_Father: {fileID: 8018815010379603431}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2940293002448523434
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8018815010379603431}
+  - component: {fileID: 4404415127502306716}
+  - component: {fileID: -7650308983648036388}
+  - component: {fileID: -279081350021604816}
+  m_Layer: 0
+  m_Name: Weapon_AK-47
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8018815010379603431
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2940293002448523434}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 7385671962594466398}
+  - {fileID: 5855217757016640747}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4404415127502306716
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2940293002448523434}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c2b63691d462d343b8855e682cd264e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pickUp: 0
+  weaponPrefab: {fileID: 2940293002448523434}
+  name: AK-47
+  sightsPointRef: {fileID: 0}
+  muzzleFlash: {fileID: 9008896240550235850}
+  crossHair: {fileID: 21300000, guid: c77395f5568338446b40a10c7b51fa1c, type: 3}
+  smoke: {fileID: 3603589146733492580}
+  weaponType: 2
+  rightHandTarget: {fileID: 0}
+  leftHandTarget: {fileID: 0}
+--- !u!114 &-7650308983648036388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2940293002448523434}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d737255724467d448b73d5009fdf363d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  damage: 45
+  fireRate: 0.075
+  ammunition: 120
+  magazineCurrent: 30
+  magazineMax: 30
+  reloadTime: 2
+  zoom: 40
+  weaponRange: 60
+  minAccuracy: 0
+  recoil: 0.6
+  isAutomatic: 1
+  accuracy: 0
+  multiShot: 1
+  recoilAmountV: 0.6
+  recoilAmountR: 0.1
+  isStarterWeapon: 0
+--- !u!114 &-279081350021604816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2940293002448523434}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  serverOnly: 0
+  m_AssetId: 
+  hasSpawned: 0
+--- !u!1 &5774868561513654349
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7385671962594466398}
+  - component: {fileID: 1955735673957671016}
+  - component: {fileID: 5195080636867910801}
+  m_Layer: 0
+  m_Name: AK-47
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7385671962594466398
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5774868561513654349}
+  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 8018815010379603431}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
+--- !u!33 &1955735673957671016
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5774868561513654349}
+  m_Mesh: {fileID: -5495902117074765545, guid: 2f4237afa6abfd840a60fee5358a9bde, type: 3}
+--- !u!23 &5195080636867910801
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5774868561513654349}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: -6478536213147159724, guid: 2f4237afa6abfd840a60fee5358a9bde, type: 3}
+  - {fileID: -3846018093981099296, guid: 2f4237afa6abfd840a60fee5358a9bde, type: 3}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+--- !u!114 &7331495275893360213
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9008896240550235850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d44ca6bac25424e429c1dd77d1bbd1c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clips:
+  - {fileID: 8300000, guid: 1b145bcffd767854fb0c71c37678ebaa, type: 3}
+  - {fileID: 8300000, guid: f19e3fdb9c8082647a2c32beca28ba84, type: 3}
+  maxPitch: 0.63
+  minPitch: 0.45
+  randomPitch: 1
+  looping: 0
+  playOnce: 0
+  playOnAwake: 0
+  playAmountOfTimes: 0
+  amountOfPlays: 2
+--- !u!1001 &1437494784372342326
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 5855217757016640747}
+    m_Modifications:
+    - target: {fileID: 2445882168540421682, guid: c8d6e5c69b00bee4c839b476a082ad94,
+        type: 3}
+      propertyPath: m_Name
+      value: SmokeFx
+      objectReference: {fileID: 0}
+    - target: {fileID: 2445882168540774930, guid: c8d6e5c69b00bee4c839b476a082ad94,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2445882168540774930, guid: c8d6e5c69b00bee4c839b476a082ad94,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2445882168540774930, guid: c8d6e5c69b00bee4c839b476a082ad94,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2445882168540774930, guid: c8d6e5c69b00bee4c839b476a082ad94,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2445882168540774930, guid: c8d6e5c69b00bee4c839b476a082ad94,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2445882168540774930, guid: c8d6e5c69b00bee4c839b476a082ad94,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2445882168540774930, guid: c8d6e5c69b00bee4c839b476a082ad94,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2445882168540774930, guid: c8d6e5c69b00bee4c839b476a082ad94,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2445882168540774930, guid: c8d6e5c69b00bee4c839b476a082ad94,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2445882168540774930, guid: c8d6e5c69b00bee4c839b476a082ad94,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2445882168540774930, guid: c8d6e5c69b00bee4c839b476a082ad94,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c8d6e5c69b00bee4c839b476a082ad94, type: 3}
+--- !u!4 &3603589146719337508 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2445882168540774930, guid: c8d6e5c69b00bee4c839b476a082ad94,
+    type: 3}
+  m_PrefabInstance: {fileID: 1437494784372342326}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &3603589146733492580 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 2445882168560174930, guid: c8d6e5c69b00bee4c839b476a082ad94,
+    type: 3}
+  m_PrefabInstance: {fileID: 1437494784372342326}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &2566130996327708523
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 5855217757016640747}
+    m_Modifications:
+    - target: {fileID: 6816969815331322273, guid: 8d15c98a7ed32a3449f4464fbf71ebf8,
+        type: 3}
+      propertyPath: m_Name
+      value: MuzzleFlash_AK-47
+      objectReference: {fileID: 0}
+    - target: {fileID: 6816969815331322754, guid: 8d15c98a7ed32a3449f4464fbf71ebf8,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6816969815331322754, guid: 8d15c98a7ed32a3449f4464fbf71ebf8,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6816969815331322754, guid: 8d15c98a7ed32a3449f4464fbf71ebf8,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6816969815331322754, guid: 8d15c98a7ed32a3449f4464fbf71ebf8,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6816969815331322754, guid: 8d15c98a7ed32a3449f4464fbf71ebf8,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.70710707
+      objectReference: {fileID: 0}
+    - target: {fileID: 6816969815331322754, guid: 8d15c98a7ed32a3449f4464fbf71ebf8,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6816969815331322754, guid: 8d15c98a7ed32a3449f4464fbf71ebf8,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.70710653
+      objectReference: {fileID: 0}
+    - target: {fileID: 6816969815331322754, guid: 8d15c98a7ed32a3449f4464fbf71ebf8,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6816969815331322754, guid: 8d15c98a7ed32a3449f4464fbf71ebf8,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6816969815331322754, guid: 8d15c98a7ed32a3449f4464fbf71ebf8,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -90.00001
+      objectReference: {fileID: 0}
+    - target: {fileID: 6816969815331322754, guid: 8d15c98a7ed32a3449f4464fbf71ebf8,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6816969815331323371, guid: 8d15c98a7ed32a3449f4464fbf71ebf8,
+        type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 8d15c98a7ed32a3449f4464fbf71ebf8, type: 3}
+--- !u!1 &9008896240550235850 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6816969815331322273, guid: 8d15c98a7ed32a3449f4464fbf71ebf8,
+    type: 3}
+  m_PrefabInstance: {fileID: 2566130996327708523}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &9008896240550235369 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6816969815331322754, guid: 8d15c98a7ed32a3449f4464fbf71ebf8,
+    type: 3}
+  m_PrefabInstance: {fileID: 2566130996327708523}
+  m_PrefabAsset: {fileID: 0}
