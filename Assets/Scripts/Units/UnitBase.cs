@@ -440,7 +440,7 @@ public abstract class UnitBase : NetworkBehaviour
     {
         if (CanSee(currentTarget))
         {
-            print("HELLO? THIS DUN ALWAYS WORK?");
+            //print("HELLO? THIS DUN ALWAYS WORK?");
             AttackMelee = true;
             transform.LookAt(new Vector3(currentTarget.position.x, transform.position.y, currentTarget.position.z));
         }
