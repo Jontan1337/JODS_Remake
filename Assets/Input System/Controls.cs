@@ -103,25 +103,69 @@ public class @Controls : IInputActionCollection, IDisposable
             ""id"": ""5099cd33-2d13-4876-92a2-34fd78f0c0a5"",
             ""actions"": [
                 {
-                    ""name"": ""New action"",
-                    ""type"": ""Button"",
+                    ""name"": ""Movement"",
+                    ""type"": ""PassThrough"",
                     ""id"": ""72938724-e4c3-4702-aa21-5240b7a6aa7c"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
                 }
             ],
             ""bindings"": [
                 {
-                    ""name"": """",
-                    ""id"": ""6b9f7443-6d35-4afe-8f0a-af94446e6eaa"",
-                    ""path"": """",
+                    ""name"": ""2D Vector"",
+                    ""id"": ""f24f344d-813b-41aa-8679-667289bff570"",
+                    ""path"": ""2DVector"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Game Actions"",
-                    ""action"": ""New action"",
-                    ""isComposite"": false,
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": true,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""ad7e8338-5a4e-4c5f-a72e-032881837790"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""8a004cef-c01e-4173-98cc-6d46acc17b89"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""f962f614-406d-4bea-a58c-c41b6a529031"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""055e9154-8cc6-491f-a516-1d5b134ea694"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -142,7 +186,7 @@ public class @Controls : IInputActionCollection, IDisposable
         m_Master_ChangeFloorDown = m_Master.FindAction("Change Floor Down", throwIfNotFound: true);
         // Survivor
         m_Survivor = asset.FindActionMap("Survivor", throwIfNotFound: true);
-        m_Survivor_Newaction = m_Survivor.FindAction("New action", throwIfNotFound: true);
+        m_Survivor_Movement = m_Survivor.FindAction("Movement", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -249,12 +293,12 @@ public class @Controls : IInputActionCollection, IDisposable
     // Survivor
     private readonly InputActionMap m_Survivor;
     private ISurvivorActions m_SurvivorActionsCallbackInterface;
-    private readonly InputAction m_Survivor_Newaction;
+    private readonly InputAction m_Survivor_Movement;
     public struct SurvivorActions
     {
         private @Controls m_Wrapper;
         public SurvivorActions(@Controls wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Newaction => m_Wrapper.m_Survivor_Newaction;
+        public InputAction @Movement => m_Wrapper.m_Survivor_Movement;
         public InputActionMap Get() { return m_Wrapper.m_Survivor; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -264,16 +308,16 @@ public class @Controls : IInputActionCollection, IDisposable
         {
             if (m_Wrapper.m_SurvivorActionsCallbackInterface != null)
             {
-                @Newaction.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnNewaction;
-                @Newaction.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnNewaction;
-                @Newaction.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnNewaction;
+                @Movement.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnMovement;
+                @Movement.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnMovement;
+                @Movement.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnMovement;
             }
             m_Wrapper.m_SurvivorActionsCallbackInterface = instance;
             if (instance != null)
             {
-                @Newaction.started += instance.OnNewaction;
-                @Newaction.performed += instance.OnNewaction;
-                @Newaction.canceled += instance.OnNewaction;
+                @Movement.started += instance.OnMovement;
+                @Movement.performed += instance.OnMovement;
+                @Movement.canceled += instance.OnMovement;
             }
         }
     }
@@ -296,6 +340,6 @@ public class @Controls : IInputActionCollection, IDisposable
     }
     public interface ISurvivorActions
     {
-        void OnNewaction(InputAction.CallbackContext context);
+        void OnMovement(InputAction.CallbackContext context);
     }
 }
