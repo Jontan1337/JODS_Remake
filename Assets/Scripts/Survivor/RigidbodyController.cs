@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.InputSystem;
+﻿using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
 public class RigidbodyController : MonoBehaviour
 {
     [Header("Movement settings")]
@@ -13,29 +11,41 @@ public class RigidbodyController : MonoBehaviour
 
     [Header("References")]
     [SerializeField]
-    private Rigidbody rigidbody = null;
-    [SerializeField]
-    private InputActionAsset controls = null;
+    private Rigidbody playerRigidbody = null;
 
+    Vector3 movement = Vector3.zero;
+    private Controls controls = null;
     private float horizontalMove = 0f;
     private float verticalMove = 0f;
 
     private void Awake()
     {
-        rigidbody = GetComponent<Rigidbody>();
-        //controls.actionMaps[0].FindActionMap("Survivor").
+        controls = new Controls();
+        playerRigidbody = GetComponent<Rigidbody>();
+        controls.Enable();
     }
 
-    private void Update()
+    private void OnEnable()
     {
-
-        Vector3 asd = new Vector3(horizontalMove, verticalMove);
-
-        //rigidbody.AddForce();
+        controls.Survivor.Movement.performed += ctx => Move(ctx.ReadValue<Vector2>());
     }
 
-    private void Move(Vector3 moveValues)
+    private void OnDisable()
     {
+        controls.Survivor.Movement.performed -= ctx => Move(ctx.ReadValue<Vector2>());
+    }
 
+    private void FixedUpdate()
+    {
+        movement = transform.TransformDirection(new Vector3(horizontalMove, 0f, verticalMove)) * moveSpeed;
+
+        playerRigidbody.AddForce(movement, ForceMode.Force);
+    }
+
+    private void Move(Vector2 moveValues)
+    {
+        horizontalMove = moveValues.x;
+        verticalMove = moveValues.y;
+        print(movement);
     }
 }
