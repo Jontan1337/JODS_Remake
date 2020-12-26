@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
@@ -18,8 +16,8 @@ public class CameraController : MonoBehaviour
     float mouseY;
     private void Update()
     {
-        mouseX += Input.GetAxisRaw("Mouse X");
-        mouseY += Input.GetAxisRaw("Mouse Y");
+        mouseX += Input.GetAxisRaw("Mouse X") * sensitivity;
+        mouseY += Input.GetAxisRaw("Mouse Y") * sensitivity;
 
         horizontalRotation = new Vector3(rotateHorizontal.rotation.x, mouseX);
         rotateHorizontal.rotation = Quaternion.Euler(horizontalRotation);

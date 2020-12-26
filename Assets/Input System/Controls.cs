@@ -109,6 +109,22 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Camera"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""61c3a70e-68ea-4ce3-b203-4fd128c11e2d"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""f411bafe-6630-4353-a27a-980dcbc3d809"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -166,6 +182,28 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a11fc30e-a95f-46d8-93e4-1802c33f2066"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Camera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9d7a9463-9386-4f22-9ff6-a0ae13895675"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -187,6 +225,8 @@ public class @Controls : IInputActionCollection, IDisposable
         // Survivor
         m_Survivor = asset.FindActionMap("Survivor", throwIfNotFound: true);
         m_Survivor_Movement = m_Survivor.FindAction("Movement", throwIfNotFound: true);
+        m_Survivor_Camera = m_Survivor.FindAction("Camera", throwIfNotFound: true);
+        m_Survivor_Interact = m_Survivor.FindAction("Interact", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -294,11 +334,15 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputActionMap m_Survivor;
     private ISurvivorActions m_SurvivorActionsCallbackInterface;
     private readonly InputAction m_Survivor_Movement;
+    private readonly InputAction m_Survivor_Camera;
+    private readonly InputAction m_Survivor_Interact;
     public struct SurvivorActions
     {
         private @Controls m_Wrapper;
         public SurvivorActions(@Controls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Movement => m_Wrapper.m_Survivor_Movement;
+        public InputAction @Camera => m_Wrapper.m_Survivor_Camera;
+        public InputAction @Interact => m_Wrapper.m_Survivor_Interact;
         public InputActionMap Get() { return m_Wrapper.m_Survivor; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -311,6 +355,12 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Movement.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnMovement;
                 @Movement.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnMovement;
                 @Movement.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnMovement;
+                @Camera.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnCamera;
+                @Camera.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnCamera;
+                @Camera.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnCamera;
+                @Interact.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnInteract;
+                @Interact.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnInteract;
+                @Interact.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnInteract;
             }
             m_Wrapper.m_SurvivorActionsCallbackInterface = instance;
             if (instance != null)
@@ -318,6 +368,12 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Movement.started += instance.OnMovement;
                 @Movement.performed += instance.OnMovement;
                 @Movement.canceled += instance.OnMovement;
+                @Camera.started += instance.OnCamera;
+                @Camera.performed += instance.OnCamera;
+                @Camera.canceled += instance.OnCamera;
+                @Interact.started += instance.OnInteract;
+                @Interact.performed += instance.OnInteract;
+                @Interact.canceled += instance.OnInteract;
             }
         }
     }
@@ -341,5 +397,7 @@ public class @Controls : IInputActionCollection, IDisposable
     public interface ISurvivorActions
     {
         void OnMovement(InputAction.CallbackContext context);
+        void OnCamera(InputAction.CallbackContext context);
+        void OnInteract(InputAction.CallbackContext context);
     }
 }
