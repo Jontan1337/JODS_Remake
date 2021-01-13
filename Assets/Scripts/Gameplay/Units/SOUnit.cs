@@ -25,21 +25,44 @@ public class SOUnit : ScriptableObject
     [Header("Stats")]
     public int health = 100;
     [Space]
+
     public bool isMelee = true;
     public bool isRanged = false;
     public bool hasSpecial = false;
-    [Space]
-    public int meleeDamage = 10;
-    public float meleeRange = 2.5f;
-    public float meleeCooldown = 1f;
-    [Space]
-    public int rangedDamage = 20;
-    public int minRange = 2;
-    public int maxRange = 20;
-    public float rangedCooldown = 5f;
-    [Space]
-    public float specialCooldown = 20f;
 
+    [System.Serializable]
+    public class Melee
+    {
+        public int meleeDamage = 10;
+        public float meleeRange = 2.5f;
+        public float meleeCooldown = 2;
+    }
+    [Space]
+    public Melee melee;
+
+    [System.Serializable]
+    public class Ranged
+    {
+        public int rangedDamage = 20;
+        public int minRange = 2;
+        public int maxRange = 20;
+        public float rangedCooldown = 5;
+        [Space]
+        public GameObject projectile;
+        public int projectileSpeed;
+        public Vector3 projectileSpawnLocation;
+        public bool standStill = true;
+        [Space]
+        public bool directRangedAttack = false;
+    }
+    public Ranged ranged;
+
+    [System.Serializable]
+    public class Special
+    {
+        public float specialCooldown = 2;
+    }
+    public Special special;
 
     [Header("Movement")]
     public float movementSpeed = 1.5f;

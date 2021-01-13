@@ -1259,17 +1259,29 @@ MonoBehaviour:
   syncInterval: 0.1
   unitSO: {fileID: 0}
   health: 100
+  isDead: 0
   isMelee: 0
   isRanged: 0
   hasSpecial: 0
-  meleeDamage: 10
-  meleeRange: 2
-  rangedDamage: 0
-  minRange: 2
-  maxRange: 20
-  canMelee: 1
-  canRanged: 1
-  canSpecial: 0
+  melee:
+    meleeDamage: 0
+    meleeRange: 0
+    meleeCooldown: 0
+    canMelee: 1
+  ranged:
+    rangedDamage: 0
+    minRange: 0
+    maxRange: 0
+    rangedCooldown: 0
+    projectile: {fileID: 0}
+    projectileSpeed: 0
+    projectileSpawnLocation: {x: 0, y: 0, z: 0}
+    standStill: 1
+    directRangedAttack: 0
+    canRanged: 0
+  special:
+    specialCooldown: 0
+    canSpecial: 0
   movementSpeed: 1.5
   chaseTime: 10
   sightDistance: 20
@@ -1277,20 +1289,15 @@ MonoBehaviour:
   viewAngle: 50
   ignoreOnRaycast:
     serializedVersion: 2
-    m_Bits: 66052
+    m_Bits: 4260356
   alertRadius: 20
   canAlert: 1
-  isDead: 0
   currentTarget: {fileID: 0}
   navAgent: {fileID: 0}
   hasTarget: 0
   footsteps: {fileID: 1165328266450692678}
   sounds: {fileID: 3133260610764882491}
   animator: {fileID: 0}
-  walking: 0
-  attackMelee: 0
-  attackRange: 0
-  attackSpecial: 0
 --- !u!95 &6953582676661230151
 Animator:
   serializedVersion: 3

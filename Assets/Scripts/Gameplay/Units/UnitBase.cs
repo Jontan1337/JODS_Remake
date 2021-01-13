@@ -17,28 +17,52 @@ public abstract class UnitBase : NetworkBehaviour
 
     [Header("Stats")]
     [SerializeField] private int health = 100;
+    [SyncVar, SerializeField] private bool isDead = false;
     private int maxHealth = 0;
     private float upgradeMultiplier = 0f;
     [Space]
     [SerializeField] private bool isMelee;
     [SerializeField] private bool isRanged;
     [SerializeField] private bool hasSpecial;
+    [System.Serializable]
+    public class Melee
+    {
+        public int meleeDamage = 0;
+        public float meleeRange = 0;
+        public float meleeCooldown = 0;
+        [Space]
+        public bool canMelee = true;
+    }
     [Space]
-    [SerializeField] private int meleeDamage = 10;
-    [SerializeField] private float meleeRange = 2.5f;
-    private float meleeCooldown = 2;
-    [Space]
-    [SerializeField] private int rangedDamage = 0;
-    [SerializeField] private int minRange = 2;
-    [SerializeField] private int maxRange = 20;
-    private float rangedCooldown = 2;
+    public Melee melee;
 
-    private float specialCooldown = 2;
+    [System.Serializable]
+    public class Ranged
+    {
+        public int rangedDamage = 0;
+        public int minRange = 0;
+        public int maxRange = 0;
+        public float rangedCooldown = 0;
+        [Space]
+        public GameObject projectile;
+        public int projectileSpeed;
+        public Vector3 projectileSpawnLocation;
+        public bool standStill = true;
+        [Space]
+        public bool directRangedAttack = false;
+        [Space]
+        public bool canRanged = false;
+    }
+    public Ranged ranged;
 
-    [Space]
-    [SerializeField] private bool canMelee = true;
-    [SerializeField] private bool canRanged = true;
-    [SerializeField] private bool canSpecial = false;
+    [System.Serializable]
+    public class Special
+    {
+        public float specialCooldown = 0;
+        [Space]
+        public bool canSpecial = false;
+    }
+    public Special special;
 
     [Header("Movement")]
     [SerializeField] private float movementSpeed = 1.5f;
@@ -53,7 +77,6 @@ public abstract class UnitBase : NetworkBehaviour
     [Space]
     [SerializeField] private int alertRadius = 0;
     [SerializeField] private bool canAlert = true;
-    [SyncVar, SerializeField] private bool isDead = false;
 
     [Header("AI")]
     [SerializeField] protected Transform currentTarget = null;
@@ -73,10 +96,10 @@ public abstract class UnitBase : NetworkBehaviour
 
     #endregion
 
-    [SerializeField] private bool walking;
-    [SerializeField] private bool attackMelee;
-    [SerializeField] private bool attackRange;
-    [SerializeField] private bool attackSpecial;
+    private bool walking;
+    private bool attackMelee;
+    private bool attackRange;
+    private bool attackSpecial;
 
     public bool Walking
     {
@@ -167,16 +190,21 @@ public abstract class UnitBase : NetworkBehaviour
         isRanged = unitSO.isRanged;
         hasSpecial = unitSO.hasSpecial;
 
-        meleeDamage = unitSO.meleeDamage;
-        meleeRange = unitSO.meleeRange;
-        meleeCooldown = unitSO.meleeCooldown;
+        melee.meleeDamage = unitSO.melee.meleeDamage;
+        melee.meleeRange = unitSO.melee.meleeRange;
+        melee.meleeCooldown = unitSO.melee.meleeCooldown;
 
-        rangedDamage = unitSO.rangedDamage;
-        minRange = unitSO.minRange;
-        maxRange = unitSO.maxRange;
-        rangedCooldown = unitSO.rangedCooldown;
+        ranged.rangedDamage = unitSO.ranged.rangedDamage;
+        ranged.minRange = unitSO.ranged.minRange;
+        ranged.maxRange = unitSO.ranged.maxRange;
+        ranged.rangedCooldown = unitSO.ranged.rangedCooldown;
+        ranged.projectile = unitSO.ranged.projectile;
+        ranged.projectileSpawnLocation = unitSO.ranged.projectileSpawnLocation;
+        ranged.projectileSpeed = unitSO.ranged.projectileSpeed;
+        ranged.standStill = unitSO.ranged.standStill;
+        ranged.directRangedAttack = unitSO.ranged.directRangedAttack;
 
-        specialCooldown = unitSO.specialCooldown;
+        special.specialCooldown = unitSO.special.specialCooldown;
 
         movementSpeed = unitSO.movementSpeed;
 
@@ -201,6 +229,7 @@ public abstract class UnitBase : NetworkBehaviour
         //Apply new Unit Scriptable Object, which stores all the data for the unit
         if (myNewUnit != unitSO) unitSO = myNewUnit;
     }
+
     private void InitialUnitSetup()
     {
         //Stats
@@ -209,7 +238,7 @@ public abstract class UnitBase : NetworkBehaviour
         //Nav Mesh 
         navAgent = GetComponent<NavMeshAgent>();
         navAgent.speed = movementSpeed;
-        navAgent.stoppingDistance = Mathf.Clamp(meleeRange - 1, 1f, 20f);
+        navAgent.stoppingDistance = Mathf.Clamp(melee.meleeRange - 1, 1f, 20f);
 
         //Animations -----------------------
         animator = GetComponent<Animator>();
@@ -218,8 +247,8 @@ public abstract class UnitBase : NetworkBehaviour
         //Override the default animations with the unit's animations
         animator.runtimeAnimatorController = animationsOverride;
 
-        canMelee = isMelee;
-        canRanged = isRanged;
+        melee.canMelee = isMelee;
+        ranged.canRanged = isRanged;
 
         if (hasSpecial) StartCoroutine(SpecialCooldownCoroutine());
     }
@@ -390,37 +419,51 @@ public abstract class UnitBase : NetworkBehaviour
 
     //This function will apply the damage of the attack, to the target.
     //This happens either when an attack animation triggers this function
-    //or when a projectile hits a survivor.
-    //Depending on the unit, special attacks also trigger this function.
+    //or when the unit shoots the player (not projectile, but direct hit, like a raycast).
+    //Depending on the unit, special attacks can also trigger this function.
     public virtual void GiveDamage()
     {
         int damage = 0;
         if (AttackMelee)
         {
             AttackMelee = false;
+
             //This will check one last time if the survivor is within melee range. 
-            //Because the survivor might have moved while a melee animation was happening
-            if (!WithinMeleeRange()) return;
+            //Because the survivor might have moved while a melee animation was happening.
+            //Also checks if the survivor is still in view, not obstructed by an object.
+            if (!WithinMeleeRange() || !CanSee(currentTarget)) return;
 
             //Apply the proper damage number
-            damage = meleeDamage;  
+            damage = melee.meleeDamage;  
            
         }
         if (AttackRange) 
         {
+            AttackRange = false;
+
             //Apply the proper damage number
-            damage = rangedDamage; 
-            AttackRange = false; 
+            damage = ranged.rangedDamage; 
         }
 
-        //Give damage ----- THIS NEEDS TO CHANGE WHEN SURVIVORS ARE REMADE
-        currentTarget.GetComponent<IDamagable>()?.Svr_Damage(damage);
+
+        Damage(damage);
 
         //Start cooldowns
         if (isMelee) StartCoroutine(MeleeCooldownCoroutine());
         if (isRanged) StartCoroutine(RangedCooldownCoroutine());
         if (hasSpecial) StartCoroutine(SpecialCooldownCoroutine());
     }
+
+    //This function is specifically for projectile damage
+    public virtual void GiveProjectileDamage()
+    {
+        //Apply the proper damage number
+        Damage(ranged.rangedDamage);
+    }
+
+    //This is the function that applies damage to the current target.
+    //Give damage ----- THIS NEEDS TO CHANGE WHEN SURVIVORS ARE REMADE
+    private void Damage(int damage) => currentTarget.GetComponent<IDamagable>()?.Svr_Damage(damage);
 
     private IEnumerator AttackCoroutine()
     {
@@ -437,21 +480,21 @@ public abstract class UnitBase : NetworkBehaviour
     #region Cooldowns
     protected IEnumerator MeleeCooldownCoroutine()
     {
-        yield return new WaitForSeconds(meleeCooldown);
+        yield return new WaitForSeconds(melee.meleeCooldown);
 
-        canMelee = true;
+        melee.canMelee = true;
     }
     protected IEnumerator RangedCooldownCoroutine()
     {
-        yield return new WaitForSeconds(rangedCooldown);
+        yield return new WaitForSeconds(ranged.rangedCooldown);
 
-        canRanged = true;
+        ranged.canRanged = true;
     }
     protected IEnumerator SpecialCooldownCoroutine()
     {
-        yield return new WaitForSeconds(specialCooldown);
+        yield return new WaitForSeconds(special.specialCooldown);
 
-        canSpecial = true;
+        special.canSpecial = true;
     }
     #endregion
 
@@ -465,12 +508,12 @@ public abstract class UnitBase : NetworkBehaviour
         }
         else Debug.LogWarning($"{name} can't see it's target. Is it's ignoreOnLayer mask set properly?");
     }
-    protected bool CanMeleeAttack => WithinMeleeRange() && canMelee;
+    protected bool CanMeleeAttack => WithinMeleeRange() && melee.canMelee;
     private bool WithinMeleeRange()
     {
         if (!HasTarget()) return false;
         float distance = Vector3.Distance(currentTarget.position, transform.position);
-        return  distance <= meleeRange;
+        return  distance <= melee.meleeRange;
     }
     #endregion
     #region Ranged
@@ -481,19 +524,53 @@ public abstract class UnitBase : NetworkBehaviour
             AttackRange = true;
             transform.LookAt(new Vector3(currentTarget.position.x, transform.position.y, currentTarget.position.z));
         }
-        else Debug.LogWarning($"{name} can't see it's target. Is it's ignoreOnLayer mask set properly?");
+        else Debug.LogWarning($"{name} can't see it's target. Is it's ignoreOnLayer mask set properly?" +
+            $" Does it ignore UnitProjectile?");
     }
-    protected bool CanRangedAttack => WithinRangedDistance() && canRanged;
+    protected bool CanRangedAttack => WithinRangedDistance() && ranged.canRanged;
     private bool WithinRangedDistance()
     {
         if (!HasTarget()) return false;
         float distance = Vector3.Distance(currentTarget.position, transform.position);
-        return distance <= maxRange && distance >= minRange;
+        return distance <= ranged.maxRange && distance >= ranged.minRange;
+    }
+    public virtual void RangedShoot()
+    {
+        Debug.LogError("Direct ranged damage not implemented");
+    }
+    public virtual void SpawnProjectile()
+    {
+        if (ranged.directRangedAttack)
+        {
+            Debug.LogError($"Something went wrong here... {name} wanted to do direct ranged damage, but tried to spawn a projectile instead." +
+                $" Is the correct method set in the animation event?");
+            return;
+        }
+
+        //Spawn the projectile
+        GameObject projectile = Instantiate(ranged.projectile, transform);
+        projectile.transform.localPosition = ranged.projectileSpawnLocation;
+
+        //Aim the projectile at the current target.
+        projectile.transform.LookAt(new Vector3(currentTarget.position.x, projectile.transform.position.y, currentTarget.position.z));
+
+        //Set the speed of the projectile
+        Rigidbody projectileRB = projectile.GetComponent<Rigidbody>();
+        projectileRB.velocity = projectile.transform.forward * ranged.projectileSpeed;
+
+        projectile.transform.SetParent(null);
+
+        projectile.GetComponent<UnitProjectile>().unit = this;
+
+        AttackRange = false; //Disables this bool, allowing the unit to do another ranged attack.
+        StartCoroutine(RangedCooldownCoroutine()); //Start cooldown
+
+        Debug.LogWarning("'standStill?' not implemented, unit still moves when shooting a projectile");
     }
     #endregion
     #region Special
     public virtual void SpecialAttack() { }
-    protected bool CanSpecialAttack => canSpecial;
+    protected bool CanSpecialAttack => special.canSpecial;
 
     #endregion
 

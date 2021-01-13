@@ -18,10 +18,4 @@ public class ZombieSpitter : UnitBase
             StartCoroutine(MeleeCooldownCoroutine());
         }
     }
-
-    public override void RangedAttack()
-    {
-        //SPIT
-        base.RangedAttack();
-    }
 }
