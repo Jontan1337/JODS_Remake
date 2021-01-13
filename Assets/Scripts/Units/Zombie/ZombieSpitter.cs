@@ -7,12 +7,6 @@ public class ZombieSpitter : UnitBase
 {
     public override void Attack()
     {
-        if (CanMeleeAttack)
-        {
-            MeleeAttack();
-            StartCoroutine(MeleeCooldownCoroutine());
-        }
-        /*
         if (CanRangedAttack)
         {
             RangedAttack();
@@ -23,7 +17,6 @@ public class ZombieSpitter : UnitBase
             MeleeAttack();
             StartCoroutine(MeleeCooldownCoroutine());
         }
-        */
     }
 
     public override void RangedAttack()
