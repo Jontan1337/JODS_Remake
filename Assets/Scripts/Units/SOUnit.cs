@@ -18,6 +18,8 @@ public class SOUnit : ScriptableObject
     public int xpToUnlock = 100;
     public int xpToUpgrade = 100;
     [Space]
+    public float upgradeMultiplier = 0.2f;
+    [Space]
     public bool starterUnit;
 
     [Header("Stats")]

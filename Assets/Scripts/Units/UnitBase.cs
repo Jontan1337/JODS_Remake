@@ -17,6 +17,8 @@ public abstract class UnitBase : NetworkBehaviour
 
     [Header("Stats")]
     [SerializeField] private int health = 100;
+    private int maxHealth = 0;
+    private float upgradeMultiplier = 0f;
     [Space]
     [SerializeField] private bool isMelee;
     [SerializeField] private bool isRanged;
@@ -116,6 +118,19 @@ public abstract class UnitBase : NetworkBehaviour
             animator.SetBool("Special", attackSpecial);
         }
     }
+    public int Health
+    {
+        get { return health; }
+        set
+        {
+            health = value;
+            print($"{name}: lost {value} health. Current health: {health}");
+            if (health > 0)
+            {
+                Die();
+            }
+        }
+    }
 
     #endregion
 
@@ -144,6 +159,9 @@ public abstract class UnitBase : NetworkBehaviour
         }
 
         health = unitSO.health;
+        maxHealth = unitSO.health;
+
+        upgradeMultiplier = unitSO.upgradeMultiplier;
 
         isMelee = unitSO.isMelee;
         isRanged = unitSO.isRanged;
@@ -210,7 +228,8 @@ public abstract class UnitBase : NetworkBehaviour
     {
         for (int i = 1; i < level; i++)
         {
-            // Change float (1.25f) to 1 because health and damage are changed to int.
+            // Use upgradeMultiplier somehow, which is (default) 0.2, so round it up to int?
+
             //this.maxHealth *= 1;
             //this.damage *= 1;
             //this.speed *= 1.25F;
@@ -378,13 +397,14 @@ public abstract class UnitBase : NetworkBehaviour
         int damage = 0;
         if (AttackMelee)
         {
+            AttackMelee = false;
             //This will check one last time if the survivor is within melee range. 
             //Because the survivor might have moved while a melee animation was happening
             if (!WithinMeleeRange()) return;
 
             //Apply the proper damage number
             damage = meleeDamage;  
-            AttackMelee = false; 
+           
         }
         if (AttackRange) 
         {
@@ -440,7 +460,6 @@ public abstract class UnitBase : NetworkBehaviour
     {
         if (CanSee(currentTarget))
         {
-            //print("HELLO? THIS DUN ALWAYS WORK?");
             AttackMelee = true;
             transform.LookAt(new Vector3(currentTarget.position.x, transform.position.y, currentTarget.position.z));
         }
@@ -457,7 +476,12 @@ public abstract class UnitBase : NetworkBehaviour
     #region Ranged
     public virtual void RangedAttack()
     {
-
+        if (CanSee(currentTarget))
+        {
+            AttackRange = true;
+            transform.LookAt(new Vector3(currentTarget.position.x, transform.position.y, currentTarget.position.z));
+        }
+        else Debug.LogWarning($"{name} can't see it's target. Is it's ignoreOnLayer mask set properly?");
     }
     protected bool CanRangedAttack => WithinRangedDistance() && canRanged;
     private bool WithinRangedDistance()
@@ -472,6 +496,17 @@ public abstract class UnitBase : NetworkBehaviour
     protected bool CanSpecialAttack => canSpecial;
 
     #endregion
+
+    #endregion
+
+    #region Health
+
+    public bool IsMaxHealth => health == maxHealth;
+
+    public void Die()
+    {
+        print(name + ": Am dead");
+    }
 
     #endregion
 
