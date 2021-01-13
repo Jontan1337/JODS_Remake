@@ -843,6 +843,11 @@ public class Master : NetworkBehaviour
 
         //Get the unit to spawn
         GameObject unitToSpawn = (GameObject)Resources.Load($"Spawnables/Units/{name}");
+        if (unitToSpawn == null)
+        {
+            Debug.LogError("Could not spawn unit, didn't find the unit in 'Spawnables/Units/', make sure they are in that folder");
+            return;
+        }
 
         //Instantiate the unit at the position
         GameObject newUnit = Instantiate(unitToSpawn, pos, Quaternion.identity);
