@@ -36,7 +36,7 @@ public class SOUnit : ScriptableObject
         public int meleeDamageMin = 2;
         public int meleeDamageMax = 5;
         public float meleeRange = 2.5f;
-        public float meleeCooldown = 2;
+        public int meleeCooldown = 2;
     }
     [Space]
     public Melee melee;
@@ -47,7 +47,7 @@ public class SOUnit : ScriptableObject
         public int rangedDamage = 20;
         public int minRange = 2;
         public int maxRange = 20;
-        public float rangedCooldown = 5;
+        public int rangedCooldown = 5;
         public int preferredRange = 15;
         [Space]
         public GameObject projectile;
@@ -62,7 +62,13 @@ public class SOUnit : ScriptableObject
     [System.Serializable]
     public class Special
     {
-        public float specialCooldown = 2;
+        public int specialCooldown = 2;
+        public int specialDamage = 0;
+        public int specialRange = 5;
+        [Space]
+        public bool standStill = true;
+        public bool lookAtTarget = true;
+        public bool availableFromStart = true;
     }
     public Special special;
 

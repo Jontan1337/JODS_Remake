@@ -30,7 +30,7 @@ public abstract class UnitBase : NetworkBehaviour
         public int meleeDamageMin = 0;
         public int meleeDamageMax = 0;
         public float meleeRange = 0;
-        public float meleeCooldown = 0;
+        public int meleeCooldown = 0;
         [Space]
         public bool canMelee = true;
     }
@@ -43,7 +43,7 @@ public abstract class UnitBase : NetworkBehaviour
         public int rangedDamage = 0;
         public int minRange = 0;
         public int maxRange = 0;
-        public float rangedCooldown = 0;
+        public int rangedCooldown = 0;
         public int preferredRange = 0;
         [Space]
         public GameObject projectile;
@@ -60,7 +60,13 @@ public abstract class UnitBase : NetworkBehaviour
     [System.Serializable]
     public class Special
     {
-        public float specialCooldown = 0;
+        public int specialCooldown = 0;
+        public int specialDamage = 0;
+        public int specialRange = 5;
+        [Space]
+        public bool standStill = true;
+        public bool lookAtTarget = true;
+        public bool availableFromStart = true;
         [Space]
         public bool canSpecial = false;
     }
@@ -130,8 +136,9 @@ public abstract class UnitBase : NetworkBehaviour
             if (value == attackMelee) return;
             attackMelee = value;
             animator.SetBool("Melee", attackMelee);
+            melee.canMelee = false;
         }
-    } 
+    }
     public bool AttackRange
     {
         get { return attackRange; }
@@ -142,7 +149,7 @@ public abstract class UnitBase : NetworkBehaviour
             animator.SetBool("Ranged", attackRange);
             ranged.canRanged = false;
         }
-    }   
+    }
     public bool AttackSpecial
     {
         get { return attackSpecial; }
@@ -151,6 +158,7 @@ public abstract class UnitBase : NetworkBehaviour
             if (value == attackSpecial) return;
             attackSpecial = value;
             animator.SetBool("Special", attackSpecial);
+            special.canSpecial = false;
         }
     }
     public int Health
@@ -219,6 +227,11 @@ public abstract class UnitBase : NetworkBehaviour
         ranged.preferredRange = unitSO.ranged.preferredRange;
 
         special.specialCooldown = unitSO.special.specialCooldown;
+        special.specialDamage = unitSO.special.specialDamage;
+        special.specialRange = unitSO.special.specialRange;
+        special.standStill = unitSO.special.standStill;
+        special.lookAtTarget = unitSO.special.lookAtTarget;
+        special.availableFromStart = unitSO.special.availableFromStart;
 
         movementSpeed = unitSO.movementSpeed;
 
@@ -264,7 +277,11 @@ public abstract class UnitBase : NetworkBehaviour
         melee.canMelee = isMelee;
         ranged.canRanged = isRanged;
 
-        if (hasSpecial) StartCoroutine(SpecialCooldownCoroutine());
+        //This is because some units may not have their special available from the moment they spawn.
+        if (hasSpecial) {
+            if (special.availableFromStart) { special.canSpecial = true; }
+            else { StartCoroutine(SpecialCooldownCoroutine()); }
+        }
     }
 
     public void SetLevel(int level)
@@ -313,7 +330,7 @@ public abstract class UnitBase : NetworkBehaviour
             Collider[] collidersHit = Physics.OverlapSphere(transform.position, sightDistance, ~ignoreOnRaycast);
 
             //Iterate through each of them, to see if they're players
-            foreach(Collider col in collidersHit)
+            foreach (Collider col in collidersHit)
             {
                 //If they are players
                 if (col.CompareTag("Player"))
@@ -367,7 +384,7 @@ public abstract class UnitBase : NetworkBehaviour
 
         //Stop the chase coroutine (stop chasing the survivor)
         if (chasing) { StopCoroutine(CoChase); chasing = false; }
-        if (attacking) {StopCoroutine(CoAttack); attacking = false; }
+        if (attacking) { StopCoroutine(CoAttack); attacking = false; }
 
         //Start the search coroutine (start searching for survivors)
         if (!searching) { StartCoroutine(CoSearch); searching = true; }
@@ -387,7 +404,7 @@ public abstract class UnitBase : NetworkBehaviour
         hasTarget = (currentTarget != null);
         return hasTarget;
     }
-    
+
     private void SetTarget(Transform newTarget) => currentTarget = newTarget;
 
     #endregion
@@ -448,7 +465,7 @@ public abstract class UnitBase : NetworkBehaviour
     private void Alert()
     {
         Collider[] adjacentUnits = Physics.OverlapSphere(transform.position, alertRadius, alertMask);
-        foreach(Collider col in adjacentUnits)
+        foreach (Collider col in adjacentUnits)
         {
             if (col.gameObject == gameObject) continue;
             col.gameObject.GetComponent<UnitBase>().AcquireTarget(currentTarget, true);
@@ -509,54 +526,19 @@ public abstract class UnitBase : NetworkBehaviour
 
     #region Attacks
 
-    //This function will apply the damage of the attack, to the target.
-    //This happens either when an attack animation triggers this function
-    //or when the unit shoots the player (not projectile, but direct hit, like a raycast).
-    //Depending on the unit, special attacks can also trigger this function.
-    public virtual void GiveDamage()
-    {
-        int damage = 0;
-        if (AttackMelee)
-        {
-            AttackMelee = false;
-            if (stoppedMoving) ResumeMovement();
-
-            //This will check one last time if the survivor is within melee range. 
-            //Because the survivor might have moved while a melee animation was happening.
-            //Also checks if the survivor is still in view, not obstructed by an object.
-            if (!WithinMeleeRange() || !CanSee(currentTarget)) return;
-
-            //Apply the proper damage number
-            damage = Random.Range(melee.meleeDamageMin, melee.meleeDamageMax + 1); //why the fok is max exclusive??? stoopid unity 
-           
-        }
-        if (AttackRange) 
-        {
-            AttackRange = false;
-
-            //Apply the proper damage number
-            damage = ranged.rangedDamage; 
-        }
-
-
-        Damage(damage);
-
-        //Start cooldowns
-        if (isMelee) StartCoroutine(MeleeCooldownCoroutine());
-        if (isRanged) StartCoroutine(RangedCooldownCoroutine());
-        if (hasSpecial) StartCoroutine(SpecialCooldownCoroutine());
-    }
-
-    //This function is specifically for projectile damage
-    public virtual void GiveProjectileDamage()
+    //This function is specifically for projectile damage, because they can hit anything, not exclusively players.
+    public virtual void GiveProjectileDamage(GameObject objectHit)
     {
         //Apply the proper damage number
-        Damage(ranged.rangedDamage);
+        Damage(ranged.rangedDamage, objectHit);
     }
 
     //This is the function that applies damage to the current target.
     //Give damage ----- THIS NEEDS TO CHANGE WHEN SURVIVORS ARE REMADE
-    private void Damage(int damage) => currentTarget.GetComponent<IDamagable>()?.Svr_Damage(damage);
+    protected void Damage(int damage) => currentTarget.GetComponent<IDamagable>()?.Svr_Damage(damage);
+    //This function is an override that is called by projectiles or other.
+    //Called when not necessarily damaging the current target
+    protected void Damage(int damage, GameObject objectHit) => objectHit.GetComponent<IDamagable>()?.Svr_Damage(damage);
 
     private IEnumerator AttackCoroutine()
     {
@@ -598,20 +580,20 @@ public abstract class UnitBase : NetworkBehaviour
         if (specialCooldown) yield break; //if an instance is already running, exit this one.
 
         specialCooldown = true;
-
+        print("Cooldown started");
         yield return new WaitForSeconds(special.specialCooldown);
-
+        print("Cooldown ended");
         special.canSpecial = true;
         specialCooldown = false;
     }
     #endregion
 
     #region Melee
-    public virtual void MeleeAttack()
+    public virtual void TryMeleeAttack()
     {
         if (CanSee(currentTarget) && CanMeleeAttack)
         {
-            bool inRange = WithinMeleeRange();
+            bool inRange = WithinMeleeRange(); //This could be optimized later
             if (inRange && !stoppedMoving) StopMovement();
 
             AttackMelee = true;
@@ -625,11 +607,27 @@ public abstract class UnitBase : NetworkBehaviour
     {
         if (!HasTarget()) return false;
         float distance = Vector3.Distance(currentTarget.position, transform.position);
-        return  distance <= melee.meleeRange;
+        return distance <= melee.meleeRange;
+    }
+    public virtual void MeleeAttack() 
+    {
+        AttackMelee = false;
+        if (stoppedMoving) ResumeMovement();
+
+        //This will check one last time if the survivor is within melee range. 
+        //Because the survivor might have moved while a melee animation was happening.
+        //Also checks if the survivor is still in view, not obstructed by an object.
+        if (!WithinMeleeRange() || !CanSee(currentTarget)) return;
+
+        //Apply the proper damage number
+        int damage = Random.Range(melee.meleeDamageMin, melee.meleeDamageMax + 1); //why the fok is max exclusive??? stoopid unity 
+
+        StartCoroutine(MeleeCooldownCoroutine());
+        Damage(damage);
     }
     #endregion
     #region Ranged
-    public virtual void RangedAttack()
+    public virtual void TryRangedAttack()
     {
         if (CanSee(currentTarget) && CanRangedAttack)
         {
@@ -649,7 +647,14 @@ public abstract class UnitBase : NetworkBehaviour
     }
     public virtual void RangedShoot()
     {
+        AttackRange = false;
+
         if (ranged.standStill) ResumeMovement();
+
+        //Apply the proper damage number
+        Damage(ranged.rangedDamage);
+
+        StartCoroutine(RangedCooldownCoroutine());
         Debug.LogError("Direct ranged damage not implemented");
     }
     public virtual void SpawnProjectile()
@@ -688,8 +693,31 @@ public abstract class UnitBase : NetworkBehaviour
 
     #endregion
     #region Special
-    public virtual void SpecialAttack() { }
-    protected bool CanSpecialAttack => special.canSpecial;
+    public virtual void TrySpecialAttack()
+    {
+        if (CanSee(currentTarget) && CanSpecialAttack)
+        {
+            AttackSpecial = true;
+            if (special.lookAtTarget) LookAtTarget();
+            if (special.standStill) StopMovement();
+            print(name + ": IMMA CHARGIN' MA LAZOR");
+        }
+        else Debug.LogWarning($"{name} can't see it's target. Is it's ignoreOnLayer mask set properly?" +
+            $" Does it ignore UnitProjectile?");
+    }
+    protected bool CanSpecialAttack => WithinSpecialDistance() && special.canSpecial;
+    private bool WithinSpecialDistance()
+    {
+        if (!HasTarget()) return false;
+        float distance = Vector3.Distance(currentTarget.position, transform.position);
+        return distance <= special.specialRange;
+    }
+    //This is the actual special, which is usually called from an animation event.
+    public virtual void SpecialAttack()
+    {
+        AttackSpecial = false;
+        StartCoroutine(SpecialCooldownCoroutine()); 
+    }
 
     #endregion
 
