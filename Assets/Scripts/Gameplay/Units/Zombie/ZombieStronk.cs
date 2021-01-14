@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class ZombieStronk : UnitBase
 {
-    [Header("Stronk Weapons")]
+    [Header("Stronk")]
     [SerializeField] private Mesh[] weaponMeshes = null;
     [SerializeField] private GameObject weapon = null;
     public ParticleSystem slamFX;
@@ -20,7 +20,7 @@ public class ZombieStronk : UnitBase
     {
         if (CanMeleeAttack)
         {
-            MeleeAttack();
+            TryMeleeAttack();
         }
     }
 }

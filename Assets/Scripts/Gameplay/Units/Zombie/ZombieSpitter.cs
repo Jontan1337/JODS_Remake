@@ -4,11 +4,11 @@
     {
         if (CanRangedAttack)
         {
-            RangedAttack();
+            TryRangedAttack();
         }
         else if (CanMeleeAttack) 
         {
-            MeleeAttack();
+            TryMeleeAttack();
         }
     }
 }

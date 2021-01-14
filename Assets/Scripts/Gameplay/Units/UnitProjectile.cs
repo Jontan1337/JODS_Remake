@@ -42,7 +42,7 @@ public abstract class UnitProjectile : NetworkBehaviour
 
     public virtual void OnTriggerEnter(Collider other)
     {
-        unit.GiveProjectileDamage();
+        unit.GiveProjectileDamage(other.gameObject);
 
         if (!piercing)
         {

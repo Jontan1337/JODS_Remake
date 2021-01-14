@@ -9,7 +9,7 @@ public class ZombieSlav : UnitBase
     {
         if (CanMeleeAttack)
         {
-            MeleeAttack();
+            TryMeleeAttack();
         }
     }
 }
