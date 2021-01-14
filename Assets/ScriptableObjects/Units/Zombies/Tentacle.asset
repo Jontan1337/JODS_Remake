@@ -21,19 +21,30 @@ MonoBehaviour:
   xpGain: 10
   xpToUnlock: 100
   xpToUpgrade: 100
-  starterUnit: 0
+  upgradeMultiplier: 0.2
+  starterUnit: 1
   health: 100
   isMelee: 1
   isRanged: 0
   hasSpecial: 0
-  meleeDamage: 10
-  meleeRange: 2
-  meleeCooldown: 1
-  rangedDamage: 0
-  minRange: 2
-  maxRange: 20
-  rangedCooldown: 5
-  specialCooldown: 20
+  melee:
+    meleeDamageMin: 2
+    meleeDamageMax: 5
+    meleeRange: 2.5
+    meleeCooldown: 2
+  ranged:
+    rangedDamage: 20
+    minRange: 2
+    maxRange: 20
+    rangedCooldown: 5
+    preferredRange: 15
+    projectile: {fileID: 0}
+    projectileSpeed: 0
+    projectileSpawnLocation: {x: 0, y: 0, z: 0}
+    standStill: 1
+    directRangedAttack: 0
+  special:
+    specialCooldown: 2
   movementSpeed: 1.5
   chaseTime: 10
   sightDistance: 20

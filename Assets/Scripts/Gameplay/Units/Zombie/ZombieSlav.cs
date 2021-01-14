@@ -10,7 +10,6 @@ public class ZombieSlav : UnitBase
         if (CanMeleeAttack)
         {
             MeleeAttack();
-            StartCoroutine(MeleeCooldownCoroutine());
         }
     }
 }

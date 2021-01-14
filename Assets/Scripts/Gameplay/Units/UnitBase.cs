@@ -27,7 +27,8 @@ public abstract class UnitBase : NetworkBehaviour
     [System.Serializable]
     public class Melee
     {
-        public int meleeDamage = 0;
+        public int meleeDamageMin = 0;
+        public int meleeDamageMax = 0;
         public float meleeRange = 0;
         public float meleeCooldown = 0;
         [Space]
@@ -43,6 +44,7 @@ public abstract class UnitBase : NetworkBehaviour
         public int minRange = 0;
         public int maxRange = 0;
         public float rangedCooldown = 0;
+        public int preferredRange = 0;
         [Space]
         public GameObject projectile;
         public int projectileSpeed;
@@ -68,6 +70,7 @@ public abstract class UnitBase : NetworkBehaviour
     [SerializeField] private float movementSpeed = 1.5f;
     [Space]
     [SerializeField] private float chaseTime = 10; //How long the unit will chase, if the unit can't see it's target
+    [SerializeField] private bool stoppedMoving = false;
 
     [Header("Other")]
     [SerializeField] private int sightDistance = 20;
@@ -77,6 +80,7 @@ public abstract class UnitBase : NetworkBehaviour
     [Space]
     [SerializeField] private int alertRadius = 0;
     [SerializeField] private bool canAlert = true;
+    [SerializeField] private LayerMask alertMask = 1 << 9; //Unit is layer 9. We only want to alert Units
 
     [Header("AI")]
     [SerializeField] protected Transform currentTarget = null;
@@ -93,6 +97,13 @@ public abstract class UnitBase : NetworkBehaviour
     private IEnumerator CoSearch;
     private Coroutine CoChase;
     private Coroutine CoAttack;
+    bool searching = false;
+    bool chasing = false; // These bools make sure that only one instance of each coroutine is running at a time.
+    bool attacking = false;
+
+    protected bool meleeCooldown = false;
+    protected bool rangedCooldown = false; // Same witht these
+    protected bool specialCooldown = false;
 
     #endregion
 
@@ -129,6 +140,7 @@ public abstract class UnitBase : NetworkBehaviour
             if (value == attackRange) return;
             attackRange = value;
             animator.SetBool("Ranged", attackRange);
+            ranged.canRanged = false;
         }
     }   
     public bool AttackSpecial
@@ -168,7 +180,7 @@ public abstract class UnitBase : NetworkBehaviour
     {
         CoSearch = SearchCoroutine();
         InitialUnitSetup();
-        StartCoroutine(CoSearch);
+        if (!searching) { StartCoroutine(CoSearch); searching = true; }
 
         Invoke("PlaySound", 5f);
     }
@@ -190,7 +202,8 @@ public abstract class UnitBase : NetworkBehaviour
         isRanged = unitSO.isRanged;
         hasSpecial = unitSO.hasSpecial;
 
-        melee.meleeDamage = unitSO.melee.meleeDamage;
+        melee.meleeDamageMin = unitSO.melee.meleeDamageMin;
+        melee.meleeDamageMax = unitSO.melee.meleeDamageMax;
         melee.meleeRange = unitSO.melee.meleeRange;
         melee.meleeCooldown = unitSO.melee.meleeCooldown;
 
@@ -203,6 +216,7 @@ public abstract class UnitBase : NetworkBehaviour
         ranged.projectileSpeed = unitSO.ranged.projectileSpeed;
         ranged.standStill = unitSO.ranged.standStill;
         ranged.directRangedAttack = unitSO.ranged.directRangedAttack;
+        ranged.preferredRange = unitSO.ranged.preferredRange;
 
         special.specialCooldown = unitSO.special.specialCooldown;
 
@@ -270,7 +284,18 @@ public abstract class UnitBase : NetworkBehaviour
 
     #region Movement
 
-
+    private void StopMovement()
+    {
+        navAgent.speed = 0;
+        stoppedMoving = true;
+        navAgent.isStopped = true;
+        navAgent.ResetPath();
+    }
+    private void ResumeMovement()
+    {
+        navAgent.speed = movementSpeed;
+        stoppedMoving = false;
+    }
 
     #endregion
 
@@ -303,23 +328,33 @@ public abstract class UnitBase : NetworkBehaviour
                     if (canSee && inViewAngle)
                     {
                         //I can see the player
-                        AcquireTarget(col.transform);
+                        AcquireTarget(col.transform, false);
                     }
                 }
             }
         }
     }
 
-    private void AcquireTarget(Transform newTarget)
+    public void AcquireTarget(Transform newTarget, bool alerted)
     {
+        if (HasTarget()) return;
+
         //Stop searching for more survivors
-        StopCoroutine(CoSearch);
+        if (searching) { StopCoroutine(CoSearch); searching = false; }
 
         SetTarget(newTarget);
         HasTarget();
 
-        CoChase = StartCoroutine(ChaseCoroutine());
-        CoAttack = StartCoroutine(AttackCoroutine());
+        chaseTime = unitSO.chaseTime;
+        navAgent.SetDestination(currentTarget.position);
+
+        if (!chasing) { CoChase = StartCoroutine(ChaseCoroutine()); chasing = true; }
+        if (!attacking) { CoAttack = StartCoroutine(AttackCoroutine()); attacking = true; }
+
+        if (!alerted) //If I got alerted, I won't alert others.
+        {
+            Alert();
+        }
 
         print($"{name} : Target acquired");
     }
@@ -331,11 +366,18 @@ public abstract class UnitBase : NetworkBehaviour
         HasTarget();
 
         //Stop the chase coroutine (stop chasing the survivor)
-        StopCoroutine(CoChase);
-        StopCoroutine(CoAttack);
+        if (chasing) { StopCoroutine(CoChase); chasing = false; }
+        if (attacking) {StopCoroutine(CoAttack); attacking = false; }
 
         //Start the search coroutine (start searching for survivors)
-        StartCoroutine(CoSearch);
+        if (!searching) { StartCoroutine(CoSearch); searching = true; }
+
+        //Stop moving
+        navAgent.isStopped = true;
+        navAgent.ResetPath();
+
+        //Set Walk Animation to not walk
+        Walking = false;
 
         print($"{name} : Mission failed, we'll get em next time");
     }
@@ -358,14 +400,32 @@ public abstract class UnitBase : NetworkBehaviour
         {
             yield return new WaitForSeconds(0.5f);
 
+            //if (!HasTarget()) yield break; //WTF this wont work, but it works down at Walking?!??!?
+
             //Can I see the player?
             if (CanSee(currentTarget))
             {
                 chaseTime = unitSO.chaseTime;
                 navAgent.SetDestination(currentTarget.position);
 
-                //actionRanged
-                //actionMelee
+                //This whole thing could be optimized?
+                //Currently it does a distance check every 0.5 seconds if ranged.
+                if (isRanged)
+                {
+                    bool atDistance = AtPreferredDistance();
+                    if (atDistance && !stoppedMoving) StopMovement();
+                    else if (!atDistance && stoppedMoving && !attackRange)
+                    {
+                        ResumeMovement();
+                    }
+                    else if (stoppedMoving)
+                    {
+                        if (!LookingAtTarget())
+                        {
+                            LookAtTarget(); // only rotate towards the target if the target is not within a 10 degree angle
+                        }
+                    }
+                }
             }
             else
             {
@@ -377,8 +437,21 @@ public abstract class UnitBase : NetworkBehaviour
                 }
             }
 
-            //Set Walk Animation
-            Walking = navAgent.velocity.magnitude > 0.5f;
+            if (!HasTarget()) yield break; //What the heck
+            //This is to stop the coroutine from setting walk animation again... even though the code stops the coroutine? dun work for some reason
+
+            //Set Walk Animation, if walking
+            Walking = navAgent.velocity.magnitude > 0.5f && HasTarget();
+        }
+    }
+
+    private void Alert()
+    {
+        Collider[] adjacentUnits = Physics.OverlapSphere(transform.position, alertRadius, alertMask);
+        foreach(Collider col in adjacentUnits)
+        {
+            if (col.gameObject == gameObject) continue;
+            col.gameObject.GetComponent<UnitBase>().AcquireTarget(currentTarget, true);
         }
     }
 
@@ -388,6 +461,8 @@ public abstract class UnitBase : NetworkBehaviour
 
     private bool CanSee(Transform target)
     {
+        if (!target) return false;
+
         Vector3 pos = new Vector3(transform.position.x, transform.position.y + eyeHeight, transform.position.z);
         Vector3 targetPos = new Vector3(target.position.x, target.position.y + 1f, target.position.z);
         Ray ray = new Ray(pos, targetPos - pos);
@@ -413,6 +488,23 @@ public abstract class UnitBase : NetworkBehaviour
         return angle <= viewAngle;
     }
 
+    private bool LookingAtTarget()
+    {
+        if (!HasTarget()) return false;
+
+        Vector3 pos = new Vector3(transform.position.x, transform.position.y + eyeHeight, transform.position.z);
+        Vector3 targetPos = new Vector3(currentTarget.position.x, transform.position.y + 1.5f, currentTarget.position.z);
+
+        Vector3 targetDir = targetPos - pos;
+        float angle = Vector3.Angle(targetDir, transform.forward);
+
+        Debug.DrawRay(pos, targetDir, angle <= viewAngle ? Color.green : Color.red, 0.5f);
+
+        Debug.DrawRay(pos, transform.forward * sightDistance, Color.blue, 0.5f);
+
+        return angle <= 10;
+    }
+
     #endregion
 
     #region Attacks
@@ -427,6 +519,7 @@ public abstract class UnitBase : NetworkBehaviour
         if (AttackMelee)
         {
             AttackMelee = false;
+            if (stoppedMoving) ResumeMovement();
 
             //This will check one last time if the survivor is within melee range. 
             //Because the survivor might have moved while a melee animation was happening.
@@ -434,7 +527,7 @@ public abstract class UnitBase : NetworkBehaviour
             if (!WithinMeleeRange() || !CanSee(currentTarget)) return;
 
             //Apply the proper damage number
-            damage = melee.meleeDamage;  
+            damage = Random.Range(melee.meleeDamageMin, melee.meleeDamageMax + 1); //why the fok is max exclusive??? stoopid unity 
            
         }
         if (AttackRange) 
@@ -480,33 +573,52 @@ public abstract class UnitBase : NetworkBehaviour
     #region Cooldowns
     protected IEnumerator MeleeCooldownCoroutine()
     {
+        if (meleeCooldown) yield break; //if an instance is already running, exit this one.
+
+        meleeCooldown = true;
+
         yield return new WaitForSeconds(melee.meleeCooldown);
 
         melee.canMelee = true;
+        meleeCooldown = false;
     }
     protected IEnumerator RangedCooldownCoroutine()
     {
+        if (rangedCooldown) yield break; //if an instance is already running, exit this one.
+
+        rangedCooldown = true;
+
         yield return new WaitForSeconds(ranged.rangedCooldown);
 
         ranged.canRanged = true;
+        rangedCooldown = false;
     }
     protected IEnumerator SpecialCooldownCoroutine()
     {
+        if (specialCooldown) yield break; //if an instance is already running, exit this one.
+
+        specialCooldown = true;
+
         yield return new WaitForSeconds(special.specialCooldown);
 
         special.canSpecial = true;
+        specialCooldown = false;
     }
     #endregion
 
     #region Melee
     public virtual void MeleeAttack()
     {
-        if (CanSee(currentTarget))
+        if (CanSee(currentTarget) && CanMeleeAttack)
         {
+            bool inRange = WithinMeleeRange();
+            if (inRange && !stoppedMoving) StopMovement();
+
             AttackMelee = true;
-            transform.LookAt(new Vector3(currentTarget.position.x, transform.position.y, currentTarget.position.z));
+            LookAtTarget();
         }
-        else Debug.LogWarning($"{name} can't see it's target. Is it's ignoreOnLayer mask set properly?");
+        else Debug.LogWarning($"{name} can't see it's target. Is it's ignoreOnLayer mask set properly?" +
+            $"Or maybe the unit is too close/inside the target?");
     }
     protected bool CanMeleeAttack => WithinMeleeRange() && melee.canMelee;
     private bool WithinMeleeRange()
@@ -519,10 +631,11 @@ public abstract class UnitBase : NetworkBehaviour
     #region Ranged
     public virtual void RangedAttack()
     {
-        if (CanSee(currentTarget))
+        if (CanSee(currentTarget) && CanRangedAttack)
         {
             AttackRange = true;
-            transform.LookAt(new Vector3(currentTarget.position.x, transform.position.y, currentTarget.position.z));
+            LookAtTarget();
+            if (ranged.standStill) StopMovement();
         }
         else Debug.LogWarning($"{name} can't see it's target. Is it's ignoreOnLayer mask set properly?" +
             $" Does it ignore UnitProjectile?");
@@ -536,17 +649,18 @@ public abstract class UnitBase : NetworkBehaviour
     }
     public virtual void RangedShoot()
     {
+        if (ranged.standStill) ResumeMovement();
         Debug.LogError("Direct ranged damage not implemented");
     }
     public virtual void SpawnProjectile()
     {
+        if (ranged.standStill) ResumeMovement();
         if (ranged.directRangedAttack)
         {
             Debug.LogError($"Something went wrong here... {name} wanted to do direct ranged damage, but tried to spawn a projectile instead." +
                 $" Is the correct method set in the animation event?");
             return;
         }
-
         //Spawn the projectile
         GameObject projectile = Instantiate(ranged.projectile, transform);
         projectile.transform.localPosition = ranged.projectileSpawnLocation;
@@ -564,9 +678,14 @@ public abstract class UnitBase : NetworkBehaviour
 
         AttackRange = false; //Disables this bool, allowing the unit to do another ranged attack.
         StartCoroutine(RangedCooldownCoroutine()); //Start cooldown
-
-        Debug.LogWarning("'standStill?' not implemented, unit still moves when shooting a projectile");
     }
+    protected bool AtPreferredDistance()
+    {
+        if (!HasTarget()) return false;
+        float distance = Vector3.Distance(currentTarget.position, transform.position);
+        return distance <= ranged.preferredRange;
+    }
+
     #endregion
     #region Special
     public virtual void SpecialAttack() { }
@@ -609,6 +728,32 @@ public abstract class UnitBase : NetworkBehaviour
     #endregion
 
     #region Other
+    bool tryingToLookAtTarget = false;
+    private void LookAtTarget()
+    {
+        if (!HasTarget()) return;
+        //transform.LookAt(new Vector3(currentTarget.position.x, transform.position.y, currentTarget.position.z));
+        if (!tryingToLookAtTarget)
+        {
+            //make sure only one instance of this coroutine is active at any time
+            tryingToLookAtTarget = true;
+            StartCoroutine(SmoothLookAt()); //This might be slow...
+        }
+    }
+    private IEnumerator SmoothLookAt()
+    {
+        Quaternion startRot = transform.rotation;
+        Quaternion endRot = Quaternion.LookRotation(new Vector3(currentTarget.position.x, transform.position.y, currentTarget.position.z)
+            - transform.position);
+        for (float t = 0f; t < 1; t += Time.deltaTime)
+        {
+            transform.rotation = Quaternion.Slerp(startRot, endRot, t / 1);
+            yield return null;
+        }
+        tryingToLookAtTarget = false;
+        transform.rotation = endRot;
+    }
+
     public void Trap() { /*trapped = !trapped;*/ }
 
     #endregion

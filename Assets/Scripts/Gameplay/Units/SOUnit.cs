@@ -33,7 +33,8 @@ public class SOUnit : ScriptableObject
     [System.Serializable]
     public class Melee
     {
-        public int meleeDamage = 10;
+        public int meleeDamageMin = 2;
+        public int meleeDamageMax = 5;
         public float meleeRange = 2.5f;
         public float meleeCooldown = 2;
     }
@@ -47,13 +48,14 @@ public class SOUnit : ScriptableObject
         public int minRange = 2;
         public int maxRange = 20;
         public float rangedCooldown = 5;
+        public int preferredRange = 15;
         [Space]
         public GameObject projectile;
         public int projectileSpeed;
         public Vector3 projectileSpawnLocation;
         public bool standStill = true;
         [Space]
-        public bool directRangedAttack = false;
+        public bool directRangedAttack = false; //Non-projectile attack. Not implemented yet
     }
     public Ranged ranged;
 
