@@ -10,7 +10,6 @@ public class ZombieTentacle : UnitBase
         if (CanMeleeAttack)
         {
             MeleeAttack();
-            StartCoroutine(MeleeCooldownCoroutine());
         }
     }
 }

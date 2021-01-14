@@ -10,7 +10,6 @@ public class ZombieCommon : UnitBase
         if (CanMeleeAttack)
         {
             MeleeAttack();
-            StartCoroutine(MeleeCooldownCoroutine());
         }
     }
 }

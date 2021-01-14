@@ -21,7 +21,6 @@ public class ZombieStronk : UnitBase
         if (CanMeleeAttack)
         {
             MeleeAttack();
-            StartCoroutine(MeleeCooldownCoroutine());
         }
     }
 }

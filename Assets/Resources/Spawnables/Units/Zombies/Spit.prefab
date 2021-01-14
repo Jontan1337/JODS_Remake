@@ -46,6 +46,8 @@ TrailRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -186,6 +188,8 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -210,6 +214,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &-1313085881006882620
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -222,7 +227,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bb563571ff31c14c8149dbd97095b29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spitDamage: 25
+  syncMode: 0
+  syncInterval: 0.1
+  unit: {fileID: 0}
+  lifetime: 5
+  hasDropoff: 1
+  timeBeforeDropoff: 3
+  piercing: 0
+  spitBall: {fileID: 0}
+  spitParticles: {fileID: 0}
+  trailParticles: {fileID: 0}
 --- !u!135 &8964106199952464071
 SphereCollider:
   m_ObjectHideFlags: 0
