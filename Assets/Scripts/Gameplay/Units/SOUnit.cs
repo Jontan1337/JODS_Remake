@@ -36,7 +36,7 @@ public class SOUnit : ScriptableObject
         public int meleeDamageMin = 2;
         public int meleeDamageMax = 5;
         public float meleeRange = 2.5f;
-        public int meleeCooldown = 2;
+        public float meleeCooldown = 0.5f;
     }
     [Space]
     public Melee melee;
