@@ -5,7 +5,7 @@ using Mirror;
 
 public abstract class UnitProjectile : NetworkBehaviour
 {
-    public UnitBase unit;
+    public int damage = 0;
     [Header("Projectile Stats")]
     [SerializeField] private int lifetime = 5;
     [Space]
@@ -42,7 +42,7 @@ public abstract class UnitProjectile : NetworkBehaviour
 
     public virtual void OnTriggerEnter(Collider other)
     {
-        unit.GiveProjectileDamage(other.gameObject);
+        Damage(other.gameObject);
 
         if (!piercing)
         {
@@ -51,4 +51,6 @@ public abstract class UnitProjectile : NetworkBehaviour
     }
 
     public virtual void Destroy() => NetworkServer.Destroy(gameObject);
+
+    protected void Damage(GameObject objectHit) => objectHit.GetComponent<IDamagable>()?.Svr_Damage(damage);
 }

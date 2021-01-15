@@ -30,7 +30,7 @@ public abstract class UnitBase : NetworkBehaviour
         public int meleeDamageMin = 0;
         public int meleeDamageMax = 0;
         public float meleeRange = 0;
-        public int meleeCooldown = 0;
+        public float meleeCooldown = 0;
         [Space]
         public bool canMelee = true;
     }
@@ -526,13 +526,6 @@ public abstract class UnitBase : NetworkBehaviour
 
     #region Attacks
 
-    //This function is specifically for projectile damage, because they can hit anything, not exclusively players.
-    public virtual void GiveProjectileDamage(GameObject objectHit)
-    {
-        //Apply the proper damage number
-        Damage(ranged.rangedDamage, objectHit);
-    }
-
     //This is the function that applies damage to the current target.
     //Give damage ----- THIS NEEDS TO CHANGE WHEN SURVIVORS ARE REMADE
     protected void Damage(int damage) => currentTarget.GetComponent<IDamagable>()?.Svr_Damage(damage);
@@ -555,12 +548,13 @@ public abstract class UnitBase : NetworkBehaviour
     #region Cooldowns
     protected IEnumerator MeleeCooldownCoroutine()
     {
+        print("cool");
         if (meleeCooldown) yield break; //if an instance is already running, exit this one.
 
         meleeCooldown = true;
 
         yield return new WaitForSeconds(melee.meleeCooldown);
-
+        print("down");
         melee.canMelee = true;
         meleeCooldown = false;
     }
@@ -679,7 +673,7 @@ public abstract class UnitBase : NetworkBehaviour
 
         projectile.transform.SetParent(null);
 
-        projectile.GetComponent<UnitProjectile>().unit = this;
+        projectile.GetComponent<UnitProjectile>().damage = ranged.rangedDamage;
 
         AttackRange = false; //Disables this bool, allowing the unit to do another ranged attack.
         StartCoroutine(RangedCooldownCoroutine()); //Start cooldown

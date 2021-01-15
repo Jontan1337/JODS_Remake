@@ -235,10 +235,6 @@ public class Master : NetworkBehaviour
                     }
                 }
             }
-            else if (hit.collider.CompareTag("Icon"))
-            {
-                UseIcon(hit);
-            }
             else
             {
                 SetSpawnText(spawnText.text = "Cannot spawn unit here");
@@ -251,15 +247,12 @@ public class Master : NetworkBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreOnRaycast))
         {
-            //Replace these with interfaces
-            if (hit.collider.CompareTag("Icon"))
+
+            if (hit.collider.CompareTag("Zombie"))
             {
-                UseIconAlt(hit);
+                //refund
             }
-            else if (hit.collider.CompareTag("Zombie"))
-            {
-                RefundUnit(hit);
-            }
+
             // -------------------------
 
             //If the raycast doesn't hit anything important
@@ -409,13 +402,6 @@ public class Master : NetworkBehaviour
         spawnSmokeAudio.PlayOneShot(spawnSmokeAudio.clip);
         spawnSmokeEffect.transform.position = point;
         spawnSmokeEffect.Emit(50);
-
-        /*
-        GameObject smoke = (GameObject)Resources.Load("Spawnables/FX/ZombieSmoke");
-        var s = Instantiate(smoke, point, Quaternion.identity);
-        s.transform.parent = null;
-        Destroy(s, 1f);
-        */
     }
 
     #endregion
@@ -566,40 +552,6 @@ public class Master : NetworkBehaviour
     void RefundUnit(RaycastHit hit)
     {
         throw new System.Exception(MethodBase.GetCurrentMethod() + " Not Implemented");
-
-        //IMPLEMENT UNIT INTO ZOMBIES
-
-        /*
-        var enemyH = hit.collider.gameObject.GetComponent<EnemyHealth>();
-        if (enemyH.health == enemyH.maxHealth)
-        {
-            string type = hit.collider.transform.Find("Zombie Type Tracker").tag;
-            SpawnSmoke(hit.point);
-
-            switch (type)
-            {
-                case "Zombie_Default":
-                    CmdRefundZombie(hit.collider.gameObject, zombieRefund);
-                    break;
-                case "Zombie_Slav":
-                    CmdRefundZombie(hit.collider.gameObject, slavRefund);
-                    break;
-                case "Zombie_Spitter":
-                    CmdRefundZombie(hit.collider.gameObject, spitterRefund);
-                    break;
-                case "Zombie_Stronk":
-                    CmdRefundZombie(hit.collider.gameObject, stronkRefund);
-                    break;
-                case "Zombie_Tentacle":
-                    CmdRefundZombie(hit.collider.gameObject, tentacleRefund);
-                    break;
-            }
-        }
-        else
-        {
-            SetSpawnText("Zombie has been damaged");
-        }
-        */
     }
 
     public void UpgradeUnit(int which)
@@ -765,73 +717,6 @@ public class Master : NetworkBehaviour
         spawnText.gameObject.SetActive(true);
         Invoke(nameof(SpawnTextReset), 1f);
     }
-    /*
-    [Command]
-    private void Cmd_TellToSmash(GameObject stronk, GameObject wall)
-    {
-        Rpc_TellToSmash(stronk, wall);
-    }
-    [ClientRpc]
-    private void Rpc_TellToSmash(GameObject stronk, GameObject wall)
-    {
-        stronk.GetComponent<Stronk>().Smash(wall);
-    }
-    */
-
-    void UseIcon(RaycastHit hit)
-    {
-        throw new System.Exception(MethodBase.GetCurrentMethod() + " Not Implemented");
-        /*
-        ObjectIcon icon = hit.collider.gameObject.GetComponent<ObjectIcon>();
-        bool can = icon.InteractWithObject(this);
-        if (can)
-        {
-            if (icon.isDoor)
-            {
-                CmdLockDoor(icon.door);
-            }
-            else if (icon.isWall)
-            {
-                GameObject[] stronks = GameObject.FindGameObjectsWithTag("Zombie_Stronk");
-                foreach (GameObject s in stronks)
-                {
-                    if (Vector3.Distance(icon.wall.transform.position, s.transform.parent.position) < 20)
-                    {
-                        Cmd_TellToSmash(s.transform.parent.gameObject, icon.wall);
-                    }
-                }
-            }
-        }
-        else
-        {
-            SetSpawnText("Cannot use " + (icon.isDoor ? "Door" : "Wall"));
-        }
-        */
-    }
-
-    void UseIconAlt(RaycastHit hit)
-    {
-        throw new System.Exception(MethodBase.GetCurrentMethod() + " Not Implemented");
-        /*
-        ObjectIcon icon = hit.collider.gameObject.GetComponent<ObjectIcon>();
-        bool can = icon.AltInteractWithObject(this);
-        if (can)
-        {
-            if (icon.isDoor)
-            {
-                CmdUnlockDoor(icon.door);
-            }
-        }
-        else
-        {
-            if (icon.isDoor)
-            {
-                SetSpawnText("Cannot use Door");
-            }
-        }
-        */
-    }
-
 
     ///////////COMMANDS
 
@@ -860,7 +745,7 @@ public class Master : NetworkBehaviour
         //Spawn the unit on the server
         NetworkServer.Spawn(newUnit);
     }
-    [Command]
+    [Command] //OLD
     void CmdUpgradeUnit(int which)
     {
         throw new System.Exception(MethodBase.GetCurrentMethod() + " Not Implemented");
@@ -878,26 +763,5 @@ public class Master : NetworkBehaviour
         GameObject sound = (GameObject)Resources.Load("Spawnables/FX/ZombieMaster_UnlockSound");
         var s = Instantiate(sound);
         NetworkServer.Spawn(s);
-    }
-    [Command]
-    void CmdLockDoor(GameObject door)
-    {
-        door.GetComponent<Door>().RpcLockDoor(false);
-    }
-    [Command]
-    void CmdUnlockDoor(GameObject door)
-    {
-        door.GetComponent<Door>().RpcLockDoor(true);
-    }
-    [Command]
-    void CmdRefundUnit(GameObject zom, float refund)
-    {
-        throw new System.Exception(MethodBase.GetCurrentMethod() + " Not Implemented");
-
-        /*
-        Debug.Log("Refunded " + zom.name + " for " + refund + " energy");
-        energy = Mathf.Clamp(energy += refund, 0f, maxEnergy);
-        NetworkServer.Destroy(zom);
-        */
     }
 }

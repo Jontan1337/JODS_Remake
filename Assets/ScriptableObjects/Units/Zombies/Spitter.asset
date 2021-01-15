@@ -36,7 +36,8 @@ MonoBehaviour:
     rangedDamage: 15
     minRange: 3
     maxRange: 25
-    rangedCooldown: 10
+    rangedCooldown: 5
+    preferredRange: 15
     projectile: {fileID: 3613215282632267500, guid: 2fecdf493e9322a4d892f94dac02076a,
       type: 3}
     projectileSpeed: 20
@@ -45,6 +46,11 @@ MonoBehaviour:
     directRangedAttack: 0
   special:
     specialCooldown: 2
+    specialDamage: 0
+    specialRange: 5
+    standStill: 1
+    lookAtTarget: 1
+    availableFromStart: 1
   movementSpeed: 1.5
   chaseTime: 20
   sightDistance: 30

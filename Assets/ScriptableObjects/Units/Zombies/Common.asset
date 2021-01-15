@@ -29,14 +29,16 @@ MonoBehaviour:
   isRanged: 0
   hasSpecial: 0
   melee:
-    meleeDamage: 3
+    meleeDamageMin: 2
+    meleeDamageMax: 5
     meleeRange: 2.5
-    meleeCooldown: 3
+    meleeCooldown: 0.5
   ranged:
     rangedDamage: 0
     minRange: 0
     maxRange: 0
     rangedCooldown: 0
+    preferredRange: 15
     projectile: {fileID: 0}
     projectileSpeed: 0
     projectileSpawnLocation: {x: 0, y: 0, z: 0}
@@ -44,6 +46,11 @@ MonoBehaviour:
     directRangedAttack: 0
   special:
     specialCooldown: 0
+    specialDamage: 0
+    specialRange: 5
+    standStill: 1
+    lookAtTarget: 1
+    availableFromStart: 1
   movementSpeed: 1.5
   chaseTime: 10
   sightDistance: 20
