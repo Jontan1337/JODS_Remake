@@ -540,7 +540,6 @@ GameObject:
   - component: {fileID: 5333175269811372614}
   - component: {fileID: 6631492428410308059}
   - component: {fileID: 9095606651604319616}
-  - component: {fileID: -543388538029063342}
   - component: {fileID: 2105332821}
   - component: {fileID: -8694003770945558277}
   - component: {fileID: 8193804542911408072}
@@ -611,6 +610,11 @@ MonoBehaviour:
     canRanged: 0
   special:
     specialCooldown: 0
+    specialDamage: 0
+    specialRange: 5
+    standStill: 1
+    lookAtTarget: 1
+    availableFromStart: 1
     canSpecial: 0
   movementSpeed: 1.5
   chaseTime: 10
@@ -690,35 +694,6 @@ RotationConstraint:
   m_IsContraintActive: 1
   m_IsLocked: 1
   m_Sources: []
---- !u!114 &-543388538029063342
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5333175269820739638}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c96e0f63feaa23647b0fecdd0efdeef5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shirtMats:
-  - {fileID: 2100000, guid: 4b020c7bf016ba643946470ecd2a4ad9, type: 2}
-  - {fileID: 2100000, guid: 02f4b2cd722c7ea4db5560b6769b78ab, type: 2}
-  - {fileID: 2100000, guid: 659bbf96c85ba504db974713153946ac, type: 2}
-  shirtNum: 4
-  pantsMats:
-  - {fileID: 2100000, guid: 16905164708ccbe4797ea90a5718b4aa, type: 2}
-  - {fileID: 2100000, guid: 3a9567161909ea84ea1289095a1f8e8d, type: 2}
-  - {fileID: 2100000, guid: 010aae4327bd80f4a85e3337ce8b2c93, type: 2}
-  pantsNum: 0
-  skinMats:
-  - {fileID: 2100000, guid: a0eb5581d1d5ae744810dbf5465cd450, type: 2}
-  - {fileID: 2100000, guid: 2fc6c839353619543b14cca1ed4cdf26, type: 2}
-  - {fileID: 2100000, guid: e5599d241a6e4b842a9d9599019e3a54, type: 2}
-  - {fileID: 2100000, guid: f580d5629226f874488458c0b2fe4800, type: 2}
-  skinNum: 1
-  meshRenderer: {fileID: 5333175269815532678}
 --- !u!65 &2105332821
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -909,12 +884,12 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 3bd1b1aca3d08ad48b5fe1455a5f301f, type: 3}
-  - {fileID: 2100002, guid: 3bd1b1aca3d08ad48b5fe1455a5f301f, type: 3}
-  - {fileID: 2100004, guid: 3bd1b1aca3d08ad48b5fe1455a5f301f, type: 3}
+  - {fileID: 2100000, guid: 68b5fc21cdb20284387031b8508e67a2, type: 2}
+  - {fileID: 2100000, guid: fa38acb2b2b48564ca25052659d466be, type: 2}
+  - {fileID: 2100000, guid: 6c15c3869905d834fa6735dd48208ab1, type: 2}
   - {fileID: 2100000, guid: a284fb5e826fa4347a3cdc13f0d83a6a, type: 2}
-  - {fileID: 2100008, guid: 3bd1b1aca3d08ad48b5fe1455a5f301f, type: 3}
-  - {fileID: 2100010, guid: 3bd1b1aca3d08ad48b5fe1455a5f301f, type: 3}
+  - {fileID: 2100000, guid: 028e931882bb1ab40893fe47f767df20, type: 2}
+  - {fileID: 2100000, guid: cd46e01533d6d6b4da2bf3fd6da9ed63, type: 2}
   - {fileID: 2100000, guid: 3df2418c5a270914a9f66b2612005442, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -2601,6 +2576,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f69e059fc80f8d44687503174dd09a2f, type: 3}
+--- !u!4 &4373538736408393594 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1454023895110589970, guid: f69e059fc80f8d44687503174dd09a2f,
+    type: 3}
+  m_PrefabInstance: {fileID: 2926307627387808104}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &3468353018137422321 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1782939441594843289, guid: f69e059fc80f8d44687503174dd09a2f,
@@ -2613,12 +2594,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d44ca6bac25424e429c1dd77d1bbd1c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &4373538736408393594 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1454023895110589970, guid: f69e059fc80f8d44687503174dd09a2f,
-    type: 3}
-  m_PrefabInstance: {fileID: 2926307627387808104}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6281474250400616608
 PrefabInstance:
   m_ObjectHideFlags: 0

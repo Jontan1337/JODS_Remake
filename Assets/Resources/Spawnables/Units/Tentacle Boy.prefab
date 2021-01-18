@@ -1211,7 +1211,6 @@ GameObject:
   - component: {fileID: 6953582676661230151}
   - component: {fileID: 5436022412779364536}
   - component: {fileID: 5436022412779364534}
-  - component: {fileID: 5436022412779364537}
   - component: {fileID: 7539572128443537086}
   - component: {fileID: 3775059774003956038}
   - component: {fileID: 4994649154354782666}
@@ -1283,6 +1282,11 @@ MonoBehaviour:
     canRanged: 0
   special:
     specialCooldown: 0
+    specialDamage: 0
+    specialRange: 5
+    standStill: 1
+    lookAtTarget: 1
+    availableFromStart: 1
     canSpecial: 0
   movementSpeed: 1.5
   chaseTime: 10
@@ -1304,6 +1308,7 @@ MonoBehaviour:
   footsteps: {fileID: 1165328266450692678}
   sounds: {fileID: 3133260610764882491}
   animator: {fileID: 0}
+  CaughtSurvivor: 0
 --- !u!95 &6953582676661230151
 Animator:
   serializedVersion: 3
@@ -1362,35 +1367,6 @@ NavMeshAgent:
   m_BaseOffset: -0.05
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &5436022412779364537
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4058108865016857902}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c96e0f63feaa23647b0fecdd0efdeef5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shirtMats:
-  - {fileID: 2100000, guid: 4b020c7bf016ba643946470ecd2a4ad9, type: 2}
-  - {fileID: 2100000, guid: 02f4b2cd722c7ea4db5560b6769b78ab, type: 2}
-  - {fileID: 2100000, guid: 659bbf96c85ba504db974713153946ac, type: 2}
-  shirtNum: 2
-  pantsMats:
-  - {fileID: 2100000, guid: 16905164708ccbe4797ea90a5718b4aa, type: 2}
-  - {fileID: 2100000, guid: 3a9567161909ea84ea1289095a1f8e8d, type: 2}
-  - {fileID: 2100000, guid: 010aae4327bd80f4a85e3337ce8b2c93, type: 2}
-  pantsNum: 4
-  skinMats:
-  - {fileID: 2100000, guid: a0eb5581d1d5ae744810dbf5465cd450, type: 2}
-  - {fileID: 2100000, guid: 2fc6c839353619543b14cca1ed4cdf26, type: 2}
-  - {fileID: 2100000, guid: e5599d241a6e4b842a9d9599019e3a54, type: 2}
-  - {fileID: 2100000, guid: f580d5629226f874488458c0b2fe4800, type: 2}
-  skinNum: 1
-  meshRenderer: {fileID: 6878657009929791399}
 --- !u!65 &7539572128443537086
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2204,12 +2180,12 @@ SkinnedMeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 3df2418c5a270914a9f66b2612005442, type: 2}
-  - {fileID: 4835078630258379571, guid: 6bdad7b5efd3cc648be9a32296616f7f, type: 3}
-  - {fileID: -414921334540547795, guid: 6bdad7b5efd3cc648be9a32296616f7f, type: 3}
-  - {fileID: 6098924145076851180, guid: 6bdad7b5efd3cc648be9a32296616f7f, type: 3}
-  - {fileID: -5637652675625914632, guid: 6bdad7b5efd3cc648be9a32296616f7f, type: 3}
-  - {fileID: -1898866065923900264, guid: 6bdad7b5efd3cc648be9a32296616f7f, type: 3}
-  - {fileID: -5930856315249269003, guid: 6bdad7b5efd3cc648be9a32296616f7f, type: 3}
+  - {fileID: 2100000, guid: 82a8e16cf314ded4ea54ea34305056f7, type: 2}
+  - {fileID: 2100000, guid: 510195d301b58d44aa4b3cd535ecf880, type: 2}
+  - {fileID: 2100000, guid: 20fbd190fd06c0e4085bca8ad24306e8, type: 2}
+  - {fileID: 2100000, guid: 68b5fc21cdb20284387031b8508e67a2, type: 2}
+  - {fileID: 2100000, guid: 3f1ed551c614d0f4ca8bc683f750a96b, type: 2}
+  - {fileID: 2100000, guid: 3a168d3a58a3ec3439627560c3a13256, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

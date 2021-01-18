@@ -135,7 +135,6 @@ GameObject:
   - component: {fileID: 925205799072825252}
   - component: {fileID: 925205799063325382}
   - component: {fileID: 925205799072825177}
-  - component: {fileID: -1408459812060750020}
   - component: {fileID: 925205799072825178}
   - component: {fileID: 6456877372478413887}
   - component: {fileID: 6063989977767234226}
@@ -197,7 +196,7 @@ MonoBehaviour:
     rangedDamage: 15
     minRange: 3
     maxRange: 25
-    rangedCooldown: 10
+    rangedCooldown: 5
     preferredRange: 15
     projectile: {fileID: 3613215282632267500, guid: 2fecdf493e9322a4d892f94dac02076a,
       type: 3}
@@ -208,6 +207,11 @@ MonoBehaviour:
     canRanged: 0
   special:
     specialCooldown: 2
+    specialDamage: 0
+    specialRange: 5
+    standStill: 1
+    lookAtTarget: 1
+    availableFromStart: 1
     canSpecial: 0
   movementSpeed: 1.5
   chaseTime: 20
@@ -265,35 +269,6 @@ RotationConstraint:
   m_IsContraintActive: 1
   m_IsLocked: 1
   m_Sources: []
---- !u!114 &-1408459812060750020
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 925205799072725160}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c96e0f63feaa23647b0fecdd0efdeef5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shirtMats:
-  - {fileID: 2100000, guid: 4b020c7bf016ba643946470ecd2a4ad9, type: 2}
-  - {fileID: 2100000, guid: 02f4b2cd722c7ea4db5560b6769b78ab, type: 2}
-  - {fileID: 2100000, guid: 659bbf96c85ba504db974713153946ac, type: 2}
-  shirtNum: 4
-  pantsMats:
-  - {fileID: 2100000, guid: 16905164708ccbe4797ea90a5718b4aa, type: 2}
-  - {fileID: 2100000, guid: 3a9567161909ea84ea1289095a1f8e8d, type: 2}
-  - {fileID: 2100000, guid: 010aae4327bd80f4a85e3337ce8b2c93, type: 2}
-  pantsNum: 0
-  skinMats:
-  - {fileID: 2100000, guid: a0eb5581d1d5ae744810dbf5465cd450, type: 2}
-  - {fileID: 2100000, guid: 2fc6c839353619543b14cca1ed4cdf26, type: 2}
-  - {fileID: 2100000, guid: e5599d241a6e4b842a9d9599019e3a54, type: 2}
-  - {fileID: 2100000, guid: f580d5629226f874488458c0b2fe4800, type: 2}
-  skinNum: 1
-  meshRenderer: {fileID: 925205799059125254}
 --- !u!195 &925205799072825178
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -707,14 +682,14 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 50bd8d4475580f0448d2bca3f6ab4b5e, type: 3}
-  - {fileID: 2100002, guid: 50bd8d4475580f0448d2bca3f6ab4b5e, type: 3}
+  - {fileID: 2100000, guid: 68b5fc21cdb20284387031b8508e67a2, type: 2}
+  - {fileID: 2100000, guid: fa38acb2b2b48564ca25052659d466be, type: 2}
   - {fileID: 2100000, guid: 3df2418c5a270914a9f66b2612005442, type: 2}
   - {fileID: 2100000, guid: a284fb5e826fa4347a3cdc13f0d83a6a, type: 2}
-  - {fileID: 2100008, guid: 50bd8d4475580f0448d2bca3f6ab4b5e, type: 3}
-  - {fileID: 2100010, guid: 50bd8d4475580f0448d2bca3f6ab4b5e, type: 3}
-  - {fileID: 2100012, guid: 50bd8d4475580f0448d2bca3f6ab4b5e, type: 3}
-  - {fileID: 2100014, guid: 50bd8d4475580f0448d2bca3f6ab4b5e, type: 3}
+  - {fileID: 2100000, guid: 510195d301b58d44aa4b3cd535ecf880, type: 2}
+  - {fileID: 2100000, guid: cd46e01533d6d6b4da2bf3fd6da9ed63, type: 2}
+  - {fileID: 2100000, guid: d6796828d8417be4c82aff252b036732, type: 2}
+  - {fileID: 2100000, guid: 9cd6e1ad36d4fde4dbf92c51cc031976, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
