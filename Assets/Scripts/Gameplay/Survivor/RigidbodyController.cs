@@ -39,7 +39,7 @@ public class RigidbodyController : MonoBehaviour
     {
         movement = transform.TransformDirection(new Vector3(horizontalMove, 0f, verticalMove)) * moveSpeed;
 
-        playerRigidbody.AddForce(movement, ForceMode.Force);
+        playerRigidbody.AddForce(movement * moveSpeed * Time.fixedDeltaTime, ForceMode.Force);
     }
 
     private void Move(Vector2 moveValues)

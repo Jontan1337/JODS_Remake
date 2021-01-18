@@ -1,7 +1,10 @@
-﻿public interface IInteractable
+﻿using Mirror;
+
+public interface IInteractable
 {
     bool IsInteractable { get; }
     string ObjectName { get; }
 
-    void Interact();
+    [Server]
+    void Svr_Interact(object interacter);
 }

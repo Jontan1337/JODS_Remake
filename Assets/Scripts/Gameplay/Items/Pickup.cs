@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using Mirror;
 using UnityEngine;
 
-public class Pickup : MonoBehaviour, IInteractable
+public class Pickup : NetworkBehaviour, IInteractable
 {
     [SerializeField]
     private string objectName = "Object name";
@@ -17,7 +16,9 @@ public class Pickup : MonoBehaviour, IInteractable
         ObjectName = gameObject.name;
     }
 
-    public void Interact()
+    [Server]
+    public void Svr_Interact(object interacter)
     {
+        throw new System.NotImplementedException();
     }
 }
