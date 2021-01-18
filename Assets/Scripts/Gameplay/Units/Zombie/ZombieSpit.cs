@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class Spit : UnitProjectile
+public class ZombieSpit : UnitProjectile
 {
     [Space]
     [SerializeField] private GameObject spitBall = null;

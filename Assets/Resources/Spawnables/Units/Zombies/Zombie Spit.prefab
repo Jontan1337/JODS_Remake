@@ -4973,8 +4973,8 @@ GameObject:
   - component: {fileID: 3613215282632267503}
   - component: {fileID: 4267464462528126609}
   - component: {fileID: -3943141420893563423}
-  - component: {fileID: -4732183665597395019}
   - component: {fileID: -5881448769358020126}
+  - component: {fileID: 4047094704713178059}
   m_Layer: 11
   m_Name: Zombie Spit
   m_TagString: Untagged
@@ -9816,28 +9816,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &-4732183665597395019
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3613215282632267500}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1bb563571ff31c14c8149dbd97095b29, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  unit: {fileID: 0}
-  lifetime: 5
-  hasDropoff: 1
-  timeBeforeDropoff: 1
-  piercing: 0
-  spitBall: {fileID: 3613215280995452630}
-  spitParticles: {fileID: 3613215282632267502}
-  trailParticles: {fileID: 3613215281097511168}
 --- !u!114 &-5881448769358020126
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9854,3 +9832,25 @@ MonoBehaviour:
   serverOnly: 0
   m_AssetId: 
   hasSpawned: 0
+--- !u!114 &4047094704713178059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3613215282632267500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bb563571ff31c14c8149dbd97095b29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  damage: 0
+  lifetime: 2
+  hasDropoff: 1
+  timeBeforeDropoff: 1
+  piercing: 0
+  spitBall: {fileID: 3613215280995452630}
+  spitParticles: {fileID: 3613215282632267502}
+  trailParticles: {fileID: 3613215281097511168}
