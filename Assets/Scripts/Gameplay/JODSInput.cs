@@ -8,4 +8,14 @@ public class JODSInput : MonoBehaviour
     {
         Controls = new Controls();
     }
+
+    private void OnEnable()
+    {
+        Controls.Enable();
+    }
+
+    private void OnDisable()
+    {
+        Controls.Disable();
+    }
 }
