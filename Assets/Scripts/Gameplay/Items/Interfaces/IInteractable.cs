@@ -7,5 +7,5 @@ public interface IInteractable
     string ObjectName { get; }
 
     [Server]
-    void Interact(GameObject interacter);
+    void Svr_Interact(GameObject interacter);
 }

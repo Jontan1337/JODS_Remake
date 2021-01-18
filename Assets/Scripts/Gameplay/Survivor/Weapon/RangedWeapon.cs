@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-public class RangedWeapon : NetworkBehaviour
+public class RangedWeapon : NetworkBehaviour, IInteractable
 {
     [Header("Settings")]
     [SerializeField]
@@ -38,6 +38,10 @@ public class RangedWeapon : NetworkBehaviour
     private Animator weaponAnimator = null;
     [SerializeField]
     private Transform rayPosition = null;
+
+    public bool IsInteractable { get; private set; }
+
+    public string ObjectName => gameObject.name;
 
     private void Awake()
     {
@@ -86,5 +90,10 @@ public class RangedWeapon : NetworkBehaviour
 
         Debug.Log(neededAmmunition);
         Debug.Log(extraAmmunition);
+    }
+
+    public void Svr_Interact(GameObject interacter)
+    {
+        Debug.Log($"{interacter} interacted with {gameObject}");
     }
 }

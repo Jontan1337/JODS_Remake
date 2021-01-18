@@ -10,16 +10,9 @@ public class Interacter : NetworkBehaviour
     private float interactionRange = 2f;
 
     private IInteractable currentInteractable;
-    private Controls control;
-
-    private void Awake()
-    {
-        control = new Controls();
-    }
 
     public override void OnStartAuthority()
     {
-        print(hasAuthority);
         if (!hasAuthority) return;
 
         Debug.Log("on start authority");
