@@ -1,7 +1,11 @@
-﻿public interface IInteractable
+﻿using Mirror;
+using UnityEngine;
+
+public interface IInteractable
 {
     bool IsInteractable { get; }
     string ObjectName { get; }
 
-    void Interact();
+    [Server]
+    void Interact(GameObject interacter);
 }

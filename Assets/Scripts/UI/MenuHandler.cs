@@ -13,7 +13,7 @@ public class MenuHandler : NetworkBehaviour
 
     private Movement movement;
     private Shoot shoot;
-    private Interact interact;
+    private Interacter interact;
     [Space]
     [SerializeField] private HandSway handSway = null;
 
@@ -29,7 +29,7 @@ public class MenuHandler : NetworkBehaviour
     {
         movement = GetComponent<Movement>();
         shoot = GetComponent<Shoot>();
-        interact = GetComponent<Interact>();
+        interact = GetComponent<Interacter>();
     }
 
     private void Update()
