@@ -1,4 +1,4 @@
-﻿public class ZombieSpitter : UnitBase
+﻿public class ZombieSpitter : UnitBase, IZombie, IControllable
 {
     public override void Attack()
     {
@@ -11,4 +11,16 @@
             TryMeleeAttack();
         }
     }
+
+    #region Interface Functions
+    public void TakeControl()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void Infect()
+    {
+        throw new System.NotImplementedException();
+    }
+    #endregion
 }
