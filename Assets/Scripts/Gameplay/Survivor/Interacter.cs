@@ -9,6 +9,7 @@ public class Interacter : NetworkBehaviour
     [SerializeField]
     private float interactionRange = 2f;
 
+    private RaycastHit rayHit;
     private IInteractable currentInteractable;
 
     public override void OnStartAuthority()
@@ -16,7 +17,7 @@ public class Interacter : NetworkBehaviour
         if (!hasAuthority) return;
 
         Debug.Log("on start authority");
-        JODSInput.Controls.Survivor.Interact.performed += ctx => Interact();
+        JODSInput.Controls.Survivor.Interact.performed += ctx => Cmd_Interact();
     }
 
     public override void OnStopAuthority()
@@ -24,7 +25,7 @@ public class Interacter : NetworkBehaviour
         if (!hasAuthority) return;
 
         Debug.Log("on stop authority");
-        JODSInput.Controls.Survivor.Interact.performed -= ctx => Interact();
+        JODSInput.Controls.Survivor.Interact.performed -= ctx => Cmd_Interact();
     }
 
     private void Update()
@@ -32,25 +33,19 @@ public class Interacter : NetworkBehaviour
         if (!hasAuthority) return;
 
         Ray ray = new Ray(playerCamera.position, playerCamera.forward);
-        RaycastHit rayHit;
 
-        if (Physics.Raycast(ray, out rayHit, interactionRange))
-        {
-            if (rayHit.collider.TryGetComponent(out IInteractable interactable))
-            {
-                currentInteractable = interactable;
-            }
-        }
+        Physics.Raycast(ray, out rayHit, interactionRange);
+        Debug.DrawRay(playerCamera.position, playerCamera.forward * interactionRange);
     }
 
     [Command]
     public void Cmd_Interact()
     {
         Debug.Log("helo");
-        currentInteractable?.Svr_Interact(gameObject);
-    }
-    public void Interact()
-    {
-        Debug.Log("helo");
+        if (rayHit.collider)
+        {
+            rayHit.collider.TryGetComponent(out IInteractable interactable);
+            interactable?.Svr_Interact(gameObject);
+        }
     }
 }
