@@ -98,6 +98,13 @@ public abstract class UnitBase : NetworkBehaviour
     [SerializeField] private SFXPlayer sounds = null;
     public Animator animator;
 
+    [System.Serializable]
+    public class Selectable
+    {
+        
+    }
+    public Selectable select;
+
     #region Coroutine references
 
     private IEnumerator CoSearch;

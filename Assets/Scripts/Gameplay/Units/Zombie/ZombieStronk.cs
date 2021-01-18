@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class ZombieStronk : UnitBase
+public class ZombieStronk : UnitBase, IZombie, IControllable
 {
     [Header("Stronk")]
     [SerializeField] private Mesh[] weaponMeshes = null;
@@ -23,4 +23,16 @@ public class ZombieStronk : UnitBase
             TryMeleeAttack();
         }
     }
+
+    #region Interface Functions
+    public void TakeControl()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void Infect()
+    {
+        throw new System.NotImplementedException();
+    }
+    #endregion
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class ZombieSlav : UnitBase
+public class ZombieSlav : UnitBase, IZombie, IControllable
 {
     public override void Attack()
     {
@@ -12,4 +12,16 @@ public class ZombieSlav : UnitBase
             TryMeleeAttack();
         }
     }
+
+    #region Interface Functions
+    public void TakeControl()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void Infect()
+    {
+        throw new System.NotImplementedException();
+    }
+    #endregion
 }

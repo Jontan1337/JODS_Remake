@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class ZombieTentacle : UnitBase
+public class ZombieTentacle : UnitBase, IZombie, IControllable
 {
     [Header("Tentacle")]
     [SerializeField] private bool CaughtSurvivor = false;
@@ -19,6 +19,7 @@ public class ZombieTentacle : UnitBase
             TryMeleeAttack();
         }
     }
+
     public override void SpecialAttack()
     {
         Debug.Log("Gotcha bitch!");
@@ -32,6 +33,7 @@ public class ZombieTentacle : UnitBase
         //Call DamageOverTime
         StartCoroutine(DamageOverTime());
     }
+
     private IEnumerator DamageOverTime()
     {
         while (true)
@@ -40,11 +42,23 @@ public class ZombieTentacle : UnitBase
 
             //Check if unit still has a player to damage (maybe the player died while in its grasp)
             //If so, leave the special attack, and continue searching for other survivors.
-
+            if (!CaughtSurvivor) yield break;
 
             //Do some damage yo
             Damage(special.specialDamage);
             print("oof");
         }
     }
+
+    #region Interface Functions
+    public void TakeControl()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void Infect()
+    {
+        throw new System.NotImplementedException();
+    }
+    #endregion
 }
