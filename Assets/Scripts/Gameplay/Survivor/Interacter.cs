@@ -16,7 +16,7 @@ public class Interacter : NetworkBehaviour
         if (!hasAuthority) return;
 
         Debug.Log("on start authority");
-        control.Survivor.Interact.performed += ctx => Interact();
+        JODSInput.Controls.Survivor.Interact.performed += ctx => Interact();
     }
 
     public override void OnStopAuthority()
@@ -24,7 +24,7 @@ public class Interacter : NetworkBehaviour
         if (!hasAuthority) return;
 
         Debug.Log("on stop authority");
-        control.Survivor.Interact.performed -= ctx => Interact();
+        JODSInput.Controls.Survivor.Interact.performed -= ctx => Interact();
     }
 
     private void Update()
