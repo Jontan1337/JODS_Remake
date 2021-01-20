@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class Equipment : MonoBehaviour
+public class Equipment : NetworkBehaviour
 {
-    public EquipmentBar selectedEquipmentBar = null;
+    public EquipmentSlot selectedEquipmentBar = null;
 
-    public List<EquipmentBar> EquipmentBars = new List<EquipmentBar>();
+    public List<EquipmentSlot> EquipmentBars = new List<EquipmentSlot>();
 
     private int equipmentBarsCount = 0;
     private void Awake()
@@ -13,21 +14,43 @@ public class Equipment : MonoBehaviour
         equipmentBarsCount = EquipmentBars.Count;
     }
 
-    public void Equip(GameObject equipment, EquipmentType equipmentType)
+    [Server]
+    public void Svr_Equip(GameObject equipment, EquipmentType equipmentType)
     {
-        if (selectedEquipmentBar.equipment == null)
+        // If selected equipment bar is empty, equip item in that bar,
+        // else look for an available bar.
+        if (selectedEquipmentBar.Equipment == null)
         {
-            selectedEquipmentBar.Equip(equipment, equipmentType);
+            // If selected bar can't equip, then equip on first 
+            //if (!selectedEquipmentBar.Equip(equipment, equipmentType))
+            //{
+
+            //}
+
+            selectedEquipmentBar = GetAvailableBar(equipmentType);
         }
         else
         {
-            for (int i = 0; i < equipmentBarsCount; i++)
+            for (int i = 0; i < equipmentBarsCount-1; i++)
             {
-                if (EquipmentBars[i].Equip(equipment, equipmentType))
-                {
+                //if (EquipmentBars[i].Equip(equipment, equipmentType))
+                //{
 
-                }
+                //}
             }
         }
+    }
+
+    // Finds and returns the first bar that has no equipment.
+    // If none are available, it returns the currently selected bar.
+    private EquipmentSlot GetAvailableBar(EquipmentType equipmentType)
+    {
+        for (int i = 0; i < equipmentBarsCount-1; i++)
+        {
+            EquipmentSlot currentBar = EquipmentBars[i];
+            //if (currentBar.Equipment != null 
+            //    && currentBar.EquipmentType == equipmentType) return EquipmentBars[i];
+        }
+        return selectedEquipmentBar;
     }
 }

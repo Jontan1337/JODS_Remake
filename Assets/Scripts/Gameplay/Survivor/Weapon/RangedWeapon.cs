@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using Mirror;
 
-public class RangedWeapon : NetworkBehaviour, IInteractable
+public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable
 {
     [Header("Settings")]
     [SerializeField]
     private string weaponName = "Weapon name";
+    [SerializeField]
+    private EquipmentType equipmentType;
     [SerializeField]
     private LayerMask ignoreLayer;
 
@@ -40,6 +42,8 @@ public class RangedWeapon : NetworkBehaviour, IInteractable
     public bool IsInteractable { get; private set; }
 
     public string ObjectName => gameObject.name;
+
+    public EquipmentType EquipmentType => equipmentType;
 
     private void Awake()
     {
@@ -94,5 +98,8 @@ public class RangedWeapon : NetworkBehaviour, IInteractable
     public void Svr_Interact(GameObject interacter)
     {
         Debug.Log($"{interacter} interacted with {gameObject}");
+
+        interacter.TryGetComponent(out Equipment equipment);
+        //equipment?.Equip(this, );
     }
 }

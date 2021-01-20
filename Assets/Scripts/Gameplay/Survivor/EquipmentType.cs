@@ -1,6 +1,6 @@
 ﻿public enum EquipmentType
 {
     Weapon,
-    Throwable,
+    Special,
     Meds
 }
