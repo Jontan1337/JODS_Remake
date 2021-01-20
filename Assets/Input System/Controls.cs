@@ -19,7 +19,7 @@ public class @Controls : IInputActionCollection, IDisposable
             ""id"": ""fe6537ac-7067-45ec-9ecd-18f23f135d24"",
             ""actions"": [
                 {
-                    ""name"": ""Main"",
+                    ""name"": ""LMB"",
                     ""type"": ""Button"",
                     ""id"": ""2b33c84b-11c8-4445-8f33-024d8771e93d"",
                     ""expectedControlType"": ""Button"",
@@ -27,7 +27,7 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Alt"",
+                    ""name"": ""RMB"",
                     ""type"": ""Button"",
                     ""id"": ""77365dda-ee6e-4d1a-9bc4-c96bbbe09d14"",
                     ""expectedControlType"": ""Button"",
@@ -35,7 +35,39 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Change Floor Up"",
+                    ""name"": ""Shift LMB"",
+                    ""type"": ""Button"",
+                    ""id"": ""8235a6ea-b79d-4993-9db5-17c2abd056cc"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Shift RMB"",
+                    ""type"": ""Button"",
+                    ""id"": ""1822b38b-cfb5-4875-8226-21d29d505d7e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Ctrl LMB"",
+                    ""type"": ""Button"",
+                    ""id"": ""c5b6d656-41a5-4cdc-b29b-e43982495654"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Ctrl RMB"",
+                    ""type"": ""Button"",
+                    ""id"": ""dc7ebe05-3d8f-4f5f-9ebf-8c62fab270b6"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Floor Up"",
                     ""type"": ""Button"",
                     ""id"": ""968763e4-0606-4865-b387-a5746d12c85d"",
                     ""expectedControlType"": ""Button"",
@@ -43,7 +75,7 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Change Floor Down"",
+                    ""name"": ""Floor Down"",
                     ""type"": ""Button"",
                     ""id"": ""2de6d8d2-31a1-49d0-8e32-7b60311d7396"",
                     ""expectedControlType"": ""Button"",
@@ -59,7 +91,7 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Game Actions"",
-                    ""action"": ""Main"",
+                    ""action"": ""LMB"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -70,31 +102,163 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Game Actions"",
-                    ""action"": ""Alt"",
+                    ""action"": ""RMB"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
                     ""id"": ""78fa70b8-6f19-4cc5-8bf4-6b46538b8e0e"",
-                    ""path"": ""<Keyboard>/leftShift"",
+                    ""path"": ""<Keyboard>/q"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Game Actions"",
-                    ""action"": ""Change Floor Up"",
+                    ""action"": ""Floor Up"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
                     ""id"": ""da4b7523-adf5-4e7b-8869-8f7e066591c3"",
-                    ""path"": ""<Keyboard>/leftCtrl"",
+                    ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Game Actions"",
-                    ""action"": ""Change Floor Down"",
+                    ""action"": ""Floor Down"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Button With One Modifier"",
+                    ""id"": ""3916c2e7-ac2a-4bb1-ab6b-ba17855846ac"",
+                    ""path"": ""ButtonWithOneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Shift LMB"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""648c7841-c451-40c1-ba3c-efa2a6fcbcf3"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Shift LMB"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""button"",
+                    ""id"": ""c406ccc7-2ba0-42be-887f-bfb73744cb87"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Shift LMB"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Button With One Modifier"",
+                    ""id"": ""e59494a4-1dc1-411d-b4aa-a6d9c685ac05"",
+                    ""path"": ""ButtonWithOneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Shift RMB"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""36dd71d4-9c43-4627-b295-08362005c3b0"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Shift RMB"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""button"",
+                    ""id"": ""f5a996b7-e75e-4d97-afc7-bc391f452c53"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Shift RMB"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Button With One Modifier"",
+                    ""id"": ""e9960491-ce25-4931-a1be-9e6f0196ebbd"",
+                    ""path"": ""ButtonWithOneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Ctrl LMB"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""67138e63-d517-4bf7-a591-30f3bcabe69b"",
+                    ""path"": ""<Keyboard>/leftCtrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Ctrl LMB"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""button"",
+                    ""id"": ""c5c18ef8-86ff-4a4c-aaa8-8a47b7590cd4"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Ctrl LMB"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Button With One Modifier"",
+                    ""id"": ""f732fdfa-2311-4dce-bf57-934c9ee857d8"",
+                    ""path"": ""ButtonWithOneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Ctrl RMB"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""caa2a249-ca59-4349-ad92-c08a0965b29d"",
+                    ""path"": ""<Keyboard>/leftCtrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Ctrl RMB"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""button"",
+                    ""id"": ""47dffaa7-52c4-4713-898d-7b2e61443c0b"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Ctrl RMB"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -218,10 +382,14 @@ public class @Controls : IInputActionCollection, IDisposable
 }");
         // Master
         m_Master = asset.FindActionMap("Master", throwIfNotFound: true);
-        m_Master_Main = m_Master.FindAction("Main", throwIfNotFound: true);
-        m_Master_Alt = m_Master.FindAction("Alt", throwIfNotFound: true);
-        m_Master_ChangeFloorUp = m_Master.FindAction("Change Floor Up", throwIfNotFound: true);
-        m_Master_ChangeFloorDown = m_Master.FindAction("Change Floor Down", throwIfNotFound: true);
+        m_Master_LMB = m_Master.FindAction("LMB", throwIfNotFound: true);
+        m_Master_RMB = m_Master.FindAction("RMB", throwIfNotFound: true);
+        m_Master_ShiftLMB = m_Master.FindAction("Shift LMB", throwIfNotFound: true);
+        m_Master_ShiftRMB = m_Master.FindAction("Shift RMB", throwIfNotFound: true);
+        m_Master_CtrlLMB = m_Master.FindAction("Ctrl LMB", throwIfNotFound: true);
+        m_Master_CtrlRMB = m_Master.FindAction("Ctrl RMB", throwIfNotFound: true);
+        m_Master_FloorUp = m_Master.FindAction("Floor Up", throwIfNotFound: true);
+        m_Master_FloorDown = m_Master.FindAction("Floor Down", throwIfNotFound: true);
         // Survivor
         m_Survivor = asset.FindActionMap("Survivor", throwIfNotFound: true);
         m_Survivor_Movement = m_Survivor.FindAction("Movement", throwIfNotFound: true);
@@ -276,18 +444,26 @@ public class @Controls : IInputActionCollection, IDisposable
     // Master
     private readonly InputActionMap m_Master;
     private IMasterActions m_MasterActionsCallbackInterface;
-    private readonly InputAction m_Master_Main;
-    private readonly InputAction m_Master_Alt;
-    private readonly InputAction m_Master_ChangeFloorUp;
-    private readonly InputAction m_Master_ChangeFloorDown;
+    private readonly InputAction m_Master_LMB;
+    private readonly InputAction m_Master_RMB;
+    private readonly InputAction m_Master_ShiftLMB;
+    private readonly InputAction m_Master_ShiftRMB;
+    private readonly InputAction m_Master_CtrlLMB;
+    private readonly InputAction m_Master_CtrlRMB;
+    private readonly InputAction m_Master_FloorUp;
+    private readonly InputAction m_Master_FloorDown;
     public struct MasterActions
     {
         private @Controls m_Wrapper;
         public MasterActions(@Controls wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Main => m_Wrapper.m_Master_Main;
-        public InputAction @Alt => m_Wrapper.m_Master_Alt;
-        public InputAction @ChangeFloorUp => m_Wrapper.m_Master_ChangeFloorUp;
-        public InputAction @ChangeFloorDown => m_Wrapper.m_Master_ChangeFloorDown;
+        public InputAction @LMB => m_Wrapper.m_Master_LMB;
+        public InputAction @RMB => m_Wrapper.m_Master_RMB;
+        public InputAction @ShiftLMB => m_Wrapper.m_Master_ShiftLMB;
+        public InputAction @ShiftRMB => m_Wrapper.m_Master_ShiftRMB;
+        public InputAction @CtrlLMB => m_Wrapper.m_Master_CtrlLMB;
+        public InputAction @CtrlRMB => m_Wrapper.m_Master_CtrlRMB;
+        public InputAction @FloorUp => m_Wrapper.m_Master_FloorUp;
+        public InputAction @FloorDown => m_Wrapper.m_Master_FloorDown;
         public InputActionMap Get() { return m_Wrapper.m_Master; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -297,34 +473,58 @@ public class @Controls : IInputActionCollection, IDisposable
         {
             if (m_Wrapper.m_MasterActionsCallbackInterface != null)
             {
-                @Main.started -= m_Wrapper.m_MasterActionsCallbackInterface.OnMain;
-                @Main.performed -= m_Wrapper.m_MasterActionsCallbackInterface.OnMain;
-                @Main.canceled -= m_Wrapper.m_MasterActionsCallbackInterface.OnMain;
-                @Alt.started -= m_Wrapper.m_MasterActionsCallbackInterface.OnAlt;
-                @Alt.performed -= m_Wrapper.m_MasterActionsCallbackInterface.OnAlt;
-                @Alt.canceled -= m_Wrapper.m_MasterActionsCallbackInterface.OnAlt;
-                @ChangeFloorUp.started -= m_Wrapper.m_MasterActionsCallbackInterface.OnChangeFloorUp;
-                @ChangeFloorUp.performed -= m_Wrapper.m_MasterActionsCallbackInterface.OnChangeFloorUp;
-                @ChangeFloorUp.canceled -= m_Wrapper.m_MasterActionsCallbackInterface.OnChangeFloorUp;
-                @ChangeFloorDown.started -= m_Wrapper.m_MasterActionsCallbackInterface.OnChangeFloorDown;
-                @ChangeFloorDown.performed -= m_Wrapper.m_MasterActionsCallbackInterface.OnChangeFloorDown;
-                @ChangeFloorDown.canceled -= m_Wrapper.m_MasterActionsCallbackInterface.OnChangeFloorDown;
+                @LMB.started -= m_Wrapper.m_MasterActionsCallbackInterface.OnLMB;
+                @LMB.performed -= m_Wrapper.m_MasterActionsCallbackInterface.OnLMB;
+                @LMB.canceled -= m_Wrapper.m_MasterActionsCallbackInterface.OnLMB;
+                @RMB.started -= m_Wrapper.m_MasterActionsCallbackInterface.OnRMB;
+                @RMB.performed -= m_Wrapper.m_MasterActionsCallbackInterface.OnRMB;
+                @RMB.canceled -= m_Wrapper.m_MasterActionsCallbackInterface.OnRMB;
+                @ShiftLMB.started -= m_Wrapper.m_MasterActionsCallbackInterface.OnShiftLMB;
+                @ShiftLMB.performed -= m_Wrapper.m_MasterActionsCallbackInterface.OnShiftLMB;
+                @ShiftLMB.canceled -= m_Wrapper.m_MasterActionsCallbackInterface.OnShiftLMB;
+                @ShiftRMB.started -= m_Wrapper.m_MasterActionsCallbackInterface.OnShiftRMB;
+                @ShiftRMB.performed -= m_Wrapper.m_MasterActionsCallbackInterface.OnShiftRMB;
+                @ShiftRMB.canceled -= m_Wrapper.m_MasterActionsCallbackInterface.OnShiftRMB;
+                @CtrlLMB.started -= m_Wrapper.m_MasterActionsCallbackInterface.OnCtrlLMB;
+                @CtrlLMB.performed -= m_Wrapper.m_MasterActionsCallbackInterface.OnCtrlLMB;
+                @CtrlLMB.canceled -= m_Wrapper.m_MasterActionsCallbackInterface.OnCtrlLMB;
+                @CtrlRMB.started -= m_Wrapper.m_MasterActionsCallbackInterface.OnCtrlRMB;
+                @CtrlRMB.performed -= m_Wrapper.m_MasterActionsCallbackInterface.OnCtrlRMB;
+                @CtrlRMB.canceled -= m_Wrapper.m_MasterActionsCallbackInterface.OnCtrlRMB;
+                @FloorUp.started -= m_Wrapper.m_MasterActionsCallbackInterface.OnFloorUp;
+                @FloorUp.performed -= m_Wrapper.m_MasterActionsCallbackInterface.OnFloorUp;
+                @FloorUp.canceled -= m_Wrapper.m_MasterActionsCallbackInterface.OnFloorUp;
+                @FloorDown.started -= m_Wrapper.m_MasterActionsCallbackInterface.OnFloorDown;
+                @FloorDown.performed -= m_Wrapper.m_MasterActionsCallbackInterface.OnFloorDown;
+                @FloorDown.canceled -= m_Wrapper.m_MasterActionsCallbackInterface.OnFloorDown;
             }
             m_Wrapper.m_MasterActionsCallbackInterface = instance;
             if (instance != null)
             {
-                @Main.started += instance.OnMain;
-                @Main.performed += instance.OnMain;
-                @Main.canceled += instance.OnMain;
-                @Alt.started += instance.OnAlt;
-                @Alt.performed += instance.OnAlt;
-                @Alt.canceled += instance.OnAlt;
-                @ChangeFloorUp.started += instance.OnChangeFloorUp;
-                @ChangeFloorUp.performed += instance.OnChangeFloorUp;
-                @ChangeFloorUp.canceled += instance.OnChangeFloorUp;
-                @ChangeFloorDown.started += instance.OnChangeFloorDown;
-                @ChangeFloorDown.performed += instance.OnChangeFloorDown;
-                @ChangeFloorDown.canceled += instance.OnChangeFloorDown;
+                @LMB.started += instance.OnLMB;
+                @LMB.performed += instance.OnLMB;
+                @LMB.canceled += instance.OnLMB;
+                @RMB.started += instance.OnRMB;
+                @RMB.performed += instance.OnRMB;
+                @RMB.canceled += instance.OnRMB;
+                @ShiftLMB.started += instance.OnShiftLMB;
+                @ShiftLMB.performed += instance.OnShiftLMB;
+                @ShiftLMB.canceled += instance.OnShiftLMB;
+                @ShiftRMB.started += instance.OnShiftRMB;
+                @ShiftRMB.performed += instance.OnShiftRMB;
+                @ShiftRMB.canceled += instance.OnShiftRMB;
+                @CtrlLMB.started += instance.OnCtrlLMB;
+                @CtrlLMB.performed += instance.OnCtrlLMB;
+                @CtrlLMB.canceled += instance.OnCtrlLMB;
+                @CtrlRMB.started += instance.OnCtrlRMB;
+                @CtrlRMB.performed += instance.OnCtrlRMB;
+                @CtrlRMB.canceled += instance.OnCtrlRMB;
+                @FloorUp.started += instance.OnFloorUp;
+                @FloorUp.performed += instance.OnFloorUp;
+                @FloorUp.canceled += instance.OnFloorUp;
+                @FloorDown.started += instance.OnFloorDown;
+                @FloorDown.performed += instance.OnFloorDown;
+                @FloorDown.canceled += instance.OnFloorDown;
             }
         }
     }
@@ -389,10 +589,14 @@ public class @Controls : IInputActionCollection, IDisposable
     }
     public interface IMasterActions
     {
-        void OnMain(InputAction.CallbackContext context);
-        void OnAlt(InputAction.CallbackContext context);
-        void OnChangeFloorUp(InputAction.CallbackContext context);
-        void OnChangeFloorDown(InputAction.CallbackContext context);
+        void OnLMB(InputAction.CallbackContext context);
+        void OnRMB(InputAction.CallbackContext context);
+        void OnShiftLMB(InputAction.CallbackContext context);
+        void OnShiftRMB(InputAction.CallbackContext context);
+        void OnCtrlLMB(InputAction.CallbackContext context);
+        void OnCtrlRMB(InputAction.CallbackContext context);
+        void OnFloorUp(InputAction.CallbackContext context);
+        void OnFloorDown(InputAction.CallbackContext context);
     }
     public interface ISurvivorActions
     {

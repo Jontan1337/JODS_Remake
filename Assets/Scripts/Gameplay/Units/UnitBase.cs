@@ -830,17 +830,39 @@ public abstract class UnitBase : NetworkBehaviour
 
     #endregion
 
-    #region Selecting Units
-
+    #region Commanding Units
+    #region Selecting
     public void Select()
     {
+        if (!select.unitMat)
+        {
+            Debug.LogWarning($"{name} had no material assigned and could not be highlighted. -" +
+                $"Does it have a unitRenderer assigned?");
+            return;
+        }
         select.unitMat.SetInt("_Highlight", 1);
     }
-
     public void Deselect()
     {
+        if (!select.unitMat)
+        {
+            Debug.LogWarning($"{name} had no material assigned and could not be highlighted. -" +
+                $"Does it have a unitRenderer assigned?");
+            return;
+        }
         select.unitMat.SetInt("_Highlight", 0);
     }
+    #endregion
+
+    #region Commands
+
+    public void MoveToLocation(Vector3 pos)
+    {
+        if (HasTarget()) return;
+        navAgent.SetDestination(pos);
+    }
+
+    #endregion
 
     #endregion
 

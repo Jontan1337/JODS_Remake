@@ -148,7 +148,7 @@ public class Master : NetworkBehaviour
     {
         // OI DIK'EDS, THIS DOES NOT WORK, BECAUSE IT DOESN'T GET AUTHORITY BY THE TIME THIS RUNS, SO IT WILL ALWAYS RETURN.
         //if (!hasAuthority) return;
-
+        /*
         //Get the Master Input Action Map
         InputActionMap masterControls = controls.FindActionMap("Master");
         masterControls.Enable();
@@ -172,6 +172,37 @@ public class Master : NetworkBehaviour
         {
             ChangeFloor(false);
         };
+        */
+    }
+
+    private void OnEnable()
+    {
+        // Left Mouse Input
+        JODSInput.Controls.Master.LMB.performed += ctx => LMB();
+        JODSInput.Controls.Master.ShiftLMB.performed += ctx => Shift_LMB();
+        JODSInput.Controls.Master.CtrlLMB.performed += ctx => Ctrl_LMB();
+
+        // Right Mouse Input
+        JODSInput.Controls.Master.RMB.performed += ctx => RMB();
+        JODSInput.Controls.Master.ShiftRMB.performed += ctx => Shift_RMB();
+        JODSInput.Controls.Master.CtrlRMB.performed += ctx => Ctrl_RMB();
+
+        //Floor Input
+        JODSInput.Controls.Master.FloorDown.performed += ctx => ChangeFloor(false);
+        JODSInput.Controls.Master.FloorUp.performed += ctx => ChangeFloor(true);
+    }
+
+    private void OnDisable()
+    {
+        // Left Mouse Input
+        JODSInput.Controls.Master.LMB.performed -= ctx => LMB();
+        JODSInput.Controls.Master.ShiftLMB.performed -= ctx => Shift_LMB();
+        JODSInput.Controls.Master.CtrlLMB.performed -= ctx => Ctrl_LMB();
+
+        // Right Mouse Input
+        JODSInput.Controls.Master.RMB.performed -= ctx => RMB();
+        JODSInput.Controls.Master.ShiftRMB.performed -= ctx => Shift_RMB();
+        JODSInput.Controls.Master.CtrlRMB.performed -= ctx => Ctrl_RMB();
     }
 
     private void OnValidate()
@@ -186,28 +217,6 @@ public class Master : NetworkBehaviour
 
     #endregion
 
-    #region Inputs
-    private void OnMainInput(InputAction.CallbackContext context)
-    {
-        if (!hasAuthority) return;
-        Debug.Log(context.control);
-
-        MainRaycast();
-    }
-
-    private void OnAltInput(InputAction.CallbackContext context)
-    {
-        if (!hasAuthority) return;
-        Debug.Log(context.control);
-
-        AltRaycast();
-
-        //TESTING
-        //IncreaseXp(100);
-    }
-
-    #endregion
-
     #region Gameplay Functions
 
     public void SetMasterClass(MasterClass mClass)
@@ -216,25 +225,25 @@ public class Master : NetworkBehaviour
         SetMasterUnits();
         InitializeUnitButtons();
     }
-    private void MainRaycast()
+
+    #region Normal Mouse
+    private void LMB()
     {
+        print("LMB");
+        //Somehow check if master clicks on a unit button, if so do not spawn anything.
+
         Ray ray = cam.ScreenPointToRay(Input.mousePosition);
 
         if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreOnRaycast))
         {
-            if (hit.collider.TryGetComponent(out UnitBase unit))
-            {
-                if (unit.select.canSelect)
-                {
-                    SelectUnit(unit);
-                }
-            }
-            else if (hit.collider.CompareTag("Ground"))
+            if (hit.collider.CompareTag("Ground"))
             {
                 if (hasChosenAUnit)
                 {
+                    //Do I have enough energy to spawn the chosen unit?
                     if (unitList[chosenUnitIndex].unit.energyCost <= currentEnergy)
                     {
+                        //If yes, spawn the unit at the location
                         SpawnUnit(hit);
                     }
                     else
@@ -245,46 +254,81 @@ public class Master : NetworkBehaviour
             }
             else
             {
-                /*
-                if (selectedUnit != null)
-                {
-                    DeselectUnit();
-                }
-                */
                 SetSpawnText(spawnText.text = "Cannot spawn unit here");
             }
         }
     }
-    private void AltRaycast()
+    private void RMB()
     {
+        print("RMB");
+
+        //Unchoose the current unit type
+        UnchooseUnit();
+    }
+    #endregion
+    #region Shift Mouse
+    private void Shift_LMB()
+    {
+        print("Shift LMB");
+
         Ray ray = cam.ScreenPointToRay(Input.mousePosition);
 
         if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreOnRaycast))
         {
-
-            if (hit.collider.CompareTag("Zombie"))
+            //If I click on a unit, try and select that unit
+            if (hit.collider.TryGetComponent(out UnitBase unit))
             {
-                //refund
+                if (unit.select.canSelect)
+                {
+                    SelectUnit(unit);
+                }
             }
-
-            // -------------------------
-
-            //If the raycast doesn't hit anything important
+            //If I click on nothing, deselect my unit.
             else
             {
                 if (selectedUnit != null)
                 {
                     DeselectUnit();
                 }
-                else
-                {
-                    //Unchoose the current unit type
-                    UnchooseUnit();
-                }
             }
         }
     }
+    private void Shift_RMB()
+    {
+        print("Shift RMB");
 
+        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreOnRaycast))
+        {
+            //Command my selected unit to move to the location
+            throw new System.Exception(MethodBase.GetCurrentMethod() + " Not Implemented");
+        }
+    }
+    #endregion
+    #region CTRL Mouse Raycasts
+    private void Ctrl_LMB()
+    {
+        print("Ctrl LMB");
+
+        Debug.Log("CTRL_LMB currently has no function");
+    }
+    private void Ctrl_RMB()
+    {
+        print("Ctrl RMB");
+
+        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreOnRaycast))
+        {
+            //If I click on a unit, try and refund that unit
+            if (hit.collider.TryGetComponent(out UnitBase unit))
+            {
+                throw new System.Exception(MethodBase.GetCurrentMethod() + " Not Implemented");
+            }
+        }
+    }
+    #endregion
     public void UpgradeEnergy(bool rate)
     {
         //Deactivate the decisions
@@ -736,6 +780,8 @@ public class Master : NetworkBehaviour
     }
     void ChangeFloor(bool up)
     {
+        print("Changing floor " + (up ? "up" : "down"));
+
         currentFloor = Mathf.Clamp(currentFloor += up ? -1 : 1, 1, amountOfFloors); //This needs fixin
 
         cam.transform.position = new Vector3(cam.transform.position.x, positionChange * currentFloor - 0.05f, cam.transform.position.z);
