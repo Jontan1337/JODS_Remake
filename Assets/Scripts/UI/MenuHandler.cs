@@ -10,9 +10,6 @@ public class MenuHandler : NetworkBehaviour
     [Header("Submenus")]
     public GameObject options;
 
-
-    private Movement movement;
-    private Shoot shoot;
     private Interacter interact;
     [Space]
     [SerializeField] private HandSway handSway = null;
@@ -27,8 +24,6 @@ public class MenuHandler : NetworkBehaviour
 
     private void Start()
     {
-        movement = GetComponent<Movement>();
-        shoot = GetComponent<Shoot>();
         interact = GetComponent<Interacter>();
     }
 
@@ -74,10 +69,6 @@ public class MenuHandler : NetworkBehaviour
         playerUI.SetActive(!IsOpen);
         playerMenu.SetActive(IsOpen);
 
-        if (shoot)
-        {
-            shoot.enabled = !IsOpen;
-        }
         if (interact)
         {
             interact.enabled = !IsOpen;

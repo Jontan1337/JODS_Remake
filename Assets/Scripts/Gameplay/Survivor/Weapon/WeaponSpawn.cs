@@ -51,7 +51,7 @@ public class WeaponSpawn : MonoBehaviour
                 GameObject inst = Instantiate(ammo, transform.position, Quaternion.identity);
                 inst.transform.rotation = Quaternion.Euler(new Vector3(0, Random.Range(0, 360), 0));
                 inst.transform.parent = transform.parent;
-                inst.GetComponent<Ammo>().tier = tier;
+                //inst.GetComponent<Ammo>().tier = tier;
                 //Debug.Log(name + " - Spawning ammo");
                 NetworkServer.Spawn(inst);
                 NetworkServer.Destroy(gameObject);
@@ -115,7 +115,7 @@ public class WeaponSpawn : MonoBehaviour
             GameObject inst = Instantiate(ammo, transform.position, Quaternion.identity);
             inst.transform.rotation = Quaternion.Euler(new Vector3(0, Random.Range(0, 360), 0));
             inst.transform.parent = transform.parent;
-            inst.GetComponent<Ammo>().tier = tier;
+            //inst.GetComponent<Ammo>().tier = tier;
             currentWeapon = makeCurrent ? inst : null;
             NetworkServer.Spawn(inst);
         }

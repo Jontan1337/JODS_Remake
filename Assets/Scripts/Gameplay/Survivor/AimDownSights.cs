@@ -10,7 +10,6 @@ public class AimDownSights : MonoBehaviour
     public Transform weaponSightsPointRef = null;
     public Transform originalWeaponSightsPointPos = null;
     public Quaternion tempQ = new Quaternion(0f, 0.08f, 0f, 1f);
-    [SerializeField] private Shoot shootScript = null;
     [SerializeField] private float aimTime = 20f;
     private bool settingsSet = false;
 
@@ -27,18 +26,18 @@ public class AimDownSights : MonoBehaviour
     {
         if (settingsSet)
         {
-            if (shootScript.isZooming)
-            {
-                //Vector3 tempV = transform.localPosition + new Vector3(0.055f, 0.082f, 0.15f);
-                Vector3 tempV = transform.localPosition + new Vector3(0f, 0.082f, 0.15f);
-                weaponAimHandlerParent.localPosition = Vector3.Lerp(weaponAimHandlerParent.localPosition, new Vector3(0,0,0), Time.deltaTime * aimTime);
-                weaponAimHandlerParent.localRotation = Quaternion.Lerp(weaponAimHandlerParent.localRotation, new Quaternion(0,0,0,1), Time.deltaTime * aimTime);
-            }
-            else
-            {
-                Vector3 tempV = transform.localPosition + new Vector3(0.3f, -0.1f, 0.3f);
-                weaponAimHandlerParent.localPosition = Vector3.Lerp(weaponAimHandlerParent.localPosition, tempV, Time.deltaTime * aimTime);
-            }
+            //if (shootScript.isZooming)
+            //{
+            //    //Vector3 tempV = transform.localPosition + new Vector3(0.055f, 0.082f, 0.15f);
+            //    Vector3 tempV = transform.localPosition + new Vector3(0f, 0.082f, 0.15f);
+            //    weaponAimHandlerParent.localPosition = Vector3.Lerp(weaponAimHandlerParent.localPosition, new Vector3(0,0,0), Time.deltaTime * aimTime);
+            //    weaponAimHandlerParent.localRotation = Quaternion.Lerp(weaponAimHandlerParent.localRotation, new Quaternion(0,0,0,1), Time.deltaTime * aimTime);
+            //}
+            //else
+            //{
+            //    Vector3 tempV = transform.localPosition + new Vector3(0.3f, -0.1f, 0.3f);
+            //    weaponAimHandlerParent.localPosition = Vector3.Lerp(weaponAimHandlerParent.localPosition, tempV, Time.deltaTime * aimTime);
+            //}
         }
     }
 

@@ -256,10 +256,10 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
                         IDamagable damagable = tempGO.GetComponent<IDamagable>();
                         int newExplosionDamage = explosionDamage;
                         // Check if explosion is from a rocket, then it is friendly fire.
-                        if (TryGetComponent(out WeaponType weaponType))
-                            if (weaponType.name == "Rocket")
-                                if (damagable?.Team == Teams.Player)
-                                    newExplosionDamage /= friendlyFireReduction;
+                        //if (TryGetComponent(out WeaponType weaponType))
+                        //    if (weaponType.name == "Rocket")
+                        //        if (damagable?.Team == Teams.Player)
+                        //            newExplosionDamage /= friendlyFireReduction;
 
                         int finalDamage = Mathf.Clamp(newExplosionDamage - (int)hit.distance * damageLossOverDistance, 0, int.MaxValue);
                         if (finalDamage > 0)

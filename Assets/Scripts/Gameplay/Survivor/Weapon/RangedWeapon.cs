@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Mirror;
 
 public class RangedWeapon : NetworkBehaviour, IInteractable
@@ -37,7 +35,7 @@ public class RangedWeapon : NetworkBehaviour, IInteractable
     [SerializeField]
     private Animator weaponAnimator = null;
     [SerializeField]
-    private Transform rayPosition = null;
+    private Transform bulletRayOrigin = null;
 
     public bool IsInteractable { get; private set; }
 
@@ -67,7 +65,7 @@ public class RangedWeapon : NetworkBehaviour, IInteractable
     {
         if (currentAmmunition == 0) return;
 
-        Ray shootRay = new Ray(rayPosition.position, transform.forward);
+        Ray shootRay = new Ray(bulletRayOrigin.position, transform.forward);
         RaycastHit rayHit;
         if (Physics.Raycast(shootRay, out rayHit, range, ~ignoreLayer))
         {
@@ -92,6 +90,7 @@ public class RangedWeapon : NetworkBehaviour, IInteractable
         Debug.Log(extraAmmunition);
     }
 
+    [Server]
     public void Svr_Interact(GameObject interacter)
     {
         Debug.Log($"{interacter} interacted with {gameObject}");

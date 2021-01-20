@@ -8,6 +8,8 @@ public class Interacter : NetworkBehaviour
     private Transform playerCamera;
     [SerializeField]
     private float interactionRange = 2f;
+    [SerializeField]
+    private LayerMask layerMask = 15;
 
     private RaycastHit rayHit;
     private IInteractable currentInteractable;
@@ -34,7 +36,7 @@ public class Interacter : NetworkBehaviour
 
         Ray ray = new Ray(playerCamera.position, playerCamera.forward);
 
-        Physics.Raycast(ray, out rayHit, interactionRange);
+        Physics.Raycast(ray, out rayHit, interactionRange, ~layerMask);
         Debug.DrawRay(playerCamera.position, playerCamera.forward * interactionRange);
     }
 
