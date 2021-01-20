@@ -918,7 +918,6 @@ GameObject:
   - component: {fileID: 8323609793469499967}
   - component: {fileID: 8323609793460092763}
   - component: {fileID: 8323609793469499960}
-  - component: {fileID: 3074841750234729312}
   - component: {fileID: 2313579379553999340}
   - component: {fileID: 2830394278312222379}
   - component: {fileID: -5258773841197864671}
@@ -1056,23 +1055,6 @@ NavMeshAgent:
   m_BaseOffset: -0.05
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!1818360609 &3074841750234729312
-RotationConstraint:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8323609793469598925}
-  m_Enabled: 1
-  m_Weight: 1
-  m_RotationAtRest: {x: 0, y: 0, z: 0}
-  m_RotationOffset: {x: 0, y: 0, z: 0}
-  m_AffectRotationX: 1
-  m_AffectRotationY: 0
-  m_AffectRotationZ: 1
-  m_IsContraintActive: 1
-  m_IsLocked: 1
-  m_Sources: []
 --- !u!65 &2313579379553999340
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2333,6 +2315,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f69e059fc80f8d44687503174dd09a2f, type: 3}
+--- !u!4 &5617729540399548923 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1454023895110589970, guid: f69e059fc80f8d44687503174dd09a2f,
+    type: 3}
+  m_PrefabInstance: {fileID: 6474931924644452329}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &4712403200849713008 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1782939441594843289, guid: f69e059fc80f8d44687503174dd09a2f,
@@ -2345,9 +2333,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d44ca6bac25424e429c1dd77d1bbd1c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &5617729540399548923 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1454023895110589970, guid: f69e059fc80f8d44687503174dd09a2f,
-    type: 3}
-  m_PrefabInstance: {fileID: 6474931924644452329}
-  m_PrefabAsset: {fileID: 0}

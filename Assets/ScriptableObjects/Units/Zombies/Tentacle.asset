@@ -46,7 +46,7 @@ MonoBehaviour:
   special:
     specialCooldown: 5
     specialDamage: 2
-    specialRange: 2
+    specialRange: 2.5
     standStill: 1
     lookAtTarget: 1
     availableFromStart: 1
@@ -57,6 +57,12 @@ MonoBehaviour:
   viewAngle: 90
   alertRadius: 20
   canAlert: 1
-  idleSounds: []
-  footstepSounds: []
+  sounds:
+    headHeight: 2
+    idleSounds: []
+    idleVolume: 0.3
+    attackSounds: []
+    attackVolume: 0.4
+    footstepSounds: []
+    footstepVolume: 0.1
   unitAnimator: {fileID: 9100000, guid: 72a986f22c190de49ad64b900654be68, type: 2}

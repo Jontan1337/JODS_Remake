@@ -64,7 +64,7 @@ public class SOUnit : ScriptableObject
     {
         public int specialCooldown = 2;
         public int specialDamage = 0;
-        public int specialRange = 5;
+        public float specialRange = 5;
         [Space]
         public bool standStill = true;
         public bool lookAtTarget = true;
@@ -84,9 +84,30 @@ public class SOUnit : ScriptableObject
     public int alertRadius = 20;
     public bool canAlert = true;
 
-    [Header("Sounds")]
-    public AudioClip[] idleSounds;
-    public AudioClip[] footstepSounds;
+    [System.Serializable]
+    public class Sounds
+    {
+        public float headHeight = 2f;
+        [Space]
+        public AudioClip[] idleSounds;
+        [Range(0, 1)] public float idleVolume = 0.3f;
+        [Space]
+        public AudioClip[] attackSounds;
+        [Range(0, 1)] public float attackVolume = 0.4f;
+        [Space]
+        public AudioClip[] footstepSounds;
+        [Range(0, 1)] public float footstepVolume = 0.1f;
+    }
+    public Sounds sounds;
+
+    [System.Serializable]
+    public class Selectable
+    {
+        public bool canSelect = true;
+    }
+    [Space]
+    public Selectable select;
+
 
     [Header("Animations")]
     public RuntimeAnimatorController unitAnimator;

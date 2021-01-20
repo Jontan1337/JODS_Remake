@@ -41,6 +41,7 @@ public class Master : NetworkBehaviour
     [SerializeField] private List<UnitList> unitList = new List<UnitList>();
     [SerializeField] private int chosenUnitIndex = 0;
     [SerializeField] private bool hasChosenAUnit = false;
+    [SerializeField] private UnitBase selectedUnit = null;
 
     [Header("Spawning")]
     [SerializeField] private LayerMask playerLayer;
@@ -202,7 +203,7 @@ public class Master : NetworkBehaviour
         AltRaycast();
 
         //TESTING
-        IncreaseXp(100);
+        //IncreaseXp(100);
     }
 
     #endregion
@@ -221,7 +222,14 @@ public class Master : NetworkBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreOnRaycast))
         {
-            if (hit.collider.CompareTag("Ground"))
+            if (hit.collider.TryGetComponent(out UnitBase unit))
+            {
+                if (unit.select.canSelect)
+                {
+                    SelectUnit(unit);
+                }
+            }
+            else if (hit.collider.CompareTag("Ground"))
             {
                 if (hasChosenAUnit)
                 {
@@ -237,6 +245,12 @@ public class Master : NetworkBehaviour
             }
             else
             {
+                /*
+                if (selectedUnit != null)
+                {
+                    DeselectUnit();
+                }
+                */
                 SetSpawnText(spawnText.text = "Cannot spawn unit here");
             }
         }
@@ -258,8 +272,15 @@ public class Master : NetworkBehaviour
             //If the raycast doesn't hit anything important
             else
             {
-                //Unchoose the current unit
-                UnchooseUnit();
+                if (selectedUnit != null)
+                {
+                    DeselectUnit();
+                }
+                else
+                {
+                    //Unchoose the current unit type
+                    UnchooseUnit();
+                }
             }
         }
     }
@@ -594,6 +615,27 @@ public class Master : NetworkBehaviour
 
         //Play spooky sound
         CmdUnlockSound();
+    }
+
+    private void SelectUnit(UnitBase unit)
+    {
+        //If a unit is already selected, deselect it before selecting the new one.
+        if (selectedUnit)
+        {
+            DeselectUnit();
+        }
+
+        //Select the unit
+        selectedUnit = unit;
+        selectedUnit.Select();
+        print($"Selecting {selectedUnit.name}");
+    }
+
+    private void DeselectUnit()
+    {
+        print($"Deselecting {selectedUnit.name}");
+        selectedUnit.Deselect();
+        selectedUnit = null;
     }
 
     #endregion
