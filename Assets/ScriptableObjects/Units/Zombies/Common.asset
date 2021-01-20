@@ -12,10 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e89c3c3a10cc3b446800946c17aaec15, type: 3}
   m_Name: Common
   m_EditorClassIdentifier: 
-  name: Common
+  name: common1
   unitPrefab:
-  - {fileID: 8323609793469598925, guid: 39d0c2e5a7f95654da4e539d27de13fd, type: 3}
-  - {fileID: 5333175269820739638, guid: dd42895c1f07eb8438054c4a3aa39518, type: 3}
+  - {fileID: 7950017274289061535, guid: 059faf5c02ef6e4418cf588c374aeb18, type: 3}
   unitSprite: {fileID: 21300000, guid: 4a455a0da88b51b43b4be50beb52c391, type: 3}
   energyCost: 5
   refundAmount: 2
@@ -58,6 +57,16 @@ MonoBehaviour:
   viewAngle: 50
   alertRadius: 20
   canAlert: 1
-  idleSounds: []
-  footstepSounds: []
+  sounds:
+    headHeight: 2
+    idleSounds: []
+    idleVolume: 0.3
+    attackSounds: []
+    attackVolume: 0.4
+    footstepSounds:
+    - {fileID: 8300000, guid: ce1415c1538344a3f9c07f2388ee0dee, type: 3}
+    - {fileID: 8300000, guid: df874be086de9441a8ef805bd42d0fff, type: 3}
+    - {fileID: 8300000, guid: d47d075cb98ed4b869828da8dfd7ed52, type: 3}
+    - {fileID: 8300000, guid: 8af1d3f5222454aaabfae1a13ce78592, type: 3}
+    footstepVolume: 0.1
   unitAnimator: {fileID: 9100000, guid: c0ab0f687e23e2c4eb6ce111aa51d73e, type: 2}

@@ -8,6 +8,14 @@ using UnityEditor;
 using UnityEngine.AI;
 using Mirror;
 
+[RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(BoxCollider))]
+[RequireComponent(typeof(NetworkIdentity))]
+[RequireComponent(typeof(NetworkAnimator))]
+[RequireComponent(typeof(NetworkTransform))]
+[RequireComponent(typeof(AudioSource))]
+
 public abstract class UnitBase : NetworkBehaviour
 {
     #region Fields
@@ -16,7 +24,7 @@ public abstract class UnitBase : NetworkBehaviour
     [SerializeField] private SOUnit unitSO;
 
     [Header("Stats")]
-    [SerializeField] private int health = 100;
+    [SerializeField] private int health = 100; //Upgradeable
     [SyncVar, SerializeField] private bool isDead = false;
     private int maxHealth = 0;
     private float upgradeMultiplier = 0f;
@@ -27,8 +35,8 @@ public abstract class UnitBase : NetworkBehaviour
     [System.Serializable]
     public class Melee
     {
-        public int meleeDamageMin = 0;
-        public int meleeDamageMax = 0;
+        public int meleeDamageMin = 0; //Upgradeable
+        public int meleeDamageMax = 0; //Upgradeable
         public float meleeRange = 0;
         public float meleeCooldown = 0;
         [Space]
@@ -40,7 +48,7 @@ public abstract class UnitBase : NetworkBehaviour
     [System.Serializable]
     public class Ranged
     {
-        public int rangedDamage = 0;
+        public int rangedDamage = 0; //Upgradeable
         public int minRange = 0;
         public int maxRange = 0;
         public int rangedCooldown = 0;
@@ -61,8 +69,8 @@ public abstract class UnitBase : NetworkBehaviour
     public class Special
     {
         public int specialCooldown = 0;
-        public int specialDamage = 0;
-        public int specialRange = 5;
+        public int specialDamage = 0; //Upgradeable
+        public float specialRange = 5;
         [Space]
         public bool standStill = true;
         public bool lookAtTarget = true;
@@ -94,15 +102,34 @@ public abstract class UnitBase : NetworkBehaviour
     [SerializeField] private bool hasTarget = false;
 
     [Header("References")]
-    [SerializeField] private SFXPlayer footsteps = null;
-    [SerializeField] private SFXPlayer sounds = null;
     public Animator animator;
+
+    [System.Serializable]
+    public class Sounds
+    {
+        public float headHeight = 2f;
+        [Space]
+        public AudioClip[] idleSounds;
+        [Range(0,1)] public float idleVolume = 0.3f;
+        [Space]
+        public AudioClip[] attackSounds;
+        [Range(0, 1)] public float attackVolume = 0.4f;
+        [Space]
+        public AudioClip[] footstepSounds;
+        [Range(0, 1)] public float footstepVolume = 0.1f;
+    }
+    [Space]
+    public Sounds sounds;
+    private AudioSource audioSource;
 
     [System.Serializable]
     public class Selectable
     {
-        
+        public bool canSelect = true;
+        public SkinnedMeshRenderer unitRenderer;
+        public Material unitMat;
     }
+    [Space]
     public Selectable select;
 
     #region Coroutine references
@@ -119,6 +146,8 @@ public abstract class UnitBase : NetworkBehaviour
     protected bool specialCooldown = false;
 
     #endregion
+
+    #region Attack Bools
 
     private bool walking;
     private bool attackMelee;
@@ -143,7 +172,7 @@ public abstract class UnitBase : NetworkBehaviour
             if (value == attackMelee) return;
             attackMelee = value;
             animator.SetBool("Melee", attackMelee);
-            melee.canMelee = false;
+            //melee.canMelee = false;
         }
     }
     public bool AttackRange
@@ -184,6 +213,8 @@ public abstract class UnitBase : NetworkBehaviour
 
     #endregion
 
+    #endregion
+
     #region Start / Initial
 
     private void OnValidate()
@@ -197,14 +228,19 @@ public abstract class UnitBase : NetworkBehaviour
         InitialUnitSetup();
         if (!searching) { StartCoroutine(CoSearch); searching = true; }
 
-        Invoke("PlaySound", 5f);
+        //Material stuff, for highlighting units
+
+        //This
+        select.unitRenderer.material = new Material(select.unitRenderer.sharedMaterial);
+        select.unitMat = select.unitRenderer.sharedMaterial;
     }
 
     private void SetStats()
     {
         if (!unitSO)
         {
-            Debug.LogError($"{name} had no Unit Scriptable Object assigned when it tried to set it's stats!");
+            Debug.LogError($"{name} had no Unit Scriptable Object assigned when it tried to set it's stats!" +
+                $" - Did it get initialized by the Master?");
             return;
         }
 
@@ -250,6 +286,16 @@ public abstract class UnitBase : NetworkBehaviour
 
         alertRadius = unitSO.alertRadius;
         canAlert = unitSO.canAlert;
+
+        sounds.headHeight = unitSO.sounds.headHeight;
+        sounds.attackSounds = unitSO.sounds.attackSounds;
+        sounds.attackVolume = unitSO.sounds.attackVolume;
+        sounds.footstepSounds = unitSO.sounds.footstepSounds;
+        sounds.footstepVolume = unitSO.sounds.footstepVolume;
+        sounds.idleSounds = unitSO.sounds.idleSounds;
+        sounds.idleVolume = unitSO.sounds.idleVolume;
+
+        select.canSelect = unitSO.select.canSelect;
     }
 
     public void SetUnitSO(SOUnit myNewUnit)
@@ -266,12 +312,21 @@ public abstract class UnitBase : NetworkBehaviour
 
     private void InitialUnitSetup()
     {
+        if (unitSO == null)
+        {
+            Debug.LogError($"{name} had no Unit Scriptable Object and could not be setup properly. " +
+                $"This should not be possible, if the unit is spawned by the master." +
+                $"If this unit was not spawned by the Master, then ignore this.");
+            return;
+        }
+
         //Stats
         SetStats();
 
         //Nav Mesh 
         navAgent = GetComponent<NavMeshAgent>();
         navAgent.speed = movementSpeed;
+        navAgent.acceleration = 60;
         navAgent.stoppingDistance = Mathf.Clamp(melee.meleeRange - 1, 1f, 20f);
 
         //Animations -----------------------
@@ -284,11 +339,13 @@ public abstract class UnitBase : NetworkBehaviour
         melee.canMelee = isMelee;
         ranged.canRanged = isRanged;
 
+        audioSource = GetComponent<AudioSource>();
+
         //This is because some units may not have their special available from the moment they spawn.
         if (hasSpecial) {
             if (special.availableFromStart) { special.canSpecial = true; }
             else { StartCoroutine(SpecialCooldownCoroutine()); }
-        }
+        } name = "Zombie " + Random.Range(1, 100);
     }
 
     public void SetLevel(int level)
@@ -471,6 +528,7 @@ public abstract class UnitBase : NetworkBehaviour
 
     private void Alert()
     {
+        if (!canAlert) return;
         Collider[] adjacentUnits = Physics.OverlapSphere(transform.position, alertRadius, alertMask);
         foreach (Collider col in adjacentUnits)
         {
@@ -555,13 +613,13 @@ public abstract class UnitBase : NetworkBehaviour
     #region Cooldowns
     protected IEnumerator MeleeCooldownCoroutine()
     {
-        print("cool");
         if (meleeCooldown) yield break; //if an instance is already running, exit this one.
 
+        melee.canMelee = false;
         meleeCooldown = true;
 
         yield return new WaitForSeconds(melee.meleeCooldown);
-        print("down");
+
         melee.canMelee = true;
         meleeCooldown = false;
     }
@@ -570,6 +628,7 @@ public abstract class UnitBase : NetworkBehaviour
         if (rangedCooldown) yield break; //if an instance is already running, exit this one.
 
         rangedCooldown = true;
+        ranged.canRanged = false;
 
         yield return new WaitForSeconds(ranged.rangedCooldown);
 
@@ -581,9 +640,10 @@ public abstract class UnitBase : NetworkBehaviour
         if (specialCooldown) yield break; //if an instance is already running, exit this one.
 
         specialCooldown = true;
-        print("Cooldown started");
+        special.canSpecial = false;
+
         yield return new WaitForSeconds(special.specialCooldown);
-        print("Cooldown ended");
+
         special.canSpecial = true;
         specialCooldown = false;
     }
@@ -737,21 +797,49 @@ public abstract class UnitBase : NetworkBehaviour
 
     #region Sounds
 
-    public void PlaySound()
+    public void PlaySound(AudioClip[] clips, float volume, bool atHead)
     {
-        //Play random sound
-        sounds.PlaySFX();
+        if (clips.Length == 0)
+        {
+            Debug.LogWarning($"{name} could not play an audioclip. The clip array is empty.");
+            return;
+        }
 
-        //Call the method again after some time. If the Unit is chasing someone, the sound plays more frequently.
-        //Invoke("PlaySound", Random.Range(seen ? 2f : 10f, seen ? 10f : 50f));
+        AudioClip clip = clips[Random.Range(0, clips.Length)];
+
+        audioSource.volume = volume;
+
+        if (atHead)
+        {
+            Debug.Log("Playing sounds at head position is not implemented yet, playing at feet instead.");
+            Vector3 headPos = new Vector3(transform.position.x, transform.position.y + sounds.headHeight, transform.position.z);
+            audioSource.PlayOneShot(clip);
+        }
+        else
+        {
+            audioSource.PlayOneShot(clip);
+        }
     }
 
+    //This function is usually called by animation events.
     public void Footstep()
     {
-        if (footsteps)
-        {
-            footsteps.PlaySFX();
-        }
+        //          The sound clips     |   The sound volume  | play at the head?
+        PlaySound(sounds.footstepSounds, sounds.footstepVolume, false);
+    }
+
+    #endregion
+
+    #region Selecting Units
+
+    public void Select()
+    {
+        select.unitMat.SetInt("_Highlight", 1);
+    }
+
+    public void Deselect()
+    {
+        select.unitMat.SetInt("_Highlight", 0);
     }
 
     #endregion
