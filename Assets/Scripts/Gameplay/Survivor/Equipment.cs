@@ -22,12 +22,11 @@ public class Equipment : NetworkBehaviour
         if (selectedEquipmentBar.Equipment == null)
         {
             // If selected bar can't equip, then equip on first 
-            //if (!selectedEquipmentBar.Equip(equipment, equipmentType))
-            //{
+            if (!selectedEquipmentBar.Equip(equipment, equipmentType))
+            {
+                selectedEquipmentBar = GetAvailableBar(equipmentType);
+            }
 
-            //}
-
-            selectedEquipmentBar = GetAvailableBar(equipmentType);
         }
         else
         {

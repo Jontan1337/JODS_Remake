@@ -7,7 +7,7 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable
     [SerializeField]
     private string weaponName = "Weapon name";
     [SerializeField]
-    private EquipmentType equipmentType;
+    private EquipmentType equipmentType = EquipmentType.Weapon;
     [SerializeField]
     private LayerMask ignoreLayer;
 
@@ -31,7 +31,7 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable
 
     [Header("Game details")]
     [SerializeField, SyncVar]
-    private string player;
+    private string player = "Player name";
 
     [Header("References")]
     [SerializeField]

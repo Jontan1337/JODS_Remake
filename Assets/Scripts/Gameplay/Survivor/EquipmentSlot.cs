@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
+using Mirror;
 
-public class EquipmentSlot : MonoBehaviour
+public class EquipmentSlot : NetworkBehaviour
 {
     private GameObject equipment;
     public string barName;
@@ -13,17 +14,29 @@ public class EquipmentSlot : MonoBehaviour
         get => equipment;
         private set => equipment = value;
     }
-    //public EquipmentType EquipmentType => equipmentType;
+    public EquipmentType EquipmentType => equipmentType;
 
-    //public bool Equip(GameObject equipment, EquipmentType equipmentType)
+    //private void Awake()
     //{
-    //    if (equipmentType == EquipmentType)
-    //    {
-    //        Equipment = equipment;
-    //        return true;
-    //    }
-    //    return false;
+        
     //}
+
+    //public void SendMessage(short )
+    //{
+    //    NetworkWriter nw = new NetworkWriter();
+
+    //    nw.WriteBytes();
+    //}
+
+    public bool Equip(GameObject equipment, EquipmentType equipmentType)
+    {
+        if (equipmentType == EquipmentType)
+        {
+            Equipment = equipment;
+            return true;
+        }
+        return false;
+    }
 
     public bool Drop(Transform dropTransform)
     {
