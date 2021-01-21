@@ -20,6 +20,10 @@ public class RigidbodyController : NetworkBehaviour
 
     private void Awake()
     {
+        if (acceleration == 1)
+        {
+
+        }
         playerRigidbody = GetComponent<Rigidbody>();
     }
 
