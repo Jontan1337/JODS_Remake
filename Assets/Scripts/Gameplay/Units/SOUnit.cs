@@ -92,8 +92,14 @@ public class SOUnit : ScriptableObject
         public AudioClip[] idleSounds;
         [Range(0, 1)] public float idleVolume = 0.3f;
         [Space]
-        public AudioClip[] attackSounds;
-        [Range(0, 1)] public float attackVolume = 0.4f;
+        public AudioClip[] meleeSounds;
+        [Range(0, 1)] public float meleeVolume = 0.4f;
+        [Space]
+        public AudioClip rangedSound;
+        [Range(0, 1)] public float rangedVolume = 0.4f;
+        [Space]
+        public AudioClip specialSound;
+        [Range(0, 1)] public float specialVolume = 0.4f;
         [Space]
         public AudioClip[] footstepSounds;
         [Range(0, 1)] public float footstepVolume = 0.1f;

@@ -112,10 +112,16 @@ public abstract class UnitBase : NetworkBehaviour
         public float headHeight = 2f;
         [Space]
         public AudioClip[] idleSounds;
-        [Range(0,1)] public float idleVolume = 0.3f;
+        [Range(0, 1)] public float idleVolume = 0.3f;
         [Space]
-        public AudioClip[] attackSounds;
-        [Range(0, 1)] public float attackVolume = 0.4f;
+        public AudioClip[] meleeSounds;
+        [Range(0, 1)] public float meleeVolume = 0.4f;
+        [Space]
+        public AudioClip rangedSound;
+        [Range(0, 1)] public float rangedVolume = 0.4f;
+        [Space]
+        public AudioClip specialSound;
+        [Range(0, 1)] public float specialVolume = 0.4f;
         [Space]
         public AudioClip[] footstepSounds;
         [Range(0, 1)] public float footstepVolume = 0.1f;
@@ -248,20 +254,25 @@ public abstract class UnitBase : NetworkBehaviour
             return;
         }
 
+        //Health
         health = unitSO.health;
         maxHealth = unitSO.health;
 
+        //Upgrade
         upgradeMultiplier = unitSO.upgradeMultiplier;
 
+        //Attack bools
         isMelee = unitSO.isMelee;
         isRanged = unitSO.isRanged;
         hasSpecial = unitSO.hasSpecial;
 
+        //Melee
         melee.meleeDamageMin = unitSO.melee.meleeDamageMin;
         melee.meleeDamageMax = unitSO.melee.meleeDamageMax;
         melee.meleeRange = unitSO.melee.meleeRange;
         melee.meleeCooldown = unitSO.melee.meleeCooldown;
 
+        //Ranged
         ranged.rangedDamage = unitSO.ranged.rangedDamage;
         ranged.minRange = unitSO.ranged.minRange;
         ranged.maxRange = unitSO.ranged.maxRange;
@@ -273,6 +284,7 @@ public abstract class UnitBase : NetworkBehaviour
         ranged.directRangedAttack = unitSO.ranged.directRangedAttack;
         ranged.preferredRange = unitSO.ranged.preferredRange;
 
+        //Special
         special.specialCooldown = unitSO.special.specialCooldown;
         special.specialDamage = unitSO.special.specialDamage;
         special.specialRange = unitSO.special.specialRange;
@@ -280,27 +292,38 @@ public abstract class UnitBase : NetworkBehaviour
         special.lookAtTarget = unitSO.special.lookAtTarget;
         special.availableFromStart = unitSO.special.availableFromStart;
 
+        //Movement
         movementSpeed = unitSO.movementSpeed;
 
+        //Refunding
         refundAmount = unitSO.refundAmount;
 
+        //Sight
         sightDistance = unitSO.sightDistance;
         eyeHeight = unitSO.eyeHeight;
         viewAngle = unitSO.viewAngle;
 
+        //Chase
         chaseTime = unitSO.chaseTime;
 
+        //Alert
         alertRadius = unitSO.alertRadius;
         canAlert = unitSO.canAlert;
 
+        //Sounds
         sounds.headHeight = unitSO.sounds.headHeight;
-        sounds.attackSounds = unitSO.sounds.attackSounds;
-        sounds.attackVolume = unitSO.sounds.attackVolume;
+        sounds.meleeSounds = unitSO.sounds.meleeSounds;
+        sounds.meleeVolume = unitSO.sounds.meleeVolume;
+        sounds.rangedSound = unitSO.sounds.rangedSound;
+        sounds.rangedVolume = unitSO.sounds.rangedVolume;
+        sounds.specialSound = unitSO.sounds.specialSound;
+        sounds.specialVolume = unitSO.sounds.specialVolume;
         sounds.footstepSounds = unitSO.sounds.footstepSounds;
         sounds.footstepVolume = unitSO.sounds.footstepVolume;
         sounds.idleSounds = unitSO.sounds.idleSounds;
         sounds.idleVolume = unitSO.sounds.idleVolume;
 
+        //Selecting
         select.canSelect = unitSO.select.canSelect;
     }
 
@@ -348,6 +371,9 @@ public abstract class UnitBase : NetworkBehaviour
         ranged.canRanged = isRanged;
 
         audioSource = GetComponent<AudioSource>();
+        audioSource.spatialBlend = 1; //Set the audiosource to be 3D
+        audioSource.minDistance = 5;
+        audioSource.maxDistance = 20;
 
         //This is because some units may not have their special available from the moment they spawn.
         if (hasSpecial) {
@@ -824,6 +850,8 @@ public abstract class UnitBase : NetworkBehaviour
         AudioClip clip = clips[Random.Range(0, clips.Length)];
 
         audioSource.volume = volume;
+
+        audioSource.pitch = Random.Range(0.9f, 1.1f);
 
         if (atHead)
         {

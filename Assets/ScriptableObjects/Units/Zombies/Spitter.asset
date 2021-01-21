@@ -58,6 +58,17 @@ MonoBehaviour:
   viewAngle: 90
   alertRadius: 20
   canAlert: 1
-  idleSounds: []
-  footstepSounds: []
+  sounds:
+    headHeight: 2
+    idleSounds: []
+    idleVolume: 0.3
+    attackSounds: []
+    attackVolume: 0.4
+    footstepSounds:
+    - {fileID: 8300000, guid: 7850d3eab24cc2443a75240ec4d7ad6e, type: 3}
+    - {fileID: 8300000, guid: b138c25a985dcbc4eace679b6a32c2ea, type: 3}
+    - {fileID: 8300000, guid: 5eb177665ed9f4a4b9f5a82c155c344c, type: 3}
+    footstepVolume: 0.1
+  select:
+    canSelect: 1
   unitAnimator: {fileID: 9100000, guid: d11bf7116e7b8ad45b25edd0cb0309df, type: 2}

@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 using System.Linq;
 using System.Reflection;
 using UnityEngine.EventSystems;
+using UnityEngine.AI;
 
 [System.Serializable]
 public class UnitList
@@ -48,6 +49,7 @@ public class Master : NetworkBehaviour
     [SerializeField] private int chosenUnitIndex = 0;
     [SerializeField] private bool hasChosenAUnit = false;
     [SerializeField] private UnitBase selectedUnit = null;
+    [SerializeField] private GameObject unitDestinationMarker = null;
 
     [Header("Spawning")]
     [SerializeField] private LayerMask playerLayer = 1 << 15;
@@ -169,6 +171,9 @@ public class Master : NetworkBehaviour
 
             globalAudio = GetComponent<AudioSource>();
             globalAudio.clip = masterClass.globalSound;
+
+            SetUnitDestinationMarker(false);
+            unitDestinationMarker.transform.SetParent(null);
         }
     }
 
@@ -401,6 +406,20 @@ public class Master : NetworkBehaviour
         ActivateUpgradeDecisions(true);
     }
 
+    private Coroutine selectCo;
+    private bool selectCoroutineActive;
+    private IEnumerator SelectCoroutine()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(0.5f);
+
+            SetUnitDestinationMarker(!IsUnitCloseToDestination());
+
+            print("select");
+        }
+    }
+
     #endregion
 
     #region UI Functions
@@ -539,6 +558,31 @@ public class Master : NetworkBehaviour
     {
         stats.currentEnergy = Mathf.Clamp(stats.currentEnergy += amount, 0, stats.maxEnergy);
         UpdateEnergyUI();
+    }
+
+    private void SetUnitDestinationMarker(bool enable)
+    {
+        if (enable)
+        {
+            if (selectedUnit)
+            {
+                unitDestinationMarker.SetActive(true);
+                unitDestinationMarker.transform.position = selectedUnit.GetComponent<NavMeshAgent>().destination;
+            }
+            else unitDestinationMarker.SetActive(false);
+        }
+        else unitDestinationMarker.SetActive(false);
+    }
+    private bool IsUnitCloseToDestination()
+    {
+        if (selectedUnit)
+        {
+            return Vector3.Distance(
+                selectedUnit.gameObject.transform.position,
+                selectedUnit.GetComponent<NavMeshAgent>().destination
+                ) < 2;
+        }
+        else return false;
     }
 
     #endregion
@@ -769,11 +813,18 @@ public class Master : NetworkBehaviour
         //Select the unit
         selectedUnit = unit;
         selectedUnit.Select();
-        print($"Selecting {selectedUnit.name}");
+
+        StartSelectCoroutine(); print("Select Unit");
     }
     private void DeselectUnit()
     {
-        print($"Deselecting {selectedUnit.name}");
+        if (selectCoroutineActive)
+        {
+            StopCoroutine(selectCo);
+            selectCoroutineActive = false;
+        }
+        SetUnitDestinationMarker(false);
+
         selectedUnit.Deselect();
         selectedUnit = null;
     }
@@ -788,6 +839,22 @@ public class Master : NetworkBehaviour
 
             //Command my selected unit to move to the location
             selectedUnit.MoveToLocation(hit.point);
+
+            StartSelectCoroutine(); print("Command Unit");
+        }
+    }
+    private void StartSelectCoroutine()
+    {
+        if (!IsUnitCloseToDestination())
+        {
+            SetUnitDestinationMarker(true);
+        }
+
+        if (!selectCoroutineActive) 
+        {
+            print("START");
+            selectCo = StartCoroutine(SelectCoroutine());
+            selectCoroutineActive = true; 
         }
     }
     #endregion

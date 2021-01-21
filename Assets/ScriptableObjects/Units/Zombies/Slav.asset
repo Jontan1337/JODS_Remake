@@ -45,6 +45,11 @@ MonoBehaviour:
     directRangedAttack: 0
   special:
     specialCooldown: 0
+    specialDamage: 0
+    specialRange: 5
+    standStill: 1
+    lookAtTarget: 1
+    availableFromStart: 1
   movementSpeed: 4
   chaseTime: 15
   sightDistance: 20
@@ -52,6 +57,17 @@ MonoBehaviour:
   viewAngle: 90
   alertRadius: 25
   canAlert: 1
-  idleSounds: []
-  footstepSounds: []
+  sounds:
+    headHeight: 2
+    idleSounds: []
+    idleVolume: 0.3
+    attackSounds: []
+    attackVolume: 0.4
+    footstepSounds:
+    - {fileID: 8300000, guid: 5ed1edcdc7500a94b964e4a81775d306, type: 3}
+    - {fileID: 8300000, guid: c550417728b224f4b8b9ea0daec14ad4, type: 3}
+    - {fileID: 8300000, guid: ce3c151af270618448b607dff84848e5, type: 3}
+    footstepVolume: 0.1
+  select:
+    canSelect: 1
   unitAnimator: {fileID: 9100000, guid: d44297d3fb196b148a10cee9e33225c2, type: 2}
