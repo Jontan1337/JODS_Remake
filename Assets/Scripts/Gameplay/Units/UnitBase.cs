@@ -28,6 +28,7 @@ public abstract class UnitBase : NetworkBehaviour
     [SyncVar, SerializeField] private bool isDead = false;
     private int maxHealth = 0;
     private float upgradeMultiplier = 0f;
+    private int refundAmount = 0;
     [Space]
     [SerializeField] private bool isMelee;
     [SerializeField] private bool isRanged;
@@ -228,6 +229,8 @@ public abstract class UnitBase : NetworkBehaviour
         InitialUnitSetup();
         if (!searching) { StartCoroutine(CoSearch); searching = true; }
 
+        StartCoroutine(MovementAnimationCoroutine());
+
         //Material stuff, for highlighting units
 
         //This
@@ -277,6 +280,8 @@ public abstract class UnitBase : NetworkBehaviour
         special.availableFromStart = unitSO.special.availableFromStart;
 
         movementSpeed = unitSO.movementSpeed;
+
+        refundAmount = unitSO.refundAmount;
 
         sightDistance = unitSO.sightDistance;
         eyeHeight = unitSO.eyeHeight;
@@ -376,6 +381,17 @@ public abstract class UnitBase : NetworkBehaviour
     {
         navAgent.speed = movementSpeed;
         stoppedMoving = false;
+    }
+
+    private IEnumerator MovementAnimationCoroutine()
+    {
+        while (!isDead)
+        {
+            yield return new WaitForSeconds(0.5f);
+
+            //Set Walk Animation, if walking
+            Walking = navAgent.velocity.magnitude > 0.5f;
+        }
     }
 
     #endregion
@@ -520,9 +536,6 @@ public abstract class UnitBase : NetworkBehaviour
 
             if (!HasTarget()) yield break; //What the heck
             //This is to stop the coroutine from setting walk animation again... even though the code stops the coroutine? dun work for some reason
-
-            //Set Walk Animation, if walking
-            Walking = navAgent.velocity.magnitude > 0.5f && HasTarget();
         }
     }
 
@@ -835,7 +848,7 @@ public abstract class UnitBase : NetworkBehaviour
 
     #endregion
 
-    #region Commanding Units
+    #region Commanding Units & Refunding
     #region Selecting
     public void Select()
     {
@@ -863,8 +876,24 @@ public abstract class UnitBase : NetworkBehaviour
 
     public void MoveToLocation(Vector3 pos)
     {
+        //If the unit meets the requirements to be commanded to move to a new location
+        //Requirements : (Not Chasing)
+
         if (HasTarget()) return;
+        if (chasing) return;
+
+
         navAgent.SetDestination(pos);
+    }
+
+    #endregion
+
+    #region Refunding
+
+    public int Refund()
+    {
+        //Meet the requirements to refund (Is max health)
+        return IsMaxHealth ? refundAmount : 0;
     }
 
     #endregion

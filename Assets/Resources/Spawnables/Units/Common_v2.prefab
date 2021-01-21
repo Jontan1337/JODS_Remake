@@ -623,7 +623,7 @@ MonoBehaviour:
   viewAngle: 50
   ignoreOnRaycast:
     serializedVersion: 2
-    m_Bits: 4095799
+    m_Bits: 512
   alertRadius: 20
   canAlert: 1
   alertMask:
@@ -632,9 +632,19 @@ MonoBehaviour:
   currentTarget: {fileID: 0}
   navAgent: {fileID: 0}
   hasTarget: 0
-  footsteps: {fileID: 3468353018137422321}
-  sounds: {fileID: 909207720837682474}
   animator: {fileID: 0}
+  sounds:
+    headHeight: 2
+    idleSounds: []
+    idleVolume: 0.3
+    attackSounds: []
+    attackVolume: 0.4
+    footstepSounds: []
+    footstepVolume: 0.1
+  select:
+    canSelect: 1
+    unitRenderer: {fileID: 0}
+    unitMat: {fileID: 0}
 --- !u!95 &5333175269811372614
 Animator:
   serializedVersion: 3
@@ -2564,18 +2574,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2926307627387808104}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &3468353018137422321 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1782939441594843289, guid: f69e059fc80f8d44687503174dd09a2f,
-    type: 3}
-  m_PrefabInstance: {fileID: 2926307627387808104}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d44ca6bac25424e429c1dd77d1bbd1c8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &6281474250400616608
 PrefabInstance:
   m_ObjectHideFlags: 0

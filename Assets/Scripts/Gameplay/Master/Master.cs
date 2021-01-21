@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using System.Linq;
 using System.Reflection;
+using UnityEngine.EventSystems;
 
 [System.Serializable]
 public class UnitList
@@ -279,40 +280,18 @@ public class Master : NetworkBehaviour
     #region Normal Mouse
     private void LMB()
     {
+        if (EventSystem.current.IsPointerOverGameObject()) { return; }
         if (shift && !ctrl) { Shift_LMB(); return; }
         else if (ctrl && !shift) { Ctrl_LMB(); return; }
 
         print("LMB");
         //Somehow check if master clicks on a unit button, if so do not spawn anything.
 
-        Ray ray = masterCamera.ScreenPointToRay(Input.mousePosition);
-
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreOnRaycast))
-        {
-            if (hit.collider.CompareTag("Ground"))
-            {
-                if (hasChosenAUnit)
-                {
-                    //Do I have enough energy to spawn the chosen unit?
-                    if (unitList[chosenUnitIndex].unit.energyCost <= stats.currentEnergy)
-                    {
-                        //If yes, spawn the unit at the location
-                        SpawnUnit(hit);
-                    }
-                    else
-                    {
-                        SetSpawnText("Not enough energy");
-                    }
-                }
-            }
-            else
-            {
-                SetSpawnText(UI.spawnText.text = "Cannot spawn unit here");
-            }
-        }
+        TryToSpawnUnit();
     }
     private void RMB()
     {
+        if (EventSystem.current.IsPointerOverGameObject()) { return; }
         if (shift && !ctrl) { Shift_RMB(); return; }
         else if (ctrl && !shift) { Ctrl_RMB(); return; }
 
@@ -327,39 +306,13 @@ public class Master : NetworkBehaviour
     {
         print("Shift LMB");
 
-        Ray ray = masterCamera.ScreenPointToRay(Input.mousePosition);
-
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreOnRaycast))
-        {
-            //If I click on a unit, try and select that unit
-            if (hit.collider.TryGetComponent(out UnitBase unit))
-            {
-                if (unit.select.canSelect)
-                {
-                    SelectUnit(unit);
-                }
-            }
-            //If I click on nothing, deselect my unit.
-            else
-            {
-                if (selectedUnit != null)
-                {
-                    DeselectUnit();
-                }
-            }
-        }
+        TryToSelectUnit();
     }
     private void Shift_RMB()
     {
         print("Shift RMB");
 
-        Ray ray = masterCamera.ScreenPointToRay(Input.mousePosition);
-
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreOnRaycast))
-        {
-            //Command my selected unit to move to the location
-            throw new System.Exception(MethodBase.GetCurrentMethod() + " Not Implemented");
-        }
+        TryToCommandUnit();
     }
     #endregion
     #region CTRL Mouse Raycasts
@@ -367,22 +320,13 @@ public class Master : NetworkBehaviour
     {
         print("Ctrl LMB");
 
-        Debug.Log("CTRL_LMB currently has no function");
+        TryToSpawnUnit();
     }
     private void Ctrl_RMB()
     {
         print("Ctrl RMB");
 
-        Ray ray = masterCamera.ScreenPointToRay(Input.mousePosition);
-
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreOnRaycast))
-        {
-            //If I click on a unit, try and refund that unit
-            if (hit.collider.TryGetComponent(out UnitBase unit))
-            {
-                throw new System.Exception(MethodBase.GetCurrentMethod() + " Not Implemented");
-            }
-        }
+        TryToRefundUnit();
     }
     #endregion
     public void UpgradeEnergy(bool rate)
@@ -522,6 +466,7 @@ public class Master : NetworkBehaviour
     {
         spawnSmokeAudio.PlayOneShot(spawnSmokeAudio.clip);
         spawnSmokeEffect.transform.position = point;
+        spawnSmokeEffect.transform.SetParent(null);
         spawnSmokeEffect.Emit(50);
     }
 
@@ -578,6 +523,7 @@ public class Master : NetworkBehaviour
         SetMasterUnitValues();
     }
 
+    #region Choosing
     private void ChooseUnit(int indexNum)
     {
         if (indexNum >= unitList.Count)
@@ -615,6 +561,41 @@ public class Master : NetworkBehaviour
         //Change the UI
         UnitButtonChooseUI(false);
         UpdateEnergyUseUI(0);
+    }
+    #endregion
+
+    #region Spawning & Refunding
+    void TryToSpawnUnit()
+    {
+        Ray ray = masterCamera.ScreenPointToRay(Input.mousePosition);
+
+        //Shoot a raycast from the mouse cursor position
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreOnRaycast))
+        {
+            //Did the raycast hit an area where units can spawn? 
+            //(The "Ground" tag is currently the only surface where units can spawn)
+            if (hit.collider.CompareTag("Ground"))
+            {
+                //Have I chosen a unit to spawn?
+                if (hasChosenAUnit)
+                {
+                    //Do I have enough energy to spawn the chosen unit?
+                    if (unitList[chosenUnitIndex].unit.energyCost <= stats.currentEnergy)
+                    {
+                        //If yes, spawn the unit at the location
+                        SpawnUnit(hit);
+                    }
+                    else
+                    {
+                        SetSpawnText("Not enough energy");
+                    }
+                }
+            }
+            else
+            {
+                SetSpawnText(UI.spawnText.text = "Cannot spawn unit here");
+            }
+        }
     }
 
     void SpawnUnit(RaycastHit hit)
@@ -677,11 +658,80 @@ public class Master : NetworkBehaviour
         IncreaseXp(chosenUnit.xpGain); //Master gains xp though
     }
 
-    void RefundUnit(RaycastHit hit)
+    void TryToRefundUnit()
     {
-        throw new System.Exception(MethodBase.GetCurrentMethod() + " Not Implemented");
+        Ray ray = masterCamera.ScreenPointToRay(Input.mousePosition);
+
+        //Shoot a raycast from the mouse cursor position
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreOnRaycast))
+        {
+            //If I hit a unit, try and refund that unit
+            if (hit.collider.TryGetComponent(out UnitBase unit))
+            {
+                int refundAmount = unit.Refund();
+                if (refundAmount != 0)
+                {
+                    RefundUnit(unit, refundAmount);
+                }
+                else print($"{name} has taken damage and could not be refunded");
+            }
+        }
     }
 
+    void RefundUnit(UnitBase unitToRefund, int refundAmount)
+    {
+        //The position that the raycast hit, which is also where the unit will spawn.
+        Vector3 pos = new Vector3(unitToRefund.transform.position.x, unitToRefund.transform.position.y + 2, unitToRefund.transform.position.z);
+
+        //Send out an OverlapSphere, to check for nearby survivors in range.
+        Collider[] survivorsInRadius = Physics.OverlapSphere(pos, spawnCheckRadius, playerLayer);
+
+        //Iterate through each survivor in range
+        foreach (Collider survivor in survivorsInRadius)
+        {
+            //Get the position of the survivor, and get the direction to check for visibility of the survivor.
+            Vector3 pPos = new Vector3(survivor.transform.position.x, pos.y, survivor.transform.position.z);
+            Vector3 dir = pPos - pos;
+            //Do a raycast, to check if it hits anything on the way to the survivor.
+            if (Physics.Raycast(pos, dir, out RaycastHit newhit, 100f))
+            {
+                //If it hits something, then check if it is a player or not.
+                //If it does not hit the survivor, then the unit can spawn.
+                if (newhit.collider.CompareTag("Player"))
+                {
+                    //If it does hit the survivor, then first check if it is within the survivor's view angle.
+                    dir = pos - pPos;
+                    float angle = Vector3.Angle(dir, survivor.transform.forward);
+                    //Is it inside the view angle of the survivor
+                    if (angle < 60)
+                    {
+                        Debug.DrawRay(pPos, dir, Color.red, 5f);
+                        //If it is within the view angle, then it cannot refund a unit.
+                        SetSpawnText("Cannot refund unit in view of survivors");
+                        return;
+                    }
+                    //Then check if it is within the minimum distance to refund away from a survivor.
+                    if (Vector3.Distance(pos, newhit.collider.transform.position) <= minimumSpawnRadius)
+                    {
+                        //If it is within the minimum spawn distance, then it cannot refund a unit.
+                        SetSpawnText("Cannot refund unit close to survivors");
+                        return;
+                    }
+                }
+            }
+        }
+        //If the spawn location meets the requirements, then refund the currently selected unit.
+        CmdRefundUnit(unitToRefund.gameObject);
+
+        //Spawn a smoke effect to hide the removal of the unit.
+        SmokeEffect(pos);
+
+        IncreaseEnergy(refundAmount);
+        UpdateEnergyUI();//Update UI
+    }
+    #endregion
+
+    #region Upgrade & Unlock
     public void UpgradeUnit(int which)
     {
         //Reference
@@ -723,7 +773,33 @@ public class Master : NetworkBehaviour
         //Play spooky sound
         CmdUnlockSound();
     }
+    #endregion
 
+    #region Selecting & Commanding
+    private void TryToSelectUnit()
+    {
+        Ray ray = masterCamera.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreOnRaycast))
+        {
+            //If I click on a unit, try and select that unit
+            if (hit.collider.TryGetComponent(out UnitBase unit))
+            {
+                if (unit.select.canSelect)
+                {
+                    SelectUnit(unit);
+                }
+            }
+            //If I click on nothing, deselect my unit.
+            else
+            {
+                if (selectedUnit != null)
+                {
+                    DeselectUnit();
+                }
+            }
+        }
+    }
     private void SelectUnit(UnitBase unit)
     {
         //If a unit is already selected, deselect it before selecting the new one.
@@ -737,13 +813,26 @@ public class Master : NetworkBehaviour
         selectedUnit.Select();
         print($"Selecting {selectedUnit.name}");
     }
-
     private void DeselectUnit()
     {
         print($"Deselecting {selectedUnit.name}");
         selectedUnit.Deselect();
         selectedUnit = null;
     }
+    private void TryToCommandUnit()
+    {
+        Ray ray = masterCamera.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreOnRaycast))
+        {
+            //If I don't have a unit currently selected, then return
+            if (!selectedUnit) return;
+
+            //Command my selected unit to move to the location
+            selectedUnit.MoveToLocation(hit.point);
+        }
+    }
+    #endregion
 
     #endregion
 
@@ -874,6 +963,11 @@ public class Master : NetworkBehaviour
 
         //Spawn the unit on the server
         NetworkServer.Spawn(newUnit);
+    }
+    [Command]
+    void CmdRefundUnit(GameObject unitToRefund)
+    {
+        NetworkServer.Destroy(unitToRefund);
     }
     [Command]
     void CmdUpgradeSound()
