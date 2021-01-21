@@ -81,6 +81,22 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Unit Selecting"",
+                    ""type"": ""Value"",
+                    ""id"": ""c6f6740d-aeaf-46e4-9588-e027f3af2e17"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Movement"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""9d6849ac-aa2d-4ffd-b982-311bedd9c4e3"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -259,6 +275,160 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""action"": ""Ctrl RMB"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b52daaf4-72e4-4aec-95ea-afa8135dbe30"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": ""Scale"",
+                    ""groups"": """",
+                    ""action"": ""Unit Selecting"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e06673f6-4d68-4b3f-befa-c38fa8d75d53"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": ""Scale(factor=2)"",
+                    ""groups"": """",
+                    ""action"": ""Unit Selecting"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1fbd69be-3bc8-4145-888d-12609aa309f8"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": ""Scale(factor=3)"",
+                    ""groups"": """",
+                    ""action"": ""Unit Selecting"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cf5cbc0a-40b0-43a9-9454-3d6d620619ec"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": """",
+                    ""processors"": ""Scale(factor=4)"",
+                    ""groups"": """",
+                    ""action"": ""Unit Selecting"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c5fcbffe-02b6-4ade-a94f-1a86d01bc649"",
+                    ""path"": ""<Keyboard>/5"",
+                    ""interactions"": """",
+                    ""processors"": ""Scale(factor=5)"",
+                    ""groups"": """",
+                    ""action"": ""Unit Selecting"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f015a8d9-0a67-40de-be31-6c0f8b5c30a6"",
+                    ""path"": ""<Keyboard>/6"",
+                    ""interactions"": """",
+                    ""processors"": ""Scale(factor=6)"",
+                    ""groups"": """",
+                    ""action"": ""Unit Selecting"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8e5e1ac4-7191-42c9-8451-8bd4487023e4"",
+                    ""path"": ""<Keyboard>/7"",
+                    ""interactions"": """",
+                    ""processors"": ""Scale(factor=7)"",
+                    ""groups"": """",
+                    ""action"": ""Unit Selecting"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a7f55566-df88-49ac-bb2d-bb1d09058460"",
+                    ""path"": ""<Keyboard>/8"",
+                    ""interactions"": """",
+                    ""processors"": ""Scale(factor=8)"",
+                    ""groups"": """",
+                    ""action"": ""Unit Selecting"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""328e1793-8281-42e1-8f13-4740fab0832b"",
+                    ""path"": ""<Keyboard>/9"",
+                    ""interactions"": """",
+                    ""processors"": ""Scale(factor=9)"",
+                    ""groups"": """",
+                    ""action"": ""Unit Selecting"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""2D Vector"",
+                    ""id"": ""d56a714e-9096-4be9-8779-66e109ae1d0c"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""6e443704-dfe8-43e8-9d15-efaedf249e4c"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""0d4d2949-f394-495f-b5d5-5f29d1717a5d"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""fcb94148-a1d5-4a64-ad2a-1cbb0d5d1763"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""a44c9dfa-b707-4776-b154-6aa6faa2bf36"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -390,6 +560,8 @@ public class @Controls : IInputActionCollection, IDisposable
         m_Master_CtrlRMB = m_Master.FindAction("Ctrl RMB", throwIfNotFound: true);
         m_Master_FloorUp = m_Master.FindAction("Floor Up", throwIfNotFound: true);
         m_Master_FloorDown = m_Master.FindAction("Floor Down", throwIfNotFound: true);
+        m_Master_UnitSelecting = m_Master.FindAction("Unit Selecting", throwIfNotFound: true);
+        m_Master_Movement = m_Master.FindAction("Movement", throwIfNotFound: true);
         // Survivor
         m_Survivor = asset.FindActionMap("Survivor", throwIfNotFound: true);
         m_Survivor_Movement = m_Survivor.FindAction("Movement", throwIfNotFound: true);
@@ -452,6 +624,8 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_Master_CtrlRMB;
     private readonly InputAction m_Master_FloorUp;
     private readonly InputAction m_Master_FloorDown;
+    private readonly InputAction m_Master_UnitSelecting;
+    private readonly InputAction m_Master_Movement;
     public struct MasterActions
     {
         private @Controls m_Wrapper;
@@ -464,6 +638,8 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @CtrlRMB => m_Wrapper.m_Master_CtrlRMB;
         public InputAction @FloorUp => m_Wrapper.m_Master_FloorUp;
         public InputAction @FloorDown => m_Wrapper.m_Master_FloorDown;
+        public InputAction @UnitSelecting => m_Wrapper.m_Master_UnitSelecting;
+        public InputAction @Movement => m_Wrapper.m_Master_Movement;
         public InputActionMap Get() { return m_Wrapper.m_Master; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -497,6 +673,12 @@ public class @Controls : IInputActionCollection, IDisposable
                 @FloorDown.started -= m_Wrapper.m_MasterActionsCallbackInterface.OnFloorDown;
                 @FloorDown.performed -= m_Wrapper.m_MasterActionsCallbackInterface.OnFloorDown;
                 @FloorDown.canceled -= m_Wrapper.m_MasterActionsCallbackInterface.OnFloorDown;
+                @UnitSelecting.started -= m_Wrapper.m_MasterActionsCallbackInterface.OnUnitSelecting;
+                @UnitSelecting.performed -= m_Wrapper.m_MasterActionsCallbackInterface.OnUnitSelecting;
+                @UnitSelecting.canceled -= m_Wrapper.m_MasterActionsCallbackInterface.OnUnitSelecting;
+                @Movement.started -= m_Wrapper.m_MasterActionsCallbackInterface.OnMovement;
+                @Movement.performed -= m_Wrapper.m_MasterActionsCallbackInterface.OnMovement;
+                @Movement.canceled -= m_Wrapper.m_MasterActionsCallbackInterface.OnMovement;
             }
             m_Wrapper.m_MasterActionsCallbackInterface = instance;
             if (instance != null)
@@ -525,6 +707,12 @@ public class @Controls : IInputActionCollection, IDisposable
                 @FloorDown.started += instance.OnFloorDown;
                 @FloorDown.performed += instance.OnFloorDown;
                 @FloorDown.canceled += instance.OnFloorDown;
+                @UnitSelecting.started += instance.OnUnitSelecting;
+                @UnitSelecting.performed += instance.OnUnitSelecting;
+                @UnitSelecting.canceled += instance.OnUnitSelecting;
+                @Movement.started += instance.OnMovement;
+                @Movement.performed += instance.OnMovement;
+                @Movement.canceled += instance.OnMovement;
             }
         }
     }
@@ -597,6 +785,8 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnCtrlRMB(InputAction.CallbackContext context);
         void OnFloorUp(InputAction.CallbackContext context);
         void OnFloorDown(InputAction.CallbackContext context);
+        void OnUnitSelecting(InputAction.CallbackContext context);
+        void OnMovement(InputAction.CallbackContext context);
     }
     public interface ISurvivorActions
     {

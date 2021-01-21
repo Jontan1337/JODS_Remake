@@ -863,8 +863,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: ed7f190b3286ce04ebefb9516af9aece, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -1031,7 +1031,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.54901963, g: 0, b: 0, a: 0.54509807}
+  m_Color: {r: 0.6320754, g: 0, b: 0, a: 0.84313726}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2034,8 +2034,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: ed7f190b3286ce04ebefb9516af9aece, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -2312,7 +2312,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 200, y: 60}
+  m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2005923812874583025
 MonoBehaviour:
@@ -2360,7 +2360,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 100
   m_WholeNumbers: 0
-  m_Value: 0
+  m_Value: 26.8
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -2490,16 +2490,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  cam: {fileID: 5789487352027957895}
-  currentEnergy: 50
-  maxEnergy: 100
-  energyRechargeIncrement: 1
-  maxEnergyIncrement: 20
-  currentXp: 0
-  timeUntillNextUpgrade: 1
+  masterCamera: {fileID: 5789487352027957895}
   masterClass: {fileID: 11400000, guid: a6e713bc364b1a24786870f298bd8018, type: 2}
+  stats:
+    currentEnergy: 50
+    maxEnergy: 100
+    energyRechargeIncrement: 1
+    maxEnergyIncrement: 20
+    currentXp: 0
+    timeUntillNextUpgrade: 0
   unitList:
-  - name: Common
+  - name: common1
     unit: {fileID: 11400000, guid: 254796e5ec2c1ff49a903f70e84b5945, type: 2}
     level: 1
     maxAmount: 0
@@ -2510,7 +2511,7 @@ MonoBehaviour:
     unit: {fileID: 11400000, guid: 746c20bacaa906a419ba0951252abddd, type: 2}
     level: 1
     maxAmount: 0
-    unlocked: 0
+    unlocked: 1
     chosen: 0
     unitIndex: 1
   - name: Spitter
@@ -2524,46 +2525,42 @@ MonoBehaviour:
     unit: {fileID: 11400000, guid: 85b159902791cc14d9bcdbc9a9eddf26, type: 2}
     level: 1
     maxAmount: 0
-    unlocked: 0
+    unlocked: 1
     chosen: 0
     unitIndex: 3
   - name: Stronk
     unit: {fileID: 11400000, guid: cdc65d9cad1af5e42b5149ac75e235d9, type: 2}
     level: 1
     maxAmount: 0
-    unlocked: 0
+    unlocked: 1
     chosen: 0
     unitIndex: 4
   chosenUnitIndex: 0
   hasChosenAUnit: 0
+  selectedUnit: {fileID: 0}
   playerLayer:
     serializedVersion: 2
     m_Bits: 32768
   spawnCheckRadius: 20
   minimumSpawnRadius: 5
-  energyText: {fileID: 4678959137749918876}
-  energySlider: {fileID: 7981287377025389103}
-  energyUseSlider: {fileID: 2005923812874583025}
-  xpText: {fileID: 803872073727899947}
-  spawnText: {fileID: 9004796516012174525}
-  RechargeRateButton: {fileID: 6422932333704771199}
-  MaxEnergyButton: {fileID: 3511270461695387192}
+  UI:
+    energyText: {fileID: 4678959137749918876}
+    energySlider: {fileID: 7981287377025389103}
+    energyUseSlider: {fileID: 2005923812874583025}
+    xpText: {fileID: 803872073727899947}
+    spawnText: {fileID: 9004796516012174525}
+    RechargeRateButton: {fileID: 6422932333704771199}
+    MaxEnergyButton: {fileID: 3511270461695387192}
   unitButtonPrefab: {fileID: 1190185979252806133, guid: 42b3c13f523b1dd4ca9803cad753eea0,
     type: 3}
   unitButtonContainer: {fileID: 1156457284654815061}
+  topDownMovementSpeed: 25
   currentFloor: 1
-  floorUp: 304
-  floorDown: 306
   positionChange: 5
   ignoreOnRaycast:
     serializedVersion: 2
     m_Bits: 2052
   spawnSmokeEffect: {fileID: 5285726392367847325}
-  controls: {fileID: -944628639613478452, guid: faba6c5e86483d64790bac07fa49fb38,
-    type: 3}
-  xpCheatButton: 270
-  energyCheatButton: 269
-  maxEnergyCheatButton: 268
   cheatsOn: 0
 --- !u!1 &7649437448934797559
 GameObject:

@@ -22,40 +22,55 @@ public class UnitList
 public class Master : NetworkBehaviour
 {
     #region Fields
-    [SerializeField] private Camera cam;
-
-    [Header("Stats")]
-    [SerializeField] private int currentEnergy = 50; //Current amount of master energy
-    [SerializeField] private int maxEnergy = 100; //Maximum amount of energy that can be stored
-    [SerializeField] private int energyRechargeIncrement = 1; //How much energy recharges per second
-    [SerializeField] private int maxEnergyIncrement = 20; //Amount to increase max energy
-    [Space]
-    [SerializeField] private int currentXp = 0; //Current amount of master xp
-    [Space]
-    [SerializeField] private int timeUntillNextUpgrade = 0; //When does the next upgrade decision become available
+    [Header("Camera")]
+    [SerializeField] private Camera masterCamera = null;
 
     [Header("Master Class")]
     [SerializeField] private MasterClass masterClass = null;
 
+    [System.Serializable]
+    public class Stats
+    {
+        public int currentEnergy = 50; //Current amount of master energy
+        public int maxEnergy = 100; //Maximum amount of energy that can be stored
+        public int energyRechargeIncrement = 1; //How much energy recharges per second
+        public int maxEnergyIncrement = 20; //Amount to increase max energy
+        [Space]
+        public int currentXp = 0; //Current amount of master xp
+        [Space]
+        public int timeUntillNextUpgrade = 0; //When does the next upgrade decision become available
+    }
+    [Space]
+    public Stats stats;
+
     [Header("Units")]
     [SerializeField] private List<UnitList> unitList = new List<UnitList>();
+    [Space]
     [SerializeField] private int chosenUnitIndex = 0;
     [SerializeField] private bool hasChosenAUnit = false;
     [SerializeField] private UnitBase selectedUnit = null;
 
     [Header("Spawning")]
-    [SerializeField] private LayerMask playerLayer;
+    [SerializeField] private LayerMask playerLayer = 1 << 15;
     [SerializeField] private int spawnCheckRadius = 20;
     [SerializeField] private int minimumSpawnRadius = 5;
 
-    [Header("UI")]
-    [SerializeField] private Text energyText = null;
-    [SerializeField] private Slider energySlider = null;
-    [SerializeField] private Slider energyUseSlider = null;
-    [SerializeField] private Text xpText = null;
-    [SerializeField] private Text spawnText = null;
-    [SerializeField] private GameObject RechargeRateButton = null;
-    [SerializeField] private GameObject MaxEnergyButton = null;
+    [System.Serializable]
+    public class UserInterface
+    {
+        public Text energyText = null;
+        public Slider energySlider = null;
+        public Slider energyUseSlider = null;
+        [Space]
+        public Text xpText = null;
+        public Text spawnText = null;
+        [Space]
+        public GameObject RechargeRateButton = null;
+        public GameObject MaxEnergyButton = null;
+    }
+    [Space]
+    public UserInterface UI;
+
     [Space]
     public GameObject unitButtonPrefab;
     public Transform unitButtonContainer;
@@ -64,30 +79,16 @@ public class Master : NetworkBehaviour
 
 
     [Header("Navigation")]
+    [SerializeField] private float topDownMovementSpeed = 25f;
+    [Space]
     [SerializeField] private int currentFloor = 1;
-    [SerializeField] private KeyCode floorUp = KeyCode.LeftShift;
-    [SerializeField] private KeyCode floorDown = KeyCode.LeftControl;
     [SerializeField] private int positionChange = 5;
-    [SerializeField] private LayerMask ignoreOnRaycast;
+    [SerializeField] private LayerMask ignoreOnRaycast = 1 << 2;
     private int amountOfFloors = 0;
 
     [Header("Particles and Effects")]
     public ParticleSystem spawnSmokeEffect;
     private AudioSource spawnSmokeAudio;
-
-    [Header("Input")]
-    public InputActionAsset controls;
-    private InputAction mainInput;
-    private InputAction altInput;
-
-    private InputAction floorUpInput;
-    private InputAction floorDownInput;
-
-    [Header("Cheats")]
-    [SerializeField] private KeyCode xpCheatButton = KeyCode.KeypadPlus;
-    [SerializeField] private KeyCode energyCheatButton = KeyCode.KeypadMinus;
-    [SerializeField] private KeyCode maxEnergyCheatButton = KeyCode.KeypadMultiply;
-    [SerializeField] private bool cheatsOn = false;
 
 #endregion
 
@@ -107,8 +108,8 @@ public class Master : NetworkBehaviour
 
 
             //Default starting energy stats
-            currentEnergy = 50;
-            energyRechargeIncrement = 1;
+            stats.currentEnergy = 50;
+            stats.energyRechargeIncrement = 1;
             //Update the Energy UI
             UpdateEnergyUI();
             //----------------------------
@@ -136,7 +137,7 @@ public class Master : NetworkBehaviour
 
             StartCoroutine(EnergyCoroutine());
 
-            StartCoroutine(UpgradeCoroutine(timeUntillNextUpgrade));
+            StartCoroutine(UpgradeCoroutine(stats.timeUntillNextUpgrade));
 
 
             //Misc
@@ -187,6 +188,12 @@ public class Master : NetworkBehaviour
         JODSInput.Controls.Master.ShiftRMB.performed += ctx => Shift_RMB();
         JODSInput.Controls.Master.CtrlRMB.performed += ctx => Ctrl_RMB();
 
+        // Unit Select Input
+        JODSInput.Controls.Master.UnitSelecting.performed += ctx => ChooseUnit(Mathf.FloorToInt(ctx.ReadValue<float>() - 1));
+
+        // Movement Input
+        JODSInput.Controls.Survivor.Movement.performed += ctx => Move(ctx.ReadValue<Vector2>());
+
         //Floor Input
         JODSInput.Controls.Master.FloorDown.performed += ctx => ChangeFloor(false);
         JODSInput.Controls.Master.FloorUp.performed += ctx => ChangeFloor(true);
@@ -203,6 +210,13 @@ public class Master : NetworkBehaviour
         JODSInput.Controls.Master.RMB.performed -= ctx => RMB();
         JODSInput.Controls.Master.ShiftRMB.performed -= ctx => Shift_RMB();
         JODSInput.Controls.Master.CtrlRMB.performed -= ctx => Ctrl_RMB();
+
+        // Unit Select Input
+        JODSInput.Controls.Master.UnitSelecting.performed -= ctx => ChooseUnit(Mathf.FloorToInt(ctx.ReadValue<float>() - 1));
+
+        //Floor Input
+        JODSInput.Controls.Master.FloorDown.performed -= ctx => ChangeFloor(false);
+        JODSInput.Controls.Master.FloorUp.performed -= ctx => ChangeFloor(true);
     }
 
     private void OnValidate()
@@ -232,7 +246,7 @@ public class Master : NetworkBehaviour
         print("LMB");
         //Somehow check if master clicks on a unit button, if so do not spawn anything.
 
-        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+        Ray ray = masterCamera.ScreenPointToRay(Input.mousePosition);
 
         if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreOnRaycast))
         {
@@ -241,7 +255,7 @@ public class Master : NetworkBehaviour
                 if (hasChosenAUnit)
                 {
                     //Do I have enough energy to spawn the chosen unit?
-                    if (unitList[chosenUnitIndex].unit.energyCost <= currentEnergy)
+                    if (unitList[chosenUnitIndex].unit.energyCost <= stats.currentEnergy)
                     {
                         //If yes, spawn the unit at the location
                         SpawnUnit(hit);
@@ -254,7 +268,7 @@ public class Master : NetworkBehaviour
             }
             else
             {
-                SetSpawnText(spawnText.text = "Cannot spawn unit here");
+                SetSpawnText(UI.spawnText.text = "Cannot spawn unit here");
             }
         }
     }
@@ -271,7 +285,7 @@ public class Master : NetworkBehaviour
     {
         print("Shift LMB");
 
-        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+        Ray ray = masterCamera.ScreenPointToRay(Input.mousePosition);
 
         if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreOnRaycast))
         {
@@ -297,7 +311,7 @@ public class Master : NetworkBehaviour
     {
         print("Shift RMB");
 
-        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+        Ray ray = masterCamera.ScreenPointToRay(Input.mousePosition);
 
         if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreOnRaycast))
         {
@@ -317,7 +331,7 @@ public class Master : NetworkBehaviour
     {
         print("Ctrl RMB");
 
-        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+        Ray ray = masterCamera.ScreenPointToRay(Input.mousePosition);
 
         if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreOnRaycast))
         {
@@ -338,25 +352,25 @@ public class Master : NetworkBehaviour
         CmdUpgradeSound();
 
         //Start the coroutine again
-        StartCoroutine(UpgradeCoroutine(timeUntillNextUpgrade));
+        StartCoroutine(UpgradeCoroutine(stats.timeUntillNextUpgrade));
 
         //If player chose to upgrade the recharge rate
         if (rate)
         {
             //Increase the increment
-            energyRechargeIncrement += 1;
+            stats.energyRechargeIncrement += 1;
         }
 
         //If player chose to upgrade the max amount of energy
         else
         {
             //Increase the max amount of energy
-            maxEnergy += maxEnergyIncrement;
+            stats.maxEnergy += stats.maxEnergyIncrement;
 
             //Set the UI slider's max value
-            energySlider.maxValue = maxEnergy;
+            UI.energySlider.maxValue = stats.maxEnergy;
 
-            energyUseSlider.maxValue = maxEnergy;
+            UI.energyUseSlider.maxValue = stats.maxEnergy;
 
             UpdateEnergyUI();
         }
@@ -374,7 +388,7 @@ public class Master : NetworkBehaviour
             yield return new WaitForSeconds(1);
 
             //Increment the energy by energyRechargeIncrement, clamping it at the max amount of energy
-            IncreaseEnergy(energyRechargeIncrement);
+            IncreaseEnergy(stats.energyRechargeIncrement);
         }
     }
 
@@ -438,13 +452,13 @@ public class Master : NetworkBehaviour
     private void UpdateEnergyUI()
     {
         //Energy UI
-        energyText.text = currentEnergy.ToString() + "/" + maxEnergy;
-        energySlider.value = currentEnergy;
+        UI.energyText.text = stats.currentEnergy.ToString() + "/" + stats.maxEnergy;
+        UI.energySlider.value = stats.currentEnergy;
     }
 
     private void UpdateEnergyUseUI(int use)
     {
-        energyUseSlider.value = use;
+        UI.energyUseSlider.value = use;
     }
 
     private void UnitButtonChooseUI(bool choose)
@@ -454,8 +468,8 @@ public class Master : NetworkBehaviour
 
     private void ActivateUpgradeDecisions(bool enable)
     {
-        MaxEnergyButton.SetActive(enable);
-        RechargeRateButton.SetActive(enable);
+        UI.MaxEnergyButton.SetActive(enable);
+        UI.RechargeRateButton.SetActive(enable);
     }
 
     #endregion
@@ -475,10 +489,10 @@ public class Master : NetworkBehaviour
 
     private void IncreaseXp(int amount)
     {
-        currentXp += amount;
+        stats.currentXp += amount;
 
         //XP UI
-        xpText.text = currentXp.ToString() + "xp";
+        UI.xpText.text = stats.currentXp.ToString() + "xp";
 
         //Check if there is an upgrade or unlock available
         for (int i = 0; i < unitList.Count; i++)
@@ -489,14 +503,14 @@ public class Master : NetworkBehaviour
             if (unit.unlocked)
             {
                 //If player has enough xp to upgrade it, show the upgrade button
-                if (unit.unit.xpToUpgrade <= currentXp) unitButtons[i].ShowUpgradeButton(true);
+                if (unit.unit.xpToUpgrade <= stats.currentXp) unitButtons[i].ShowUpgradeButton(true);
                 else unitButtons[i].ShowUpgradeButton(false);
                 continue;
             }
             else
             {
                 //Else, if the player has enough xp to unlock it, show the unlock button
-                if (unit.unit.xpToUnlock <= currentXp) unitButtons[i].ShowUnlockButton(true);
+                if (unit.unit.xpToUnlock <= stats.currentXp) unitButtons[i].ShowUnlockButton(true);
                 else unitButtons[i].ShowUnlockButton(false);
                 continue;
             }
@@ -504,7 +518,7 @@ public class Master : NetworkBehaviour
     }
     private void IncreaseEnergy(int amount)
     {
-        currentEnergy = Mathf.Clamp(currentEnergy += amount, 0, maxEnergy);
+        stats.currentEnergy = Mathf.Clamp(stats.currentEnergy += amount, 0, stats.maxEnergy);
         UpdateEnergyUI();
     }
 
@@ -524,6 +538,13 @@ public class Master : NetworkBehaviour
 
     private void ChooseUnit(int indexNum)
     {
+        if (indexNum >= unitList.Count)
+        {
+            Debug.Log("There is no unit with the number " + indexNum);
+            UnchooseUnit();
+            return;
+        }
+
         //Reference
         UnitList unit = unitList[indexNum];
 
@@ -625,7 +646,7 @@ public class Master : NetworkBehaviour
         UnitList unit = unitList[which];
 
         //If player does NOT have enough xp (Which shouldn't be possible), return.
-        if (currentXp < unit.unit.xpToUpgrade) return;
+        if (stats.currentXp < unit.unit.xpToUpgrade) return;
 
         //Increase the unit's level
         unit.level += 1;
@@ -646,7 +667,7 @@ public class Master : NetworkBehaviour
         UnitList unit = unitList[which];
 
         //If player does NOT have enough xp (Which shouldn't be possible), return.
-        if (currentXp < unit.unit.xpToUnlock) return;
+        if (stats.currentXp < unit.unit.xpToUnlock) return;
 
         //Unlock the unit
         unit.unlocked = true;
@@ -731,52 +752,31 @@ public class Master : NetworkBehaviour
 
     #endregion
 
-
-    void Update()
+    #region Movement
+    private float horizontal;
+    private float vertical;
+    private void Update()
     {
-        //Only the player playing as master may pass this
-        if (!hasAuthority) return;
-
-        //-----CHEATS-----
-        if (Input.GetKeyDown(xpCheatButton) && cheatsOn)
-        {
-            Debug.Log("CHEAT : XP");
-            IncreaseXp(100);
-        }
-        if (Input.GetKeyDown(energyCheatButton) && cheatsOn)
-        {
-            Debug.Log("CHEAT : ENERGY");
-            currentEnergy = maxEnergy;
-        }
-        if (Input.GetKeyDown(maxEnergyCheatButton) && cheatsOn)
-        {
-            Debug.Log("CHEAT : MAX ENERGY");
-            maxEnergy += 50;
-            energySlider.maxValue = maxEnergy;
-        }
-    }
-
-    private void FixedUpdate()
-    {
-        if (!hasAuthority) return;
-
-
         //Movement
-        var x = Input.GetAxis("Horizontal");
-        var z = Input.GetAxis("Vertical");
-
-        transform.Translate(x, 0, z);
+        transform.Translate(horizontal * Time.deltaTime * topDownMovementSpeed, 0, vertical * Time.deltaTime * topDownMovementSpeed) ;
 
         //Mouse Scroll / Camera Zoom
         if (Input.GetAxis("Mouse ScrollWheel") != 0f)
         {
-            cam.orthographicSize = Mathf.Clamp(cam.orthographicSize + -Input.GetAxis("Mouse ScrollWheel") * 5, 10, 20);
+            masterCamera.orthographicSize = Mathf.Clamp(masterCamera.orthographicSize + -Input.GetAxis("Mouse ScrollWheel") * 5, 10, 20);
         }
     }
+    private void Move(Vector2 moveValues)
+    {
+        horizontal = moveValues.x;
+        vertical = moveValues.y;
+        Debug.Log(moveValues);
+    }
+    #endregion
 
     void ChangeFloor()
     {
-        cam.transform.position = new Vector3(cam.transform.position.x, positionChange * currentFloor - 0.05f, cam.transform.position.z);
+        masterCamera.transform.position = new Vector3(masterCamera.transform.position.x, positionChange * currentFloor - 0.05f, masterCamera.transform.position.z);
     }
     void ChangeFloor(bool up)
     {
@@ -784,7 +784,7 @@ public class Master : NetworkBehaviour
 
         currentFloor = Mathf.Clamp(currentFloor += up ? -1 : 1, 1, amountOfFloors); //This needs fixin
 
-        cam.transform.position = new Vector3(cam.transform.position.x, positionChange * currentFloor - 0.05f, cam.transform.position.z);
+        masterCamera.transform.position = new Vector3(masterCamera.transform.position.x, positionChange * currentFloor - 0.05f, masterCamera.transform.position.z);
     }
 
     public void MouseOverButton(bool hover)
@@ -795,14 +795,14 @@ public class Master : NetworkBehaviour
 
     void SpawnTextReset()
     {
-        spawnText.text = "";
-        spawnText.gameObject.SetActive(false);
+        UI.spawnText.text = "";
+        UI.spawnText.gameObject.SetActive(false);
     }
 
     void SetSpawnText(string newText)
     {
-        spawnText.text = newText;
-        spawnText.gameObject.SetActive(true);
+        UI.spawnText.text = newText;
+        UI.spawnText.gameObject.SetActive(true);
         Invoke(nameof(SpawnTextReset), 1f);
     }
 
@@ -832,11 +832,6 @@ public class Master : NetworkBehaviour
 
         //Spawn the unit on the server
         NetworkServer.Spawn(newUnit);
-    }
-    [Command] //OLD
-    void CmdUpgradeUnit(int which)
-    {
-        throw new System.Exception(MethodBase.GetCurrentMethod() + " Not Implemented");
     }
     [Command]
     void CmdUpgradeSound()

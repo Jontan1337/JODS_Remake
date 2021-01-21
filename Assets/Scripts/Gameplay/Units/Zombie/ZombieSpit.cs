@@ -6,8 +6,8 @@ public class ZombieSpit : UnitProjectile
 {
     [Space]
     [SerializeField] private GameObject spitBall = null;
-    [SerializeField] private ParticleSystem spitParticles;
-    [SerializeField] private ParticleSystem trailParticles;
+    [SerializeField] private ParticleSystem spitParticles = null;
+    [SerializeField] private ParticleSystem trailParticles = null;
     public override void Destroy() 
     {
         //Overriding this function, because the spit particles still need to be visible after hitting something.
