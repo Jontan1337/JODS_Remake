@@ -22,7 +22,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Shift LMB",
+                    "name": "Shift LMB (doesn't work)",
                     "type": "Button",
                     "id": "8235a6ea-b79d-4993-9db5-17c2abd056cc",
                     "expectedControlType": "Button",
@@ -30,7 +30,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Shift RMB",
+                    "name": "Shift RMB (doesn't work)",
                     "type": "Button",
                     "id": "1822b38b-cfb5-4875-8226-21d29d505d7e",
                     "expectedControlType": "Button",
@@ -38,7 +38,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Ctrl LMB",
+                    "name": "Ctrl LMB (doesn't work)",
                     "type": "Button",
                     "id": "c5b6d656-41a5-4cdc-b29b-e43982495654",
                     "expectedControlType": "Button",
@@ -46,7 +46,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Ctrl RMB",
+                    "name": "Ctrl RMB (doesn't work)",
                     "type": "Button",
                     "id": "dc7ebe05-3d8f-4f5f-9ebf-8c62fab270b6",
                     "expectedControlType": "Button",
@@ -82,6 +82,22 @@
                     "type": "PassThrough",
                     "id": "9d6849ac-aa2d-4ffd-b982-311bedd9c4e3",
                     "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Shift",
+                    "type": "Button",
+                    "id": "10f67212-b14e-4a14-b9ab-c6bb61a1beb4",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Ctrl",
+                    "type": "Button",
+                    "id": "5e23018f-9896-4e2e-88ed-297b282c5d45",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
                 }
@@ -138,7 +154,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Shift LMB",
+                    "action": "Shift LMB (doesn't work)",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
@@ -149,7 +165,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Shift LMB",
+                    "action": "Shift LMB (doesn't work)",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -160,7 +176,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Shift LMB",
+                    "action": "Shift LMB (doesn't work)",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -171,7 +187,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Shift RMB",
+                    "action": "Shift RMB (doesn't work)",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
@@ -182,7 +198,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Shift RMB",
+                    "action": "Shift RMB (doesn't work)",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -193,7 +209,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Shift RMB",
+                    "action": "Shift RMB (doesn't work)",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -204,7 +220,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Ctrl LMB",
+                    "action": "Ctrl LMB (doesn't work)",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
@@ -215,7 +231,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Ctrl LMB",
+                    "action": "Ctrl LMB (doesn't work)",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -226,7 +242,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Ctrl LMB",
+                    "action": "Ctrl LMB (doesn't work)",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -237,7 +253,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Ctrl RMB",
+                    "action": "Ctrl RMB (doesn't work)",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
@@ -248,7 +264,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Ctrl RMB",
+                    "action": "Ctrl RMB (doesn't work)",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -259,7 +275,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Ctrl RMB",
+                    "action": "Ctrl RMB (doesn't work)",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -416,6 +432,28 @@
                     "action": "Movement",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "370b2f35-2f63-44ea-b2fe-ca02ea759d9a",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Shift",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d45f1b20-3ba3-44c4-b108-95058661f1f5",
+                    "path": "<Keyboard>/ctrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Ctrl",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },

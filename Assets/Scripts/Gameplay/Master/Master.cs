@@ -180,13 +180,26 @@ public class Master : NetworkBehaviour
     {
         // Left Mouse Input
         JODSInput.Controls.Master.LMB.performed += ctx => LMB();
+        /*
         JODSInput.Controls.Master.ShiftLMB.performed += ctx => Shift_LMB();
         JODSInput.Controls.Master.CtrlLMB.performed += ctx => Ctrl_LMB();
+        */
 
         // Right Mouse Input
         JODSInput.Controls.Master.RMB.performed += ctx => RMB();
+        /*
         JODSInput.Controls.Master.ShiftRMB.performed += ctx => Shift_RMB();
         JODSInput.Controls.Master.CtrlRMB.performed += ctx => Ctrl_RMB();
+        */
+
+        //Shift Input
+        JODSInput.Controls.Master.Shift.started += ctx => ShiftButton(true);
+        JODSInput.Controls.Master.Shift.canceled += ctx => ShiftButton(false);
+
+        //Ctrl Input
+        JODSInput.Controls.Master.Ctrl.started += ctx => CtrlButton(true);
+        JODSInput.Controls.Master.Ctrl.canceled += ctx => CtrlButton(false);
+
 
         // Unit Select Input
         JODSInput.Controls.Master.UnitSelecting.performed += ctx => ChooseUnit(Mathf.FloorToInt(ctx.ReadValue<float>() - 1));
@@ -203,13 +216,25 @@ public class Master : NetworkBehaviour
     {
         // Left Mouse Input
         JODSInput.Controls.Master.LMB.performed -= ctx => LMB();
+        /*
         JODSInput.Controls.Master.ShiftLMB.performed -= ctx => Shift_LMB();
         JODSInput.Controls.Master.CtrlLMB.performed -= ctx => Ctrl_LMB();
+        */
 
         // Right Mouse Input
         JODSInput.Controls.Master.RMB.performed -= ctx => RMB();
+        /*
         JODSInput.Controls.Master.ShiftRMB.performed -= ctx => Shift_RMB();
         JODSInput.Controls.Master.CtrlRMB.performed -= ctx => Ctrl_RMB();
+        */
+
+        //Shift Input
+        JODSInput.Controls.Master.Shift.started -= ctx => ShiftButton(true);
+        JODSInput.Controls.Master.Shift.canceled -= ctx => ShiftButton(false);
+
+        //Ctrl Input
+        JODSInput.Controls.Master.Ctrl.started -= ctx => CtrlButton(true);
+        JODSInput.Controls.Master.Ctrl.canceled -= ctx => CtrlButton(false);
 
         // Unit Select Input
         JODSInput.Controls.Master.UnitSelecting.performed -= ctx => ChooseUnit(Mathf.FloorToInt(ctx.ReadValue<float>() - 1));
@@ -233,6 +258,17 @@ public class Master : NetworkBehaviour
 
     #region Gameplay Functions
 
+    [SerializeField] private bool shift = false;
+    [SerializeField] private bool ctrl = false;
+    private void ShiftButton(bool down)
+    {
+        shift = down;
+    }
+    private void CtrlButton(bool down)
+    {
+        ctrl = down;
+    }
+
     public void SetMasterClass(MasterClass mClass)
     {
         masterClass = mClass;
@@ -243,6 +279,9 @@ public class Master : NetworkBehaviour
     #region Normal Mouse
     private void LMB()
     {
+        if (shift && !ctrl) { Shift_LMB(); return; }
+        else if (ctrl && !shift) { Ctrl_LMB(); return; }
+
         print("LMB");
         //Somehow check if master clicks on a unit button, if so do not spawn anything.
 
@@ -274,6 +313,9 @@ public class Master : NetworkBehaviour
     }
     private void RMB()
     {
+        if (shift && !ctrl) { Shift_RMB(); return; }
+        else if (ctrl && !shift) { Ctrl_RMB(); return; }
+
         print("RMB");
 
         //Unchoose the current unit type
