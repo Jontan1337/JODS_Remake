@@ -29,6 +29,7 @@ public abstract class UnitBase : NetworkBehaviour
     private int maxHealth = 0;
     private float upgradeMultiplier = 0f;
     private int refundAmount = 0;
+    [SerializeField] private int unitLevel = 1;
     [Space]
     [SerializeField] private bool isMelee;
     [SerializeField] private bool isRanged;
@@ -327,6 +328,8 @@ public abstract class UnitBase : NetworkBehaviour
 
         //Stats
         SetStats();
+        //If the unit's level is higher than 1 (base level), then increase stats.
+        if (unitLevel > 1) IncreaseStats(); //Increase the stats based on what level the unit is.
 
         //Nav Mesh 
         navAgent = GetComponent<NavMeshAgent>();
@@ -350,20 +353,15 @@ public abstract class UnitBase : NetworkBehaviour
         if (hasSpecial) {
             if (special.availableFromStart) { special.canSpecial = true; }
             else { StartCoroutine(SpecialCooldownCoroutine()); }
-        } name = "Zombie " + Random.Range(1, 100);
+        }
     }
 
-    public void SetLevel(int level)
+    //This is called by the Master, who sets the unit's level, which increases it's stats.
+    public void SetLevel(int level) => unitLevel = level;
+    private void IncreaseStats()
     {
-        for (int i = 1; i < level; i++)
-        {
-            // Use upgradeMultiplier somehow, which is (default) 0.2, so round it up to int?
-
-            //this.maxHealth *= 1;
-            //this.damage *= 1;
-            //this.speed *= 1.25F;
-            //this.distance *= 1.25F;
-        }
+        float multiplier = 1 + (upgradeMultiplier * (unitLevel - 1));
+        print(multiplier);
     }
 
     #endregion

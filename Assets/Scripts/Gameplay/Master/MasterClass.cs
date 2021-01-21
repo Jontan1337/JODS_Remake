@@ -11,6 +11,22 @@ public class MasterClass : ScriptableObject
     [Header("Units (In descending order)")]
     public SOUnit[] units;
 
-    [Header("Other")]
-    public Color energyColor; //lol
+    [Header("Sounds")]
+
+    [Tooltip("This sound plays when the master spawns a unit.")]
+    public AudioClip spawnSound;
+    [Tooltip("This sound plays when the master either upgrades a unit, unlocks a unit or upgrades energy.")]
+    public AudioClip globalSound;
+
+    [Header("Visual")]
+    public Color energyColor;
+    public Color energyUseColor;
+
+    [Header("Master Class Description")]
+    [TextArea(10,20)]
+    public string classDescription = "This master uses units";
+
+    [Header("Master Class Special Description")]
+    [TextArea(10,20)]
+    public string classSpecialDescription = "This master can do special stuff";
 }

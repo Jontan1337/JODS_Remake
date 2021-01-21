@@ -20,12 +20,10 @@ public class UnitList
     [Space]
     public int unitIndex = 0;
 }
+[RequireComponent(typeof(AudioSource))]
 public class Master : NetworkBehaviour
 {
     #region Fields
-    [Header("Camera")]
-    [SerializeField] private Camera masterCamera = null;
-
     [Header("Master Class")]
     [SerializeField] private MasterClass masterClass = null;
 
@@ -39,7 +37,7 @@ public class Master : NetworkBehaviour
         [Space]
         public int currentXp = 0; //Current amount of master xp
         [Space]
-        public int timeUntillNextUpgrade = 0; //When does the next upgrade decision become available
+        public int timeUntillNextUpgrade = 50; //When does the next upgrade decision become available
     }
     [Space]
     public Stats stats;
@@ -61,37 +59,58 @@ public class Master : NetworkBehaviour
     {
         public Text energyText = null;
         public Slider energySlider = null;
+        public Image energyFillImage;
         public Slider energyUseSlider = null;
+        public Image energyUseFillImage;
         [Space]
         public Text xpText = null;
         public Text spawnText = null;
         [Space]
         public GameObject RechargeRateButton = null;
         public GameObject MaxEnergyButton = null;
+        [Space]
+        public GameObject unitButtonPrefab;
+        public Transform unitButtonContainer;
     }
     [Space]
     public UserInterface UI;
-
-    [Space]
-    public GameObject unitButtonPrefab;
-    public Transform unitButtonContainer;
     private List<UnitButton> unitButtons = new List<UnitButton>();
-    bool hover = false;
 
-
-    [Header("Navigation")]
-    [SerializeField] private float topDownMovementSpeed = 25f;
+    [System.Serializable]
+    public class TopdownMaster
+    {
+        public Camera camera = null;
+        [Space]
+        public float movementSpeed = 20f;
+        [Space]
+        public int currentFloor = 1;
+        public int positionChange = 5;
+        public int amountOfFloors = 0;
+    }
     [Space]
-    [SerializeField] private int currentFloor = 1;
-    [SerializeField] private int positionChange = 5;
+    public TopdownMaster topdown;
+
+    [System.Serializable]
+    public class FlyingMaster
+    {
+        public Camera camera = null;
+        public float movementSpeed = 20f;
+    }
+    [Space]
+    public FlyingMaster flying;
+
+    [Space]
+    [SerializeField] private bool inTopdownView = true;
+
+    [Header("Other")]
     [SerializeField] private LayerMask ignoreOnRaycast = 1 << 2;
-    private int amountOfFloors = 0;
 
     [Header("Particles and Effects")]
     public ParticleSystem spawnSmokeEffect;
     private AudioSource spawnSmokeAudio;
+    private AudioSource globalAudio;
 
-#endregion
+    #endregion
 
     #region Start / Awake
 
@@ -107,32 +126,36 @@ public class Master : NetworkBehaviour
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
 
+            inTopdownView = true;
 
             //Default starting energy stats
             stats.currentEnergy = 50;
             stats.energyRechargeIncrement = 1;
+
+            //Energy UI visuals
+            UI.energyFillImage.color = masterClass.energyColor;
+            UI.energyUseFillImage.color = masterClass.energyUseColor;
+
             //Update the Energy UI
             UpdateEnergyUI();
-            //----------------------------
-
+            UpdateEnergyUseUI(0);
 
             //Make Unit Buttons
             InitializeUnitButtons();
 
-
             //Default floor stuff
 
             //Get all floors in level
-            amountOfFloors = GameObject.FindGameObjectsWithTag("Floor").Length;
-            Debug.Log($"There are {amountOfFloors} floors on this map");
+            topdown.amountOfFloors = GameObject.FindGameObjectsWithTag("Floor").Length;
+            Debug.Log($"There are {topdown.amountOfFloors} floors on this map");
 
             //Start on a random floor
-            currentFloor = Random.Range(1, amountOfFloors + 1);
+            topdown.currentFloor = Random.Range(1, topdown.amountOfFloors + 1);
 
             ChangeFloor();
             //-----------------------
 
-
+            ActivateUpgradeDecisions(false);
 
             //Coroutines
 
@@ -140,9 +163,12 @@ public class Master : NetworkBehaviour
 
             StartCoroutine(UpgradeCoroutine(stats.timeUntillNextUpgrade));
 
-
             //Misc
             spawnSmokeAudio = spawnSmokeEffect.GetComponent<AudioSource>();
+            spawnSmokeAudio.clip = masterClass.spawnSound;
+
+            globalAudio = GetComponent<AudioSource>();
+            globalAudio.clip = masterClass.globalSound;
         }
     }
 
@@ -284,7 +310,6 @@ public class Master : NetworkBehaviour
         if (shift && !ctrl) { Shift_LMB(); return; }
         else if (ctrl && !shift) { Ctrl_LMB(); return; }
 
-        print("LMB");
         //Somehow check if master clicks on a unit button, if so do not spawn anything.
 
         TryToSpawnUnit();
@@ -295,8 +320,6 @@ public class Master : NetworkBehaviour
         if (shift && !ctrl) { Shift_RMB(); return; }
         else if (ctrl && !shift) { Ctrl_RMB(); return; }
 
-        print("RMB");
-
         //Unchoose the current unit type
         UnchooseUnit();
     }
@@ -304,28 +327,20 @@ public class Master : NetworkBehaviour
     #region Shift Mouse
     private void Shift_LMB()
     {
-        print("Shift LMB");
-
         TryToSelectUnit();
     }
     private void Shift_RMB()
     {
-        print("Shift RMB");
-
         TryToCommandUnit();
     }
     #endregion
     #region CTRL Mouse Raycasts
     private void Ctrl_LMB()
     {
-        print("Ctrl LMB");
-
         TryToSpawnUnit();
     }
     private void Ctrl_RMB()
     {
-        print("Ctrl RMB");
-
         TryToRefundUnit();
     }
     #endregion
@@ -335,7 +350,7 @@ public class Master : NetworkBehaviour
         ActivateUpgradeDecisions(false);
 
         //Play a sound
-        CmdUpgradeSound();
+        CmdPlayGlobalSound(true);
 
         //Start the coroutine again
         StartCoroutine(UpgradeCoroutine(stats.timeUntillNextUpgrade));
@@ -405,7 +420,7 @@ public class Master : NetworkBehaviour
             UnitList u = unitList[i];
 
             //Instantiate unit button prefab
-            GameObject button = Instantiate(unitButtonPrefab, unitButtonContainer);
+            GameObject button = Instantiate(UI.unitButtonPrefab, UI.unitButtonContainer);
             UnitButton b = button.GetComponent<UnitButton>();
 
             //Add this button to the list
@@ -458,13 +473,30 @@ public class Master : NetworkBehaviour
         UI.RechargeRateButton.SetActive(enable);
     }
 
+    private void SpawnTextReset()
+    {
+        UI.spawnText.text = "";
+        UI.spawnText.gameObject.SetActive(false);
+    }
+
+    private void SetSpawnText(string newText)
+    {
+        UI.spawnText.text = newText;
+        UI.spawnText.gameObject.SetActive(true);
+        Invoke(nameof(SpawnTextReset), 1f);
+    }
+
     #endregion
 
     #region Particles and Effects Functions
 
     private void SmokeEffect(Vector3 point)
     {
+        //Spawn audio
+        spawnSmokeAudio.pitch = Random.Range(0.9f, 1.1f);
         spawnSmokeAudio.PlayOneShot(spawnSmokeAudio.clip);
+
+        //Smoke particles
         spawnSmokeEffect.transform.position = point;
         spawnSmokeEffect.transform.SetParent(null);
         spawnSmokeEffect.Emit(50);
@@ -567,7 +599,7 @@ public class Master : NetworkBehaviour
     #region Spawning & Refunding
     void TryToSpawnUnit()
     {
-        Ray ray = masterCamera.ScreenPointToRay(Input.mousePosition);
+        Ray ray = CameraRay();
 
         //Shoot a raycast from the mouse cursor position
         if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreOnRaycast))
@@ -603,54 +635,19 @@ public class Master : NetworkBehaviour
         //Reference
         SOUnit chosenUnit = unitList[chosenUnitIndex].unit;
 
-        //The position that the raycast hit, which is also where the unit will spawn.
-        Vector3 pos = new Vector3(hit.point.x, hit.point.y + 2, hit.point.z);
-
-        //Send out an OverlapSphere, to check for nearby survivors in range.
-        Collider[] survivorsInRadius = Physics.OverlapSphere(pos, spawnCheckRadius, playerLayer);
-
-        //Iterate through each survivor in range
-        foreach (Collider survivor in survivorsInRadius)
-        {
-            //Get the position of the survivor, and get the direction to check for visibility of the survivor.
-            Vector3 pPos = new Vector3(survivor.transform.position.x, pos.y, survivor.transform.position.z);
-            Vector3 dir = pPos - pos;
-            //Do a raycast, to check if it hits anything on the way to the survivor.
-            if (Physics.Raycast(pos, dir, out RaycastHit newhit, 100f))
-            {
-                //If it hits something, then check if it is a player or not.
-                //If it does not hit the survivor, then the unit can spawn.
-                if (newhit.collider.CompareTag("Player"))
-                {
-                    //If it does hit the survivor, then first check if it is within the survivor's view angle.
-                    dir = pos - pPos;
-                    float angle = Vector3.Angle(dir, survivor.transform.forward);
-                    //Is it inside the view angle of the survivor
-                    if (angle < 60)
-                    {
-                        Debug.DrawRay(pPos, dir, Color.red, 5f);
-                        //If it is within the view angle, then it cannot spawn a unit.
-                        SetSpawnText("Must spawn out of view of survivors");
-                        return;
-                    } 
-                    //Then check if it is within the minimum distance to spawn away from a survivor.
-                    if (Vector3.Distance(pos, newhit.collider.transform.position) <= minimumSpawnRadius)
-                    {
-                        //If it is within the minimum spawn distance, then it cannot spawn a unit.
-                        SetSpawnText("Must spawn further away from survivors");
-                        return;
-                    }
-                }
-            }
-        }
-        //If the spawn location meets the requirements, then spawn the currently selected unit.
+        //Check if the spawn location meets the requirements.
+        if (!ViewCheck(hit.point, true)) return;
 
         //Spawn a smoke effect to hide the instantiation of the unit.
         SmokeEffect(hit.point);
 
+        //If the spawn location meets the requirements, then spawn the currently selected unit.
+
         //A random unit from the chosen unit's prefab list gets picked, and the name gets sent to the server, which then spawns the unit.
         //This is because there can be multiple variations of one unit.
-        CmdSpawnMyUnit(hit.point, chosenUnit.unitPrefab[Random.Range(0, chosenUnit.unitPrefab.Length)].name);
+        CmdSpawnMyUnit(hit.point,
+            chosenUnit.unitPrefab[Random.Range(0, chosenUnit.unitPrefab.Length)].name,
+            unitList[chosenUnitIndex].level);
 
         //Master loses energy, because nothing is free in life
         IncreaseEnergy(-chosenUnit.energyCost);
@@ -660,7 +657,7 @@ public class Master : NetworkBehaviour
 
     void TryToRefundUnit()
     {
-        Ray ray = masterCamera.ScreenPointToRay(Input.mousePosition);
+        Ray ray = CameraRay();
 
         //Shoot a raycast from the mouse cursor position
         if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreOnRaycast))
@@ -680,51 +677,14 @@ public class Master : NetworkBehaviour
 
     void RefundUnit(UnitBase unitToRefund, int refundAmount)
     {
-        //The position that the raycast hit, which is also where the unit will spawn.
-        Vector3 pos = new Vector3(unitToRefund.transform.position.x, unitToRefund.transform.position.y + 2, unitToRefund.transform.position.z);
+        //Check if the refund location meets the requirements.
+        if (!ViewCheck(unitToRefund.transform.position, false)) return;
 
-        //Send out an OverlapSphere, to check for nearby survivors in range.
-        Collider[] survivorsInRadius = Physics.OverlapSphere(pos, spawnCheckRadius, playerLayer);
-
-        //Iterate through each survivor in range
-        foreach (Collider survivor in survivorsInRadius)
-        {
-            //Get the position of the survivor, and get the direction to check for visibility of the survivor.
-            Vector3 pPos = new Vector3(survivor.transform.position.x, pos.y, survivor.transform.position.z);
-            Vector3 dir = pPos - pos;
-            //Do a raycast, to check if it hits anything on the way to the survivor.
-            if (Physics.Raycast(pos, dir, out RaycastHit newhit, 100f))
-            {
-                //If it hits something, then check if it is a player or not.
-                //If it does not hit the survivor, then the unit can spawn.
-                if (newhit.collider.CompareTag("Player"))
-                {
-                    //If it does hit the survivor, then first check if it is within the survivor's view angle.
-                    dir = pos - pPos;
-                    float angle = Vector3.Angle(dir, survivor.transform.forward);
-                    //Is it inside the view angle of the survivor
-                    if (angle < 60)
-                    {
-                        Debug.DrawRay(pPos, dir, Color.red, 5f);
-                        //If it is within the view angle, then it cannot refund a unit.
-                        SetSpawnText("Cannot refund unit in view of survivors");
-                        return;
-                    }
-                    //Then check if it is within the minimum distance to refund away from a survivor.
-                    if (Vector3.Distance(pos, newhit.collider.transform.position) <= minimumSpawnRadius)
-                    {
-                        //If it is within the minimum spawn distance, then it cannot refund a unit.
-                        SetSpawnText("Cannot refund unit close to survivors");
-                        return;
-                    }
-                }
-            }
-        }
-        //If the spawn location meets the requirements, then refund the currently selected unit.
+        //If the location meets the requirements, then refund the unit.
         CmdRefundUnit(unitToRefund.gameObject);
 
         //Spawn a smoke effect to hide the removal of the unit.
-        SmokeEffect(pos);
+        SmokeEffect(unitToRefund.transform.position);
 
         IncreaseEnergy(refundAmount);
         UpdateEnergyUI();//Update UI
@@ -742,15 +702,13 @@ public class Master : NetworkBehaviour
 
         //Increase the unit's level
         unit.level += 1;
+        unitButtons[which].SetUnitLevel(unit.level);
 
         //Decrease xp by amount required to upgrade the unit
         IncreaseXp(-unit.unit.xpToUpgrade);
 
         //Play spooky sound
-        CmdUpgradeSound();
-
-        //OLD
-        //CmdUpgradeUnit(which);
+        CmdPlayGlobalSound(true);
     }
 
     public void UnlockNewUnit(int which)
@@ -771,14 +729,14 @@ public class Master : NetworkBehaviour
         IncreaseXp(-unit.unit.xpToUnlock);
 
         //Play spooky sound
-        CmdUnlockSound();
+        CmdPlayGlobalSound(true);
     }
     #endregion
 
     #region Selecting & Commanding
     private void TryToSelectUnit()
     {
-        Ray ray = masterCamera.ScreenPointToRay(Input.mousePosition);
+        Ray ray = CameraRay();
 
         if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreOnRaycast))
         {
@@ -821,7 +779,7 @@ public class Master : NetworkBehaviour
     }
     private void TryToCommandUnit()
     {
-        Ray ray = masterCamera.ScreenPointToRay(Input.mousePosition);
+        Ray ray = CameraRay();
 
         if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreOnRaycast))
         {
@@ -832,6 +790,77 @@ public class Master : NetworkBehaviour
             selectedUnit.MoveToLocation(hit.point);
         }
     }
+    #endregion
+
+    #region Checks
+
+    //This function determines which camera to shoot a ray from
+    private Ray CameraRay()
+    {
+        Ray ray;
+        if (inTopdownView)
+        {
+            ray = topdown.camera.ScreenPointToRay(Input.mousePosition);
+        }
+        else
+        {
+            ray = flying.camera.ScreenPointToRay(Input.mousePosition);
+        }
+        return ray;
+    }
+
+    //This function determines if a position is within the requirements to either spawn or refund units.
+    private bool ViewCheck(Vector3 where, bool spawn)
+    {
+        //The position to check from. (where the unit will spawn or despawn)
+        Vector3 pos = new Vector3(where.x, where.y + 2, where.z);
+
+        //Send out an OverlapSphere, to check for nearby survivors in range.
+        Collider[] survivorsInRadius = Physics.OverlapSphere(pos, spawnCheckRadius, playerLayer);
+
+        //Iterate through each survivor in range
+        foreach (Collider survivor in survivorsInRadius)
+        {
+            //Get the position of the survivor, and get the direction to check for visibility of the survivor.
+            Vector3 pPos = new Vector3(survivor.transform.position.x, pos.y, survivor.transform.position.z);
+            Vector3 dir = pPos - pos;
+            //Do a raycast, to check if it hits anything on the way to the survivor.
+            if (Physics.Raycast(pos, dir, out RaycastHit newhit, 100f))
+            {
+                //If it hits something, then check if it is a player or not.
+                if (newhit.collider.CompareTag("Player"))
+                {
+                    //If it does hit the survivor, then first check if it is within the survivor's view angle.
+                    dir = pos - pPos;
+                    float angle = Vector3.Angle(dir, survivor.transform.forward);
+                    //Is it inside the view angle of the survivor
+                    if (angle < 60)
+                    {
+                        //If it is within the view angle, then it cannot spawn a unit.
+                        SetSpawnText( spawn ?
+                            "Must spawn out of view of survivors" :
+                            "Cannot refund unit in view of survivors"
+                            );
+                        return false;
+                    }
+                    //Then check if it is within the minimum distance to spawn away from a survivor.
+                    if (Vector3.Distance(pos, newhit.collider.transform.position) <= minimumSpawnRadius)
+                    {
+                        //If it is within the minimum spawn distance, then it cannot spawn a unit.
+                        SetSpawnText( spawn ?
+                            "Must spawn further away from survivors" :
+                            "Cannot refund unit close to survivors"
+                            );
+                        return false;
+                    }
+                }
+            }
+        }
+
+        //If everything is good.
+        return true;
+    }
+
     #endregion
 
     #endregion
@@ -884,66 +913,63 @@ public class Master : NetworkBehaviour
     #endregion
 
     #region Movement
-    private float horizontal;
-    private float vertical;
+    private float horizontal; // These variables are used to move the player. 
+    private float vertical; // They store the player's input values.
     private void Update()
     {
         //Movement
-        transform.Translate(horizontal * Time.deltaTime * topDownMovementSpeed, 0, vertical * Time.deltaTime * topDownMovementSpeed) ;
+        transform.Translate(
+            horizontal * Time.deltaTime * (topdown.movementSpeed * (shift ? 1.5f : 1f)),
+            0, 
+            vertical * Time.deltaTime * (topdown.movementSpeed * (shift ? 1.5f : 1f))) ;
 
         //Mouse Scroll / Camera Zoom
         if (Input.GetAxis("Mouse ScrollWheel") != 0f)
         {
-            masterCamera.orthographicSize = Mathf.Clamp(masterCamera.orthographicSize + -Input.GetAxis("Mouse ScrollWheel") * 5, 10, 20);
+            topdown.camera.orthographicSize = Mathf.Clamp(topdown.camera.orthographicSize + -Input.GetAxis("Mouse ScrollWheel") * 5, 10, 20);
         }
     }
     private void Move(Vector2 moveValues)
     {
         horizontal = moveValues.x;
         vertical = moveValues.y;
-        Debug.Log(moveValues);
     }
     #endregion
 
+    #region Floor Navigation
     void ChangeFloor()
     {
-        masterCamera.transform.position = new Vector3(masterCamera.transform.position.x, positionChange * currentFloor - 0.05f, masterCamera.transform.position.z);
+        topdown.camera.transform.position = new Vector3(
+            topdown.camera.transform.position.x,
+            topdown.positionChange * topdown.currentFloor - 0.05f,
+            topdown.camera.transform.position.z);
     }
     void ChangeFloor(bool up)
     {
+        if (!inTopdownView)
+        {
+            Debug.Log($"Cannot move {(up ? "up" : "down")} floors when not in topdown view mode");
+            return;
+        }
+
         print("Changing floor " + (up ? "up" : "down"));
 
-        currentFloor = Mathf.Clamp(currentFloor += up ? -1 : 1, 1, amountOfFloors); //This needs fixin
+        topdown.currentFloor = Mathf.Clamp(topdown.currentFloor += up ? -1 : 1, 1, topdown.amountOfFloors); //This needs fixin
 
-        masterCamera.transform.position = new Vector3(masterCamera.transform.position.x, positionChange * currentFloor - 0.05f, masterCamera.transform.position.z);
+        topdown.camera.transform.position = new Vector3(
+            topdown.camera.transform.position.x,
+            topdown.positionChange * topdown.currentFloor - 0.05f,
+            topdown.camera.transform.position.z);
     }
+    #endregion
 
-    public void MouseOverButton(bool hover)
-    {
-        this.hover = hover;
-    }
-
-
-    void SpawnTextReset()
-    {
-        UI.spawnText.text = "";
-        UI.spawnText.gameObject.SetActive(false);
-    }
-
-    void SetSpawnText(string newText)
-    {
-        UI.spawnText.text = newText;
-        UI.spawnText.gameObject.SetActive(true);
-        Invoke(nameof(SpawnTextReset), 1f);
-    }
-
-    ///////////COMMANDS
+    #region Network Commands
 
     [Command]
-    void CmdSpawnMyUnit(Vector3 pos, string name)
+    void CmdSpawnMyUnit(Vector3 pos, string name, int level)
     {
         //Set the positions y value to be a bit higher, so that the unit doesn't spawn inside the floor
-        pos = new Vector3(pos.x, pos.y + 1, pos.z);
+        pos = new Vector3(pos.x, pos.y + 0.5f, pos.z);
 
         //Get the unit to spawn
         GameObject unitToSpawn = (GameObject)Resources.Load($"Spawnables/Units/{name}");
@@ -959,7 +985,10 @@ public class Master : NetworkBehaviour
         //Set the units rotation to be random
         newUnit.transform.rotation = Quaternion.Euler(new Vector3(0, Random.Range(0, 360), 0));
 
-        newUnit.GetComponent<UnitBase>().SetUnitSO(unitList[chosenUnitIndex].unit);
+        UnitBase unit = newUnit.GetComponent<UnitBase>();
+
+        unit.SetUnitSO(unitList[chosenUnitIndex].unit);
+        unit.SetLevel(level);
 
         //Spawn the unit on the server
         NetworkServer.Spawn(newUnit);
@@ -970,17 +999,14 @@ public class Master : NetworkBehaviour
         NetworkServer.Destroy(unitToRefund);
     }
     [Command]
-    void CmdUpgradeSound()
+    void CmdPlayGlobalSound(bool randomPitch)
     {
-        GameObject sound = (GameObject)Resources.Load("Spawnables/FX/ZombieMaster_UpgradeSound");
-        var s = Instantiate(sound);
-        NetworkServer.Spawn(s);
+        //Assign a random pitch to the audio source
+        globalAudio.pitch = randomPitch ? Random.Range(0.95f, 1.05f) : 1;
+
+        //Play the audio
+        globalAudio.PlayOneShot(globalAudio.clip);
     }
-    [Command]
-    void CmdUnlockSound()
-    {
-        GameObject sound = (GameObject)Resources.Load("Spawnables/FX/ZombieMaster_UnlockSound");
-        var s = Instantiate(sound);
-        NetworkServer.Spawn(s);
-    }
+
+    #endregion
 }
