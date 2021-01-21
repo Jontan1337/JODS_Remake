@@ -14,13 +14,11 @@ public class SurvivorController : MonoBehaviour
     private void Awake()
     {
         cc = GetComponent<CharacterController>();
-        //JODSInput.Controls.Enable();
     }
 
     private void OnEnable()
     {
         JODSInput.Controls.Survivor.Movement.performed += ctx => Move(ctx.ReadValue<Vector2>());
-        //Debug.Log();
     }
 
     private void OnDisable()
