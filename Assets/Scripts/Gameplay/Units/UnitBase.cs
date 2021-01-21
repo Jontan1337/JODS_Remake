@@ -90,7 +90,7 @@ public abstract class UnitBase : NetworkBehaviour
     [SerializeField] private int sightDistance = 20;
     [SerializeField] private float eyeHeight = 2f;
     [SerializeField] private int viewAngle = 50;
-    [SerializeField] private LayerMask ignoreOnRaycast;
+    [SerializeField] private LayerMask ignoreOnRaycast = 1 << 9;
     [Space]
     [SerializeField] private int alertRadius = 0;
     [SerializeField] private bool canAlert = true;
@@ -790,7 +790,12 @@ public abstract class UnitBase : NetworkBehaviour
 
     public void Die()
     {
-        print(name + ": Am dead");
+        isDead = true;
+        if (isDead)
+        {
+            print(name + ": Am dead");
+
+        }
     }
 
     #endregion
