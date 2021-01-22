@@ -113,6 +113,14 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Change Camera"",
+                    ""type"": ""Button"",
+                    ""id"": ""4b0d47ca-486b-47f8-b20d-f2d43926bc19"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -467,6 +475,17 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""action"": ""Ctrl"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a66c754e-7a44-4c4a-aa94-b7fb63b5f91b"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Change Camera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -621,6 +640,7 @@ public class @Controls : IInputActionCollection, IDisposable
         m_Master_Movement = m_Master.FindAction("Movement", throwIfNotFound: true);
         m_Master_Shift = m_Master.FindAction("Shift", throwIfNotFound: true);
         m_Master_Ctrl = m_Master.FindAction("Ctrl", throwIfNotFound: true);
+        m_Master_ChangeCamera = m_Master.FindAction("Change Camera", throwIfNotFound: true);
         // Survivor
         m_Survivor = asset.FindActionMap("Survivor", throwIfNotFound: true);
         m_Survivor_Movement = m_Survivor.FindAction("Movement", throwIfNotFound: true);
@@ -688,6 +708,7 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_Master_Movement;
     private readonly InputAction m_Master_Shift;
     private readonly InputAction m_Master_Ctrl;
+    private readonly InputAction m_Master_ChangeCamera;
     public struct MasterActions
     {
         private @Controls m_Wrapper;
@@ -704,6 +725,7 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @Movement => m_Wrapper.m_Master_Movement;
         public InputAction @Shift => m_Wrapper.m_Master_Shift;
         public InputAction @Ctrl => m_Wrapper.m_Master_Ctrl;
+        public InputAction @ChangeCamera => m_Wrapper.m_Master_ChangeCamera;
         public InputActionMap Get() { return m_Wrapper.m_Master; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -749,6 +771,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Ctrl.started -= m_Wrapper.m_MasterActionsCallbackInterface.OnCtrl;
                 @Ctrl.performed -= m_Wrapper.m_MasterActionsCallbackInterface.OnCtrl;
                 @Ctrl.canceled -= m_Wrapper.m_MasterActionsCallbackInterface.OnCtrl;
+                @ChangeCamera.started -= m_Wrapper.m_MasterActionsCallbackInterface.OnChangeCamera;
+                @ChangeCamera.performed -= m_Wrapper.m_MasterActionsCallbackInterface.OnChangeCamera;
+                @ChangeCamera.canceled -= m_Wrapper.m_MasterActionsCallbackInterface.OnChangeCamera;
             }
             m_Wrapper.m_MasterActionsCallbackInterface = instance;
             if (instance != null)
@@ -789,6 +814,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Ctrl.started += instance.OnCtrl;
                 @Ctrl.performed += instance.OnCtrl;
                 @Ctrl.canceled += instance.OnCtrl;
+                @ChangeCamera.started += instance.OnChangeCamera;
+                @ChangeCamera.performed += instance.OnChangeCamera;
+                @ChangeCamera.canceled += instance.OnChangeCamera;
             }
         }
     }
@@ -873,6 +901,7 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnMovement(InputAction.CallbackContext context);
         void OnShift(InputAction.CallbackContext context);
         void OnCtrl(InputAction.CallbackContext context);
+        void OnChangeCamera(InputAction.CallbackContext context);
     }
     public interface ISurvivorActions
     {

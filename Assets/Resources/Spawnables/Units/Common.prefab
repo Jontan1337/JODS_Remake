@@ -1278,7 +1278,7 @@ GameObject:
   - component: {fileID: 103439653740018592}
   - component: {fileID: 7460448573406318439}
   m_Layer: 0
-  m_Name: common1
+  m_Name: Common
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1352,8 +1352,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1, y: 2, z: 1}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!114 &3666756808032990687
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1569,8 +1569,12 @@ MonoBehaviour:
     headHeight: 2
     idleSounds: []
     idleVolume: 0.3
-    attackSounds: []
-    attackVolume: 0.4
+    meleeSounds: []
+    meleeVolume: 0.4
+    rangedSound: {fileID: 0}
+    rangedVolume: 0.4
+    specialSound: {fileID: 0}
+    specialVolume: 0.4
     footstepSounds: []
     footstepVolume: 0.1
   select:

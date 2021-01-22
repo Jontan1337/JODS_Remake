@@ -21,6 +21,8 @@ public class MasterClass : ScriptableObject
     [Header("Visual")]
     public Color energyColor;
     public Color energyUseColor;
+    [Space]
+    public Color screenTintColor;
 
     [Header("Master Class Description")]
     [TextArea(10,20)]

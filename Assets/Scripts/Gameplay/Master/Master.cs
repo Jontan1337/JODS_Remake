@@ -96,7 +96,7 @@ public class Master : NetworkBehaviour
     public class FlyingMaster
     {
         public Camera camera = null;
-        public float movementSpeed = 20f;
+        public float movementSpeed = 10f;
     }
     [Space]
     public FlyingMaster flying;
@@ -106,6 +106,8 @@ public class Master : NetworkBehaviour
 
     [Header("Other")]
     [SerializeField] private LayerMask ignoreOnRaycast = 1 << 2;
+    [Space]
+    [SerializeField] private Light tintLight = null;
 
     [Header("Particles and Effects")]
     public ParticleSystem spawnSmokeEffect;
@@ -128,7 +130,7 @@ public class Master : NetworkBehaviour
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
 
-            inTopdownView = true;
+            SwitchCamera(true);
 
             //Default starting energy stats
             stats.currentEnergy = 50;
@@ -137,6 +139,8 @@ public class Master : NetworkBehaviour
             //Energy UI visuals
             UI.energyFillImage.color = masterClass.energyColor;
             UI.energyUseFillImage.color = masterClass.energyUseColor;
+
+            tintLight.color = masterClass.screenTintColor;
 
             //Update the Energy UI
             UpdateEnergyUI();
@@ -242,6 +246,9 @@ public class Master : NetworkBehaviour
         //Floor Input
         JODSInput.Controls.Master.FloorDown.performed += ctx => ChangeFloor(false);
         JODSInput.Controls.Master.FloorUp.performed += ctx => ChangeFloor(true);
+
+        //Camera Change Input
+        JODSInput.Controls.Master.ChangeCamera.performed += ctx => SwitchCamera(!inTopdownView);
     }
 
     private void OnDisable()
@@ -271,9 +278,15 @@ public class Master : NetworkBehaviour
         // Unit Select Input
         JODSInput.Controls.Master.UnitSelecting.performed -= ctx => ChooseUnit(Mathf.FloorToInt(ctx.ReadValue<float>() - 1));
 
+        // Movement Input
+        JODSInput.Controls.Survivor.Movement.performed -= ctx => Move(ctx.ReadValue<Vector2>());
+
         //Floor Input
         JODSInput.Controls.Master.FloorDown.performed -= ctx => ChangeFloor(false);
         JODSInput.Controls.Master.FloorUp.performed -= ctx => ChangeFloor(true);
+
+        //Camera Change Input
+        JODSInput.Controls.Master.ChangeCamera.performed -= ctx => SwitchCamera(!inTopdownView);
     }
 
     private void OnValidate()
@@ -984,22 +997,46 @@ public class Master : NetworkBehaviour
     private float vertical; // They store the player's input values.
     private void Update()
     {
-        //Movement
-        transform.Translate(
-            horizontal * Time.deltaTime * (topdown.movementSpeed * (shift ? 1.5f : 1f)),
-            0, 
-            vertical * Time.deltaTime * (topdown.movementSpeed * (shift ? 1.5f : 1f))) ;
-
-        //Mouse Scroll / Camera Zoom
-        if (Input.GetAxis("Mouse ScrollWheel") != 0f)
+        if (inTopdownView)
         {
-            topdown.camera.orthographicSize = Mathf.Clamp(topdown.camera.orthographicSize + -Input.GetAxis("Mouse ScrollWheel") * 5, 10, 20);
+            //Movement
+            topdown.camera.transform.Translate(
+                horizontal * Time.deltaTime * (topdown.movementSpeed * (shift ? 1.5f : 1f)),
+                0,
+                vertical * Time.deltaTime * (topdown.movementSpeed * (shift ? 1.5f : 1f)), 
+                Space.World);
+
+            //Mouse Scroll / Camera Zoom
+            if (Input.GetAxis("Mouse ScrollWheel") != 0f)
+            {
+                topdown.camera.orthographicSize = Mathf.Clamp(topdown.camera.orthographicSize + -Input.GetAxis("Mouse ScrollWheel") * 5, 10, 20);
+            }
+        }
+    }
+    private void FixedUpdate()
+    {
+        if (!inTopdownView)
+        {
+            //Movement
+            flying.camera.transform.Translate(
+                horizontal * Time.deltaTime * (topdown.movementSpeed * (shift ? 1.5f : 1f)),
+                0,
+                vertical * Time.deltaTime * (topdown.movementSpeed * (shift ? 1.5f : 1f)),
+                Space.World);
+
         }
     }
     private void Move(Vector2 moveValues)
     {
         horizontal = moveValues.x;
         vertical = moveValues.y;
+    }
+
+    private void SwitchCamera(bool top)
+    {
+        inTopdownView = top;
+        topdown.camera.gameObject.SetActive(top);
+        flying.camera.gameObject.SetActive(!top);
     }
     #endregion
 
