@@ -483,6 +483,14 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
+                    ""name"": ""Jump"",
+                    ""type"": ""Button"",
+                    ""id"": ""d4646ee5-72f9-4108-bc62-51785ef39e68"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
                     ""name"": ""Camera"",
                     ""type"": ""PassThrough"",
                     ""id"": ""61c3a70e-68ea-4ce3-b203-4fd128c11e2d"",
@@ -576,6 +584,17 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c00fd729-8050-4e98-bd08-d73ebdd954ef"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -605,6 +624,7 @@ public class @Controls : IInputActionCollection, IDisposable
         // Survivor
         m_Survivor = asset.FindActionMap("Survivor", throwIfNotFound: true);
         m_Survivor_Movement = m_Survivor.FindAction("Movement", throwIfNotFound: true);
+        m_Survivor_Jump = m_Survivor.FindAction("Jump", throwIfNotFound: true);
         m_Survivor_Camera = m_Survivor.FindAction("Camera", throwIfNotFound: true);
         m_Survivor_Interact = m_Survivor.FindAction("Interact", throwIfNotFound: true);
     }
@@ -778,6 +798,7 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputActionMap m_Survivor;
     private ISurvivorActions m_SurvivorActionsCallbackInterface;
     private readonly InputAction m_Survivor_Movement;
+    private readonly InputAction m_Survivor_Jump;
     private readonly InputAction m_Survivor_Camera;
     private readonly InputAction m_Survivor_Interact;
     public struct SurvivorActions
@@ -785,6 +806,7 @@ public class @Controls : IInputActionCollection, IDisposable
         private @Controls m_Wrapper;
         public SurvivorActions(@Controls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Movement => m_Wrapper.m_Survivor_Movement;
+        public InputAction @Jump => m_Wrapper.m_Survivor_Jump;
         public InputAction @Camera => m_Wrapper.m_Survivor_Camera;
         public InputAction @Interact => m_Wrapper.m_Survivor_Interact;
         public InputActionMap Get() { return m_Wrapper.m_Survivor; }
@@ -799,6 +821,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Movement.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnMovement;
                 @Movement.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnMovement;
                 @Movement.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnMovement;
+                @Jump.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnJump;
+                @Jump.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnJump;
+                @Jump.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnJump;
                 @Camera.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnCamera;
                 @Camera.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnCamera;
                 @Camera.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnCamera;
@@ -812,6 +837,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Movement.started += instance.OnMovement;
                 @Movement.performed += instance.OnMovement;
                 @Movement.canceled += instance.OnMovement;
+                @Jump.started += instance.OnJump;
+                @Jump.performed += instance.OnJump;
+                @Jump.canceled += instance.OnJump;
                 @Camera.started += instance.OnCamera;
                 @Camera.performed += instance.OnCamera;
                 @Camera.canceled += instance.OnCamera;
@@ -849,6 +877,7 @@ public class @Controls : IInputActionCollection, IDisposable
     public interface ISurvivorActions
     {
         void OnMovement(InputAction.CallbackContext context);
+        void OnJump(InputAction.CallbackContext context);
         void OnCamera(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
     }

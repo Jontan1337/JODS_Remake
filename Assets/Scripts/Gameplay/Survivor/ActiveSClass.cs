@@ -18,7 +18,7 @@ public class ActiveSClass : MonoBehaviour
 
     private void Start()
     {
-       
+        //gameObject.AddComponent<SoldierClass>();
     }
 
     float abilityCooldownCount;
@@ -28,4 +28,11 @@ public class ActiveSClass : MonoBehaviour
     {
         yield return new WaitForSeconds(abilityCooldownCount);
     }
+
+
+    void FindClass(string classToFind)
+    {
+        GameObject.Find($"{classToFind}");
+    }
+
 }

@@ -19,6 +19,7 @@ public class SurvivorController : MonoBehaviour
     private void OnEnable()
     {
         JODSInput.Controls.Survivor.Movement.performed += ctx => Move(ctx.ReadValue<Vector2>());
+        JODSInput.Controls.Survivor.Jump.performed += ctx => Move(ctx.ReadValue<Vector2>());
     }
 
     private void OnDisable()

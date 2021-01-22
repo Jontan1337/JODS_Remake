@@ -470,6 +470,14 @@
                     "interactions": ""
                 },
                 {
+                    "name": "Jump",
+                    "type": "Button",
+                    "id": "d4646ee5-72f9-4108-bc62-51785ef39e68",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
                     "name": "Camera",
                     "type": "PassThrough",
                     "id": "61c3a70e-68ea-4ce3-b203-4fd128c11e2d",
@@ -561,6 +569,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c00fd729-8050-4e98-bd08-d73ebdd954ef",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
