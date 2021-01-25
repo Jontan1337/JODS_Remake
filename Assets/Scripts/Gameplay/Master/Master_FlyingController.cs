@@ -25,10 +25,9 @@ public class Master_FlyingController : MonoBehaviour
     {
         cam = GetComponent<Camera>();
         rb = GetComponent<Rigidbody>();
-    }
 
-    private void OnEnable()
-    {
+        //Input stuff
+
         // Shift Input
         JODSInput.Controls.Master.Shift.started += ctx => ShiftButton(true);
         JODSInput.Controls.Master.Shift.canceled += ctx => ShiftButton(false);
@@ -40,8 +39,24 @@ public class Master_FlyingController : MonoBehaviour
         JODSInput.Controls.Master.Camera.performed += ctx => Rotate(ctx.ReadValue<Vector2>());
     }
 
+    private void OnEnable()
+    {
+        /*
+        // Shift Input
+        JODSInput.Controls.Master.Shift.started += ctx => ShiftButton(true);
+        JODSInput.Controls.Master.Shift.canceled += ctx => ShiftButton(false);
+
+        // Movement Input
+        JODSInput.Controls.Master.Movement.performed += ctx => Move(ctx.ReadValue<Vector2>());
+
+        // Camera Input
+        JODSInput.Controls.Master.Camera.performed += ctx => Rotate(ctx.ReadValue<Vector2>());
+        */
+    }
+
     private void OnDisable()
     {
+        /*
         // Shift Input
         JODSInput.Controls.Master.Shift.started -= ctx => ShiftButton(true);
         JODSInput.Controls.Master.Shift.canceled -= ctx => ShiftButton(false);
@@ -51,6 +66,7 @@ public class Master_FlyingController : MonoBehaviour
 
         // Camera Input
         JODSInput.Controls.Master.Camera.performed -= ctx => Rotate(ctx.ReadValue<Vector2>());
+        */
     }
     [Space]
     [SerializeField] private bool shift = false;

@@ -827,7 +827,6 @@ public class Master : NetworkBehaviour
     //This function is to reduce redundancy, because there are multiple functions that use raycasts.
     private void Raycast(out bool didHit, out RaycastHit rayHit)
     {
-        print("RAY");
         Ray ray; //Empty variables
         int distance;
 

@@ -17,6 +17,7 @@ public class Master_TopdownController : MonoBehaviour
 
     private void OnEnable()
     {
+        /*
         //Shift Input
         JODSInput.Controls.Master.Shift.started += ctx => ShiftButton(true);
         JODSInput.Controls.Master.Shift.canceled += ctx => ShiftButton(false);
@@ -27,10 +28,12 @@ public class Master_TopdownController : MonoBehaviour
         //Floor Input
         JODSInput.Controls.Master.FloorDown.performed += ctx => ChangeFloor(false);
         JODSInput.Controls.Master.FloorUp.performed += ctx => ChangeFloor(true);
+        */
     }
 
     private void OnDisable()
     {
+        /*
         //Shift Input
         JODSInput.Controls.Master.Shift.started -= ctx => ShiftButton(true);
         JODSInput.Controls.Master.Shift.canceled -= ctx => ShiftButton(false);
@@ -41,6 +44,7 @@ public class Master_TopdownController : MonoBehaviour
         //Floor Input
         JODSInput.Controls.Master.FloorDown.performed -= ctx => ChangeFloor(false);
         JODSInput.Controls.Master.FloorUp.performed -= ctx => ChangeFloor(true);
+        */
     }
     [Space]
     [SerializeField] private bool shift = false;
@@ -63,6 +67,19 @@ public class Master_TopdownController : MonoBehaviour
         currentFloor = Random.Range(1, amountOfFloors + 1);
 
         ChangeFloor();
+
+        //Input stuff
+
+        //Shift Input
+        JODSInput.Controls.Master.Shift.started += ctx => ShiftButton(true);
+        JODSInput.Controls.Master.Shift.canceled += ctx => ShiftButton(false);
+
+        // Movement Input
+        JODSInput.Controls.Master.Movement.performed += ctx => Move(ctx.ReadValue<Vector2>());
+
+        //Floor Input
+        JODSInput.Controls.Master.FloorDown.performed += ctx => ChangeFloor(false);
+        JODSInput.Controls.Master.FloorUp.performed += ctx => ChangeFloor(true);
     }
     #region Movement
     private void Update()
