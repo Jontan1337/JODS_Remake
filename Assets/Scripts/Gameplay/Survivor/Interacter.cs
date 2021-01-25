@@ -10,22 +10,20 @@ public class Interacter : NetworkBehaviour
     private float interactionRange = 2f;
     [SerializeField]
     private LayerMask layerMask = 15;
+    [SerializeField]
+    private GameObject testingEquipment = null;
 
     private RaycastHit rayHit;
     private IInteractable currentInteractable;
 
     public override void OnStartAuthority()
     {
-        if (!hasAuthority) return;
-
         Debug.Log("on start authority");
         JODSInput.Controls.Survivor.Interact.performed += ctx => Cmd_Interact();
     }
 
     public override void OnStopAuthority()
     {
-        if (!hasAuthority) return;
-
         Debug.Log("on stop authority");
         JODSInput.Controls.Survivor.Interact.performed -= ctx => Cmd_Interact();
     }
@@ -40,14 +38,15 @@ public class Interacter : NetworkBehaviour
         Debug.DrawRay(playerCamera.position, playerCamera.forward * interactionRange);
     }
 
-    [Command]
+    //[Command]
     public void Cmd_Interact()
     {
-        Debug.Log("helo");
+        testingEquipment.TryGetComponent(out IInteractable interactable);
+        interactable?.Svr_Interact(gameObject);
+
         if (rayHit.collider)
         {
-            rayHit.collider.TryGetComponent(out IInteractable interactable);
-            interactable?.Svr_Interact(gameObject);
+
         }
     }
 }

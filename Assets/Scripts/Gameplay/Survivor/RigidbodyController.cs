@@ -2,7 +2,7 @@
 using Mirror;
 
 [RequireComponent(typeof(Rigidbody))]
-public class RigidbodyController : NetworkBehaviour
+public class RigidbodyController : MonoBehaviour
 {
     [Header("Movement settings")]
     [SerializeField]
@@ -13,6 +13,14 @@ public class RigidbodyController : NetworkBehaviour
     [Header("References")]
     [SerializeField]
     private Rigidbody playerRigidbody = null;
+    [SerializeField]
+    private Camera playerCamera = null;
+    [SerializeField]
+    private Transform playerModel = null;
+
+    float sensititivy = 50f;
+    float sensitivityMultiplier = 1f;
+
 
     Vector3 movement = Vector3.zero;
     private float horizontalMove = 0f;
@@ -20,10 +28,6 @@ public class RigidbodyController : NetworkBehaviour
 
     private void Awake()
     {
-        if (acceleration == 1)
-        {
-
-        }
         playerRigidbody = GetComponent<Rigidbody>();
     }
 
@@ -39,9 +43,9 @@ public class RigidbodyController : NetworkBehaviour
 
     private void FixedUpdate()
     {
-        movement = transform.TransformDirection(new Vector3(horizontalMove, 0f, verticalMove)) * moveSpeed;
+        movement = playerModel.TransformDirection(horizontalMove, 0.0f, verticalMove);
 
-        playerRigidbody.AddForce(movement, ForceMode.Impulse);
+        playerRigidbody.AddForce(movement * Time.fixedDeltaTime * moveSpeed);
     }
 
     private void Move(Vector2 moveValues)

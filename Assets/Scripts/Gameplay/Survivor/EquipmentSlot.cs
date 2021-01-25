@@ -3,9 +3,10 @@ using Mirror;
 
 public class EquipmentSlot : NetworkBehaviour
 {
-    private GameObject equipment;
-    public string barName;
+    public string slotName;
 
+    [SerializeField]
+    private GameObject equipment;
     [SerializeField]
     private EquipmentType equipmentType;
 
@@ -16,19 +17,28 @@ public class EquipmentSlot : NetworkBehaviour
     }
     public EquipmentType EquipmentType => equipmentType;
 
-    //private void Awake()
-    //{
-        
-    //}
+    #region Serialization
+    public override bool OnSerialize(NetworkWriter writer, bool initialState)
+    {
+        Debug.Log("OnSerialize!");
 
-    //public void SendMessage(short )
-    //{
-    //    NetworkWriter nw = new NetworkWriter();
+        writer.WriteGameObject(equipment);
+        writer.WriteString(equipmentType.ToString());
 
-    //    nw.WriteBytes();
-    //}
+        return true;
+    }
 
-    public bool Equip(GameObject equipment, EquipmentType equipmentType)
+    public override void OnDeserialize(NetworkReader reader, bool initialState)
+    {
+        Debug.Log("OnDeserialize!");
+
+        reader.ReadGameObject();
+        reader.ReadString();
+    }
+    #endregion
+
+    //[Server]
+    public bool Svr_Equip(GameObject equipment, EquipmentType equipmentType)
     {
         if (equipmentType == EquipmentType)
         {
@@ -40,6 +50,7 @@ public class EquipmentSlot : NetworkBehaviour
 
     public bool Drop(Transform dropTransform)
     {
+        Debug.Log("Drop");
         return true;
     }
 }

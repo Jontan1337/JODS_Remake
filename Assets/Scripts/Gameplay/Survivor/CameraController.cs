@@ -11,6 +11,8 @@ public class CameraController : MonoBehaviour
     [SerializeField]
     private Transform cameraTarget = null;
     [SerializeField]
+    private Transform playerModel = null;
+    [SerializeField]
     private float sensitivity = 1f;
     [SerializeField]
     private float cameraSmoothing = 10f;
@@ -22,7 +24,7 @@ public class CameraController : MonoBehaviour
     float mouseY;
     private void Update()
     {
-        playerCamera.position = Vector3.Slerp(playerCamera.position, cameraTarget.position, Time.fixedDeltaTime * cameraSmoothing);
+        playerCamera.position = cameraTarget.position;
 
         mouseX += Input.GetAxisRaw("Mouse X") * sensitivity;
         mouseY += Input.GetAxisRaw("Mouse Y") * sensitivity;
@@ -31,5 +33,10 @@ public class CameraController : MonoBehaviour
         rotateHorizontal.rotation = Quaternion.Euler(horizontalRotation);
         verticalRotation = new Vector3(-mouseY, horizontalRotation.y);
         rotateVertical.rotation = Quaternion.Euler(verticalRotation);
+    }
+
+    private void LateUpdate()
+    {
+        playerModel.rotation = Quaternion.Euler(0f, playerCamera.rotation.eulerAngles.y, 0f);
     }
 }

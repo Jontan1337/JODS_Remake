@@ -100,6 +100,7 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable
         Debug.Log($"{interacter} interacted with {gameObject}");
 
         interacter.TryGetComponent(out Equipment equipment);
-        //equipment?.Equip(this, );
+        equipment?.Svr_Equip(gameObject, equipmentType);
+        //IsInteractable = false;
     }
 }
