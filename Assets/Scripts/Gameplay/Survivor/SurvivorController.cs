@@ -13,33 +13,29 @@ public class SurvivorController : MonoBehaviour
     private float horizontal;
     private float vertical;
 
-    private void Awake()
-    {
-        cc = GetComponent<CharacterController>();
-    }
+    [SerializeField]
+    private Transform groundCheck;
+    private float groundDistance = 0.2f;
+    [SerializeField]
+    private LayerMask groundMask;
+    public bool isGrounded;
 
-    private void OnEnable()
+    private void Start()
     {
         JODSInput.Controls.Survivor.Movement.performed += ctx => Move(ctx.ReadValue<Vector2>());
-        JODSInput.Controls.Survivor.Jump.performed += ctx => Jump(ctx.ReadValue<float>());
+        JODSInput.Controls.Survivor.Jump.performed += ctx => Jump();
+        cc = GetComponent<CharacterController>();
+        print("Awake");
     }
 
-    private void OnDisable()
-    {
-        JODSInput.Controls.Survivor.Movement.performed -= ctx => Move(ctx.ReadValue<Vector2>());
-        JODSInput.Controls.Survivor.Jump.performed -= ctx => Jump(ctx.ReadValue<float>());
-    }
 
     private void Update()
     {
-        if (cc.isGrounded)
+        CheckGround();
+        if (isGrounded)
         {
-            moveDirection = transform.TransformDirection(new Vector3(horizontal, 0.0f, vertical)) * speed;
+            moveDirection = transform.TransformDirection(new Vector3(horizontal, 0.00f, vertical)) * speed;
         }
-        //if (Input.GetKeyDown(KeyCode.Space))
-        //{
-        //    Jump(jumpSpeed);
-        //}
         moveDirection.y -= gravity * Time.deltaTime;
         cc.Move(moveDirection * Time.deltaTime);
     }
@@ -50,13 +46,17 @@ public class SurvivorController : MonoBehaviour
         vertical = moveValues.y;
     }
 
-    private void Jump(float jumpSpeed)
+    private void Jump()
     {
-        if (cc.isGrounded)
+        if (isGrounded)
         {
             moveDirection.y += jumpSpeed;
             print("g0");
         }
     }
 
+    private void CheckGround()
+    {
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+    }
 }
