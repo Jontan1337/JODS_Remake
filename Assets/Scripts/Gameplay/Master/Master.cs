@@ -82,12 +82,6 @@ public class Master : NetworkBehaviour
     public class TopdownMaster
     {
         public Camera camera = null;
-        [Space]
-        public float movementSpeed = 20f;
-        [Space]
-        public int currentFloor = 1;
-        public int positionChange = 5;
-        public int amountOfFloors = 0;
     }
     [Space]
     public TopdownMaster topdown;
@@ -96,7 +90,6 @@ public class Master : NetworkBehaviour
     public class FlyingMaster
     {
         public Camera camera = null;
-        public float movementSpeed = 10f;
     }
     [Space]
     public FlyingMaster flying;
@@ -130,6 +123,8 @@ public class Master : NetworkBehaviour
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
 
+            inTopdownView = false; //This bool is simply to stop a raycast from being performed.
+            //The bool will be set to true in this function.
             SwitchCamera(true);
 
             //Default starting energy stats
@@ -149,16 +144,6 @@ public class Master : NetworkBehaviour
             //Make Unit Buttons
             InitializeUnitButtons();
 
-            //Default floor stuff
-
-            //Get all floors in level
-            topdown.amountOfFloors = GameObject.FindGameObjectsWithTag("Floor").Length;
-            Debug.Log($"There are {topdown.amountOfFloors} floors on this map");
-
-            //Start on a random floor
-            topdown.currentFloor = Random.Range(1, topdown.amountOfFloors + 1);
-
-            ChangeFloor();
             //-----------------------
 
             ActivateUpgradeDecisions(false);
@@ -216,17 +201,9 @@ public class Master : NetworkBehaviour
     {
         // Left Mouse Input
         JODSInput.Controls.Master.LMB.performed += ctx => LMB();
-        /*
-        JODSInput.Controls.Master.ShiftLMB.performed += ctx => Shift_LMB();
-        JODSInput.Controls.Master.CtrlLMB.performed += ctx => Ctrl_LMB();
-        */
 
         // Right Mouse Input
         JODSInput.Controls.Master.RMB.performed += ctx => RMB();
-        /*
-        JODSInput.Controls.Master.ShiftRMB.performed += ctx => Shift_RMB();
-        JODSInput.Controls.Master.CtrlRMB.performed += ctx => Ctrl_RMB();
-        */
 
         //Shift Input
         JODSInput.Controls.Master.Shift.started += ctx => ShiftButton(true);
@@ -236,16 +213,8 @@ public class Master : NetworkBehaviour
         JODSInput.Controls.Master.Ctrl.started += ctx => CtrlButton(true);
         JODSInput.Controls.Master.Ctrl.canceled += ctx => CtrlButton(false);
 
-
         // Unit Select Input
         JODSInput.Controls.Master.UnitSelecting.performed += ctx => ChooseUnit(Mathf.FloorToInt(ctx.ReadValue<float>() - 1));
-
-        // Movement Input
-        JODSInput.Controls.Survivor.Movement.performed += ctx => Move(ctx.ReadValue<Vector2>());
-
-        //Floor Input
-        JODSInput.Controls.Master.FloorDown.performed += ctx => ChangeFloor(false);
-        JODSInput.Controls.Master.FloorUp.performed += ctx => ChangeFloor(true);
 
         //Camera Change Input
         JODSInput.Controls.Master.ChangeCamera.performed += ctx => SwitchCamera(!inTopdownView);
@@ -255,17 +224,9 @@ public class Master : NetworkBehaviour
     {
         // Left Mouse Input
         JODSInput.Controls.Master.LMB.performed -= ctx => LMB();
-        /*
-        JODSInput.Controls.Master.ShiftLMB.performed -= ctx => Shift_LMB();
-        JODSInput.Controls.Master.CtrlLMB.performed -= ctx => Ctrl_LMB();
-        */
 
         // Right Mouse Input
         JODSInput.Controls.Master.RMB.performed -= ctx => RMB();
-        /*
-        JODSInput.Controls.Master.ShiftRMB.performed -= ctx => Shift_RMB();
-        JODSInput.Controls.Master.CtrlRMB.performed -= ctx => Ctrl_RMB();
-        */
 
         //Shift Input
         JODSInput.Controls.Master.Shift.started -= ctx => ShiftButton(true);
@@ -277,13 +238,6 @@ public class Master : NetworkBehaviour
 
         // Unit Select Input
         JODSInput.Controls.Master.UnitSelecting.performed -= ctx => ChooseUnit(Mathf.FloorToInt(ctx.ReadValue<float>() - 1));
-
-        // Movement Input
-        JODSInput.Controls.Survivor.Movement.performed -= ctx => Move(ctx.ReadValue<Vector2>());
-
-        //Floor Input
-        JODSInput.Controls.Master.FloorDown.performed -= ctx => ChangeFloor(false);
-        JODSInput.Controls.Master.FloorUp.performed -= ctx => ChangeFloor(true);
 
         //Camera Change Input
         JODSInput.Controls.Master.ChangeCamera.performed -= ctx => SwitchCamera(!inTopdownView);
@@ -428,8 +382,6 @@ public class Master : NetworkBehaviour
             yield return new WaitForSeconds(0.5f);
 
             SetUnitDestinationMarker(!IsUnitCloseToDestination());
-
-            print("select");
         }
     }
 
@@ -656,28 +608,26 @@ public class Master : NetworkBehaviour
     #region Spawning & Refunding
     void TryToSpawnUnit()
     {
-        Ray ray = CameraRay();
+        //Have I chosen a unit to spawn?
+        if (!hasChosenAUnit) return; //if not, then don't proceed
 
-        //Shoot a raycast from the mouse cursor position
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreOnRaycast))
+        Raycast(out bool didHit, out RaycastHit hit);
+
+        if (didHit)
         {
             //Did the raycast hit an area where units can spawn? 
             //(The "Ground" tag is currently the only surface where units can spawn)
             if (hit.collider.CompareTag("Ground"))
             {
-                //Have I chosen a unit to spawn?
-                if (hasChosenAUnit)
+                //Do I have enough energy to spawn the chosen unit?
+                if (unitList[chosenUnitIndex].unit.energyCost <= stats.currentEnergy)
                 {
-                    //Do I have enough energy to spawn the chosen unit?
-                    if (unitList[chosenUnitIndex].unit.energyCost <= stats.currentEnergy)
-                    {
-                        //If yes, spawn the unit at the location
-                        SpawnUnit(hit);
-                    }
-                    else
-                    {
-                        SetSpawnText("Not enough energy");
-                    }
+                    //If yes, spawn the unit at the location
+                    SpawnUnit(hit);
+                }
+                else
+                {
+                    SetSpawnText("Not enough energy");
                 }
             }
             else
@@ -714,10 +664,9 @@ public class Master : NetworkBehaviour
 
     void TryToRefundUnit()
     {
-        Ray ray = CameraRay();
+        Raycast(out bool didHit, out RaycastHit hit);
 
-        //Shoot a raycast from the mouse cursor position
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreOnRaycast))
+        if (didHit)
         {
             //If I hit a unit, try and refund that unit
             if (hit.collider.TryGetComponent(out UnitBase unit))
@@ -793,9 +742,9 @@ public class Master : NetworkBehaviour
     #region Selecting & Commanding
     private void TryToSelectUnit()
     {
-        Ray ray = CameraRay();
+        Raycast(out bool didHit, out RaycastHit hit);
 
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreOnRaycast))
+        if (didHit)
         {
             //If I click on a unit, try and select that unit
             if (hit.collider.TryGetComponent(out UnitBase unit))
@@ -827,7 +776,7 @@ public class Master : NetworkBehaviour
         selectedUnit = unit;
         selectedUnit.Select();
 
-        StartSelectCoroutine(); print("Select Unit");
+        StartSelectCoroutine();
     }
     private void DeselectUnit()
     {
@@ -843,17 +792,17 @@ public class Master : NetworkBehaviour
     }
     private void TryToCommandUnit()
     {
-        Ray ray = CameraRay();
+        //If I don't have a unit currently selected, then return
+        if (!selectedUnit) return;
 
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreOnRaycast))
+        Raycast(out bool didHit, out RaycastHit hit);
+
+        if (didHit)
         {
-            //If I don't have a unit currently selected, then return
-            if (!selectedUnit) return;
-
             //Command my selected unit to move to the location
             selectedUnit.MoveToLocation(hit.point);
 
-            StartSelectCoroutine(); print("Command Unit");
+            StartSelectCoroutine();
         }
     }
     private void StartSelectCoroutine()
@@ -865,7 +814,6 @@ public class Master : NetworkBehaviour
 
         if (!selectCoroutineActive) 
         {
-            print("START");
             selectCo = StartCoroutine(SelectCoroutine());
             selectCoroutineActive = true; 
         }
@@ -874,19 +822,39 @@ public class Master : NetworkBehaviour
 
     #region Checks
 
-    //This function determines which camera to shoot a ray from
-    private Ray CameraRay()
+    //This function will shoot a ray from the currently used camera, and will return a Raycast Hit
+    //This is used by all functions with raycast requirements
+    //This function is to reduce redundancy, because there are multiple functions that use raycasts.
+    private void Raycast(out bool didHit, out RaycastHit rayHit)
     {
-        Ray ray;
+        print("RAY");
+        Ray ray; //Empty variables
+        int distance;
+
+        //Is the master currently in topdown view?
         if (inTopdownView)
         {
+            //Send the ray from the topdown camera
             ray = topdown.camera.ScreenPointToRay(Input.mousePosition);
+
+            distance = 100;
         }
+        //Is the master currently in flying view?
         else
         {
+            //Send the ray from the flying camera
             ray = flying.camera.ScreenPointToRay(Input.mousePosition);
+
+            distance = 20; //Decrease the distance of the raycast.
         }
-        return ray;
+
+        //Perform the raycast with the chosen parameters
+        //The bool will be assigned to true if the raycast hit anything.
+        didHit = Physics.Raycast(ray, out RaycastHit hit, distance, ~ignoreOnRaycast);
+        //The hit will be assigned as the raycast hit from the raycast.
+        rayHit = hit;
+        //Return the variables
+        return;
     }
 
     //This function determines if a position is within the requirements to either spawn or refund units.
@@ -993,77 +961,31 @@ public class Master : NetworkBehaviour
     #endregion
 
     #region Movement
-    private float horizontal; // These variables are used to move the player. 
-    private float vertical; // They store the player's input values.
-    private void Update()
-    {
-        if (inTopdownView)
-        {
-            //Movement
-            topdown.camera.transform.Translate(
-                horizontal * Time.deltaTime * (topdown.movementSpeed * (shift ? 1.5f : 1f)),
-                0,
-                vertical * Time.deltaTime * (topdown.movementSpeed * (shift ? 1.5f : 1f)), 
-                Space.World);
-
-            //Mouse Scroll / Camera Zoom
-            if (Input.GetAxis("Mouse ScrollWheel") != 0f)
-            {
-                topdown.camera.orthographicSize = Mathf.Clamp(topdown.camera.orthographicSize + -Input.GetAxis("Mouse ScrollWheel") * 5, 10, 20);
-            }
-        }
-    }
-    private void FixedUpdate()
-    {
-        if (!inTopdownView)
-        {
-            //Movement
-            flying.camera.transform.Translate(
-                horizontal * Time.deltaTime * (topdown.movementSpeed * (shift ? 1.5f : 1f)),
-                0,
-                vertical * Time.deltaTime * (topdown.movementSpeed * (shift ? 1.5f : 1f)),
-                Space.World);
-
-        }
-    }
-    private void Move(Vector2 moveValues)
-    {
-        horizontal = moveValues.x;
-        vertical = moveValues.y;
-    }
-
     private void SwitchCamera(bool top)
     {
-        inTopdownView = top;
-        topdown.camera.gameObject.SetActive(top);
-        flying.camera.gameObject.SetActive(!top);
-    }
-    #endregion
-
-    #region Floor Navigation
-    void ChangeFloor()
-    {
-        topdown.camera.transform.position = new Vector3(
-            topdown.camera.transform.position.x,
-            topdown.positionChange * topdown.currentFloor - 0.05f,
-            topdown.camera.transform.position.z);
-    }
-    void ChangeFloor(bool up)
-    {
-        if (!inTopdownView)
+        //If the master is currently in topdown view (switching to flying),
+        //Then set the position of the flying camera to be at the mouse cursor.
+        if (inTopdownView == true)
         {
-            Debug.Log($"Cannot move {(up ? "up" : "down")} floors when not in topdown view mode");
-            return;
+            Raycast(out bool didHit, out RaycastHit hit);
+
+            if (didHit)
+            {
+                flying.camera.transform.position = new Vector3(hit.point.x,
+                    hit.point.y + 3,
+                    hit.point.z);
+            }
         }
 
-        print("Changing floor " + (up ? "up" : "down"));
+        //Switch the bool
+        inTopdownView = top;
 
-        topdown.currentFloor = Mathf.Clamp(topdown.currentFloor += up ? -1 : 1, 1, topdown.amountOfFloors); //This needs fixin
+        //Deactivate / Activate the cameras based on the bool
+        topdown.camera.gameObject.SetActive(top);
+        flying.camera.gameObject.SetActive(!top);
 
-        topdown.camera.transform.position = new Vector3(
-            topdown.camera.transform.position.x,
-            topdown.positionChange * topdown.currentFloor - 0.05f,
-            topdown.camera.transform.position.z);
+        Cursor.lockState = top ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.visible = top;
     }
     #endregion
 
