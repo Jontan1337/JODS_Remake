@@ -22,7 +22,15 @@ public class MasterClass : ScriptableObject
     public Color energyColor;
     public Color energyUseColor;
     [Space]
+    public Color unitSelectColor;
+    [Space]
     public Color screenTintColor;
+    [Space]
+    public Mesh selectPositionMarkerMesh;
+    public Color selectPositionMarkerColor;
+    [Space]
+    public Mesh markerMesh;
+    public Color markerColor;
 
     [Header("Master Class Description")]
     [TextArea(10,20)]

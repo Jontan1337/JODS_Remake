@@ -431,10 +431,10 @@ public abstract class UnitBase : NetworkBehaviour
 
             //Search ----------
 
-            //Get a list of all colliders within Sight Distance
+            //Get a list of all survivor colliders within Sight Distance
             Collider[] collidersHit = Physics.OverlapSphere(transform.position, sightDistance, survivorLayer);
 
-            //Iterate through each of them, to see if they're players
+            //Iterate through each of them, to see if they meet the requirements to be chased
             foreach (Collider col in collidersHit)
             {
                 //Can I see the player?
@@ -446,7 +446,7 @@ public abstract class UnitBase : NetworkBehaviour
                 //If I can see the player, and it is within my field of view
                 if (canSee && inViewAngle)
                 {
-                    //I can see the player
+                    //I can see the player, go go go!
                     AcquireTarget(col.transform, false);
                 }
             }
@@ -873,7 +873,7 @@ public abstract class UnitBase : NetworkBehaviour
 
     #region Commanding Units & Refunding
     #region Selecting
-    public void Select()
+    public void Select(Color highlightColor)
     {
         if (!select.unitMat)
         {
@@ -882,6 +882,7 @@ public abstract class UnitBase : NetworkBehaviour
             return;
         }
         select.unitMat.SetInt("_Highlight", 1);
+        select.unitMat.SetColor("_HighlightColor", highlightColor);
     }
     public void Deselect()
     {

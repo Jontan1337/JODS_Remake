@@ -90,6 +90,7 @@ public class Master : NetworkBehaviour
     public class FlyingMaster
     {
         public Camera camera = null;
+        public Master_FlyingController flyingController;
     }
     [Space]
     public FlyingMaster flying;
@@ -119,10 +120,9 @@ public class Master : NetworkBehaviour
         //Do basic startup for master, if player has authority (If the player is the master)
         if (hasAuthority)
         {
-            //Enable the mouse cursor
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-
+            //Setup the different camera modes
+            flying.flyingController = flying.camera.GetComponent<Master_FlyingController>();
+            flying.flyingController.master = this; //Assign the reference.
             inTopdownView = false; //This bool is simply to stop a raycast from being performed.
             //The bool will be set to true in this function.
             SwitchCamera(true);
@@ -140,6 +140,17 @@ public class Master : NetworkBehaviour
             //Update the Energy UI
             UpdateEnergyUI();
             UpdateEnergyUseUI(0);
+
+            //Other master visuals
+
+            //Change the Flying controller's marker visuals (Mesh and colour)
+            flying.flyingController.ChangeMarker(masterClass.markerMesh, masterClass.markerColor);
+
+            //Change Select's position marker visuals (Mesh and colour)
+            Material markerMat = unitDestinationMarker.GetComponent<MeshRenderer>().sharedMaterial;
+            markerMat.color = masterClass.selectPositionMarkerColor;
+            markerMat.SetColor("_EmissionColor", masterClass.selectPositionMarkerColor);
+            unitDestinationMarker.GetComponent<MeshFilter>().mesh = masterClass.selectPositionMarkerMesh;
 
             //Make Unit Buttons
             InitializeUnitButtons();
@@ -550,6 +561,11 @@ public class Master : NetworkBehaviour
         else return false;
     }
 
+    private void EnableFlyingMarker(bool enable)
+    {
+        flying.flyingController.ShowMarker(enable);
+    }
+
     #endregion
 
     #region Unit Functions
@@ -593,6 +609,12 @@ public class Master : NetworkBehaviour
         UnitButtonChooseUI(true);
 
         UpdateEnergyUseUI(unit.unit.energyCost);
+
+        if (!inTopdownView)
+        {
+            //This will enable the marker for the flying camera, which is mostly a visual aid
+            EnableFlyingMarker(true);
+        }
     }
 
     private void UnchooseUnit()
@@ -602,6 +624,12 @@ public class Master : NetworkBehaviour
         //Change the UI
         UnitButtonChooseUI(false);
         UpdateEnergyUseUI(0);
+
+        if (!inTopdownView)
+        {
+            //This will disable the marker for the flying camera
+            EnableFlyingMarker(false);
+        }
     }
     #endregion
 
@@ -774,7 +802,7 @@ public class Master : NetworkBehaviour
 
         //Select the unit
         selectedUnit = unit;
-        selectedUnit.Select();
+        selectedUnit.Select(masterClass.unitSelectColor);
 
         StartSelectCoroutine();
     }
@@ -825,7 +853,8 @@ public class Master : NetworkBehaviour
     //This function will shoot a ray from the currently used camera, and will return a Raycast Hit
     //This is used by all functions with raycast requirements
     //This function is to reduce redundancy, because there are multiple functions that use raycasts.
-    private void Raycast(out bool didHit, out RaycastHit rayHit)
+    //Even other scripts such as the Master_FlyingController uses this to do raycasts.
+    public void Raycast(out bool didHit, out RaycastHit rayHit)
     {
         Ray ray; //Empty variables
         int distance;
@@ -983,8 +1012,17 @@ public class Master : NetworkBehaviour
         topdown.camera.gameObject.SetActive(top);
         flying.camera.gameObject.SetActive(!top);
 
+        //Change the cursor settings to be either visible or not visible
         Cursor.lockState = top ? CursorLockMode.None : CursorLockMode.Locked;
-        Cursor.visible = top;
+        Cursor.visible = top; //Visible in Topdown view mode, not visible in flying mode
+
+
+        if (hasChosenAUnit) //If a unit is currently chosen, then enable/disable marker
+        {
+            //If changing to flying camera, enable the unit marker, which is mostly a visual aid.
+            EnableFlyingMarker(!inTopdownView);
+            //If changing to topdown, then disable it.
+        }
     }
     #endregion
 
