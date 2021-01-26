@@ -93,6 +93,7 @@ public abstract class UnitBase : NetworkBehaviour
     [SerializeField] private float eyeHeight = 2f;
     [SerializeField] private int viewAngle = 50;
     [SerializeField] private LayerMask ignoreOnRaycast = 1 << 9;
+    [SerializeField] private LayerMask survivorLayer = 1 << 13;
     [Space]
     [SerializeField] private int alertRadius = 0;
     [SerializeField] private bool canAlert = true;
@@ -431,26 +432,22 @@ public abstract class UnitBase : NetworkBehaviour
             //Search ----------
 
             //Get a list of all colliders within Sight Distance
-            Collider[] collidersHit = Physics.OverlapSphere(transform.position, sightDistance, ~ignoreOnRaycast);
+            Collider[] collidersHit = Physics.OverlapSphere(transform.position, sightDistance, survivorLayer);
 
             //Iterate through each of them, to see if they're players
             foreach (Collider col in collidersHit)
             {
-                //If they are players
-                if (col.CompareTag("Player"))
+                //Can I see the player?
+                bool canSee = CanSee(col.transform);
+
+                //Is the player within my field of view?
+                bool inViewAngle = InViewAngle(col.transform);
+
+                //If I can see the player, and it is within my field of view
+                if (canSee && inViewAngle)
                 {
-                    //Can I see the player?
-                    bool canSee = CanSee(col.transform);
-
-                    //Is the player within my field of view?
-                    bool inViewAngle = InViewAngle(col.transform);
-
-                    //If I can see the player, and it is within my field of view
-                    if (canSee && inViewAngle)
-                    {
-                        //I can see the player
-                        AcquireTarget(col.transform, false);
-                    }
+                    //I can see the player
+                    AcquireTarget(col.transform, false);
                 }
             }
         }
