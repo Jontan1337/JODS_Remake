@@ -34,8 +34,9 @@ public class SurvivorController : MonoBehaviour
         CheckGround();
         if (cc.isGrounded)
         {
-            moveDirection = transform.TransformDirection(new Vector3(horizontal, 0.04f, vertical)) * speed;
+            moveDirection = transform.TransformDirection(new Vector3(horizontal, 0.05f, vertical)) * speed;
         }
+        //if (JODSInput.Controls.Survivor.Jump.triggered) Jump();
         moveDirection.y -= gravity * Time.deltaTime;
         cc.Move(moveDirection * Time.deltaTime);
     }
