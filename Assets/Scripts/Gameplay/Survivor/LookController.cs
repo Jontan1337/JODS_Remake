@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class LookController : MonoBehaviour
 {
@@ -9,14 +10,27 @@ public class LookController : MonoBehaviour
     public float rotY;
     public float rotX;
     public float sensitivity;
-    public new Camera camera;
+    public Camera playerCamera;
+    [SerializeField]
+    private Transform rotateHorizontal;
+    [SerializeField]
+    private Transform rotateVertical;
 
-    void Update()
+
+
+    private void Start()
     {
-        rotY += Input.GetAxis("Mouse Y") * sensitivity;
-        rotX += Input.GetAxis("Mouse X") * sensitivity;
-        transform.Rotate(0, Input.GetAxis("Mouse X") * sensitivity, 0);
-        rotY = Mathf.Clamp(rotY, minRotY, maxRotY);
-        camera.transform.rotation = Quaternion.Euler(-rotY, rotX, 0f);
+        JODSInput.Controls.Survivor.Camera.performed += ctx => Look(ctx.ReadValue<Vector2>());
     }
+
+    void Look(Vector2 mouseDelta)
+    {
+        rotX += mouseDelta.x * sensitivity;
+        rotY += mouseDelta.y * sensitivity;
+        rotY = Mathf.Clamp(rotY, minRotY, maxRotY);
+        //transform.Rotate(0, rotX, 0);
+        rotateHorizontal.rotation = Quaternion.Euler(0, rotX, 0);
+        playerCamera.transform.rotation = Quaternion.Euler(-rotY, rotX, 0f);
+    }
+
 }

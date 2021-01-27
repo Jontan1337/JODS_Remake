@@ -25,7 +25,7 @@ public class SurvivorController : MonoBehaviour
         JODSInput.Controls.Survivor.Movement.performed += ctx => Move(ctx.ReadValue<Vector2>());
         JODSInput.Controls.Survivor.Jump.performed += ctx => Jump();
         cc = GetComponent<CharacterController>();
-        print("Awake");
+        print("Start");
     }
 
 
@@ -51,12 +51,18 @@ public class SurvivorController : MonoBehaviour
         if (isGrounded)
         {
             moveDirection.y += jumpSpeed;
-            print("g0");
+            
+            print(moveDirection.y);
         }
     }
 
     private void CheckGround()
     {
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+    }
+
+    bool PlayerJumpedThisFrame()
+    {
+        return JODSInput.Controls.Survivor.Jump.triggered;
     }
 }
