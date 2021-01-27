@@ -32,5 +32,4 @@ public class LookController : MonoBehaviour
         rotateHorizontal.rotation = Quaternion.Euler(0, rotX, 0);
         playerCamera.transform.rotation = Quaternion.Euler(-rotY, rotX, 0f);
     }
-
 }

@@ -32,9 +32,9 @@ public class SurvivorController : MonoBehaviour
     private void Update()
     {
         CheckGround();
-        if (isGrounded)
+        if (cc.isGrounded)
         {
-            moveDirection = transform.TransformDirection(new Vector3(horizontal, 0.00f, vertical)) * speed;
+            moveDirection = transform.TransformDirection(new Vector3(horizontal, 0.04f, vertical)) * speed;
         }
         moveDirection.y -= gravity * Time.deltaTime;
         cc.Move(moveDirection * Time.deltaTime);
@@ -50,19 +50,12 @@ public class SurvivorController : MonoBehaviour
     {
         if (isGrounded)
         {
-            moveDirection.y += jumpSpeed;
-            
-            print(moveDirection.y);
+            moveDirection.y = jumpSpeed;
         }
     }
 
     private void CheckGround()
     {
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
-    }
-
-    bool PlayerJumpedThisFrame()
-    {
-        return JODSInput.Controls.Survivor.Jump.triggered;
     }
 }

@@ -328,6 +328,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 39d0c2e5a7f95654da4e539d27de13fd, type: 3}
+--- !u!4 &614374000 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5922127114707103126, guid: 2b66a0b1aff738e4fb22273ddadde428,
+    type: 3}
+  m_PrefabInstance: {fileID: 140378723284269964}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &630876037
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -541,6 +547,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!20 &778276818 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 13484714, guid: 2b66a0b1aff738e4fb22273ddadde428,
+    type: 3}
+  m_PrefabInstance: {fileID: 140378723284269964}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &778276821 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 13484711, guid: 2b66a0b1aff738e4fb22273ddadde428,
+    type: 3}
+  m_PrefabInstance: {fileID: 140378723284269964}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &825286067
 GameObject:
   m_ObjectHideFlags: 0
@@ -1539,6 +1557,31 @@ PrefabInstance:
       propertyPath: m_Name
       value: Survivor
       objectReference: {fileID: 0}
+    - target: {fileID: 5953086225513061613, guid: 2b66a0b1aff738e4fb22273ddadde428,
+        type: 3}
+      propertyPath: jumpSpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6043028673134938684, guid: 2b66a0b1aff738e4fb22273ddadde428,
+        type: 3}
+      propertyPath: sensitivity
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6043028673134938684, guid: 2b66a0b1aff738e4fb22273ddadde428,
+        type: 3}
+      propertyPath: playerCamera
+      value: 
+      objectReference: {fileID: 778276818}
+    - target: {fileID: 6043028673134938684, guid: 2b66a0b1aff738e4fb22273ddadde428,
+        type: 3}
+      propertyPath: rotateHorizontal
+      value: 
+      objectReference: {fileID: 614374000}
+    - target: {fileID: 6043028673134938684, guid: 2b66a0b1aff738e4fb22273ddadde428,
+        type: 3}
+      propertyPath: rotateVertical
+      value: 
+      objectReference: {fileID: 778276821}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2b66a0b1aff738e4fb22273ddadde428, type: 3}
 --- !u!4 &165095331549417488
@@ -3054,7 +3097,9 @@ MonoBehaviour:
   rotY: 0
   rotX: 0
   sensitivity: 2
-  camera: {fileID: 904026072}
+  playerCamera: {fileID: 0}
+  rotateHorizontal: {fileID: 0}
+  rotateVertical: {fileID: 0}
 --- !u!1 &7629639302342378600
 GameObject:
   m_ObjectHideFlags: 0
