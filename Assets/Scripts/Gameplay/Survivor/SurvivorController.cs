@@ -25,7 +25,6 @@ public class SurvivorController : MonoBehaviour
         JODSInput.Controls.Survivor.Movement.performed += ctx => Move(ctx.ReadValue<Vector2>());
         JODSInput.Controls.Survivor.Jump.performed += ctx => Jump();
         cc = GetComponent<CharacterController>();
-        print("Start");
     }
 
 
