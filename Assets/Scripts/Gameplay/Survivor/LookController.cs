@@ -20,6 +20,7 @@ public class LookController : MonoBehaviour
 
     private void Start()
     {
+        Cursor.lockState = CursorLockMode.Locked;
         JODSInput.Controls.Survivor.Camera.performed += ctx => Look(ctx.ReadValue<Vector2>());
     }
 
