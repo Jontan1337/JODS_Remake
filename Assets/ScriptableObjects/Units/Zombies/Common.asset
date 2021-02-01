@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e89c3c3a10cc3b446800946c17aaec15, type: 3}
   m_Name: Common
   m_EditorClassIdentifier: 
-  name: common1
+  name: Common1
   unitPrefab:
   - {fileID: 7950017274289061535, guid: 059faf5c02ef6e4418cf588c374aeb18, type: 3}
+  - {fileID: 9058497724033096331, guid: c0aad593b2f78fd40a756defdacf64e7, type: 3}
   unitSprite: {fileID: 21300000, guid: 4a455a0da88b51b43b4be50beb52c391, type: 3}
   energyCost: 5
   refundAmount: 2
@@ -61,12 +62,21 @@ MonoBehaviour:
     headHeight: 2
     idleSounds: []
     idleVolume: 0.3
-    attackSounds: []
-    attackVolume: 0.4
+    meleeSounds: []
+    meleeVolume: 0.4
+    rangedSound: {fileID: 0}
+    rangedVolume: 0.4
+    specialSound: {fileID: 0}
+    specialVolume: 0.4
     footstepSounds:
-    - {fileID: 8300000, guid: ce1415c1538344a3f9c07f2388ee0dee, type: 3}
-    - {fileID: 8300000, guid: df874be086de9441a8ef805bd42d0fff, type: 3}
-    - {fileID: 8300000, guid: d47d075cb98ed4b869828da8dfd7ed52, type: 3}
-    - {fileID: 8300000, guid: 8af1d3f5222454aaabfae1a13ce78592, type: 3}
+    - {fileID: 8300000, guid: b32b06d7745aff84aa136d5c8745cc1f, type: 3}
+    - {fileID: 8300000, guid: 8f2a23f711bfab54da2c389814512b66, type: 3}
+    - {fileID: 8300000, guid: 50fa67ed1396c564c8b735816892c840, type: 3}
     footstepVolume: 0.1
+  select:
+    canSelect: 1
+  unitMaterials:
+  - {fileID: 2100000, guid: 8760746d7012eb04c827ea0efd4549ed, type: 2}
+  - {fileID: 2100000, guid: 734eff90c0542f642ae33e2a816e5a72, type: 2}
+  - {fileID: 2100000, guid: d87b98e8e0ba4da45b8c5247976db824, type: 2}
   unitAnimator: {fileID: 9100000, guid: c0ab0f687e23e2c4eb6ce111aa51d73e, type: 2}

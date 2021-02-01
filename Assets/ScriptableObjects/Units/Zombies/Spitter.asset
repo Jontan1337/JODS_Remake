@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e89c3c3a10cc3b446800946c17aaec15, type: 3}
   m_Name: Spitter
   m_EditorClassIdentifier: 
-  name: Spitter
+  name: Spitter1
   unitPrefab:
-  - {fileID: 925205799072725160, guid: 6c711fb525790e746926c184297da65d, type: 3}
+  - {fileID: 7083222246450239471, guid: 1f009f061d983724aa438d0f6aba6fb8, type: 3}
   unitSprite: {fileID: 21300000, guid: f1ef3bcdb09752340972deef8da3421c, type: 3}
   energyCost: 30
   refundAmount: 15
@@ -62,8 +62,12 @@ MonoBehaviour:
     headHeight: 2
     idleSounds: []
     idleVolume: 0.3
-    attackSounds: []
-    attackVolume: 0.4
+    meleeSounds: []
+    meleeVolume: 0.4
+    rangedSound: {fileID: 0}
+    rangedVolume: 0.4
+    specialSound: {fileID: 0}
+    specialVolume: 0.4
     footstepSounds:
     - {fileID: 8300000, guid: 7850d3eab24cc2443a75240ec4d7ad6e, type: 3}
     - {fileID: 8300000, guid: b138c25a985dcbc4eace679b6a32c2ea, type: 3}
@@ -71,4 +75,8 @@ MonoBehaviour:
     footstepVolume: 0.1
   select:
     canSelect: 1
+  unitMaterials:
+  - {fileID: 2100000, guid: 8760746d7012eb04c827ea0efd4549ed, type: 2}
+  - {fileID: 2100000, guid: 734eff90c0542f642ae33e2a816e5a72, type: 2}
+  - {fileID: 2100000, guid: d87b98e8e0ba4da45b8c5247976db824, type: 2}
   unitAnimator: {fileID: 9100000, guid: d11bf7116e7b8ad45b25edd0cb0309df, type: 2}

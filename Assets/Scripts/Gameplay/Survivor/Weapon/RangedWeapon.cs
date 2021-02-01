@@ -39,7 +39,13 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable
     [SerializeField]
     private Transform bulletRayOrigin = null;
 
-    public bool IsInteractable { get; private set; }
+    [SerializeField, SyncVar]
+    private bool isInteractable = true;
+
+    public bool IsInteractable {
+        get => isInteractable;
+        private set => isInteractable = value;
+    }
 
     public string ObjectName => gameObject.name;
 
@@ -101,6 +107,6 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable
 
         interacter.TryGetComponent(out Equipment equipment);
         equipment?.Svr_Equip(gameObject, equipmentType);
-        //IsInteractable = false;
+        IsInteractable = false;
     }
 }

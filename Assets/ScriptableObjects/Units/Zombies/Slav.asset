@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e89c3c3a10cc3b446800946c17aaec15, type: 3}
   m_Name: Slav
   m_EditorClassIdentifier: 
-  name: Slav
+  name: Slav1
   unitPrefab:
-  - {fileID: 6625710095621646219, guid: e3e3d62aae2e5ef43afb9a3ebc341fc8, type: 3}
+  - {fileID: 4822200308357666784, guid: f33f7bcd52f58a74a8464c420917e26f, type: 3}
   unitSprite: {fileID: 21300000, guid: 4cfccc8d4a655cc4a9b1196962ea0e28, type: 3}
   energyCost: 15
   refundAmount: 7
@@ -61,8 +61,12 @@ MonoBehaviour:
     headHeight: 2
     idleSounds: []
     idleVolume: 0.3
-    attackSounds: []
-    attackVolume: 0.4
+    meleeSounds: []
+    meleeVolume: 0.4
+    rangedSound: {fileID: 0}
+    rangedVolume: 0.4
+    specialSound: {fileID: 0}
+    specialVolume: 0.4
     footstepSounds:
     - {fileID: 8300000, guid: 5ed1edcdc7500a94b964e4a81775d306, type: 3}
     - {fileID: 8300000, guid: c550417728b224f4b8b9ea0daec14ad4, type: 3}
@@ -70,4 +74,8 @@ MonoBehaviour:
     footstepVolume: 0.1
   select:
     canSelect: 1
+  unitMaterials:
+  - {fileID: 2100000, guid: 8760746d7012eb04c827ea0efd4549ed, type: 2}
+  - {fileID: 2100000, guid: 734eff90c0542f642ae33e2a816e5a72, type: 2}
+  - {fileID: 2100000, guid: d87b98e8e0ba4da45b8c5247976db824, type: 2}
   unitAnimator: {fileID: 9100000, guid: d44297d3fb196b148a10cee9e33225c2, type: 2}
