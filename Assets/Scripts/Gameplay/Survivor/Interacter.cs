@@ -10,8 +10,6 @@ public class Interacter : NetworkBehaviour
     private float interactionRange = 2f;
     [SerializeField]
     private LayerMask layerMask = 15;
-    [SerializeField]
-    private GameObject testingEquipment = null;
 
     private RaycastHit rayHit;
     private IInteractable currentInteractable;
@@ -38,15 +36,13 @@ public class Interacter : NetworkBehaviour
         Debug.DrawRay(playerCamera.position, playerCamera.forward * interactionRange);
     }
 
-    //[Command]
+    [Command]
     public void Cmd_Interact()
     {
-        testingEquipment.TryGetComponent(out IInteractable interactable);
-        interactable?.Svr_Interact(gameObject);
-
         if (rayHit.collider)
         {
-
+            rayHit.collider.TryGetComponent(out IInteractable interactable);
+            interactable?.Svr_Interact(gameObject);
         }
     }
 }
