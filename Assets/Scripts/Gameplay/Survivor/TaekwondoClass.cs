@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SoldierClass : SurvivorClass
+public class TaekwondoClass : SurvivorClass
 {
-    public string _class = "soldier";
+    public string _class = "taekwondo";
     public override void ActiveAbility()
     {
-        print("BANG");
+        print("POW");
     }
 }

@@ -14,6 +14,15 @@ public abstract class SurvivorClass : MonoBehaviour
     protected float abilityCooldown;
     protected GameObject starterWeapon;
 
+    //public int health;
+    //public int armor;
+    //public float movementSpeed;
+    //public float reloadSpeed;
+    //public float accuracy;
+    //public float ammoCapacity;
+    //public float abilityCooldown;
+    //public GameObject starterWeapon;
+
     public virtual void ActiveAbility()
     {
 
