@@ -114,6 +114,8 @@ public class SOUnit : ScriptableObject
     [Space]
     public Selectable select;
 
+    public Material[] unitMaterials;
+
 
     [Header("Animations")]
     public RuntimeAnimatorController unitAnimator;

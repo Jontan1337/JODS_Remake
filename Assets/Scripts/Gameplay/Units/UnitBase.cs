@@ -242,7 +242,10 @@ public abstract class UnitBase : NetworkBehaviour
         //Material stuff, for highlighting units
 
         //This
-        select.unitRenderer.material = new Material(select.unitRenderer.sharedMaterial);
+        select.unitRenderer.material = new Material(unitSO.unitMaterials.Length == 0 ? //If the unit has different materials to choose from
+            select.unitRenderer.sharedMaterial : //If not, use already assigned material.
+            unitSO.unitMaterials[Random.Range(0,unitSO.unitMaterials.Length)] //Assign a random material.
+            );
         select.unitMat = select.unitRenderer.sharedMaterial;
     }
 
