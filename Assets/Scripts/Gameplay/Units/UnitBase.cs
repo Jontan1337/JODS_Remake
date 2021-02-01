@@ -247,6 +247,9 @@ public abstract class UnitBase : NetworkBehaviour
             unitSO.unitMaterials[Random.Range(0,unitSO.unitMaterials.Length)] //Assign a random material.
             );
         select.unitMat = select.unitRenderer.sharedMaterial;
+
+        //random unit size, just to make units look less alike
+        transform.localScale = transform.localScale * Random.Range(0.9f, 1.1f);
     }
 
     private void SetStats()
