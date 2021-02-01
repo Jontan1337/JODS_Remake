@@ -545,9 +545,15 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
+<<<<<<< HEAD
                     ""name"": ""Hotbar selecting"",
                     ""type"": ""Value"",
                     ""id"": ""f88205a3-c0e2-4aff-ab88-28a9b10f9d75"",
+=======
+                    ""name"": ""Active Ability"",
+                    ""type"": ""Button"",
+                    ""id"": ""ecd1821c-348f-4415-b822-6fd34cfaa68b"",
+>>>>>>> parent of a40b6bd... Revert "Class ting"
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
@@ -644,6 +650,7 @@ public class @Controls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
+<<<<<<< HEAD
                     ""id"": ""9d5bf31f-d947-4a59-86b8-7fef1ae32c3e"",
                     ""path"": ""<Keyboard>/1"",
                     ""interactions"": """",
@@ -738,6 +745,14 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""processors"": ""Scale(factor=9)"",
                     ""groups"": """",
                     ""action"": ""Hotbar selecting"",
+=======
+                    ""id"": ""66f6c836-04d5-49fb-a17e-2dcd7f772b85"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Active Ability"",
+>>>>>>> parent of a40b6bd... Revert "Class ting"
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -774,7 +789,11 @@ public class @Controls : IInputActionCollection, IDisposable
         m_Survivor_Jump = m_Survivor.FindAction("Jump", throwIfNotFound: true);
         m_Survivor_Camera = m_Survivor.FindAction("Camera", throwIfNotFound: true);
         m_Survivor_Interact = m_Survivor.FindAction("Interact", throwIfNotFound: true);
+<<<<<<< HEAD
         m_Survivor_Hotbarselecting = m_Survivor.FindAction("Hotbar selecting", throwIfNotFound: true);
+=======
+        m_Survivor_ActiveAbility = m_Survivor.FindAction("Active Ability", throwIfNotFound: true);
+>>>>>>> parent of a40b6bd... Revert "Class ting"
     }
 
     public void Dispose()
@@ -965,7 +984,11 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_Survivor_Jump;
     private readonly InputAction m_Survivor_Camera;
     private readonly InputAction m_Survivor_Interact;
+<<<<<<< HEAD
     private readonly InputAction m_Survivor_Hotbarselecting;
+=======
+    private readonly InputAction m_Survivor_ActiveAbility;
+>>>>>>> parent of a40b6bd... Revert "Class ting"
     public struct SurvivorActions
     {
         private @Controls m_Wrapper;
@@ -974,7 +997,11 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @Jump => m_Wrapper.m_Survivor_Jump;
         public InputAction @Camera => m_Wrapper.m_Survivor_Camera;
         public InputAction @Interact => m_Wrapper.m_Survivor_Interact;
+<<<<<<< HEAD
         public InputAction @Hotbarselecting => m_Wrapper.m_Survivor_Hotbarselecting;
+=======
+        public InputAction @ActiveAbility => m_Wrapper.m_Survivor_ActiveAbility;
+>>>>>>> parent of a40b6bd... Revert "Class ting"
         public InputActionMap Get() { return m_Wrapper.m_Survivor; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -996,9 +1023,15 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Interact.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnInteract;
                 @Interact.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnInteract;
                 @Interact.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnInteract;
+<<<<<<< HEAD
                 @Hotbarselecting.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnHotbarselecting;
                 @Hotbarselecting.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnHotbarselecting;
                 @Hotbarselecting.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnHotbarselecting;
+=======
+                @ActiveAbility.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnActiveAbility;
+                @ActiveAbility.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnActiveAbility;
+                @ActiveAbility.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnActiveAbility;
+>>>>>>> parent of a40b6bd... Revert "Class ting"
             }
             m_Wrapper.m_SurvivorActionsCallbackInterface = instance;
             if (instance != null)
@@ -1015,9 +1048,15 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Interact.started += instance.OnInteract;
                 @Interact.performed += instance.OnInteract;
                 @Interact.canceled += instance.OnInteract;
+<<<<<<< HEAD
                 @Hotbarselecting.started += instance.OnHotbarselecting;
                 @Hotbarselecting.performed += instance.OnHotbarselecting;
                 @Hotbarselecting.canceled += instance.OnHotbarselecting;
+=======
+                @ActiveAbility.started += instance.OnActiveAbility;
+                @ActiveAbility.performed += instance.OnActiveAbility;
+                @ActiveAbility.canceled += instance.OnActiveAbility;
+>>>>>>> parent of a40b6bd... Revert "Class ting"
             }
         }
     }
@@ -1054,6 +1093,10 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnCamera(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
+<<<<<<< HEAD
         void OnHotbarselecting(InputAction.CallbackContext context);
+=======
+        void OnActiveAbility(InputAction.CallbackContext context);
+>>>>>>> parent of a40b6bd... Revert "Class ting"
     }
 }
