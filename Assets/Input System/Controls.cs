@@ -543,14 +543,6 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
-                },
-                {
-                    ""name"": ""Active Ability"",
-                    ""type"": ""Button"",
-                    ""id"": ""ecd1821c-348f-4415-b822-6fd34cfaa68b"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -641,17 +633,6 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""66f6c836-04d5-49fb-a17e-2dcd7f772b85"",
-                    ""path"": ""<Keyboard>/q"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Active Ability"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -686,7 +667,6 @@ public class @Controls : IInputActionCollection, IDisposable
         m_Survivor_Jump = m_Survivor.FindAction("Jump", throwIfNotFound: true);
         m_Survivor_Camera = m_Survivor.FindAction("Camera", throwIfNotFound: true);
         m_Survivor_Interact = m_Survivor.FindAction("Interact", throwIfNotFound: true);
-        m_Survivor_ActiveAbility = m_Survivor.FindAction("Active Ability", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -877,7 +857,6 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_Survivor_Jump;
     private readonly InputAction m_Survivor_Camera;
     private readonly InputAction m_Survivor_Interact;
-    private readonly InputAction m_Survivor_ActiveAbility;
     public struct SurvivorActions
     {
         private @Controls m_Wrapper;
@@ -886,7 +865,6 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @Jump => m_Wrapper.m_Survivor_Jump;
         public InputAction @Camera => m_Wrapper.m_Survivor_Camera;
         public InputAction @Interact => m_Wrapper.m_Survivor_Interact;
-        public InputAction @ActiveAbility => m_Wrapper.m_Survivor_ActiveAbility;
         public InputActionMap Get() { return m_Wrapper.m_Survivor; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -908,9 +886,6 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Interact.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnInteract;
                 @Interact.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnInteract;
                 @Interact.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnInteract;
-                @ActiveAbility.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnActiveAbility;
-                @ActiveAbility.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnActiveAbility;
-                @ActiveAbility.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnActiveAbility;
             }
             m_Wrapper.m_SurvivorActionsCallbackInterface = instance;
             if (instance != null)
@@ -927,9 +902,6 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Interact.started += instance.OnInteract;
                 @Interact.performed += instance.OnInteract;
                 @Interact.canceled += instance.OnInteract;
-                @ActiveAbility.started += instance.OnActiveAbility;
-                @ActiveAbility.performed += instance.OnActiveAbility;
-                @ActiveAbility.canceled += instance.OnActiveAbility;
             }
         }
     }
@@ -966,6 +938,5 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnCamera(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
-        void OnActiveAbility(InputAction.CallbackContext context);
     }
 }
