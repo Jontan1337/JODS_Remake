@@ -984,7 +984,7 @@ GameObject:
   - component: {fileID: 5875217163533509035}
   - component: {fileID: 2068078591822227316}
   m_Layer: 9
-  m_Name: Spitter1
+  m_Name: Spitter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1220,33 +1220,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  unitSO: {fileID: 0}
-  health: 100
+  unitSO: {fileID: 11400000, guid: ac3d4f2c81696dc45a322377fecbb484, type: 2}
+  health: 120
   isDead: 0
   unitLevel: 1
-  isMelee: 0
-  isRanged: 0
+  isMelee: 1
+  isRanged: 1
   hasSpecial: 0
   melee:
-    meleeDamageMin: 0
-    meleeDamageMax: 0
-    meleeRange: 0
-    meleeCooldown: 0
+    meleeDamageMin: 2
+    meleeDamageMax: 10
+    meleeRange: 3
+    meleeCooldown: 5
     canMelee: 1
   ranged:
-    rangedDamage: 0
-    minRange: 0
-    maxRange: 0
-    rangedCooldown: 0
-    preferredRange: 0
-    projectile: {fileID: 0}
-    projectileSpeed: 0
-    projectileSpawnLocation: {x: 0, y: 0, z: 0}
+    rangedDamage: 15
+    minRange: 3
+    maxRange: 25
+    rangedCooldown: 5
+    preferredRange: 15
+    projectile: {fileID: 3613215282632267500, guid: 2fecdf493e9322a4d892f94dac02076a,
+      type: 3}
+    projectileSpeed: 20
+    projectileSpawnLocation: {x: 0, y: 1.8, z: 0.5}
     standStill: 1
     directRangedAttack: 0
     canRanged: 0
   special:
-    specialCooldown: 0
+    specialCooldown: 2
     specialDamage: 0
     specialRange: 5
     standStill: 1
@@ -1254,18 +1255,18 @@ MonoBehaviour:
     availableFromStart: 1
     canSpecial: 0
   movementSpeed: 1.5
-  chaseTime: 10
+  chaseTime: 20
   stoppedMoving: 0
-  sightDistance: 20
+  sightDistance: 30
   eyeHeight: 2
-  viewAngle: 50
+  viewAngle: 90
   ignoreOnRaycast:
     serializedVersion: 2
     m_Bits: 3584
   survivorLayer:
     serializedVersion: 2
     m_Bits: 8192
-  alertRadius: 0
+  alertRadius: 20
   canAlert: 1
   alertMask:
     serializedVersion: 2
@@ -1284,7 +1285,10 @@ MonoBehaviour:
     rangedVolume: 0.4
     specialSound: {fileID: 0}
     specialVolume: 0.4
-    footstepSounds: []
+    footstepSounds:
+    - {fileID: 8300000, guid: 7850d3eab24cc2443a75240ec4d7ad6e, type: 3}
+    - {fileID: 8300000, guid: b138c25a985dcbc4eace679b6a32c2ea, type: 3}
+    - {fileID: 8300000, guid: 5eb177665ed9f4a4b9f5a82c155c344c, type: 3}
     footstepVolume: 0.1
   select:
     canSelect: 1

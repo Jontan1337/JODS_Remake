@@ -369,7 +369,7 @@ GameObject:
   - component: {fileID: 6006189444927030729}
   - component: {fileID: 7122508720021460077}
   m_Layer: 9
-  m_Name: Tentacle1
+  m_Name: Tentacle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -605,25 +605,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  unitSO: {fileID: 0}
+  unitSO: {fileID: 11400000, guid: 85b159902791cc14d9bcdbc9a9eddf26, type: 2}
   health: 100
   isDead: 0
   unitLevel: 1
-  isMelee: 0
+  isMelee: 1
   isRanged: 0
-  hasSpecial: 0
+  hasSpecial: 1
   melee:
-    meleeDamageMin: 0
-    meleeDamageMax: 0
-    meleeRange: 0
-    meleeCooldown: 0
+    meleeDamageMin: 2
+    meleeDamageMax: 5
+    meleeRange: 2
+    meleeCooldown: 2
     canMelee: 1
   ranged:
-    rangedDamage: 0
-    minRange: 0
-    maxRange: 0
-    rangedCooldown: 0
-    preferredRange: 0
+    rangedDamage: 20
+    minRange: 2
+    maxRange: 20
+    rangedCooldown: 5
+    preferredRange: 15
     projectile: {fileID: 0}
     projectileSpeed: 0
     projectileSpawnLocation: {x: 0, y: 0, z: 0}
@@ -631,9 +631,9 @@ MonoBehaviour:
     directRangedAttack: 0
     canRanged: 0
   special:
-    specialCooldown: 0
-    specialDamage: 0
-    specialRange: 5
+    specialCooldown: 5
+    specialDamage: 2
+    specialRange: 2.5
     standStill: 1
     lookAtTarget: 1
     availableFromStart: 1
@@ -643,14 +643,14 @@ MonoBehaviour:
   stoppedMoving: 0
   sightDistance: 20
   eyeHeight: 2
-  viewAngle: 50
+  viewAngle: 90
   ignoreOnRaycast:
     serializedVersion: 2
     m_Bits: 3584
   survivorLayer:
     serializedVersion: 2
     m_Bits: 8192
-  alertRadius: 0
+  alertRadius: 20
   canAlert: 1
   alertMask:
     serializedVersion: 2
@@ -669,7 +669,10 @@ MonoBehaviour:
     rangedVolume: 0.4
     specialSound: {fileID: 0}
     specialVolume: 0.4
-    footstepSounds: []
+    footstepSounds:
+    - {fileID: 8300000, guid: f0d7e87d558136f4aa82ab2abebbf918, type: 3}
+    - {fileID: 8300000, guid: d825d8b94036fbc4db89003012ce3a66, type: 3}
+    - {fileID: 8300000, guid: 3e158f38a60348c46ad456888beb37a7, type: 3}
     footstepVolume: 0.1
   select:
     canSelect: 1

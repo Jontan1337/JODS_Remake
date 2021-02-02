@@ -1514,29 +1514,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  unitSO: {fileID: 0}
-  health: 100
+  unitSO: {fileID: 11400000, guid: 254796e5ec2c1ff49a903f70e84b5945, type: 2}
+  health: 50
   isDead: 0
   unitLevel: 1
-  isMelee: 0
+  isMelee: 1
   isRanged: 0
   hasSpecial: 0
   melee:
-    meleeDamageMin: 0
-    meleeDamageMax: 0
-    meleeRange: 0
-    meleeCooldown: 0
+    meleeDamageMin: 2
+    meleeDamageMax: 5
+    meleeRange: 2.5
+    meleeCooldown: 0.5
     canMelee: 1
   ranged:
     rangedDamage: 0
     minRange: 0
     maxRange: 0
     rangedCooldown: 0
-    preferredRange: 0
+    preferredRange: 15
     projectile: {fileID: 0}
     projectileSpeed: 0
     projectileSpawnLocation: {x: 0, y: 0, z: 0}
-    standStill: 1
+    standStill: 0
     directRangedAttack: 0
     canRanged: 0
   special:
@@ -1559,7 +1559,7 @@ MonoBehaviour:
   survivorLayer:
     serializedVersion: 2
     m_Bits: 8192
-  alertRadius: 0
+  alertRadius: 20
   canAlert: 1
   alertMask:
     serializedVersion: 2
@@ -1578,7 +1578,10 @@ MonoBehaviour:
     rangedVolume: 0.4
     specialSound: {fileID: 0}
     specialVolume: 0.4
-    footstepSounds: []
+    footstepSounds:
+    - {fileID: 8300000, guid: b32b06d7745aff84aa136d5c8745cc1f, type: 3}
+    - {fileID: 8300000, guid: 8f2a23f711bfab54da2c389814512b66, type: 3}
+    - {fileID: 8300000, guid: 50fa67ed1396c564c8b735816892c840, type: 3}
     footstepVolume: 0.1
   select:
     canSelect: 1

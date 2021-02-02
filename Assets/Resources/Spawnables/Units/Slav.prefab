@@ -673,7 +673,7 @@ GameObject:
   - component: {fileID: 6085434586412351455}
   - component: {fileID: 7614303960165168373}
   m_Layer: 9
-  m_Name: slav1
+  m_Name: Slav
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -909,25 +909,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  unitSO: {fileID: 0}
-  health: 100
+  unitSO: {fileID: 11400000, guid: 746c20bacaa906a419ba0951252abddd, type: 2}
+  health: 80
   isDead: 0
   unitLevel: 1
-  isMelee: 0
+  isMelee: 1
   isRanged: 0
   hasSpecial: 0
   melee:
-    meleeDamageMin: 0
-    meleeDamageMax: 0
-    meleeRange: 0
-    meleeCooldown: 0
+    meleeDamageMin: 5
+    meleeDamageMax: 10
+    meleeRange: 2
+    meleeCooldown: 2
     canMelee: 1
   ranged:
     rangedDamage: 0
     minRange: 0
     maxRange: 0
     rangedCooldown: 0
-    preferredRange: 0
+    preferredRange: 15
     projectile: {fileID: 0}
     projectileSpeed: 0
     projectileSpawnLocation: {x: 0, y: 0, z: 0}
@@ -942,19 +942,19 @@ MonoBehaviour:
     lookAtTarget: 1
     availableFromStart: 1
     canSpecial: 0
-  movementSpeed: 1.5
-  chaseTime: 10
+  movementSpeed: 4
+  chaseTime: 15
   stoppedMoving: 0
   sightDistance: 20
   eyeHeight: 2
-  viewAngle: 50
+  viewAngle: 90
   ignoreOnRaycast:
     serializedVersion: 2
     m_Bits: 3584
   survivorLayer:
     serializedVersion: 2
     m_Bits: 8192
-  alertRadius: 0
+  alertRadius: 25
   canAlert: 1
   alertMask:
     serializedVersion: 2
@@ -973,7 +973,10 @@ MonoBehaviour:
     rangedVolume: 0.4
     specialSound: {fileID: 0}
     specialVolume: 0.4
-    footstepSounds: []
+    footstepSounds:
+    - {fileID: 8300000, guid: 5ed1edcdc7500a94b964e4a81775d306, type: 3}
+    - {fileID: 8300000, guid: c550417728b224f4b8b9ea0daec14ad4, type: 3}
+    - {fileID: 8300000, guid: ce3c151af270618448b607dff84848e5, type: 3}
     footstepVolume: 0.1
   select:
     canSelect: 1
