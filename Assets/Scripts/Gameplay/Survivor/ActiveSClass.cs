@@ -4,12 +4,16 @@ using UnityEngine;
 
 public class ActiveSClass : MonoBehaviour
 {
-    ClassList classList = new ClassList();
+    private SurvivorClass sClass;
 
     [SerializeField] private SurvivorSO survivorSO;
+    [SerializeField] private SkinnedMeshRenderer survivorRenderer;
+
     [SerializeField] int health;
     [SerializeField] int armor;
+
     [SerializeField] float movementSpeed;
+
     [SerializeField] float reloadSpeed;
     [SerializeField] float accuracy;
     [SerializeField] float ammoCapacity;
@@ -18,8 +22,8 @@ public class ActiveSClass : MonoBehaviour
 
     private void Start()
     {
-        JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => survivorSO.classScript.ActiveAbility();
-        SelectedClass();
+        JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => sClass.ActiveAbility();
+        SelectedClass();        
         health = survivorSO.health;
         armor = survivorSO.armor;
         movementSpeed = survivorSO.movementSpeed;
@@ -40,18 +44,27 @@ public class ActiveSClass : MonoBehaviour
 
     void SelectedClass()
     {
-        switch (survivorSO.name)        {
+        System.Type selectedClass = System.Type.GetType(survivorSO.classScript.name + ",Assembly-CSharp");
+        sClass = (SurvivorClass)gameObject.AddComponent(selectedClass);
 
-            case "Soldier":
-                survivorSO.classScript = gameObject.AddComponent<SoldierClass>();
-                break;
+        survivorRenderer.material = survivorSO.survivorMaterial;
+        survivorRenderer.sharedMesh = survivorSO.survivorMesh;
 
-            case "Taekwondo":
-                survivorSO.classScript = gameObject.AddComponent<TaekwondoClass>();
-                break;
 
-            default:
-                break;
-        }
+
+
+        //switch (survivorSO.name)        {
+
+        //    case "Soldier":
+        //        survivorSO.classScript = gameObject.AddComponent<SoldierClass>();
+        //        break;
+
+        //    case "Taekwondo":
+        //        survivorSO.classScript = gameObject.AddComponent<TaekwondoClass>();
+        //        break;
+
+        //    default:
+        //        break;
+        //}
     }
 }

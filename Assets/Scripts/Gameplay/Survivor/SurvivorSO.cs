@@ -12,7 +12,7 @@ public class SurvivorSO : ScriptableObject
     public float ammoCapacity;
     public float abilityCooldown;
     public GameObject starterWeapon;
-    public SurvivorClass classScript;
+    public Object classScript;
     public Mesh survivorMesh;
     public Material survivorMaterial;
 }

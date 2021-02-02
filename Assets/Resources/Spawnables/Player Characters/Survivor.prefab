@@ -1059,7 +1059,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 4
-  jumpSpeed: 10
+  jumpSpeed: 4.5
   gravity: 20
   groundCheck: {fileID: 1329358085}
   groundMask:
@@ -1098,7 +1098,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rotY: 0
   rotX: 0
-  sensitivity: 0.15
+  sensitivity: 0.075
   playerCamera: {fileID: 13484714}
   rotateHorizontal: {fileID: 5922127114707103126}
   rotateVertical: {fileID: 13484711}
@@ -1114,7 +1114,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe6eeec485aa8324ab05a46b7032572f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  survivorSO: {fileID: 11400000, guid: 6e02f3f114526574798927bb6afebdfd, type: 2}
+  survivorSO: {fileID: 11400000, guid: 1217c7de04298614a84ebffa22d3814c, type: 2}
+  survivorRenderer: {fileID: 5922127114693541090}
   health: 0
   armor: 0
   movementSpeed: 0
@@ -1227,11 +1228,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8c916a4c0a4f0f3479247db78e871332, type: 3}
-  - {fileID: 2100002, guid: 8c916a4c0a4f0f3479247db78e871332, type: 3}
-  - {fileID: 2100004, guid: 8c916a4c0a4f0f3479247db78e871332, type: 3}
-  - {fileID: 2100006, guid: 8c916a4c0a4f0f3479247db78e871332, type: 3}
-  - {fileID: 2100008, guid: 8c916a4c0a4f0f3479247db78e871332, type: 3}
+  - {fileID: 2100000, guid: 2e656cb10fd80fc4c90d406fde283a56, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1256,7 +1253,7 @@ SkinnedMeshRenderer:
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
   m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: 4300000, guid: 8c916a4c0a4f0f3479247db78e871332, type: 3}
+  m_Mesh: {fileID: -5495902117074765545, guid: c7b8f2d275870694b8beaf344f85cb11, type: 3}
   m_Bones:
   - {fileID: 5922127114707103214}
   - {fileID: 5922127114707103124}
