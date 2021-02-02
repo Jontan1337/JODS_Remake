@@ -16,7 +16,7 @@ using Mirror;
 [RequireComponent(typeof(NetworkTransform))]
 [RequireComponent(typeof(AudioSource))]
 
-public abstract class UnitBase : NetworkBehaviour
+public abstract class UnitBase : NetworkBehaviour, IDamagable
 {
     #region Fields
 
@@ -832,6 +832,8 @@ public abstract class UnitBase : NetworkBehaviour
 
     public bool IsMaxHealth => health == maxHealth;
 
+    public Teams Team => throw new System.NotImplementedException();
+
     public void Die()
     {
         isDead = true;
@@ -840,6 +842,14 @@ public abstract class UnitBase : NetworkBehaviour
             print(name + ": Am dead");
 
         }
+    }
+
+    [Server]
+    public void Svr_Damage(int damage)
+    {
+        health -= damage;
+
+        if (health <= 0) Die();
     }
 
     #endregion
