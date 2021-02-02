@@ -553,9 +553,9 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""bleb"",
+                    ""name"": ""Active Ability"",
                     ""type"": ""Button"",
-                    ""id"": ""c11c669e-355b-4583-95c7-5d488628cac0"",
+                    ""id"": ""578afbf4-26c3-4e96-9611-07f3e12f1d61"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
@@ -751,12 +751,12 @@ public class @Controls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""7306b8f7-52ba-4c0b-a510-4573edff83eb"",
+                    ""id"": ""adcb9946-3766-46d1-bcab-5de4aa89358e"",
                     ""path"": """",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""bleb"",
+                    ""action"": ""Active Ability"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -794,7 +794,7 @@ public class @Controls : IInputActionCollection, IDisposable
         m_Survivor_Camera = m_Survivor.FindAction("Camera", throwIfNotFound: true);
         m_Survivor_Interact = m_Survivor.FindAction("Interact", throwIfNotFound: true);
         m_Survivor_Hotbarselecting = m_Survivor.FindAction("Hotbar selecting", throwIfNotFound: true);
-        m_Survivor_bleb = m_Survivor.FindAction("bleb", throwIfNotFound: true);
+        m_Survivor_ActiveAbility = m_Survivor.FindAction("Active Ability", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -986,7 +986,7 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_Survivor_Camera;
     private readonly InputAction m_Survivor_Interact;
     private readonly InputAction m_Survivor_Hotbarselecting;
-    private readonly InputAction m_Survivor_bleb;
+    private readonly InputAction m_Survivor_ActiveAbility;
     public struct SurvivorActions
     {
         private @Controls m_Wrapper;
@@ -996,7 +996,7 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @Camera => m_Wrapper.m_Survivor_Camera;
         public InputAction @Interact => m_Wrapper.m_Survivor_Interact;
         public InputAction @Hotbarselecting => m_Wrapper.m_Survivor_Hotbarselecting;
-        public InputAction @bleb => m_Wrapper.m_Survivor_bleb;
+        public InputAction @ActiveAbility => m_Wrapper.m_Survivor_ActiveAbility;
         public InputActionMap Get() { return m_Wrapper.m_Survivor; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1021,9 +1021,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Hotbarselecting.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnHotbarselecting;
                 @Hotbarselecting.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnHotbarselecting;
                 @Hotbarselecting.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnHotbarselecting;
-                @bleb.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnBleb;
-                @bleb.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnBleb;
-                @bleb.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnBleb;
+                @ActiveAbility.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnActiveAbility;
+                @ActiveAbility.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnActiveAbility;
+                @ActiveAbility.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnActiveAbility;
             }
             m_Wrapper.m_SurvivorActionsCallbackInterface = instance;
             if (instance != null)
@@ -1043,9 +1043,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Hotbarselecting.started += instance.OnHotbarselecting;
                 @Hotbarselecting.performed += instance.OnHotbarselecting;
                 @Hotbarselecting.canceled += instance.OnHotbarselecting;
-                @bleb.started += instance.OnBleb;
-                @bleb.performed += instance.OnBleb;
-                @bleb.canceled += instance.OnBleb;
+                @ActiveAbility.started += instance.OnActiveAbility;
+                @ActiveAbility.performed += instance.OnActiveAbility;
+                @ActiveAbility.canceled += instance.OnActiveAbility;
             }
         }
     }
@@ -1083,6 +1083,6 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnCamera(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
         void OnHotbarselecting(InputAction.CallbackContext context);
-        void OnBleb(InputAction.CallbackContext context);
+        void OnActiveAbility(InputAction.CallbackContext context);
     }
 }
