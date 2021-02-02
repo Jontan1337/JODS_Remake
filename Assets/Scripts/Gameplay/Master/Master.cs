@@ -13,7 +13,7 @@ using UnityEngine.AI;
 public class UnitList
 {
     public string name;
-    public SOUnit unit;
+    public UnitSO unit;
     public int level = 1;
     public int maxAmount;
     public bool unlocked;
@@ -26,7 +26,7 @@ public class Master : NetworkBehaviour
 {
     #region Fields
     [Header("Master Class")]
-    [SerializeField] private MasterClass masterClass = null;
+    [SerializeField] private MasterSO masterSO = null;
 
     [System.Serializable]
     public class Stats
@@ -115,7 +115,7 @@ public class Master : NetworkBehaviour
     private void Start()
     {
         //Add (MASTER to end of name)
-        name += " (MASTER)";
+        name += $" ({masterSO.masterName})";
 
         //Do basic startup for master, if player has authority (If the player is the master)
         if (hasAuthority)
@@ -132,10 +132,10 @@ public class Master : NetworkBehaviour
             stats.energyRechargeIncrement = 1;
 
             //Energy UI visuals
-            UI.energyFillImage.color = masterClass.energyColor;
-            UI.energyUseFillImage.color = masterClass.energyUseColor;
+            UI.energyFillImage.color = masterSO.energyColor;
+            UI.energyUseFillImage.color = masterSO.energyUseColor;
 
-            tintLight.color = masterClass.screenTintColor;
+            tintLight.color = masterSO.screenTintColor;
 
             //Update the Energy UI
             UpdateEnergyUI();
@@ -144,13 +144,13 @@ public class Master : NetworkBehaviour
             //Other master visuals
 
             //Change the Flying controller's marker visuals (Mesh and colour)
-            flying.flyingController.ChangeMarker(masterClass.markerMesh, masterClass.markerColor);
+            flying.flyingController.ChangeMarker(masterSO.markerMesh, masterSO.markerColor);
 
             //Change Select's position marker visuals (Mesh and colour)
             Material markerMat = unitDestinationMarker.GetComponent<MeshRenderer>().sharedMaterial;
-            markerMat.color = masterClass.selectPositionMarkerColor;
-            markerMat.SetColor("_EmissionColor", masterClass.selectPositionMarkerColor);
-            unitDestinationMarker.GetComponent<MeshFilter>().mesh = masterClass.selectPositionMarkerMesh;
+            markerMat.color = masterSO.selectPositionMarkerColor;
+            markerMat.SetColor("_EmissionColor", masterSO.selectPositionMarkerColor);
+            unitDestinationMarker.GetComponent<MeshFilter>().mesh = masterSO.selectPositionMarkerMesh;
 
             //Make Unit Buttons
             InitializeUnitButtons();
@@ -167,13 +167,17 @@ public class Master : NetworkBehaviour
 
             //Misc
             spawnSmokeAudio = spawnSmokeEffect.GetComponent<AudioSource>();
-            spawnSmokeAudio.clip = masterClass.spawnSound;
+            spawnSmokeAudio.clip = masterSO.spawnSound;
 
             globalAudio = GetComponent<AudioSource>();
-            globalAudio.clip = masterClass.globalSound;
+            globalAudio.clip = masterSO.globalSound;
 
             SetUnitDestinationMarker(false);
             unitDestinationMarker.transform.SetParent(null);
+
+            //Attach the master's custom script to the gameobject.
+            System.Type masterType = System.Type.GetType(masterSO.masterClass.name + ",Assembly-CSharp");
+            gameObject.AddComponent(masterType);
         }
     }
 
@@ -256,7 +260,7 @@ public class Master : NetworkBehaviour
 
     private void OnValidate()
     {
-        if (masterClass)
+        if (masterSO)
         {
             SetMasterUnits();
         }
@@ -279,9 +283,9 @@ public class Master : NetworkBehaviour
         ctrl = down;
     }
 
-    public void SetMasterClass(MasterClass mClass)
+    public void SetMasterClass(MasterSO mClass)
     {
-        masterClass = mClass;
+        masterSO = mClass;
         SetMasterUnits();
         InitializeUnitButtons();
     }
@@ -668,7 +672,7 @@ public class Master : NetworkBehaviour
     void SpawnUnit(RaycastHit hit)
     {
         //Reference
-        SOUnit chosenUnit = unitList[chosenUnitIndex].unit;
+        UnitSO chosenUnit = unitList[chosenUnitIndex].unit;
 
         //Check if the spawn location meets the requirements.
         if (!ViewCheck(hit.point, true)) return;
@@ -802,7 +806,7 @@ public class Master : NetworkBehaviour
 
         //Select the unit
         selectedUnit = unit;
-        selectedUnit.Select(masterClass.unitSelectColor);
+        selectedUnit.Select(masterSO.unitSelectColor);
 
         StartSelectCoroutine();
     }
@@ -945,13 +949,13 @@ public class Master : NetworkBehaviour
 
     private void SetMasterUnitsInEditor()
     {
-        int arraySize = masterClass.units.Length;
+        int arraySize = masterSO.units.Length;
         unitList.Clear();
 
         for (int i = 0; i < arraySize; i++)
         {
             unitList.Add(new UnitList());
-            unitList[i].unit = masterClass.units[i];
+            unitList[i].unit = masterSO.units[i];
         }
     }
 
@@ -959,9 +963,9 @@ public class Master : NetworkBehaviour
     {
         if (unitList.Count == 0) return true;
         //Check if the list is as it should be. If it is ok, there is no need to remake it.
-        for (int i = 0; i < masterClass.units.Length; i++)
+        for (int i = 0; i < masterSO.units.Length; i++)
         {
-            if (unitList[i].unit != masterClass.units[i])
+            if (unitList[i].unit != masterSO.units[i])
             {
                 //Remake the list
                 return true;

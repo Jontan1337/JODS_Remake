@@ -21,7 +21,7 @@ public abstract class UnitBase : NetworkBehaviour
     #region Fields
 
     [Header("Necessities")]
-    [SerializeField] private SOUnit unitSO;
+    [SerializeField] private UnitSO unitSO;
 
     [Header("Stats")]
     [SerializeField] private int health = 100; //Upgradeable
@@ -338,7 +338,7 @@ public abstract class UnitBase : NetworkBehaviour
         select.canSelect = unitSO.select.canSelect;
     }
 
-    public void SetUnitSO(SOUnit myNewUnit)
+    public void SetUnitSO(UnitSO myNewUnit)
     {
         if (!myNewUnit)
         {

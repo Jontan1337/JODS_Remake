@@ -4,7 +4,7 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "Unit", menuName = "Units/New Unit", order = 1)]
 
-public class SOUnit : ScriptableObject
+public class UnitSO : ScriptableObject
 {
     [Header("Necessities")]
     public new string name;

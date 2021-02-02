@@ -2976,8 +2976,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  script: {fileID: 0}
-  masterClass: {fileID: 11400000, guid: a6e713bc364b1a24786870f298bd8018, type: 2}
+  masterSO: {fileID: 11400000, guid: a6e713bc364b1a24786870f298bd8018, type: 2}
   stats:
     currentEnergy: 50
     maxEnergy: 100
@@ -2986,14 +2985,14 @@ MonoBehaviour:
     currentXp: 0
     timeUntillNextUpgrade: 5
   unitList:
-  - name: Common1
+  - name: Common
     unit: {fileID: 11400000, guid: 254796e5ec2c1ff49a903f70e84b5945, type: 2}
     level: 1
     maxAmount: 0
     unlocked: 1
     chosen: 0
     unitIndex: 0
-  - name: Slav1
+  - name: Slav
     unit: {fileID: 11400000, guid: 746c20bacaa906a419ba0951252abddd, type: 2}
     level: 1
     maxAmount: 0
@@ -3007,7 +3006,7 @@ MonoBehaviour:
     unlocked: 1
     chosen: 0
     unitIndex: 2
-  - name: Tentacle Boy
+  - name: Tentacle
     unit: {fileID: 11400000, guid: 85b159902791cc14d9bcdbc9a9eddf26, type: 2}
     level: 1
     maxAmount: 0
