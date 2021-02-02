@@ -55,6 +55,6 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
     [Server]
     public void Svr_Damage(int damage)
     {
-        throw new System.NotImplementedException();
+        health -= damage;
     }
 }
