@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using Mirror;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ActiveSClass : MonoBehaviour
+public class ActiveSClass : NetworkBehaviour, IDamagable
 {
     private SurvivorClass sClass;
 
@@ -23,7 +24,7 @@ public class ActiveSClass : MonoBehaviour
     private void Start()
     {
         JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => sClass.ActiveAbility();
-        SelectedClass();        
+        SelectedClass();
         health = survivorSO.health;
         armor = survivorSO.armor;
         movementSpeed = survivorSO.movementSpeed;
@@ -36,6 +37,7 @@ public class ActiveSClass : MonoBehaviour
 
     float abilityCooldownCount;
 
+    public Teams Team => throw new System.NotImplementedException();
 
     IEnumerator ActivateAbility()
     {
@@ -49,22 +51,10 @@ public class ActiveSClass : MonoBehaviour
 
         survivorRenderer.material = survivorSO.survivorMaterial;
         survivorRenderer.sharedMesh = survivorSO.survivorMesh;
-
-
-
-
-        //switch (survivorSO.name)        {
-
-        //    case "Soldier":
-        //        survivorSO.classScript = gameObject.AddComponent<SoldierClass>();
-        //        break;
-
-        //    case "Taekwondo":
-        //        survivorSO.classScript = gameObject.AddComponent<TaekwondoClass>();
-        //        break;
-
-        //    default:
-        //        break;
-        //}
+    }
+    [Server]
+    public void Svr_Damage(int damage)
+    {
+        throw new System.NotImplementedException();
     }
 }
