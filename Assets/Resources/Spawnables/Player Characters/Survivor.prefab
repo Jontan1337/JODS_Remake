@@ -1059,7 +1059,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 4
-  jumpSpeed: 4.5
+  jumpSpeed: 10
   gravity: 20
   groundCheck: {fileID: 1329358085}
   groundMask:
@@ -1098,7 +1098,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rotY: 0
   rotX: 0
-  sensitivity: 0.01
+  sensitivity: 0.15
   playerCamera: {fileID: 13484714}
   rotateHorizontal: {fileID: 5922127114707103126}
   rotateVertical: {fileID: 13484711}
@@ -1114,7 +1114,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe6eeec485aa8324ab05a46b7032572f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _class: {fileID: 0}
+  survivorSO: {fileID: 11400000, guid: 6e02f3f114526574798927bb6afebdfd, type: 2}
+  health: 0
+  armor: 0
+  movementSpeed: 0
+  reloadSpeed: 0
+  accuracy: 0
+  ammoCapacity: 0
+  abilityCooldown: 0
 --- !u!114 &140378723284269972
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -18,7 +18,7 @@ public class ActiveSClass : MonoBehaviour
 
     private void Start()
     {
-        //JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => survivorSO.classScript.ActiveAbility();
+        JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => survivorSO.classScript.ActiveAbility();
         SelectedClass();
         health = survivorSO.health;
         armor = survivorSO.armor;
