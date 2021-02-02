@@ -538,6 +538,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Active Ability",
+                    "type": "Button",
+                    "id": "578afbf4-26c3-4e96-9611-07f3e12f1d61",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -725,6 +733,17 @@
                     "processors": "Scale(factor=9)",
                     "groups": "",
                     "action": "Hotbar selecting",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "adcb9946-3766-46d1-bcab-5de4aa89358e",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Active Ability",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
