@@ -1,11 +1,28 @@
 fileFormatVersion: 2
-guid: 372386803b944ff429aca762f914befe
+guid: 08df41f9ed75b4346b30eacfea509be7
 ModelImporter:
-  serializedVersion: 26
-  internalIDToNameTable: []
-  externalObjects: {}
+  serializedVersion: 20101
+  internalIDToNameTable:
+  - first:
+      74: 9175175034157941007
+    second: Armature|Armature|Armature|Idle_NoGun|Armature|Idle_NoGun
+  - first:
+      74: -5430343926112889021
+    second: Armature|Armature|Armature|Idle_WithPistol|Armature|Idle_WithPistol
+  - first:
+      74: 1516161406531663190
+    second: Armature|Armature|Armature|Walk_NoGun|Armature|Walk_NoGun
+  - first:
+      74: -3696779756567561934
+    second: Armature|Armature|Armature|Walk_WithPistol|Armature|Walk_WithPistol
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Engineer
+    second: {fileID: 2100000, guid: da93e5ef12bb1624083d297389d2bf15, type: 2}
   materials:
-    importMaterials: 1
+    materialImportMode: 1
     materialName: 0
     materialSearch: 1
     materialLocation: 1
@@ -43,11 +60,13 @@ ModelImporter:
     importBlendShapes: 1
     importCameras: 1
     importLights: 1
+    fileIdsGeneration: 2
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
     keepQuads: 0
     weldVertices: 1
+    bakeAxisConversion: 0
     preserveHierarchy: 0
     skinWeightsMode: 0
     maxBonesPerVertex: 4
@@ -57,6 +76,9 @@ ModelImporter:
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 1
   tangentSpace:
@@ -69,7 +91,6 @@ ModelImporter:
     normalSmoothingSource: 0
   referencedClips: []
   importAnimation: 1
-  copyAvatar: 0
   humanDescription:
     serializedVersion: 3
     human: []
@@ -87,8 +108,10 @@ ModelImporter:
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
+  avatarSetup: 0
   additionalBone: 0
   userData: 
   assetBundleName: 

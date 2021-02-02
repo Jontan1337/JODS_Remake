@@ -248,6 +248,10 @@ public abstract class UnitBase : NetworkBehaviour
             );
         select.unitMat = select.unitRenderer.sharedMaterial;
 
+        if (unitSO.unitMeshes.Length != 0)
+        {
+            select.unitRenderer.sharedMesh = unitSO.unitMeshes[Random.Range(0, unitSO.unitMeshes.Length)];
+        }
         //random unit size, just to make units look less alike
         transform.localScale = transform.localScale * Random.Range(0.9f, 1.1f);
     }

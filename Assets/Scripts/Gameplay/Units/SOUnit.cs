@@ -8,7 +8,8 @@ public class SOUnit : ScriptableObject
 {
     [Header("Necessities")]
     public new string name;
-    public GameObject[] unitPrefab;
+    public GameObject unitPrefab;
+    public Mesh[] unitMeshes;
     public Sprite unitSprite;
     [Space]
     public int energyCost = 10;
@@ -116,24 +117,14 @@ public class SOUnit : ScriptableObject
 
     public Material[] unitMaterials;
 
-
     [Header("Animations")]
     public RuntimeAnimatorController unitAnimator;
-    /*
-    public AnimationClip[] idleAnimation;
-    public AnimationClip[] walkAnimation;
-    public AnimationClip[] runAnimation;
-    public AnimationClip[] meleeAnimation;
-    public AnimationClip[] rangedAnimation;
-    public AnimationClip[] specialAnimation;
-    public AnimationClip[] dieAnimation; //TEMPORARY UNTILL RAGDOLL IS M'DOONE
-    */
 
     private void OnValidate()
     {
-        if (unitPrefab.Length != 0)
+        if (unitPrefab != null)
         {
-            name = unitPrefab[0].name.Split('_')[0].Trim();
+            name = unitPrefab.name.Split('_')[0].Trim();
         }
     }
 }

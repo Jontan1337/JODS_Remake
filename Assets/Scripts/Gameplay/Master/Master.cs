@@ -681,7 +681,7 @@ public class Master : NetworkBehaviour
         //A random unit from the chosen unit's prefab list gets picked, and the name gets sent to the server, which then spawns the unit.
         //This is because there can be multiple variations of one unit.
         CmdSpawnMyUnit(hit.point,
-            chosenUnit.unitPrefab[Random.Range(0, chosenUnit.unitPrefab.Length)].name,
+            chosenUnit.unitPrefab.name,
             unitList[chosenUnitIndex].level);
 
         //Master loses energy, because nothing is free in life
