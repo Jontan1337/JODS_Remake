@@ -27,6 +27,7 @@ public class Master : NetworkBehaviour
     #region Fields
     [Header("Master Class")]
     [SerializeField] private MasterSO masterSO = null;
+    MasterClass mClass = null;
 
     [System.Serializable]
     public class Stats
@@ -177,7 +178,8 @@ public class Master : NetworkBehaviour
 
             //Attach the master's custom script to the gameobject.
             System.Type masterType = System.Type.GetType(masterSO.masterClass.name + ",Assembly-CSharp");
-            gameObject.AddComponent(masterType);
+            mClass = (MasterClass)gameObject.AddComponent(masterType);
+            mClass.UseSpecial();
         }
     }
 
