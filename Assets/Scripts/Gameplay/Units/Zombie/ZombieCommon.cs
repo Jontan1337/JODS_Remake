@@ -5,7 +5,13 @@ using UnityEngine.AI;
 
 public class ZombieCommon : UnitBase, IZombie, IControllable
 {
-    public StatusEffectSO infection;
+    [SerializeField]
+    private InfectionSO infection;
+    public InfectionSO Infection { get => infection; set => infection = value; }
+    [SerializeField]
+    private int infectionAmount = 15;
+    public int InfectionAmount { get => infectionAmount; set => infectionAmount = value; }
+
     public override void Attack()
     {
         if (CanMeleeAttack)
@@ -17,6 +23,9 @@ public class ZombieCommon : UnitBase, IZombie, IControllable
     public override void MeleeAttack()
     {
         base.MeleeAttack();
+
+        if (!WithinMeleeRange() || !CanSee(currentTarget)) return;
+
         Infect(currentTarget);
     }
 
@@ -28,7 +37,7 @@ public class ZombieCommon : UnitBase, IZombie, IControllable
 
     public void Infect(Transform target)
     {
-        target.GetComponent<StatusEffectManager>().ApplyStatusEffect(infection.ApplyEffect(target.gameObject));
+        target.GetComponent<StatusEffectManager>().ApplyStatusEffect(infection.ApplyEffect(target.gameObject), infectionAmount);
     }
     #endregion
 }

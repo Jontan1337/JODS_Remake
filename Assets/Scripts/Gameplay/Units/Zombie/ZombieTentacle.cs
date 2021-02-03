@@ -5,6 +5,13 @@ using UnityEngine.AI;
 
 public class ZombieTentacle : UnitBase, IZombie, IControllable
 {
+    [SerializeField]
+    private InfectionSO infection;
+    public InfectionSO Infection { get => infection; set => infection = value; }
+    [SerializeField]
+    private int infectionAmount = 15;
+    public int InfectionAmount { get => infectionAmount; set => infectionAmount = value; }
+
     [Header("Tentacle")]
     [SerializeField] private bool CaughtSurvivor = false;
     //private player playerInGrasp; //Ya know, make this when players are made
@@ -18,6 +25,15 @@ public class ZombieTentacle : UnitBase, IZombie, IControllable
         {
             TryMeleeAttack();
         }
+    }
+
+    public override void MeleeAttack()
+    {
+        base.MeleeAttack();
+
+        if (!WithinMeleeRange() || !CanSee(currentTarget)) return;
+
+        Infect(currentTarget);
     }
 
     public override void SpecialAttack()
@@ -58,7 +74,7 @@ public class ZombieTentacle : UnitBase, IZombie, IControllable
 
     public void Infect(Transform target)
     {
-        throw new System.NotImplementedException();
+        target.GetComponent<StatusEffectManager>().ApplyStatusEffect(infection.ApplyEffect(target.gameObject), infectionAmount);
     }
     #endregion
 }

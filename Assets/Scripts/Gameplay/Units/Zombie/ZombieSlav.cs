@@ -5,12 +5,28 @@ using UnityEngine.AI;
 
 public class ZombieSlav : UnitBase, IZombie, IControllable
 {
+    [SerializeField]
+    private InfectionSO infection;
+    public InfectionSO Infection { get => infection; set => infection = value; }
+    [SerializeField]
+    private int infectionAmount = 15;
+    public int InfectionAmount { get => infectionAmount; set => infectionAmount = value; }
+
     public override void Attack()
     {
         if (CanMeleeAttack)
         {
             TryMeleeAttack();
         }
+    }
+
+    public override void MeleeAttack()
+    {
+        base.MeleeAttack();
+
+        if (!WithinMeleeRange() || !CanSee(currentTarget)) return;
+
+        Infect(currentTarget);
     }
 
     #region Interface Functions
@@ -21,7 +37,7 @@ public class ZombieSlav : UnitBase, IZombie, IControllable
 
     public void Infect(Transform target)
     {
-        throw new System.NotImplementedException();
+        target.GetComponent<StatusEffectManager>().ApplyStatusEffect(infection.ApplyEffect(target.gameObject), infectionAmount);
     }
     #endregion
 }

@@ -587,7 +587,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
 
     #region Raycast Checks
 
-    private bool CanSee(Transform target)
+    protected bool CanSee(Transform target)
     {
         if (!target) return false;
 
@@ -710,7 +710,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
             $"Or maybe the unit is too close/inside the target?");
     }
     protected bool CanMeleeAttack => WithinMeleeRange() && melee.canMelee;
-    private bool WithinMeleeRange()
+    protected bool WithinMeleeRange()
     {
         if (!HasTarget()) return false;
         float distance = Vector3.Distance(currentTarget.position, transform.position);

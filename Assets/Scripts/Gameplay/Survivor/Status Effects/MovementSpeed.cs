@@ -14,7 +14,7 @@ public class MovementSpeed : StatusEffect
         defaultSpeed = sClass.speed;
     }
 
-    public override void ApplyEffect()
+    public override void ApplyEffect(int? amount)
     {
         sClass.speed += defaultSpeed * movementSpeed.speedModifier;
     }
@@ -22,5 +22,11 @@ public class MovementSpeed : StatusEffect
     public override void End()
     {
         sClass.speed = defaultSpeed;
+    }
+
+    public override void Tick()
+    {
+        base.Tick();
+        Debug.Log("I'm slow for another " + duration + " seconds");
     }
 }

@@ -5,6 +5,13 @@ using UnityEngine.AI;
 
 public class ZombieStronk : UnitBase, IZombie, IControllable
 {
+    [SerializeField]
+    private InfectionSO infection;
+    public InfectionSO Infection { get => infection; set => infection = value; }
+    [SerializeField]
+    private int infectionAmount = 15;
+    public int InfectionAmount { get => infectionAmount; set => infectionAmount = value; }
+
     [Header("Stronk")]
     [SerializeField] private Mesh[] weaponMeshes = null;
     [SerializeField] private GameObject weapon = null;
@@ -24,6 +31,15 @@ public class ZombieStronk : UnitBase, IZombie, IControllable
         }
     }
 
+    public override void MeleeAttack()
+    {
+        base.MeleeAttack();
+
+        if (!WithinMeleeRange() || !CanSee(currentTarget)) return;
+
+        Infect(currentTarget);
+    }
+
     #region Interface Functions
     public void TakeControl()
     {
@@ -32,7 +48,7 @@ public class ZombieStronk : UnitBase, IZombie, IControllable
 
     public void Infect(Transform target)
     {
-        throw new System.NotImplementedException();
+        target.GetComponent<StatusEffectManager>().ApplyStatusEffect(infection.ApplyEffect(target.gameObject), infectionAmount);
     }
     #endregion
 }

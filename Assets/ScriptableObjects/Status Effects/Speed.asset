@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e8d35b9676005c944a5428b08c506298, type: 3}
-  m_Name: Slow
+  m_Name: Speed
   m_EditorClassIdentifier: 
-  isPermanent: 0
-  duration: 0
-  canDurationStack: 0
-  canEffectStack: 0
-  speedAmount: 0
+  duration: 5
+  canDurationStack: 1
+  canEffectStack: 1
+  doEffectOnHit: 0
+  speedModifier: 0.5

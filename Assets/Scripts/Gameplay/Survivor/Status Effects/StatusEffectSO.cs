@@ -4,12 +4,13 @@ using UnityEngine;
 
 public abstract class StatusEffectSO : ScriptableObject
 {
-    public bool isPermanent;
-
+    [Header("Timed Settings")]
     public float duration;
     public bool canDurationStack;
     public bool canEffectStack;
+
+    [Header("On Hit Settings")]
+    public bool doEffectOnHit;
+
     public abstract StatusEffect ApplyEffect(GameObject target);
-
-
 }

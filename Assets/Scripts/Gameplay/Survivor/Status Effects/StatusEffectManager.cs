@@ -1,40 +1,74 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-
-[System.Serializable]
-public class Effects
-{
-    public float durationLeft;
-    public string effectName;
-
-    public Effects(float duration, string v)
-    {
-        durationLeft = duration;
-        effectName = v;
-    }
-}
 
 public class StatusEffectManager : MonoBehaviour
 {
     private Dictionary<StatusEffectSO, StatusEffect> currentEffects = new Dictionary<StatusEffectSO, StatusEffect>();
-    public List<Effects> listlol = new List<Effects>();
-    public void ApplyStatusEffect(StatusEffect newEffect)
+
+    private Coroutine effectEnumerator;
+    bool isActive;
+
+    private void Start()
     {
-        Debug.Log("New Status Effect : " + newEffect.ToString());
+        isActive = false;
+    }
+
+    private IEnumerator StatusEffectEnumerator()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(1);
+
+            //Go through each of the current active effects, and call their Tick method
+            foreach (var effect in currentEffects.Values.ToList())
+            {
+                //Call Tick, which does an effect over time and reduces the duration of the effect
+                effect.Tick();
+
+                //If the duration of this effect has reached 0, then stop the effect and remove it.
+                if (effect.isFinished)
+                {
+                    //Remove the effect from the list of current active effects
+                    currentEffects.Remove(effect.effect);
+                }
+            }
+            if (currentEffects.Count == 0)
+            {
+                isActive = false;
+                StopCoroutine(effectEnumerator);
+            }
+        }
+    }
+
+
+    public void ApplyStatusEffect(StatusEffect newEffect, int? amount = null)
+    {
+
+        //If the status effect is already in the list, then activate the effect
         if (currentEffects.ContainsKey(newEffect.effect))
         {
-            currentEffects[newEffect.effect].Activate();
+            //If this effect can stack in any way, it will stack when activated again.
+            currentEffects[newEffect.effect].Activate(amount);
         }
         else
         {
-            currentEffects.Add(newEffect.effect, newEffect);
-            newEffect.Activate();
-            listlol.Add(new Effects(newEffect.effect.duration, newEffect.effect.ToString()));
-        }
-    }
-    public void RemoveStatusEffect()
-    {
+            Debug.Log("New Status Effect : " + newEffect.effect.ToString());
 
+            //Add the effect to the dictionary
+            currentEffects.Add(newEffect.effect, newEffect);
+
+            //Activate the effect
+            newEffect.Activate(amount);
+
+            //If the coroutine is not currently running, then activate it
+            //The coroutine will stop when there are no more active effects
+            if (!isActive)
+            {
+                effectEnumerator = StartCoroutine(StatusEffectEnumerator());
+                isActive = true;
+            }
+        }
     }
 }
