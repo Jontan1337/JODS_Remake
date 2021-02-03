@@ -23,14 +23,14 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
     [SerializeField] private float ammoCapacity= 0;
     //public GameObject starterWeapon;
 
-    private void Start()
+    private void Awake()
     {
         JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => sClass.ActiveAbility();
         SelectedClass();
         health = survivorSO.health;
         armor = survivorSO.armor;
         movementSpeed = survivorSO.movementSpeed;
-        reloadSpeed = survivorSO.reloadSpeed;
+        reloadSpeed = survivorSO.reloadSpeed;   
         accuracy = survivorSO.accuracy;
         ammoCapacity = survivorSO.ammoCapacity;
         abilityCooldown = survivorSO.abilityCooldown;
