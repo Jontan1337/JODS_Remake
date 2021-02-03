@@ -8,15 +8,15 @@ public class EquipmentSlot : NetworkBehaviour
     public string slotName;
 
     [Header("Item info")]
-    [SerializeField, SyncVar]
+    [SerializeField, SyncVar(hook=nameof(Hook_EquipItem))]
     private GameObject equipmentItem;
     [SerializeField]
     private EquipmentType equipmentType;
 
     [Header("Item index")]
-    [SerializeField]
+    [SerializeField, SyncVar]
     private KeyCode keyCode;
-    [SerializeField]
+    [SerializeField, SyncVar]
     private int keyNumber;
 
     [Header("Hotbar Slot Visuals")]
@@ -87,36 +87,54 @@ public class EquipmentSlot : NetworkBehaviour
     {
         Debug.Log("OnSerialize!");
 
-        if (initialState)
+        if (!initialState)
         {
             writer.WriteEquipmentSlot(this);
+            return true;
         }
-
-        return true;
+        else
+        {
+            writer.WriteGameObject(equipmentItem);
+        }
+        return false;
     }
 
     public override void OnDeserialize(NetworkReader reader, bool initialState)
     {
         Debug.Log("OnDeserialize!");
 
-        if (initialState)
+        if (!initialState)
         {
             EquipmentSlot equipmentSlot = reader.ReadEquipmentSlot();
-
             this.EquipmentItem = equipmentSlot.EquipmentItem;
             this.EquipmentType = equipmentSlot.EquipmentType;
             this.KeyCode = equipmentSlot.KeyCode;
             this.KeyNumber = equipmentSlot.KeyNumber;
+            this.SelectedColor = equipmentSlot.SelectedColor;
+            this.DeselectedColor = equipmentSlot.DeselectedColor;
+            this.TextMesh = equipmentSlot.TextMesh;
+            this.SlotImage = equipmentSlot.SlotImage;
+        }
+        else
+        {
+            GameObject item = reader.ReadGameObject();
+            this.EquipmentItem = item;
         }
     }
     #endregion
+
+    private void Hook_EquipItem(GameObject oldItem, GameObject newItem)
+    {
+        Debug.Log($"Hook: {newItem}");
+        EquipmentItem = newItem;
+    }
 
     [Server]
     public bool Svr_Equip(GameObject equipment, EquipmentType equipmentType)
     {
         if (equipmentType == EquipmentType)
         {
-            EquipmentItem = equipment;
+            equipmentItem = equipment;
             return true;
         }
         return false;
@@ -124,9 +142,10 @@ public class EquipmentSlot : NetworkBehaviour
 
     public bool Drop(Transform dropTransform)
     {
-        if (equipmentItem != null)
+        if (EquipmentItem != null)
         {
             Debug.Log("Drop");
+            EquipmentItem = null;
             return true;
         }
         return false;

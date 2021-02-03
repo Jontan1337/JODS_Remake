@@ -23,7 +23,9 @@ public class Equipment : NetworkBehaviour
     [SerializeField, Tooltip("The prefab of the equipment slots.")]
     private GameObject equipmentSlotUIPrefab;
 
+    [SyncVar]
     private int equipmentSlotsCount = 0;
+
     private Action onChangeSelectedEquipmentSlot;
 
     public EquipmentSlot SelectedEquipmentSlot
@@ -59,15 +61,21 @@ public class Equipment : NetworkBehaviour
     #region Serialization
     public override bool OnSerialize(NetworkWriter writer, bool initialState)
     {
-        writer.WriteEquipment(this);
-        return true;
+        if (!initialState)
+        {
+            writer.WriteEquipmentSlot(SelectedEquipmentSlot);
+            return true;
+        }
+        return false;
     }
 
     public override void OnDeserialize(NetworkReader reader, bool initialState)
     {
-        Equipment equipment = reader.ReadEquipment();
-
-        SelectedEquipmentSlot = equipment.SelectedEquipmentSlot;
+        if (!initialState)
+        {
+            EquipmentSlot equipmentSlot = reader.ReadEquipmentSlot();
+            SelectedEquipmentSlot = equipmentSlot;
+        }
     }
     #endregion
 
@@ -78,11 +86,6 @@ public class Equipment : NetworkBehaviour
             Cmd_EquipmentSlotsSetup();
             JODSInput.Controls.Survivor.Hotbarselecting.performed += number => Cmd_SelectSlot(Mathf.RoundToInt(number.ReadValue<float>())-1);
         }
-    }
-
-    public override void OnStartClient()
-    {
-        equipmentSlotsCount = EquipmentSlots.Count;
     }
 
     [Server]
@@ -100,7 +103,7 @@ public class Equipment : NetworkBehaviour
         }
         else
         {
-            selectedEquipmentSlot = Svr_GetAvailableSlot(equipmentType);
+            Svr_SelectSlot(equipmentSlots.IndexOf(Svr_GetAvailableSlot(equipmentType)));
         }
 
         selectedEquipmentSlot.Svr_Equip(equipment, equipmentType);
@@ -129,11 +132,14 @@ public class Equipment : NetworkBehaviour
     [Server]
     public void Svr_SelectSlot(int slotIndex)
     {
-        if (equipmentSlots[slotIndex] != null)
+        if (slotIndex+1 <= equipmentSlotsCount && slotIndex+1 >= 0)
         {
-            SelectedEquipmentSlot?.Rpc_Deselect(connectionToClient);
-            SelectedEquipmentSlot = equipmentSlots[slotIndex];
-            SelectedEquipmentSlot.Rpc_Select(connectionToClient);
+            if (equipmentSlots[slotIndex] != null)
+            {
+                SelectedEquipmentSlot?.Rpc_Deselect(connectionToClient);
+                SelectedEquipmentSlot = equipmentSlots[slotIndex];
+                SelectedEquipmentSlot.Rpc_Select(connectionToClient);
+            }
         }
     }
 
@@ -143,8 +149,9 @@ public class Equipment : NetworkBehaviour
         foreach (EquipmentType type in equipmentSlotsTypes)
         {
             // Setup the networked prefab that holds the item.
-            GameObject hotbarSlot = Instantiate(equipmentSlotPrefab, equipmentSlotsParent);
+            GameObject hotbarSlot = Instantiate(equipmentSlotPrefab);
             NetworkServer.Spawn(hotbarSlot, gameObject);
+            hotbarSlot.transform.parent = equipmentSlotsParent;
             EquipmentSlot tempSlot = hotbarSlot.GetComponent<EquipmentSlot>();
             tempSlot.EquipmentType = type;
 
@@ -152,19 +159,20 @@ public class Equipment : NetworkBehaviour
             Rpc_CreateUISlots(connectionToServer, tempSlot);
             equipmentSlots.Add(tempSlot);
             Debug.Log($"Command: Adding {tempSlot} to {equipmentSlots}", this);
-            if (isServer)
+            if (!isLocalPlayer && isServer)
                 Rpc_UpdateEquipmentSlots(connectionToClient, tempSlot, 1);
         }
+        equipmentSlotsCount = EquipmentSlots.Count;
         Svr_SelectSlot(0);
     }
 
     [TargetRpc]
     private void Rpc_CreateUISlots(NetworkConnection conn, EquipmentSlot tempSlot)
     {
-        Debug.Log($"Client: {tempSlot}", this);
+        tempSlot.gameObject.transform.parent = equipmentSlotsParent;
+        Debug.Log($"Client: Creating UI slot for {tempSlot}", this);
         GameObject hotbarSlotUI = Instantiate(equipmentSlotUIPrefab, equipmentSlotsUIParent);
         tempSlot.UISlot = hotbarSlotUI;
-        print("Created equipment slot");
     }
 }
 

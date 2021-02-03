@@ -17,19 +17,16 @@ public class Interacter : NetworkBehaviour
     public override void OnStartAuthority()
     {
         Debug.Log("on start authority");
-        if (isLocalPlayer)
-        {
-            JODSInput.Controls.Survivor.Interact.performed += ctx => Cmd_Interact();
-        }
+
+        JODSInput.Controls.Survivor.Interact.performed += ctx => Interact();
+
     }
 
     public override void OnStopAuthority()
     {
         Debug.Log("on stop authority");
-        if (isLocalPlayer)
-        {
-            JODSInput.Controls.Survivor.Interact.performed -= ctx => Cmd_Interact();
-        }
+
+        JODSInput.Controls.Survivor.Interact.performed -= ctx => Interact();
     }
 
     private void Update()
@@ -42,12 +39,20 @@ public class Interacter : NetworkBehaviour
         Debug.DrawRay(playerCamera.position, playerCamera.forward * interactionRange);
     }
 
-    [Command]
-    public void Cmd_Interact()
+    public void Interact()
     {
         if (rayHit.collider)
         {
-            rayHit.collider.TryGetComponent(out IInteractable interactable);
+            Cmd_Interact(rayHit.collider.gameObject);
+        }
+    }
+
+    [Command]
+    public void Cmd_Interact(GameObject targetObject)
+    {
+        if (targetObject)
+        {
+            targetObject.TryGetComponent(out IInteractable interactable);
             interactable?.Svr_Interact(gameObject);
         }
     }
