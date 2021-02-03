@@ -9,16 +9,18 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 
     [SerializeField] private SurvivorSO survivorSO;
     [SerializeField] private SkinnedMeshRenderer survivorRenderer;
-
+    [Space]
+    [Header("Stats")]
     [SerializeField] private int health = 0;
     [SerializeField] private int armor = 0;
-
+    [SerializeField] private float abilityCooldown = 0;
     [SerializeField] private float movementSpeed = 0;
 
+    [Space]
+    [Header("Weapon Stats")]
     [SerializeField] private float reloadSpeed = 0;
     [SerializeField] private float accuracy = 0;
     [SerializeField] private float ammoCapacity= 0;
-    [SerializeField] private float abilityCooldown = 0;
     //public GameObject starterWeapon;
 
     private void Start()

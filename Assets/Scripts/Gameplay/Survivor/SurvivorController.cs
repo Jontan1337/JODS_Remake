@@ -19,6 +19,7 @@ public class SurvivorController : MonoBehaviour
     [SerializeField]
     private LayerMask groundMask;
     public bool isGrounded;
+    bool isJumping;
 
     private void Start()
     {
@@ -33,7 +34,12 @@ public class SurvivorController : MonoBehaviour
         CheckGround();
         if (cc.isGrounded)
         {
-            moveDirection = transform.TransformDirection(new Vector3(horizontal, 0.05f, vertical)) * speed;
+            moveDirection = transform.TransformDirection(new Vector3(horizontal, 0.00f, vertical)) * speed;
+            if (isJumping)
+            {
+                moveDirection.y = jumpSpeed;
+                isJumping = false;
+            }
         }
         //if (JODSInput.Controls.Survivor.Jump.triggered) Jump();
         moveDirection.y -= gravity * Time.deltaTime;
@@ -50,7 +56,8 @@ public class SurvivorController : MonoBehaviour
     {
         if (isGrounded)
         {
-            moveDirection.y = jumpSpeed;
+            //moveDirection.y = jumpSpeed;
+            isJumping = true;
         }
     }
 
