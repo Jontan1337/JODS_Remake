@@ -5,22 +5,26 @@ using System;
 
 public class Equipment : NetworkBehaviour
 {
-    [SerializeField]
+    [SerializeField, SyncVar]
     private EquipmentSlot selectedEquipmentSlot;
 
     [SerializeField]
     private List<EquipmentSlot> equipmentSlots = new List<EquipmentSlot>();
 
+    [SerializeField, Tooltip("A list of the equipment types, the player should have.")]
+    private List<EquipmentType> equipmentSlotsTypes = new List<EquipmentType>();
     [Header("Equipment slot setup settings")]
     [SerializeField, Tooltip("The parent transform, where the equipment slots should be instantiated.")]
     private Transform equipmentSlotsParent;
+    [SerializeField, Tooltip("The parent transform, where the equipment slots should be instantiated.")]
+    private Transform equipmentSlotsUIParent;
     [SerializeField, Tooltip("The prefab of the equipment slots.")]
     private GameObject equipmentSlotPrefab;
-    [SerializeField, Tooltip("A list of the equipment types, the player should have.")]
-    private List<EquipmentType> equipmentSlotsTypes = new List<EquipmentType>();
+    [SerializeField, Tooltip("The prefab of the equipment slots.")]
+    private GameObject equipmentSlotUIPrefab;
 
     private int equipmentSlotsCount = 0;
-    private Action onSelectedEquipmentSlotChange;
+    private Action onChangeSelectedEquipmentSlot;
 
     public EquipmentSlot SelectedEquipmentSlot
     {
@@ -28,27 +32,57 @@ public class Equipment : NetworkBehaviour
         private set
         {
             selectedEquipmentSlot = value;
-            onSelectedEquipmentSlotChange?.Invoke();
+            onChangeSelectedEquipmentSlot?.Invoke();
         }
     }
     public List<EquipmentSlot> EquipmentSlots
     {
         get => equipmentSlots;
-        private set => equipmentSlots = value;
+        private set
+        {
+            equipmentSlots = value;
+        }
     }
+    [TargetRpc]
+    private void Rpc_UpdateEquipmentSlots(NetworkConnection conn, EquipmentSlot newEquipment, int value)
+    {
+        if (value == 1)
+        {
+            equipmentSlots.Add(newEquipment);
+        }
+        else if (value == -1)
+        {
+            equipmentSlots.Remove(newEquipment);
+        }
+    }
+
+    #region Serialization
+    public override bool OnSerialize(NetworkWriter writer, bool initialState)
+    {
+        writer.WriteEquipment(this);
+        return true;
+    }
+
+    public override void OnDeserialize(NetworkReader reader, bool initialState)
+    {
+        Equipment equipment = reader.ReadEquipment();
+
+        SelectedEquipmentSlot = equipment.SelectedEquipmentSlot;
+    }
+    #endregion
 
     public override void OnStartAuthority()
     {
-        Cmd_EquipmentSlotsSetup();
+        if (isLocalPlayer)
+        {
+            Cmd_EquipmentSlotsSetup();
+            JODSInput.Controls.Survivor.Hotbarselecting.performed += number => Cmd_SelectSlot(Mathf.RoundToInt(number.ReadValue<float>())-1);
+        }
     }
 
     public override void OnStartClient()
     {
         equipmentSlotsCount = EquipmentSlots.Count;
-        if (hasAuthority)
-        {
-            Cmd_SelectSlot(0);
-        }
     }
 
     [Server]
@@ -56,12 +90,12 @@ public class Equipment : NetworkBehaviour
     {
         // If selected equipment bar is empty, equip item in that bar,
         // else look for an available bar.
-        if (selectedEquipmentSlot.Equipment == null)
+        if (selectedEquipmentSlot.EquipmentItem == null)
         {
             // If selected bar can't equip, then equip on first 
             if (!selectedEquipmentSlot.Svr_Equip(equipment, equipmentType))
             {
-                selectedEquipmentSlot = equipmentSlots[0];
+                Svr_SelectSlot(0);
             }
         }
         else
@@ -80,7 +114,7 @@ public class Equipment : NetworkBehaviour
         for (int i = 0; i < equipmentSlotsCount-1; i++)
         {
             EquipmentSlot currentSlot = EquipmentSlots[i];
-            if (currentSlot.Equipment == null && currentSlot.EquipmentType == equipmentType)
+            if (currentSlot.EquipmentItem == null && currentSlot.EquipmentType == equipmentType)
                 return EquipmentSlots[i];
         }
         return SelectedEquipmentSlot;
@@ -95,7 +129,12 @@ public class Equipment : NetworkBehaviour
     [Server]
     public void Svr_SelectSlot(int slotIndex)
     {
-        SelectedEquipmentSlot = equipmentSlots[slotIndex];
+        if (equipmentSlots[slotIndex] != null)
+        {
+            SelectedEquipmentSlot?.Rpc_Deselect(connectionToClient);
+            SelectedEquipmentSlot = equipmentSlots[slotIndex];
+            SelectedEquipmentSlot.Rpc_Select(connectionToClient);
+        }
     }
 
     [Command]
@@ -103,10 +142,43 @@ public class Equipment : NetworkBehaviour
     {
         foreach (EquipmentType type in equipmentSlotsTypes)
         {
+            // Setup the networked prefab that holds the item.
             GameObject hotbarSlot = Instantiate(equipmentSlotPrefab, equipmentSlotsParent);
             NetworkServer.Spawn(hotbarSlot, gameObject);
-            hotbarSlot.GetComponent<EquipmentSlot>().EquipmentType = type;
-            equipmentSlots.Add(hotbarSlot.GetComponent<EquipmentSlot>());
+            EquipmentSlot tempSlot = hotbarSlot.GetComponent<EquipmentSlot>();
+            tempSlot.EquipmentType = type;
+
+            // Setup the local UI prefab that shows the item slot.
+            Rpc_CreateUISlots(connectionToServer, tempSlot);
+            equipmentSlots.Add(tempSlot);
+            Debug.Log($"Command: Adding {tempSlot} to {equipmentSlots}", this);
+            if (isServer)
+                Rpc_UpdateEquipmentSlots(connectionToClient, tempSlot, 1);
         }
+        Svr_SelectSlot(0);
+    }
+
+    [TargetRpc]
+    private void Rpc_CreateUISlots(NetworkConnection conn, EquipmentSlot tempSlot)
+    {
+        Debug.Log($"Client: {tempSlot}", this);
+        GameObject hotbarSlotUI = Instantiate(equipmentSlotUIPrefab, equipmentSlotsUIParent);
+        tempSlot.UISlot = hotbarSlotUI;
+        print("Created equipment slot");
+    }
+}
+
+public static class ReadWriteEquipment
+{
+    public static void WriteEquipment(this NetworkWriter writer, Equipment equipment)
+    {
+        NetworkIdentity networkIdentity = equipment.GetComponent<NetworkIdentity>();
+        writer.WriteNetworkIdentity(networkIdentity);
+    }
+    public static Equipment ReadEquipment(this NetworkReader reader)
+    {
+        NetworkIdentity networkIdentity = reader.ReadNetworkIdentity();
+        Equipment equipment = networkIdentity.GetComponent<Equipment>();
+        return equipment;
     }
 }

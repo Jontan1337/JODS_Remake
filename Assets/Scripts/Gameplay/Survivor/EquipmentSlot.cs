@@ -7,38 +7,53 @@ public class EquipmentSlot : NetworkBehaviour
 {
     public string slotName;
 
-    [SerializeField]
-    private GameObject equipment;
+    [Header("Item info")]
+    [SerializeField, SyncVar]
+    private GameObject equipmentItem;
     [SerializeField]
     private EquipmentType equipmentType;
+
+    [Header("Item index")]
     [SerializeField]
     private KeyCode keyCode;
     [SerializeField]
     private int keyNumber;
 
-    [Header("References")]
+    [Header("Hotbar Slot Visuals")]
+    [SerializeField]
+    private GameObject uiSlot;
+    [SerializeField]
+    private Color selectedColor;
+    [SerializeField]
+    private Color deselectedColor;
     [SerializeField]
     private TMP_Text textMesh;
     [SerializeField]
     private Image slotImage;
 
-    [Header("Visual settings")]
-    [SerializeField]
-    private Color selectedColor;
-    [SerializeField]
-    private Color deselectedColor;
-
     private Equipment playerEquipment;
 
-    public GameObject Equipment
+    public GameObject UISlot
     {
-        get => equipment;
+        get => uiSlot;
+        set
+        {
+            uiSlot = value;
+            slotImage = UISlot.GetComponent<Image>();
+            textMesh = UISlot.GetComponentInChildren<TMP_Text>();
+        }
+    }
+
+    #region Properties
+    public GameObject EquipmentItem
+    {
+        get => equipmentItem;
         private set
         {
-            equipment = value;
-            if (Equipment != null)
+            equipmentItem = value;
+            if (EquipmentItem != null)
             {
-                textMesh.SetText(Equipment.name);
+                textMesh.SetText(EquipmentItem.name);
             }
             else
             {
@@ -47,39 +62,24 @@ public class EquipmentSlot : NetworkBehaviour
 
         }
     }
-
-    public EquipmentType EquipmentType
-    {
-        get => equipmentType;
-        set => equipmentType = value;
-    }
+    public EquipmentType EquipmentType { get => equipmentType; set => equipmentType = value; }
+    public KeyCode KeyCode { get => keyCode; private set => keyCode = value; }
+    public int KeyNumber { get => keyNumber; private set => keyNumber = value; }
+    public Color SelectedColor { get => selectedColor; private set => selectedColor = value; }
+    public Color DeselectedColor { get => deselectedColor; private set => deselectedColor = value; }
+    public TMP_Text TextMesh { get => textMesh; private set => textMesh = value; }
+    public Image SlotImage { get => slotImage; private set => slotImage = value; }
+    #endregion
 
     private void Awake()
     {
         keyNumber = transform.GetSiblingIndex() + 1;
         keyCode = KeyCode.Alpha0 + keyNumber;
-
-        playerEquipment = GetComponentInParent<Equipment>();
     }
 
     public override void OnStartAuthority()
     {
-        print("OnStartLocalPlayer");
-        JODSInput.Controls.Survivor.Hotbarselecting.performed += number => SelectSlot(Mathf.RoundToInt(number.ReadValue<float>()));
-        print(JODSInput.Controls.Survivor.Hotbarselecting.type);
-    }
-
-    private void SelectSlot(int index)
-    {
-        if (index == keyNumber)
-        {
-            playerEquipment.Svr_SelectSlot(keyNumber-1);
-            Selected();
-        }
-        else
-        {
-            Deselected();
-        }
+        playerEquipment = GetComponentInParent<Equipment>();
     }
 
     #region Serialization
@@ -87,8 +87,10 @@ public class EquipmentSlot : NetworkBehaviour
     {
         Debug.Log("OnSerialize!");
 
-        writer.WriteGameObject(equipment);
-        writer.WriteInt32((int)equipmentType);
+        if (initialState)
+        {
+            writer.WriteEquipmentSlot(this);
+        }
 
         return true;
     }
@@ -97,8 +99,15 @@ public class EquipmentSlot : NetworkBehaviour
     {
         Debug.Log("OnDeserialize!");
 
-        equipment = reader.ReadGameObject();
-        equipmentType = (EquipmentType)reader.ReadInt32();
+        if (initialState)
+        {
+            EquipmentSlot equipmentSlot = reader.ReadEquipmentSlot();
+
+            this.EquipmentItem = equipmentSlot.EquipmentItem;
+            this.EquipmentType = equipmentSlot.EquipmentType;
+            this.KeyCode = equipmentSlot.KeyCode;
+            this.KeyNumber = equipmentSlot.KeyNumber;
+        }
     }
     #endregion
 
@@ -107,7 +116,7 @@ public class EquipmentSlot : NetworkBehaviour
     {
         if (equipmentType == EquipmentType)
         {
-            Equipment = equipment;
+            EquipmentItem = equipment;
             return true;
         }
         return false;
@@ -115,7 +124,7 @@ public class EquipmentSlot : NetworkBehaviour
 
     public bool Drop(Transform dropTransform)
     {
-        if (equipment != null)
+        if (equipmentItem != null)
         {
             Debug.Log("Drop");
             return true;
@@ -123,12 +132,32 @@ public class EquipmentSlot : NetworkBehaviour
         return false;
     }
 
-    private void Selected()
+    [TargetRpc]
+    public void Rpc_Select(NetworkConnection conn)
     {
-        slotImage.color = selectedColor;
+        if (slotImage)
+            slotImage.color = selectedColor;
     }
-    private void Deselected()
+    [TargetRpc]
+    public void Rpc_Deselect(NetworkConnection conn)
     {
-        slotImage.color = deselectedColor;
+        if (slotImage)
+            slotImage.color = deselectedColor;
     }
+}
+
+public static class ReadWriteEquipmentSlot
+{
+    public static void WriteEquipmentSlot(this NetworkWriter writer, EquipmentSlot equipmentSlot)
+    {
+        NetworkIdentity networkIdentity = equipmentSlot.GetComponent<NetworkIdentity>();
+        writer.WriteNetworkIdentity(networkIdentity);
+    }
+    public static EquipmentSlot ReadEquipmentSlot(this NetworkReader reader)
+    {
+        NetworkIdentity networkIdentity = reader.ReadNetworkIdentity();
+        EquipmentSlot equipmentSlot = networkIdentity.GetComponent<EquipmentSlot>();
+        return equipmentSlot;
+    }
+
 }

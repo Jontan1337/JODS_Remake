@@ -17,13 +17,19 @@ public class Interacter : NetworkBehaviour
     public override void OnStartAuthority()
     {
         Debug.Log("on start authority");
-        JODSInput.Controls.Survivor.Interact.performed += ctx => Cmd_Interact();
+        if (isLocalPlayer)
+        {
+            JODSInput.Controls.Survivor.Interact.performed += ctx => Cmd_Interact();
+        }
     }
 
     public override void OnStopAuthority()
     {
         Debug.Log("on stop authority");
-        JODSInput.Controls.Survivor.Interact.performed -= ctx => Cmd_Interact();
+        if (isLocalPlayer)
+        {
+            JODSInput.Controls.Survivor.Interact.performed -= ctx => Cmd_Interact();
+        }
     }
 
     private void Update()
