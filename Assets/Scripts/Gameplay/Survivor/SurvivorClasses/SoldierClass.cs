@@ -18,7 +18,7 @@ public class SoldierClass : SurvivorClass
     [Command]
     void CmdRocketLaunch()
     {
-        GameObject currentRocket = Instantiate(rocket, transform.position, transform.rotation);
+        GameObject currentRocket = Instantiate(rocket, (new Vector3(transform.localPosition.x, transform.localPosition.y + 2, transform.localPosition.z + 1)), transform.rotation);
         NetworkServer.Spawn(currentRocket);
         RpcRocketLaunch(currentRocket);
     }
