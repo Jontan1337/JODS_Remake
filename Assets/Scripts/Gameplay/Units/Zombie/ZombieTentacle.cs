@@ -56,7 +56,7 @@ public class ZombieTentacle : UnitBase, IZombie, IControllable
         throw new System.NotImplementedException();
     }
 
-    public void Infect()
+    public void Infect(Transform target)
     {
         throw new System.NotImplementedException();
     }

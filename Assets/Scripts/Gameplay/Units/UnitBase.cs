@@ -238,22 +238,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         if (!searching) { StartCoroutine(CoSearch); searching = true; }
 
         StartCoroutine(MovementAnimationCoroutine());
-
-        //Material stuff, for highlighting units
-
-        //This
-        select.unitRenderer.material = new Material(unitSO.unitMaterials.Length == 0 ? //If the unit has different materials to choose from
-            select.unitRenderer.sharedMaterial : //If not, use already assigned material.
-            unitSO.unitMaterials[Random.Range(0,unitSO.unitMaterials.Length)] //Assign a random material.
-            );
-        select.unitMat = select.unitRenderer.sharedMaterial;
-
-        if (unitSO.unitMeshes.Length != 0)
-        {
-            select.unitRenderer.sharedMesh = unitSO.unitMeshes[Random.Range(0, unitSO.unitMeshes.Length)];
-        }
-        //random unit size, just to make units look less alike
-        transform.localScale = transform.localScale * Random.Range(0.9f, 1.1f);
     }
 
     private void SetStats()
@@ -370,6 +354,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         navAgent.speed = movementSpeed;
         navAgent.acceleration = 60;
         navAgent.stoppingDistance = Mathf.Clamp(melee.meleeRange - 1, 1f, 20f);
+        navAgent.avoidancePriority = Random.Range(1, 100);
 
         //Animations -----------------------
         animator = GetComponent<Animator>();
@@ -391,6 +376,23 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
             if (special.availableFromStart) { special.canSpecial = true; }
             else { StartCoroutine(SpecialCooldownCoroutine()); }
         }
+
+        //Material stuff, for highlighting units
+
+        //This
+        select.unitRenderer.material = new Material(unitSO.unitMaterials.Length == 0 ? //If the unit has different materials to choose from
+            select.unitRenderer.sharedMaterial : //If not, use already assigned material.
+            unitSO.unitMaterials[Random.Range(0, unitSO.unitMaterials.Length)] //Assign a random material.
+            );
+        select.unitMat = select.unitRenderer.sharedMaterial;
+
+        if (unitSO.unitMeshes.Length != 0)
+        {
+            select.unitRenderer.sharedMesh = unitSO.unitMeshes[Random.Range(0, unitSO.unitMeshes.Length)];
+        }
+
+        //random unit size, just to make units look less alike
+        transform.localScale = transform.localScale * Random.Range(0.9f, 1.1f);
     }
 
     //This is called by the Master, who sets the unit's level, which increases it's stats.
@@ -832,8 +834,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
 
     public bool IsMaxHealth => health == maxHealth;
 
-    public Teams Team => throw new System.NotImplementedException();
-
     public void Die()
     {
         isDead = true;
@@ -843,6 +843,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
 
         }
     }
+
+    public Teams Team => throw new System.NotImplementedException();
 
     [Server]
     public void Svr_Damage(int damage)

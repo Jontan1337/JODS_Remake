@@ -5,6 +5,7 @@ using UnityEngine.AI;
 
 public class ZombieCommon : UnitBase, IZombie, IControllable
 {
+    public StatusEffectSO infection;
     public override void Attack()
     {
         if (CanMeleeAttack)
@@ -13,15 +14,21 @@ public class ZombieCommon : UnitBase, IZombie, IControllable
         }
     }
 
+    public override void MeleeAttack()
+    {
+        base.MeleeAttack();
+        Infect(currentTarget);
+    }
+
     #region Interface Functions
     public void TakeControl()
     {
         throw new System.NotImplementedException();
     }
 
-    public void Infect()
+    public void Infect(Transform target)
     {
-        throw new System.NotImplementedException();
+        target.GetComponent<StatusEffectManager>().ApplyStatusEffect(infection.ApplyEffect(target.gameObject));
     }
     #endregion
 }

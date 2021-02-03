@@ -1001,6 +1001,7 @@ GameObject:
   - component: {fileID: 140378723284269972}
   - component: {fileID: 140378723284269973}
   - component: {fileID: 140378723284269974}
+  - component: {fileID: 748090733530408348}
   m_Layer: 13
   m_Name: Survivor
   m_TagString: Player
@@ -1121,11 +1122,11 @@ MonoBehaviour:
   survivorRenderer: {fileID: 5922127114693541090}
   health: 0
   armor: 0
+  abilityCooldown: 0
   movementSpeed: 0
   reloadSpeed: 0
   accuracy: 0
   ammoCapacity: 0
-  abilityCooldown: 0
 --- !u!114 &140378723284269972
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1184,6 +1185,19 @@ MonoBehaviour:
   serverOnly: 0
   m_AssetId: 
   hasSpawned: 0
+--- !u!114 &748090733530408348
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5922127114707202486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1a9bf8fefe2c8540ba3be293fa289ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  listlol: []
 --- !u!1 &5922127114707202528
 GameObject:
   m_ObjectHideFlags: 0

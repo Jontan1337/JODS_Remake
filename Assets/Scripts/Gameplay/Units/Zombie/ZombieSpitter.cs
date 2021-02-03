@@ -1,4 +1,6 @@
-﻿public class ZombieSpitter : UnitBase, IZombie, IControllable
+﻿using UnityEngine;
+
+public class ZombieSpitter : UnitBase, IZombie, IControllable
 {
     public override void Attack()
     {
@@ -18,7 +20,7 @@
         throw new System.NotImplementedException();
     }
 
-    public void Infect()
+    public void Infect(Transform target)
     {
         throw new System.NotImplementedException();
     }

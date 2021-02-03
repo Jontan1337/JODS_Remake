@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IZombie
 {
-    void Infect();
+    void Infect(Transform target);
 }
