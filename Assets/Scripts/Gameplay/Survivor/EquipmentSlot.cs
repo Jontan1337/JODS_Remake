@@ -8,15 +8,15 @@ public class EquipmentSlot : NetworkBehaviour
     public string slotName;
 
     [Header("Item info")]
-    [SerializeField, SyncVar(hook=nameof(Hook_EquipItem))]
+    [SerializeField, SyncVar]
     private GameObject equipmentItem;
     [SerializeField]
     private EquipmentType equipmentType;
 
     [Header("Item index")]
-    [SerializeField, SyncVar]
+    [SerializeField]
     private KeyCode keyCode;
-    [SerializeField, SyncVar]
+    [SerializeField]
     private int keyNumber;
 
     [Header("Hotbar Slot Visuals")]
@@ -134,17 +134,18 @@ public class EquipmentSlot : NetworkBehaviour
     {
         if (equipmentType == EquipmentType)
         {
-            equipmentItem = equipment;
+            EquipmentItem = equipment;
             return true;
         }
         return false;
     }
 
-    public bool Drop(Transform dropTransform)
+    [Server]
+    public bool Svr_Drop(Transform dropTransform)
     {
         if (EquipmentItem != null)
         {
-            Debug.Log("Drop");
+            Debug.Log("Drop", this);
             EquipmentItem = null;
             return true;
         }

@@ -63,19 +63,18 @@ public class Equipment : NetworkBehaviour
     {
         if (!initialState)
         {
-            writer.WriteEquipmentSlot(SelectedEquipmentSlot);
-            return true;
         }
-        return false;
+        writer.WriteEquipmentSlot(SelectedEquipmentSlot);
+        return true;
     }
 
     public override void OnDeserialize(NetworkReader reader, bool initialState)
     {
         if (!initialState)
         {
-            EquipmentSlot equipmentSlot = reader.ReadEquipmentSlot();
-            SelectedEquipmentSlot = equipmentSlot;
         }
+        EquipmentSlot equipmentSlot = reader.ReadEquipmentSlot();
+        SelectedEquipmentSlot = equipmentSlot;
     }
     #endregion
 
@@ -144,6 +143,12 @@ public class Equipment : NetworkBehaviour
     }
 
     [Command]
+    private void Cmd_DropEquipmentItem()
+    {
+        SelectedEquipmentSlot.Svr_Drop(transform);
+    }
+
+    [Command]
     private void Cmd_EquipmentSlotsSetup()
     {
         foreach (EquipmentType type in equipmentSlotsTypes)
@@ -158,7 +163,6 @@ public class Equipment : NetworkBehaviour
             // Setup the local UI prefab that shows the item slot.
             Rpc_CreateUISlots(connectionToServer, tempSlot);
             equipmentSlots.Add(tempSlot);
-            Debug.Log($"Command: Adding {tempSlot} to {equipmentSlots}", this);
             if (!isLocalPlayer && isServer)
                 Rpc_UpdateEquipmentSlots(connectionToClient, tempSlot, 1);
         }
@@ -170,7 +174,6 @@ public class Equipment : NetworkBehaviour
     private void Rpc_CreateUISlots(NetworkConnection conn, EquipmentSlot tempSlot)
     {
         tempSlot.gameObject.transform.parent = equipmentSlotsParent;
-        Debug.Log($"Client: Creating UI slot for {tempSlot}", this);
         GameObject hotbarSlotUI = Instantiate(equipmentSlotUIPrefab, equipmentSlotsUIParent);
         tempSlot.UISlot = hotbarSlotUI;
     }

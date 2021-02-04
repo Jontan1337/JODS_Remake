@@ -993,6 +993,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5922127114707103126}
+  - component: {fileID: 140378723284269974}
+  - component: {fileID: 8343324270182000405}
   - component: {fileID: 5922127114697802274}
   - component: {fileID: 5953086225513061613}
   - component: {fileID: 6043028673134938683}
@@ -1000,7 +1002,6 @@ GameObject:
   - component: {fileID: 140378723284269966}
   - component: {fileID: 140378723284269972}
   - component: {fileID: 140378723284269973}
-  - component: {fileID: 140378723284269974}
   - component: {fileID: 748090733530408348}
   m_Layer: 13
   m_Name: Survivor
@@ -1029,6 +1030,40 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &140378723284269974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5922127114707202486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  serverOnly: 0
+  m_AssetId: 
+  hasSpawned: 0
+--- !u!114 &8343324270182000405
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5922127114707202486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f74aedd71d9a4f55b3ce499326d45fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  clientAuthority: 1
+  localPositionSensitivity: 0.01
+  localRotationSensitivity: 0.01
+  localScaleSensitivity: 0.01
 --- !u!95 &5922127114697802274
 Animator:
   serializedVersion: 3
@@ -1169,22 +1204,6 @@ MonoBehaviour:
     type: 3}
   equipmentSlotUIPrefab: {fileID: 4767785640025123699, guid: 129a3d6a467456043a87eac1adbf41fd,
     type: 3}
---- !u!114 &140378723284269974
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5922127114707202486}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sceneId: 0
-  serverOnly: 0
-  m_AssetId: 
-  hasSpawned: 0
 --- !u!114 &748090733530408348
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1197,7 +1216,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1a9bf8fefe2c8540ba3be293fa289ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  listlol: []
 --- !u!1 &5922127114707202528
 GameObject:
   m_ObjectHideFlags: 0
