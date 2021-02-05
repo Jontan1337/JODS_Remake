@@ -20,17 +20,21 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
     [Header("Weapon Stats")]
     [SerializeField] private float reloadSpeed = 0;
     [SerializeField] private float accuracy = 0;
-    [SerializeField] private float ammoCapacity= 0;
+    [SerializeField] private float ammoCapacity = 0;
     //public GameObject starterWeapon;
 
     private void Awake()
     {
         JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => sClass.ActiveAbility();
         SelectedClass();
+        if (survivorSO.abilityObject)
+        {
+            sClass.abilityObject = survivorSO.abilityObject;
+        }
         health = survivorSO.health;
         armor = survivorSO.armor;
         movementSpeed = survivorSO.movementSpeed;
-        reloadSpeed = survivorSO.reloadSpeed;   
+        reloadSpeed = survivorSO.reloadSpeed;
         accuracy = survivorSO.accuracy;
         ammoCapacity = survivorSO.ammoCapacity;
         abilityCooldown = survivorSO.abilityCooldown;
@@ -50,6 +54,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
     {
         System.Type selectedClass = System.Type.GetType(survivorSO.classScript.name + ",Assembly-CSharp");
         sClass = (SurvivorClass)gameObject.AddComponent(selectedClass);
+
 
         survivorRenderer.material = survivorSO.survivorMaterial;
         survivorRenderer.sharedMesh = survivorSO.survivorMesh;
