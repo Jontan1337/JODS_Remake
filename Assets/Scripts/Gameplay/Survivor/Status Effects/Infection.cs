@@ -14,6 +14,7 @@ public class Infection : StatusEffect
     public override void ApplyEffect(int? amount)
     {
         if (amount == null) return;
+        if (infectionLevel == 3) return;
 
         int newAmount = (int)amount;
 
@@ -36,6 +37,8 @@ public class Infection : StatusEffect
 
     public override void Tick()
     {
+        if (infectionLevel == 3) return;
+
         infectionRate = Mathf.Clamp(infectionRate -= 1, 0, 100);
         Debug.Log("My infection rate is: " + infectionRate);
         Debug.Log("My infection level is: " + infectionLevel);
@@ -49,6 +52,7 @@ public class Infection : StatusEffect
         }
     }
 
+    //This is where the debuffs will be applied
     public void IncreaseInfectionLevel()
     {
         infectionLevel += 1;
