@@ -5,20 +5,27 @@ using UnityEngine;
 
 public class SoldierClass : SurvivorClass
 {
-    public GameObject rocket;
-    int rocketSpeed;
+    GameObject rocketSpawnPos;
+    int rocketSpeed = 5000;
+
+    private void Awake()
+    {
+        rocketSpawnPos = new GameObject("rocketSpawnPos");
+        rocketSpawnPos.transform.SetParent(transform);
+        rocketSpawnPos.transform.position = new Vector3(0.5f, 2, 0.5f);
+    }
 
 
     public override void ActiveAbility()
     {
+        
         CmdRocketLaunch();
-        print("BANG");
     }
 
     [Command]
     void CmdRocketLaunch()
     {
-        GameObject currentRocket = Instantiate(rocket, (new Vector3(transform.localPosition.x, transform.localPosition.y + 2, transform.localPosition.z + 1)), transform.rotation);
+        GameObject currentRocket = Instantiate(abilityObject, new Vector3(rocketSpawnPos.transform.position.x , rocketSpawnPos.transform.position.y, rocketSpawnPos.transform.position.z), transform.GetComponent<LookController>().playerCamera.transform.rotation);
         NetworkServer.Spawn(currentRocket);
         RpcRocketLaunch(currentRocket);
     }
@@ -27,6 +34,6 @@ public class SoldierClass : SurvivorClass
     void RpcRocketLaunch(GameObject currentRocket)
     {
         Rigidbody rb = currentRocket.GetComponent<Rigidbody>();
-        rb.AddForce(transform.forward * rocketSpeed);
+        rb.AddForce(transform.GetComponent<LookController>().playerCamera.transform.forward * rocketSpeed);
     }
 }

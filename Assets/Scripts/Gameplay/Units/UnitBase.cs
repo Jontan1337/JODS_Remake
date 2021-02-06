@@ -456,7 +456,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
                 bool inViewAngle = InViewAngle(col.transform);
 
                 //If I can see the player, and it is within my field of view
-                if (canSee && inViewAngle)
+                if (canSee && inViewAngle || Vector3.Distance(transform.position, col.transform.position) <= 10)
                 {
                     //I can see the player, go go go!
                     AcquireTarget(col.transform, false);

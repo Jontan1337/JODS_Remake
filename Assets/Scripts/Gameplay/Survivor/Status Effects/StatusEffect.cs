@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class StatusEffect
 {
-    protected float duration;
+    public float duration;
     protected int effectStacks;
     public StatusEffectSO effect { get; }
     protected readonly GameObject obj;

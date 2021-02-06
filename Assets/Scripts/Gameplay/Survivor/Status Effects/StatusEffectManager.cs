@@ -10,6 +10,9 @@ public class StatusEffectManager : MonoBehaviour
     private Coroutine effectEnumerator;
     bool isActive;
 
+    public List<string> tempList = new List<string>(); //THESE ARE FOR DEBUGGING
+    private List<StatusEffect> ya = new List<StatusEffect>(); //THESE ARE FOR DEBUGGING
+
     private void Start()
     {
         isActive = false;
@@ -20,6 +23,11 @@ public class StatusEffectManager : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(1);
+
+            for (int i = 0; i < tempList.Count; i++)
+            {
+                tempList[i] = ya[i].effect.ToString() + " (" + ya[i].duration + ")";
+            }
 
             //Go through each of the current active effects, and call their Tick method
             foreach (var effect in currentEffects.Values.ToList())
@@ -69,6 +77,9 @@ public class StatusEffectManager : MonoBehaviour
                 effectEnumerator = StartCoroutine(StatusEffectEnumerator());
                 isActive = true;
             }
+
+            ya.Add(newEffect);
+            tempList.Add(newEffect.effect.ToString() + " (" + newEffect.duration + ")");
         }
     }
 }
