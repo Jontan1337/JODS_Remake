@@ -5,7 +5,7 @@ namespace Mirror.Discovery
 {
     [DisallowMultipleComponent]
     [AddComponentMenu("Network/NetworkDiscoveryHUD")]
-    [HelpURL("https://mirror-networking.com/docs/Components/NetworkDiscovery.html")]
+    [HelpURL("https://mirror-networking.com/docs/Articles/Components/NetworkDiscovery.html")]
     [RequireComponent(typeof(NetworkDiscovery))]
     public class NetworkDiscoveryHUD : MonoBehaviour
     {
@@ -20,7 +20,7 @@ namespace Mirror.Discovery
             if (networkDiscovery == null)
             {
                 networkDiscovery = GetComponent<NetworkDiscovery>();
-                UnityEditor.Events.UnityEventTools.AddPersistentListener(networkDiscovery.OnServerFound, OndiscoveredServer);
+                UnityEditor.Events.UnityEventTools.AddPersistentListener(networkDiscovery.OnServerFound, OnDiscoveredServer);
                 UnityEditor.Undo.RecordObjects(new Object[] { this, networkDiscovery }, "Set NetworkDiscovery");
             }
         }
@@ -69,7 +69,7 @@ namespace Mirror.Discovery
 
             // show list of found server
 
-            GUILayout.Label($"discovered Servers [{discoveredServers.Count}]:");
+            GUILayout.Label($"Discovered Servers [{discoveredServers.Count}]:");
 
             // servers
             scrollViewPos = GUILayout.BeginScrollView(scrollViewPos);
@@ -86,7 +86,7 @@ namespace Mirror.Discovery
             NetworkManager.singleton.StartClient(info.uri);
         }
 
-        public void OndiscoveredServer(ServerResponse info)
+        public void OnDiscoveredServer(ServerResponse info)
         {
             // Note that you can check the versioning to decide if you can connect to the server or not using this method
             discoveredServers[info.serverId] = info;
