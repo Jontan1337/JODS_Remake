@@ -1,24 +1,49 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Mirror;
 
 public class SyncTransformParent : NetworkBehaviour
 {
-    [SerializeField, SyncVar(hook=nameof(UpdateTransformParent))]
-    private GameObject parent;
-
-    private void UpdateTransformParent(GameObject oldParent, GameObject newParent)
-    {
-        parent = newParent;
-        transform.parent = parent.transform;
-    }
+    [SerializeField, SyncVar]
+    private Transform parent;
 
     private void OnTransformParentChanged()
     {
         if (isServer)
         {
-            parent = transform.parent.gameObject;
+            parent = transform.parent;
         }
     }
+
+    public override bool OnSerialize(NetworkWriter writer, bool initialState)
+    {
+        if (initialState)
+        {
+        }
+        writer.WriteTransform(transform.parent);
+        return true;
+    }
+
+    public override void OnDeserialize(NetworkReader reader, bool initialState)
+    {
+        if (initialState)
+        {
+        }
+        parent = reader.ReadTransform();
+    }
+}
+
+public static class ReadWriteTransform
+{
+    public static void WriteTransform(this NetworkWriter writer, EquipmentSlot equipmentSlot)
+    {
+        NetworkIdentity networkIdentity = equipmentSlot.GetComponent<NetworkIdentity>();
+        writer.WriteNetworkIdentity(networkIdentity);
+    }
+    public static Transform ReadTransform(this NetworkReader reader)
+    {
+        NetworkIdentity networkIdentity = reader.ReadNetworkIdentity();
+        Transform transform = networkIdentity.GetComponent<Transform>();
+        return transform;
+    }
+
 }

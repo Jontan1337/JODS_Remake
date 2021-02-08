@@ -50,16 +50,21 @@ public class EquipmentSlot : NetworkBehaviour
         get => equipmentItem;
         private set
         {
-            equipmentItem = value;
-            if (EquipmentItem != null)
+            if (isServer)
             {
-                textMesh.SetText(EquipmentItem.name);
+                equipmentItem = value;
             }
-            else
+            if (hasAuthority)
             {
-                textMesh.SetText("Empty");
+                if (EquipmentItem != null)
+                {
+                    textMesh.SetText(EquipmentItem.name);
+                }
+                else
+                {
+                    textMesh.SetText("Empty");
+                }
             }
-
         }
     }
     public EquipmentType EquipmentType { get => equipmentType; set => equipmentType = value; }
@@ -85,16 +90,15 @@ public class EquipmentSlot : NetworkBehaviour
     #region Serialization
     public override bool OnSerialize(NetworkWriter writer, bool initialState)
     {
-        Debug.Log("OnSerialize!");
 
-        if (!initialState)
+        if (initialState)
         {
-            writer.WriteEquipmentSlot(this);
-            return true;
+            //writer.WriteEquipmentSlot(this);
         }
         else
         {
             writer.WriteGameObject(equipmentItem);
+            return true;
         }
         return false;
     }
@@ -103,17 +107,18 @@ public class EquipmentSlot : NetworkBehaviour
     {
         Debug.Log("OnDeserialize!");
 
-        if (!initialState)
+        if (initialState)
         {
-            EquipmentSlot equipmentSlot = reader.ReadEquipmentSlot();
-            this.EquipmentItem = equipmentSlot.EquipmentItem;
-            this.EquipmentType = equipmentSlot.EquipmentType;
-            this.KeyCode = equipmentSlot.KeyCode;
-            this.KeyNumber = equipmentSlot.KeyNumber;
-            this.SelectedColor = equipmentSlot.SelectedColor;
-            this.DeselectedColor = equipmentSlot.DeselectedColor;
-            this.TextMesh = equipmentSlot.TextMesh;
-            this.SlotImage = equipmentSlot.SlotImage;
+            GameObject item = reader.ReadGameObject();
+            this.EquipmentItem = item;
+            //EquipmentSlot equipmentSlot = reader.ReadEquipmentSlot();
+            //this.EquipmentType = equipmentSlot.EquipmentType;
+            //this.KeyCode = equipmentSlot.KeyCode;
+            //this.KeyNumber = equipmentSlot.KeyNumber;
+            //this.SelectedColor = equipmentSlot.SelectedColor;
+            //this.DeselectedColor = equipmentSlot.DeselectedColor;
+            //this.TextMesh = equipmentSlot.TextMesh;
+            //this.SlotImage = equipmentSlot.SlotImage;
         }
         else
         {
@@ -122,12 +127,6 @@ public class EquipmentSlot : NetworkBehaviour
         }
     }
     #endregion
-
-    private void Hook_EquipItem(GameObject oldItem, GameObject newItem)
-    {
-        Debug.Log($"Hook: {newItem}");
-        EquipmentItem = newItem;
-    }
 
     [Server]
     public bool Svr_Equip(GameObject equipment, EquipmentType equipmentType)
@@ -179,5 +178,4 @@ public static class ReadWriteEquipmentSlot
         EquipmentSlot equipmentSlot = networkIdentity.GetComponent<EquipmentSlot>();
         return equipmentSlot;
     }
-
 }

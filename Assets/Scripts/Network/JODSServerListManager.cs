@@ -2,12 +2,11 @@
 using UnityEngine.UI;
 using Mirror;
 using Mirror.Cloud;
-using Mirror.Cloud.Example;
 
 public class JODSServerListManager : MonoBehaviour
 {
-    [Header("UI")]
-    [SerializeField] ServerListUI listUI = null;
+    //[Header("UI")]
+    //[SerializeField] ServerListUI listUI = null;
 
     [Header("Buttons")]
     [SerializeField] Button refreshButton = null;
@@ -25,7 +24,7 @@ public class JODSServerListManager : MonoBehaviour
         NetworkManager manager = Lobby.Instance;
         connector = manager.GetComponent<ApiConnector>();
 
-        connector.ListServer.ClientApi.onServerListUpdated += listUI.UpdateList;
+        //connector.ListServer.ClientApi.onServerListUpdated += listUI.UpdateList;
 
         if (autoRefreshServerlist)
         {
@@ -51,7 +50,7 @@ public class JODSServerListManager : MonoBehaviour
             connector.ListServer.ClientApi.StopGetServerListRepeat();
         }
 
-        connector.ListServer.ClientApi.onServerListUpdated -= listUI.UpdateList;
+        //connector.ListServer.ClientApi.onServerListUpdated -= listUI.UpdateList;
     }
 
     public void RefreshButtonHandler()

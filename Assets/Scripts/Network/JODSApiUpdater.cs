@@ -1,34 +1,33 @@
 ﻿using Mirror;
 using Mirror.Cloud;
-using Mirror.Cloud.Example;
 using Mirror.Cloud.ListServerService;
 using System;
 using UnityEngine;
 
 public class JODSApiUpdater : MonoBehaviour
 {
-    static readonly ILogger logger = LogFactory.GetLogger<ApiUpdater>();
+    //static readonly ILogger logger = LogFactory.GetLogger<ApiUpdater>();
 
-    NetworkManagerListServer manager;
+    //NetworkManagerListServer manager;
     ApiConnector connector;
     public string gameName = "Game";
 
     void OnEnable()
     {
-        manager = NetworkManager.singleton as NetworkManagerListServer;
-        connector = manager.GetComponent<ApiConnector>();
+        //manager = NetworkManager.singleton as NetworkManagerListServer;
+        //connector = manager.GetComponent<ApiConnector>();
 
-        manager.onPlayerListChanged += onPlayerListChanged;
-        manager.onServerStarted += ServerStartedHandler;
-        manager.onServerStopped += ServerStoppedHandler;
+        //manager.onPlayerListChanged += onPlayerListChanged;
+        //manager.onServerStarted += ServerStartedHandler;
+        //manager.onServerStopped += ServerStoppedHandler;
     }
 
 
     void OnDestroy()
     {
-        manager.onPlayerListChanged -= onPlayerListChanged;
-        manager.onServerStarted -= ServerStartedHandler;
-        manager.onServerStopped -= ServerStoppedHandler;
+        //manager.onPlayerListChanged -= onPlayerListChanged;
+        //manager.onServerStarted -= ServerStartedHandler;
+        //manager.onServerStopped -= ServerStoppedHandler;
     }
 
     void onPlayerListChanged(int playerCount)
@@ -36,25 +35,25 @@ public class JODSApiUpdater : MonoBehaviour
         if (connector.ListServer.ServerApi.ServerInList)
         {
             // update player count so that other players can see
-            if (playerCount < manager.maxConnections)
-            {
-                if (logger.LogEnabled()) logger.Log($"Updating Server, player count: {playerCount} ");
-                connector.ListServer.ServerApi.UpdateServer(playerCount);
-            }
-            // remove server when there is max players
-            else
-            {
-                if (logger.LogEnabled()) logger.Log($"Removing Server, player count: {playerCount}");
-                connector.ListServer.ServerApi.RemoveServer();
-            }
+            //if (playerCount < manager.maxConnections)
+            //{
+            //    if (logger.LogEnabled()) logger.Log($"Updating Server, player count: {playerCount} ");
+            //    connector.ListServer.ServerApi.UpdateServer(playerCount);
+            //}
+            //// remove server when there is max players
+            //else
+            //{
+            //    if (logger.LogEnabled()) logger.Log($"Removing Server, player count: {playerCount}");
+            //    connector.ListServer.ServerApi.RemoveServer();
+            //}
         }
         else
         {
             // if not in list, and player counts drops below 2, add server to list
             if (playerCount < 2)
             {
-                if (logger.LogEnabled()) logger.Log($"Adding Server, player count: {playerCount}");
-                AddServer(playerCount);
+                //if (logger.LogEnabled()) logger.Log($"Adding Server, player count: {playerCount}");
+                //AddServer(playerCount);
             }
         }
     }

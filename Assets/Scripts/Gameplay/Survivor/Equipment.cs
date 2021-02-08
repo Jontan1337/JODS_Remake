@@ -5,7 +5,7 @@ using System;
 
 public class Equipment : NetworkBehaviour
 {
-    [SerializeField, SyncVar]
+    [SerializeField]
     private EquipmentSlot selectedEquipmentSlot;
 
     [SerializeField]
@@ -27,6 +27,12 @@ public class Equipment : NetworkBehaviour
     private int equipmentSlotsCount = 0;
 
     private Action onChangeSelectedEquipmentSlot;
+
+
+    public override void OnStartClient()
+    {
+        Debug.Log("OnStartClient", this);
+    }
 
     public EquipmentSlot SelectedEquipmentSlot
     {
@@ -61,21 +67,60 @@ public class Equipment : NetworkBehaviour
     #region Serialization
     public override bool OnSerialize(NetworkWriter writer, bool initialState)
     {
-        if (!initialState)
+        base.OnSerialize(writer, initialState);
+        if (initialState)
         {
+            print(SelectedEquipmentSlot);
+
+            if (SelectedEquipmentSlot)
+            {
+                writer.WriteEquipmentSlot(SelectedEquipmentSlot);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
-        writer.WriteEquipmentSlot(SelectedEquipmentSlot);
+        else
+        {
+            writer.WriteEquipmentSlot(SelectedEquipmentSlot);
+        }
         return true;
     }
 
     public override void OnDeserialize(NetworkReader reader, bool initialState)
     {
-        if (!initialState)
+        if (initialState)
         {
+            EquipmentSlot equipmentSlot = reader.ReadEquipmentSlot();
+            SelectedEquipmentSlot = equipmentSlot;
         }
-        EquipmentSlot equipmentSlot = reader.ReadEquipmentSlot();
-        SelectedEquipmentSlot = equipmentSlot;
+        else
+        {
+            EquipmentSlot equipmentSlot = reader.ReadEquipmentSlot();
+            SelectedEquipmentSlot = equipmentSlot;
+        }
     }
+
+    //protected override bool SerializeSyncVars(NetworkWriter writer, bool initialState)
+    //{
+    //    if (initialState)
+    //    {
+    //        writer.WriteEquipmentSlot(selectedEquipmentSlot);
+    //        return true;
+    //    }
+    //    return false;
+    //}
+
+    //protected override void DeserializeSyncVars(NetworkReader reader, bool initialState)
+    //{
+    //    if (initialState)
+    //    {
+    //        selectedEquipmentSlot = reader.ReadEquipmentSlot();
+    //    }
+    //}
+
     #endregion
 
     public override void OnStartAuthority()
