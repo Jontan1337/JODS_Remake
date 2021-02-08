@@ -15,12 +15,14 @@ MonoBehaviour:
   health: 100
   armor: 80
   movementSpeed: 90
+  abilityCooldown: 40
   reloadSpeed: 1.5
   accuracy: 1.5
   ammoCapacity: 1.5
-  abilityCooldown: 40
-  starterWeapon: {fileID: 0}
   classScript: {fileID: 11500000, guid: 2d2c42ce6d3e5624b8065ada007eb514, type: 3}
+  starterWeapon: {fileID: 0}
+  abilityObject: {fileID: 3668033450558484208, guid: 688023c254216764891da7115d73253e,
+    type: 3}
   survivorMesh: {fileID: -5495902117074765545, guid: c7b8f2d275870694b8beaf344f85cb11,
     type: 3}
   survivorMaterial: {fileID: 2100000, guid: 2e656cb10fd80fc4c90d406fde283a56, type: 2}
