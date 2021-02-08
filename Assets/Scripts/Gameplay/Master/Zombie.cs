@@ -8,6 +8,6 @@ public class Zombie : MasterClass
 
     public override void UseSpecial()
     {
-        print("ASS");
+
     }
 }

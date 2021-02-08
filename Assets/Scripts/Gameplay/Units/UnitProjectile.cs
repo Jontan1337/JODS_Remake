@@ -7,14 +7,17 @@ public abstract class UnitProjectile : NetworkBehaviour
 {
     public int damage = 0;
     [Header("Projectile Stats")]
-    [SerializeField] private int lifetime = 5;
+    [SerializeField] protected int lifetime = 5;
+    [SerializeField] private bool destroyAfterLiftime = false;
     [Space]
-    [SerializeField] private bool hasDropoff = true;
-    [SerializeField] private int timeBeforeDropoff = 3;
+    [SerializeField] protected bool hasDropoff = true;
+    [SerializeField] protected int timeBeforeDropoff = 3;
     [Space]
-    [SerializeField] private bool piercing = false;
+    [SerializeField] protected bool piercing = false;
 
-    private Rigidbody rb;
+    protected bool hasHit = false;
+
+    protected Rigidbody rb;
 
     public virtual void Start()
     {
@@ -37,15 +40,19 @@ public abstract class UnitProjectile : NetworkBehaviour
     public virtual IEnumerator LifetimeEnumerator()
     {
         yield return new WaitForSeconds(lifetime);
-        Destroy();
+        if (destroyAfterLiftime)
+        {
+            Destroy();
+        }
     }
 
     public virtual void OnTriggerEnter(Collider other)
     {
         Damage(other.gameObject);
 
-        if (!piercing)
+        if (!piercing && !hasHit)
         {
+            hasHit = true; //Prevents the projectile from hitting multiple times
             Destroy();
         }
     }
