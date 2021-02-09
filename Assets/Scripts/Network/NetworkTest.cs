@@ -8,7 +8,7 @@ using System;
 public class NetworkTest : NetworkManager
 {
     [SerializeField]
-    private TMP_InputField addressInputField;
+    private bool hostOnly = false;
 
     public List<NetworkConnection> playerIds = new List<NetworkConnection>();
     public static Action<NetworkConnection> RelayOnServerAddPlayer;
