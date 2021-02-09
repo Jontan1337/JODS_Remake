@@ -9,6 +9,8 @@ public class NetworkTest : NetworkManager
 {
     [SerializeField]
     private bool hostOnly = false;
+    [SerializeField]
+    private GameObject canvas;
 
     public List<NetworkConnection> playerIds = new List<NetworkConnection>();
     public static Action<NetworkConnection> RelayOnServerAddPlayer;
@@ -20,6 +22,7 @@ public class NetworkTest : NetworkManager
         if (hostOnly)
         {
             singleton.StartHost();
+            canvas.SetActive(false);
         }
         //ClientScene.AddPlayer(null);
         NetworkServer.SpawnObjects();
