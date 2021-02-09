@@ -17,6 +17,10 @@ public class NetworkTest : NetworkManager
 
     public override void Start()
     {
+        if (hostOnly)
+        {
+            singleton.StartHost();
+        }
         //ClientScene.AddPlayer(null);
         NetworkServer.SpawnObjects();
         manager = GetComponent<NetworkManager>();
