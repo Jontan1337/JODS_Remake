@@ -5,7 +5,7 @@ using System;
 
 public class Equipment : NetworkBehaviour
 {
-    [SerializeField]
+    [SerializeField, SyncVar]
     private EquipmentSlot selectedEquipmentSlot;
 
     [SerializeField]
@@ -23,12 +23,18 @@ public class Equipment : NetworkBehaviour
     [SerializeField, Tooltip("The prefab of the equipment slots.")]
     private GameObject equipmentSlotUIPrefab;
 
-    [SyncVar]
     private int equipmentSlotsCount = 0;
 
     private Action onChangeSelectedEquipmentSlot;
 
-
+    public override void OnStartServer()
+    {
+        Debug.Log("Subscribed to RelayOnServerAddPlayer", this);
+        NetworkTest.RelayOnServerAddPlayer += e => Rpc_UpdateSelectedSlot(e, SelectedEquipmentSlot);
+        if (isServer)
+        {
+        }
+    }
     public override void OnStartClient()
     {
         Debug.Log("OnStartClient", this);
@@ -67,60 +73,50 @@ public class Equipment : NetworkBehaviour
     #region Serialization
     public override bool OnSerialize(NetworkWriter writer, bool initialState)
     {
-        base.OnSerialize(writer, initialState);
-        if (initialState)
+        bool initialized = false;
+        if (!initialState)
         {
-            print(SelectedEquipmentSlot);
+            if (selectedEquipmentSlot)
+            {
+                //selectedEquipmentSlot.OnSerialize(writer, initialState);
+                writer.WriteEquipmentSlot(selectedEquipmentSlot);
+            }
+            //writer.WriteList(equipmentSlots);
+            //writer.WriteList(equipmentSlotsTypes);
+            //writer.WriteTransform(equipmentSlotsParent);
+            //writer.WriteTransform(equipmentSlotsUIParent);
+            //writer.WriteGameObject(equipmentSlotPrefab);
+            //writer.WriteGameObject(equipmentSlotUIPrefab);
+            //writer.WriteInt32(equipmentSlotsCount);
 
-            if (SelectedEquipmentSlot)
-            {
-                writer.WriteEquipmentSlot(SelectedEquipmentSlot);
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            //if (SelectedEquipmentSlot)
+            //{
+            //    initialized = true;
+            //}
+            return true;
         }
         else
         {
-            writer.WriteEquipmentSlot(SelectedEquipmentSlot);
+            return false;
         }
-        return true;
+
     }
 
     public override void OnDeserialize(NetworkReader reader, bool initialState)
     {
-        if (initialState)
+        if (!initialState)
         {
-            EquipmentSlot equipmentSlot = reader.ReadEquipmentSlot();
-            SelectedEquipmentSlot = equipmentSlot;
-        }
-        else
-        {
-            EquipmentSlot equipmentSlot = reader.ReadEquipmentSlot();
-            SelectedEquipmentSlot = equipmentSlot;
+            selectedEquipmentSlot = reader.ReadEquipmentSlot();
+            //equipmentSlots = reader.ReadList<EquipmentSlot>();
         }
     }
 
-    //protected override bool SerializeSyncVars(NetworkWriter writer, bool initialState)
-    //{
-    //    if (initialState)
-    //    {
-    //        writer.WriteEquipmentSlot(selectedEquipmentSlot);
-    //        return true;
-    //    }
-    //    return false;
-    //}
-
-    //protected override void DeserializeSyncVars(NetworkReader reader, bool initialState)
-    //{
-    //    if (initialState)
-    //    {
-    //        selectedEquipmentSlot = reader.ReadEquipmentSlot();
-    //    }
-    //}
-
+    [TargetRpc]
+    private void Rpc_UpdateSelectedSlot(NetworkConnection target, EquipmentSlot selectedSlot)
+    {
+        print($"Received {selectedSlot}");
+        SelectedEquipmentSlot = selectedSlot;
+    }
     #endregion
 
     public override void OnStartAuthority()
@@ -226,15 +222,34 @@ public class Equipment : NetworkBehaviour
 
 public static class ReadWriteEquipment
 {
-    public static void WriteEquipment(this NetworkWriter writer, Equipment equipment)
+    public static void WriteEquipment(this NetworkWriter writer, Equipment value)
     {
-        NetworkIdentity networkIdentity = equipment.GetComponent<NetworkIdentity>();
-        writer.WriteNetworkIdentity(networkIdentity);
+        ILogger logger = LogFactory.GetLogger<NetworkWriter>();
+        if (value == null)
+        {
+            return;
+        }
+        NetworkIdentity networkIdentity = value.GetComponent<NetworkIdentity>();
+        logger.Log($"Writing {networkIdentity}");
+        if (networkIdentity != null)
+        {
+            writer.WriteNetworkIdentity(networkIdentity);
+        }
+        else
+        {
+            logger.LogWarning("NetworkWriter " + value + " has no NetworkIdentity");
+            writer.WriteNetworkIdentity(null);
+        }
     }
     public static Equipment ReadEquipment(this NetworkReader reader)
     {
-        NetworkIdentity networkIdentity = reader.ReadNetworkIdentity();
-        Equipment equipment = networkIdentity.GetComponent<Equipment>();
-        return equipment;
+        ILogger logger = LogFactory.GetLogger<NetworkReader>();
+        NetworkIdentity identity = reader.ReadNetworkIdentity();
+        logger.Log($"Reading {identity}");
+        if (identity == null)
+        {
+            return null;
+        }
+        return identity.GetComponent<Equipment>();
     }
 }
