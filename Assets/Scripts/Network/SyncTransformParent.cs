@@ -14,16 +14,37 @@ public class SyncTransformParent : NetworkBehaviour
         }
     }
 
+    public override void OnStartServer()
+    {
+        NetworkTest.RelayOnServerAddPlayer += e => Rpc_UpdateParent(e, parent);
+    }
+
     public override bool OnSerialize(NetworkWriter writer, bool initialState)
     {
-        writer.WriteTransform(transform.parent);
-        base.OnSerialize(writer, initialState);
-        return true;
+        if (!initialState)
+        {
+            writer.WriteTransform(transform.parent);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public override void OnDeserialize(NetworkReader reader, bool initialState)
     {
-        parent = reader.ReadTransform();
+        if (!initialState)
+        {
+            parent = reader.ReadTransform();
+            transform.parent = parent;
+        }
+    }
+
+    [TargetRpc]
+    private void Rpc_UpdateParent(NetworkConnection target, Transform newParent)
+    {
+        transform.parent = newParent;
     }
 }
 

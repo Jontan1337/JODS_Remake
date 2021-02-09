@@ -85,7 +85,7 @@ public class EquipmentSlot : NetworkBehaviour
     public override void OnStartServer()
     {
         Debug.Log("Subscribed to RelayOnServerAddPlayer", this);
-        NetworkTest.RelayOnServerAddPlayer += e => Rpc_UpdateItemObject(e, EquipmentItem);
+        //NetworkTest.RelayOnServerAddPlayer += e => Rpc_UpdateItemObject(e, EquipmentItem ?? null);
         if (isServer)
         {
         }
@@ -127,9 +127,10 @@ public class EquipmentSlot : NetworkBehaviour
     }
 
     [TargetRpc]
-    private void Rpc_UpdateItemObject(NetworkConnection target, GameObject item)
+    private void Rpc_UpdateItemObject(NetworkConnection target, GameObject value)
     {
-        EquipmentItem = item;
+        Debug.Log($"Received {value}");
+        EquipmentItem = value;
     }
     #endregion
 

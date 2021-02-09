@@ -29,15 +29,22 @@ public class NetworkTest : NetworkManager
         print($"Player added {conn}");
         playerIds.Add(conn);
         print("Invoked RelayOnServerAddPlayer");
+        StartCoroutine(DispatchNewConnection(conn));
+    }
+
+    private IEnumerator DispatchNewConnection(NetworkConnection conn)
+    {
+        yield return new WaitForSeconds(0.1f);
         if (conn.connectionId != 0)
         {
-            //RelayOnServerAddPlayer?.Invoke(conn);
+            RelayOnServerAddPlayer?.Invoke(conn);
         }
     }
 
     // This is only called on the server.
     public override void OnServerDisconnect(NetworkConnection conn)
     {
+        base.OnServerDisconnect(conn);
         playerIds.Remove(conn);
     }
 }

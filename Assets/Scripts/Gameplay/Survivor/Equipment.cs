@@ -30,7 +30,7 @@ public class Equipment : NetworkBehaviour
     public override void OnStartServer()
     {
         Debug.Log("Subscribed to RelayOnServerAddPlayer", this);
-        NetworkTest.RelayOnServerAddPlayer += e => Rpc_UpdateSelectedSlot(e, SelectedEquipmentSlot);
+        NetworkTest.RelayOnServerAddPlayer += e => Rpc_UpdateSelectedSlot(e, SelectedEquipmentSlot ?? null);
         if (isServer)
         {
         }
@@ -112,10 +112,10 @@ public class Equipment : NetworkBehaviour
     }
 
     [TargetRpc]
-    private void Rpc_UpdateSelectedSlot(NetworkConnection target, EquipmentSlot selectedSlot)
+    private void Rpc_UpdateSelectedSlot(NetworkConnection target, EquipmentSlot value)
     {
-        print($"Received {selectedSlot}");
-        SelectedEquipmentSlot = selectedSlot;
+        print($"Received {value}");
+        SelectedEquipmentSlot = value;
     }
     #endregion
 
