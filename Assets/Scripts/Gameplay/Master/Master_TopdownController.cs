@@ -32,7 +32,6 @@ public class Master_TopdownController : MonoBehaviour
         cam = GetComponent<Camera>();
 
 
-
         //Default floor stuff
 
         //Get all floors in level
