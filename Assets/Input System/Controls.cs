@@ -559,6 +559,14 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Sprint"",
+                    ""type"": ""Button"",
+                    ""id"": ""15077264-2949-43c7-a405-37d2c0121018"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -759,6 +767,17 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""action"": ""Active Ability"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ffc28ef2-1baa-465c-aa95-fd558e9f89db"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Sprint"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -795,6 +814,7 @@ public class @Controls : IInputActionCollection, IDisposable
         m_Survivor_Interact = m_Survivor.FindAction("Interact", throwIfNotFound: true);
         m_Survivor_Hotbarselecting = m_Survivor.FindAction("Hotbar selecting", throwIfNotFound: true);
         m_Survivor_ActiveAbility = m_Survivor.FindAction("Active Ability", throwIfNotFound: true);
+        m_Survivor_Sprint = m_Survivor.FindAction("Sprint", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -987,6 +1007,7 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_Survivor_Interact;
     private readonly InputAction m_Survivor_Hotbarselecting;
     private readonly InputAction m_Survivor_ActiveAbility;
+    private readonly InputAction m_Survivor_Sprint;
     public struct SurvivorActions
     {
         private @Controls m_Wrapper;
@@ -997,6 +1018,7 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @Interact => m_Wrapper.m_Survivor_Interact;
         public InputAction @Hotbarselecting => m_Wrapper.m_Survivor_Hotbarselecting;
         public InputAction @ActiveAbility => m_Wrapper.m_Survivor_ActiveAbility;
+        public InputAction @Sprint => m_Wrapper.m_Survivor_Sprint;
         public InputActionMap Get() { return m_Wrapper.m_Survivor; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1024,6 +1046,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @ActiveAbility.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnActiveAbility;
                 @ActiveAbility.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnActiveAbility;
                 @ActiveAbility.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnActiveAbility;
+                @Sprint.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnSprint;
+                @Sprint.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnSprint;
+                @Sprint.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnSprint;
             }
             m_Wrapper.m_SurvivorActionsCallbackInterface = instance;
             if (instance != null)
@@ -1046,6 +1071,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @ActiveAbility.started += instance.OnActiveAbility;
                 @ActiveAbility.performed += instance.OnActiveAbility;
                 @ActiveAbility.canceled += instance.OnActiveAbility;
+                @Sprint.started += instance.OnSprint;
+                @Sprint.performed += instance.OnSprint;
+                @Sprint.canceled += instance.OnSprint;
             }
         }
     }
@@ -1084,5 +1112,6 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnInteract(InputAction.CallbackContext context);
         void OnHotbarselecting(InputAction.CallbackContext context);
         void OnActiveAbility(InputAction.CallbackContext context);
+        void OnSprint(InputAction.CallbackContext context);
     }
 }

@@ -537,6 +537,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &463778348 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 463778348, guid: dbc482463a9940540a8de57e3e20b70b,
+    type: 3}
+  m_PrefabInstance: {fileID: 1832583025}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &510809837
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1368,9 +1374,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 1
   runInBackground: 1
-  startOnHeadless: 1
+  autoStartServerBuild: 1
   showDebugMessages: 0
   serverTickRate: 30
+  serverBatching: 0
+  serverBatchInterval: 0
   offlineScene: 
   onlineScene: 
   transport: {fileID: 575953106903354027}
@@ -1964,38 +1972,9 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3352125035130834596, guid: dbc482463a9940540a8de57e3e20b70b,
         type: 3}
-      propertyPath: spawnPrefabs.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 3352125035130834596, guid: dbc482463a9940540a8de57e3e20b70b,
-        type: 3}
-      propertyPath: showDebugMessages
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3352125035130834596, guid: dbc482463a9940540a8de57e3e20b70b,
-        type: 3}
-      propertyPath: playerPrefab
+      propertyPath: canvas
       value: 
-      objectReference: {fileID: 5922127114707202486, guid: 2b66a0b1aff738e4fb22273ddadde428,
-        type: 3}
-    - target: {fileID: 3352125035130834596, guid: dbc482463a9940540a8de57e3e20b70b,
-        type: 3}
-      propertyPath: spawnPrefabs.Array.data[0]
-      value: 
-      objectReference: {fileID: 5922127114707202486, guid: 2b66a0b1aff738e4fb22273ddadde428,
-        type: 3}
-    - target: {fileID: 3352125035130834596, guid: dbc482463a9940540a8de57e3e20b70b,
-        type: 3}
-      propertyPath: spawnPrefabs.Array.data[1]
-      value: 
-      objectReference: {fileID: 3049965623166493680, guid: a3735b513ada53f4ebc1432cfef77583,
-        type: 3}
-    - target: {fileID: 3352125035130834596, guid: dbc482463a9940540a8de57e3e20b70b,
-        type: 3}
-      propertyPath: spawnPrefabs.Array.data[2]
-      value: 
-      objectReference: {fileID: 4767785640025123699, guid: 129a3d6a467456043a87eac1adbf41fd,
-        type: 3}
+      objectReference: {fileID: 463778348}
     - target: {fileID: 3352125035130834597, guid: dbc482463a9940540a8de57e3e20b70b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2051,77 +2030,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3352125035130834598, guid: dbc482463a9940540a8de57e3e20b70b,
-        type: 3}
-      propertyPath: m_SpawnPrefabs.Array.size
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 3352125035130834598, guid: dbc482463a9940540a8de57e3e20b70b,
-        type: 3}
-      propertyPath: m_OfflineScene
-      value: JTestScene
-      objectReference: {fileID: 0}
-    - target: {fileID: 3352125035130834598, guid: dbc482463a9940540a8de57e3e20b70b,
-        type: 3}
-      propertyPath: m_OnlineScene
-      value: JTestScene
-      objectReference: {fileID: 0}
-    - target: {fileID: 3352125035130834598, guid: dbc482463a9940540a8de57e3e20b70b,
-        type: 3}
-      propertyPath: m_PlayerPrefab
-      value: 
-      objectReference: {fileID: 2421754405375140133, guid: 0c8b6d406bb502e4f81d84533f09f714,
-        type: 3}
-    - target: {fileID: 3352125035130834598, guid: dbc482463a9940540a8de57e3e20b70b,
-        type: 3}
-      propertyPath: m_SpawnPrefabs.Array.data[0]
-      value: 
-      objectReference: {fileID: 2421754405375140133, guid: 0c8b6d406bb502e4f81d84533f09f714,
-        type: 3}
-    - target: {fileID: 3352125035130834598, guid: dbc482463a9940540a8de57e3e20b70b,
-        type: 3}
-      propertyPath: m_SpawnPrefabs.Array.data[1]
-      value: 
-      objectReference: {fileID: 286672049600161654, guid: 716e2a412b3680b49a623f3c88316214,
-        type: 3}
-    - target: {fileID: 3352125035130834598, guid: dbc482463a9940540a8de57e3e20b70b,
-        type: 3}
-      propertyPath: m_SpawnPrefabs.Array.data[2]
-      value: 
-      objectReference: {fileID: 1363099987152241176, guid: c2e3475c97a9a394d88573ff9cf2af14,
-        type: 3}
-    - target: {fileID: 3352125035130834598, guid: dbc482463a9940540a8de57e3e20b70b,
-        type: 3}
-      propertyPath: m_SpawnPrefabs.Array.data[3]
-      value: 
-      objectReference: {fileID: 333980776960045463, guid: d159f56a9bee60640aeb5c02274b6083,
-        type: 3}
-    - target: {fileID: 3352125035130834598, guid: dbc482463a9940540a8de57e3e20b70b,
-        type: 3}
-      propertyPath: m_SpawnPrefabs.Array.data[4]
-      value: 
-      objectReference: {fileID: 9032503957960409270, guid: 97ce0f42838b41f4b8769370bdd292c8,
-        type: 3}
-    - target: {fileID: 3352125035130834598, guid: dbc482463a9940540a8de57e3e20b70b,
-        type: 3}
-      propertyPath: m_SpawnPrefabs.Array.data[5]
-      value: 
-      objectReference: {fileID: 963817858151908938, guid: 6c10127acd2898346bf8dd558619885a,
-        type: 3}
     - target: {fileID: 3352125035130834599, guid: dbc482463a9940540a8de57e3e20b70b,
         type: 3}
       propertyPath: m_Name
       value: NetworkTest
-      objectReference: {fileID: 0}
-    - target: {fileID: 3352125035130834599, guid: dbc482463a9940540a8de57e3e20b70b,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3352125035130834619, guid: dbc482463a9940540a8de57e3e20b70b,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dbc482463a9940540a8de57e3e20b70b, type: 3}
@@ -2626,30 +2538,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7424c1070fad4ba2a7a96b02fbeb4bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnClientConnected:
-    m_PersistentCalls:
-      m_Calls: []
-  OnClientDataReceived:
-    m_PersistentCalls:
-      m_Calls: []
-  OnClientError:
-    m_PersistentCalls:
-      m_Calls: []
-  OnClientDisconnected:
-    m_PersistentCalls:
-      m_Calls: []
-  OnServerConnected:
-    m_PersistentCalls:
-      m_Calls: []
-  OnServerDataReceived:
-    m_PersistentCalls:
-      m_Calls: []
-  OnServerError:
-    m_PersistentCalls:
-      m_Calls: []
-  OnServerDisconnected:
-    m_PersistentCalls:
-      m_Calls: []
   port: 7777
   NoDelay: 1
   serverMaxMessageSize: 16384
@@ -2688,4 +2576,4 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0

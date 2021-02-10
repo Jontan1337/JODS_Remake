@@ -1,23 +1,25 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class SurvivorController : MonoBehaviour
 {
     CharacterController cc;
     public float speed;
+    public float sprintSpeedMultiplier;
     public float jumpSpeed;
     public float gravity;
+    public bool isSprinting;
     float targetY;
     Vector3 moveDirection = Vector3.zero;
+
     private float horizontal;
     private float vertical;
 
-    [SerializeField]
-    private Transform groundCheck;
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private LayerMask groundMask;
     private float groundDistance = 0.2f;
-    [SerializeField]
-    private LayerMask groundMask;
     public bool isGrounded;
     bool isJumping;
 
@@ -25,6 +27,8 @@ public class SurvivorController : MonoBehaviour
     {
         JODSInput.Controls.Survivor.Movement.performed += ctx => Move(ctx.ReadValue<Vector2>());
         JODSInput.Controls.Survivor.Jump.performed += ctx => Jump();
+        JODSInput.Controls.Survivor.Sprint.performed += ctx => OnSprintPerformed();
+        JODSInput.Controls.Survivor.Sprint.canceled += ctx => OnSprintCanceled();
         cc = GetComponent<CharacterController>();
     }
 
@@ -64,5 +68,17 @@ public class SurvivorController : MonoBehaviour
     private void CheckGround()
     {
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+    }
+
+    private void OnSprintPerformed()
+    {
+        isSprinting = true;
+        speed *= sprintSpeedMultiplier;
+    }
+
+    private void OnSprintCanceled()
+    {
+        isSprinting = false;
+        speed /= sprintSpeedMultiplier;
     }
 }
