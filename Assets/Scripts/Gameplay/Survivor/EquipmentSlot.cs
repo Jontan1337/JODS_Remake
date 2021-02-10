@@ -8,8 +8,12 @@ public class EquipmentSlot : NetworkBehaviour
     public string slotName;
 
     [Header("Item info")]
-    [SerializeField]
+    [SerializeField, SyncVar(hook = nameof(OnEquipmentChanged))]
     private GameObject equipmentItem;
+    private void OnEquipmentChanged(GameObject oldVal, GameObject newVal)
+    {
+        Rpc_UpdateUI(connectionToClient, newVal);
+    }
     [SerializeField]
     private EquipmentType equipmentType;
 
@@ -50,21 +54,7 @@ public class EquipmentSlot : NetworkBehaviour
         get => equipmentItem;
         private set
         {
-            if (isServer)
-            {
-                equipmentItem = value;
-            }
-            if (hasAuthority)
-            {
-                if (EquipmentItem != null)
-                {
-                    textMesh.SetText(EquipmentItem.name);
-                }
-                else
-                {
-                    textMesh.SetText("Empty");
-                }
-            }
+            equipmentItem = value;
         }
     }
     public EquipmentType EquipmentType { get => equipmentType; set => equipmentType = value; }
@@ -85,7 +75,7 @@ public class EquipmentSlot : NetworkBehaviour
     public override void OnStartServer()
     {
         Debug.Log("Subscribed to RelayOnServerAddPlayer", this);
-        //NetworkTest.RelayOnServerAddPlayer += e => Rpc_UpdateItemObject(e, EquipmentItem ?? null);
+        NetworkTest.RelayOnServerAddPlayer += Svr_UpdateVars;
         if (isServer)
         {
         }
@@ -107,7 +97,6 @@ public class EquipmentSlot : NetworkBehaviour
         {
             return false;
         }
-
     }
 
     public override void OnDeserialize(NetworkReader reader, bool initialState)
@@ -115,15 +104,16 @@ public class EquipmentSlot : NetworkBehaviour
         if (!initialState)
         {
             equipmentItem = reader.ReadGameObject();
-            //EquipmentSlot equipmentSlot = reader.ReadEquipmentSlot();
-            //this.EquipmentType = equipmentSlot.EquipmentType;
-            //this.KeyCode = equipmentSlot.KeyCode;
-            //this.KeyNumber = equipmentSlot.KeyNumber;
-            //this.SelectedColor = equipmentSlot.SelectedColor;
-            //this.DeselectedColor = equipmentSlot.DeselectedColor;
-            //this.TextMesh = equipmentSlot.TextMesh;
-            //this.SlotImage = equipmentSlot.SlotImage;
         }
+    }
+
+    #endregion
+
+    #region Late Joiner Synchronization
+    [Server]
+    private void Svr_UpdateVars(NetworkConnection conn)
+    {
+        Rpc_UpdateItemObject(conn, EquipmentItem);
     }
 
     [TargetRpc]
@@ -169,39 +159,16 @@ public class EquipmentSlot : NetworkBehaviour
         if (slotImage)
             slotImage.color = deselectedColor;
     }
-}
-
-public static class ReadWriteEquipmentSlot
-{
-    public static void WriteEquipmentSlot(this NetworkWriter writer, EquipmentSlot value)
+    [TargetRpc]
+    private void Rpc_UpdateUI(NetworkConnection target, GameObject value)
     {
-        ILogger logger = LogFactory.GetLogger<NetworkWriter>();
-        if (value == null)
+        if (value != null)
         {
-            return;
-        }
-        NetworkIdentity networkIdentity = value.GetComponent<NetworkIdentity>();
-        if (networkIdentity != null)
-        {
-            writer.WriteNetworkIdentity(networkIdentity);
+            textMesh.SetText(value.name);
         }
         else
         {
-            logger.LogWarning("NetworkWriter " + value + " has no NetworkIdentity");
-            writer.WriteNetworkIdentity(null);
+            textMesh.SetText("Empty");
         }
-    }
-    public static EquipmentSlot ReadEquipmentSlot(this NetworkReader reader)
-    {
-        NetworkIdentity identity = reader.ReadNetworkIdentity();
-        if (identity == null)
-        {
-            return null;
-        }
-        return identity.GetComponent<EquipmentSlot>();
-
-        //NetworkIdentity networkIdentity = reader.ReadNetworkIdentity();
-        //EquipmentSlot equipmentSlot = networkIdentity.GetComponent<EquipmentSlot>();
-        //return equipmentSlot;
     }
 }
