@@ -436,6 +436,9 @@ public class Master : NetworkBehaviour
             //Level
             b.SetUnitLevel(u.level);
 
+            //Details
+            b.SetDetails(u.unit.description, u.unit.powerStat, u.unit.healthStat);
+
             //Index
             b.UnitIndex = i;
 
