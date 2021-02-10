@@ -33,7 +33,6 @@ public class NetworkTest : NetworkManager
     public override void OnServerAddPlayer(NetworkConnection conn)
     {
         base.OnServerAddPlayer(conn);
-        print($"PLAYER ADDED {conn}");
         playerIds.Add(conn);
         StartCoroutine(DispatchNewConnection(conn));
     }
@@ -45,7 +44,6 @@ public class NetworkTest : NetworkManager
         // If the host is the new player, don't synchronize anything.
         if (conn.connectionId != 0)
         {
-            print("Invoked RelayOnServerAddPlayer");
             RelayOnServerAddPlayer?.Invoke(conn);
         }
     }

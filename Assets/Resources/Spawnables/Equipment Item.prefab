@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2264276349485521483}
   - component: {fileID: 2563535890626473616}
   - component: {fileID: 1566032701302891966}
+  - component: {fileID: 1741895825134749742}
   m_Layer: 0
   m_Name: Equipment Item
   m_TagString: Untagged
@@ -72,3 +73,18 @@ MonoBehaviour:
   deselectedColor: {r: 0.62352943, g: 0.62352943, b: 0.62352943, a: 0.7058824}
   textMesh: {fileID: 0}
   slotImage: {fileID: 0}
+--- !u!114 &1741895825134749742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3049965623166493680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f48d9adfb06982e49a79b02c970de21f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  parent: {fileID: 0}

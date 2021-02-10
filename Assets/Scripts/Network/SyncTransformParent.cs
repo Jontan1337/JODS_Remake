@@ -44,22 +44,7 @@ public class SyncTransformParent : NetworkBehaviour
     [TargetRpc]
     private void Rpc_UpdateParent(NetworkConnection target, Transform newParent)
     {
+        parent = newParent;
         transform.parent = newParent;
     }
 }
-
-//public static class ReadWriteTransform
-//{
-//    public static void WriteTransform(this NetworkWriter writer, EquipmentSlot equipmentSlot)
-//    {
-//        NetworkIdentity networkIdentity = equipmentSlot.GetComponent<NetworkIdentity>();
-//        writer.WriteNetworkIdentity(networkIdentity);
-//    }
-//    public static Transform ReadTransform(this NetworkReader reader)
-//    {
-//        NetworkIdentity networkIdentity = reader.ReadNetworkIdentity();
-//        Transform transform = networkIdentity.GetComponent<Transform>();
-//        return transform;
-//    }
-
-//}

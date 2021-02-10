@@ -9,7 +9,7 @@ using UnityEngine.UI;
 // Used for managing an in game session.
 public class MatchManager : NetworkBehaviour
 {
-    public List<PlayerUnit> playerList = new List<PlayerUnit>();
+    public List<PlayerSetup> playerList = new List<PlayerSetup>();
     public Action onCountdownFinished;
 
     [SerializeField] private GameObject initializingUI;
@@ -34,7 +34,7 @@ public class MatchManager : NetworkBehaviour
 
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         foreach (var player in players)
-            playerList.Add(player.GetComponent<PlayerUnit>());
+            playerList.Add(player.GetComponent<PlayerSetup>());
 
         Svr_SetupPlayers();
         StartCoroutine(Svr_Countdown());

@@ -24,20 +24,10 @@ public class Equipment : NetworkBehaviour
 
     private int equipmentSlotsCount = 0;
 
+    private const string slotsUIParentName = "CanvasInGame/Hotbar";
+
     private Action onChangeSelectedEquipmentSlot;
 
-    public override void OnStartServer()
-    {
-        Debug.Log("Subscribed to RelayOnServerAddPlayer", this);
-        NetworkTest.RelayOnServerAddPlayer += e => Rpc_UpdateSelectedSlot(e, SelectedEquipmentSlot);
-        if (isServer)
-        {
-        }
-    }
-    public override void OnStartClient()
-    {
-        Debug.Log("OnStartClient", this);
-    }
 
     public EquipmentSlot SelectedEquipmentSlot
     {
@@ -56,6 +46,35 @@ public class Equipment : NetworkBehaviour
             equipmentSlots = value;
         }
     }
+
+    private void OnTransformParentChanged()
+    {
+        if (hasAuthority)
+        {
+            // When parent changed, check if it's correctly set to player Survivor
+            // and then find UI hotbar under Survivors canvas.
+            Debug.Log($"My parent {transform.parent}", this);
+            if (transform.parent.name.Contains("Survivor"))
+            {
+                equipmentSlotsUIParent = transform.parent.Find(slotsUIParentName);
+            }
+        }
+    }
+
+    public override void OnStartServer()
+    {
+        NetworkTest.RelayOnServerAddPlayer += e => Rpc_UpdateSelectedSlot(e, SelectedEquipmentSlot);
+    }
+    public override void OnStartAuthority()
+    {
+        JODSInput.Controls.Survivor.Hotbarselecting.performed += number => Cmd_SelectSlot(Mathf.RoundToInt(number.ReadValue<float>()) - 1);
+        Cmd_EquipmentSlotsSetup();
+    }
+    public override void OnStartClient()
+    {
+        equipmentSlotsParent = transform;
+    }
+
     [TargetRpc]
     private void Rpc_UpdateEquipmentSlots(NetworkConnection conn, EquipmentSlot newEquipment, int value)
     {
@@ -116,15 +135,6 @@ public class Equipment : NetworkBehaviour
         SelectedEquipmentSlot = value;
     }
     #endregion
-
-    public override void OnStartAuthority()
-    {
-        if (isLocalPlayer)
-        {
-            Cmd_EquipmentSlotsSetup();
-            JODSInput.Controls.Survivor.Hotbarselecting.performed += number => Cmd_SelectSlot(Mathf.RoundToInt(number.ReadValue<float>())-1);
-        }
-    }
 
     [Server]
     public void Svr_Equip(GameObject equipment, EquipmentType equipmentType)
@@ -200,9 +210,9 @@ public class Equipment : NetworkBehaviour
             tempSlot.EquipmentType = type;
 
             // Setup the local UI prefab that shows the item slot.
-            Rpc_CreateUISlots(connectionToServer, tempSlot);
+            Rpc_CreateUISlots(connectionToClient, tempSlot);
             equipmentSlots.Add(tempSlot);
-            if (!isLocalPlayer && isServer)
+            if (!hasAuthority && isServer)
                 Rpc_UpdateEquipmentSlots(connectionToClient, tempSlot, 1);
         }
         equipmentSlotsCount = EquipmentSlots.Count;

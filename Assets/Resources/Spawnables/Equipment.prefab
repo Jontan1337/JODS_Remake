@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &7469820133590246594
+--- !u!1 &5545151553288273671
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,37 +8,38 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2551221544721211485}
-  - component: {fileID: 7673085436233317429}
-  - component: {fileID: 8536705584843177060}
-  m_Layer: 0
-  m_Name: PlayerHands
+  - component: {fileID: 2814345682718748778}
+  - component: {fileID: 2481782018538553297}
+  - component: {fileID: 915696371545218618}
+  - component: {fileID: 8190740497831448999}
+  m_Layer: 13
+  m_Name: Equipment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2551221544721211485
+--- !u!4 &2814345682718748778
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7469820133590246594}
+  m_GameObject: {fileID: 5545151553288273671}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.824675, y: 2.3770754, z: 2.811622}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7673085436233317429
+--- !u!114 &2481782018538553297
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7469820133590246594}
+  m_GameObject: {fileID: 5545151553288273671}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
@@ -48,13 +49,36 @@ MonoBehaviour:
   serverOnly: 0
   m_AssetId: 
   hasSpawned: 0
---- !u!114 &8536705584843177060
+--- !u!114 &915696371545218618
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7469820133590246594}
+  m_GameObject: {fileID: 5545151553288273671}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1869d8be4de7c2c42924329f28bd45ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  selectedEquipmentSlot: {fileID: 0}
+  equipmentSlots: []
+  equipmentSlotsTypes: 00000000000000000100000002000000
+  equipmentSlotsParent: {fileID: 0}
+  equipmentSlotsUIParent: {fileID: 0}
+  equipmentSlotPrefab: {fileID: 3049965623166493680, guid: a3735b513ada53f4ebc1432cfef77583,
+    type: 3}
+  equipmentSlotUIPrefab: {fileID: 4767785640025123699, guid: 129a3d6a467456043a87eac1adbf41fd,
+    type: 3}
+--- !u!114 &8190740497831448999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5545151553288273671}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f48d9adfb06982e49a79b02c970de21f, type: 3}

@@ -74,11 +74,7 @@ public class EquipmentSlot : NetworkBehaviour
 
     public override void OnStartServer()
     {
-        Debug.Log("Subscribed to RelayOnServerAddPlayer", this);
-        NetworkTest.RelayOnServerAddPlayer += Svr_UpdateVars;
-        if (isServer)
-        {
-        }
+        //NetworkTest.RelayOnServerAddPlayer += Svr_UpdateVars;
     }
     public override void OnStartAuthority()
     {

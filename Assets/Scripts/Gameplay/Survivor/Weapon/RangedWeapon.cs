@@ -107,8 +107,17 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable
     {
         Debug.Log($"{interacter} interacted with {gameObject}");
 
-        interacter.TryGetComponent(out Equipment equipment);
-        equipment?.Svr_Equip(gameObject, equipmentType);
-        IsInteractable = false;
+        // Equipment should be on a child object of the player.
+        Equipment equipment = interacter.GetComponentInChildren<Equipment>();
+
+        if (equipment != null)
+        {
+            equipment?.Svr_Equip(gameObject, equipmentType);
+            IsInteractable = false;
+        }
+        else
+        {
+            Debug.LogWarning($"{interacter} does not have an Equipment component");
+        }
     }
 }
