@@ -7,7 +7,6 @@ public class Equipment : NetworkBehaviour
 {
     [SerializeField, SyncVar]
     private EquipmentSlot selectedEquipmentSlot;
-
     [SerializeField]
     private List<EquipmentSlot> equipmentSlots = new List<EquipmentSlot>();
 
@@ -30,7 +29,7 @@ public class Equipment : NetworkBehaviour
     public override void OnStartServer()
     {
         Debug.Log("Subscribed to RelayOnServerAddPlayer", this);
-        NetworkTest.RelayOnServerAddPlayer += e => Rpc_UpdateSelectedSlot(e, SelectedEquipmentSlot ?? null);
+        NetworkTest.RelayOnServerAddPlayer += e => Rpc_UpdateSelectedSlot(e, SelectedEquipmentSlot);
         if (isServer)
         {
         }
@@ -78,7 +77,6 @@ public class Equipment : NetworkBehaviour
         {
             if (selectedEquipmentSlot)
             {
-                //selectedEquipmentSlot.OnSerialize(writer, initialState);
                 writer.WriteEquipmentSlot(selectedEquipmentSlot);
             }
             //writer.WriteList(equipmentSlots);
@@ -211,45 +209,12 @@ public class Equipment : NetworkBehaviour
         Svr_SelectSlot(0);
     }
 
+    // Setup local player UI hotbar.
     [TargetRpc]
     private void Rpc_CreateUISlots(NetworkConnection conn, EquipmentSlot tempSlot)
     {
         tempSlot.gameObject.transform.parent = equipmentSlotsParent;
         GameObject hotbarSlotUI = Instantiate(equipmentSlotUIPrefab, equipmentSlotsUIParent);
         tempSlot.UISlot = hotbarSlotUI;
-    }
-}
-
-public static class ReadWriteEquipment
-{
-    public static void WriteEquipment(this NetworkWriter writer, Equipment value)
-    {
-        ILogger logger = LogFactory.GetLogger<NetworkWriter>();
-        if (value == null)
-        {
-            return;
-        }
-        NetworkIdentity networkIdentity = value.GetComponent<NetworkIdentity>();
-        logger.Log($"Writing {networkIdentity}");
-        if (networkIdentity != null)
-        {
-            writer.WriteNetworkIdentity(networkIdentity);
-        }
-        else
-        {
-            logger.LogWarning("NetworkWriter " + value + " has no NetworkIdentity");
-            writer.WriteNetworkIdentity(null);
-        }
-    }
-    public static Equipment ReadEquipment(this NetworkReader reader)
-    {
-        ILogger logger = LogFactory.GetLogger<NetworkReader>();
-        NetworkIdentity identity = reader.ReadNetworkIdentity();
-        logger.Log($"Reading {identity}");
-        if (identity == null)
-        {
-            return null;
-        }
-        return identity.GetComponent<Equipment>();
     }
 }
