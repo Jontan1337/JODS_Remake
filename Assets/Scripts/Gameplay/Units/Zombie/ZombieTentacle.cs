@@ -74,7 +74,12 @@ public class ZombieTentacle : UnitBase, IZombie, IControllable
 
     public void Infect(Transform target)
     {
-        target.GetComponent<StatusEffectManager>().ApplyStatusEffect(infection.ApplyEffect(target.gameObject), infectionAmount);
+        if (infection == null)
+        {
+            Debug.LogError(name + " had no infection debuff assigned and could not infect the target");
+            return;
+        }
+        target.GetComponent<StatusEffectManager>()?.ApplyStatusEffect(infection.ApplyEffect(target.gameObject), infectionAmount);
     }
     #endregion
 }

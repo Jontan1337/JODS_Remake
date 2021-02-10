@@ -12,6 +12,11 @@ public class UnitButton : NetworkBehaviour
     [Header("Visual")]
     [SerializeField] private Text levelNum = null;
     [SerializeField] private Image unitImage = null;
+    [Header("Visual Details")]
+    [SerializeField] private GameObject detailsBox = null;
+    [SerializeField] private Text descriptionText = null;
+    [SerializeField] private Slider powerSlider = null;
+    [SerializeField] private Slider healthSlider = null;
     [Header("Data")]
     [SerializeField] private int unitIndex;
     public int UnitIndex
@@ -24,6 +29,9 @@ public class UnitButton : NetworkBehaviour
     {
         upgradeButton.SetActive(false);
         if (unlockButton != null) { unlockButton.SetActive(false); }
+
+        //Details box
+        detailsBox.SetActive(false); //Deactivate it on start
     }
     public void Choose(bool chosen)
     {
@@ -42,7 +50,6 @@ public class UnitButton : NetworkBehaviour
     {
         unitImage.sprite = img;
     }
-
     public void ShowUnlockButton(bool enable)
     {
         unlockButton.SetActive(enable);
@@ -51,18 +58,10 @@ public class UnitButton : NetworkBehaviour
     {
         upgradeButton.SetActive(enable);
     }
-
-    public void Upgrade()
+    public void SetDetails(string desc, int power, int health)
     {
-        /*
-        if (zm.xp >= xpToUpgrade)
-        {
-            zm.xp -= xpToUpgrade;
-            zm.Upgrade_Zombies(unitNum);
-            int newLevel = int.Parse(levelNum.text) + 1;
-            levelNum.text = newLevel.ToString();
-            xpToUpgrade = xpToUpgrade + Mathf.Round(xpToUpgrade * 0.1f);
-        }
-        */
+        descriptionText.text = desc;
+        powerSlider.value = power;
+        healthSlider.value = health;
     }
 }
