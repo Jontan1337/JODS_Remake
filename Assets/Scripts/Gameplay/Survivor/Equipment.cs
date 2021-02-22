@@ -61,9 +61,10 @@ public class Equipment : NetworkBehaviour
         }
     }
 
+    #region NetworkBehaviour Callbacks
     public override void OnStartServer()
     {
-        NetworkTest.RelayOnServerAddPlayer += e => Rpc_UpdateSelectedSlot(e, SelectedEquipmentSlot);
+        NetworkTest.RelayOnServerAddPlayer += Svr_UpdateVars;
     }
     public override void OnStartAuthority()
     {
@@ -74,6 +75,16 @@ public class Equipment : NetworkBehaviour
     {
         equipmentSlotsParent = transform;
     }
+
+    public override void OnStopServer()
+    {
+        NetworkTest.RelayOnServerAddPlayer -= Svr_UpdateVars;
+    }
+    public override void OnStopAuthority()
+    {
+        JODSInput.Controls.Survivor.Hotbarselecting.performed -= number => Cmd_SelectSlot(Mathf.RoundToInt(number.ReadValue<float>()) - 1);
+    }
+    #endregion
 
     [TargetRpc]
     private void Rpc_UpdateEquipmentSlots(NetworkConnection conn, EquipmentSlot newEquipment, int value)
@@ -91,7 +102,6 @@ public class Equipment : NetworkBehaviour
     #region Serialization
     public override bool OnSerialize(NetworkWriter writer, bool initialState)
     {
-        bool initialized = false;
         if (!initialState)
         {
             if (selectedEquipmentSlot)
@@ -124,14 +134,20 @@ public class Equipment : NetworkBehaviour
         if (!initialState)
         {
             selectedEquipmentSlot = reader.ReadEquipmentSlot();
-            //equipmentSlots = reader.ReadList<EquipmentSlot>();
         }
+    }
+    #endregion
+
+    #region Late Joiner Synchronization
+    [Server]
+    private void Svr_UpdateVars(NetworkConnection conn)
+    {
+        Rpc_UpdateSelectedSlot(conn, SelectedEquipmentSlot);
     }
 
     [TargetRpc]
     private void Rpc_UpdateSelectedSlot(NetworkConnection target, EquipmentSlot value)
     {
-        print($"Received {value}");
         SelectedEquipmentSlot = value;
     }
     #endregion
@@ -143,15 +159,31 @@ public class Equipment : NetworkBehaviour
         // else look for an available bar.
         if (selectedEquipmentSlot.EquipmentItem == null)
         {
-            // If selected bar can't equip, then equip on first 
+            // If selected slot can't equip, then equip on first availbable slot.
             if (!selectedEquipmentSlot.Svr_Equip(equipment, equipmentType))
             {
-                Svr_SelectSlot(0);
+                Svr_SelectSlot(equipmentSlots.IndexOf(Svr_GetAvailableSlot(equipmentType)));
+                if (!selectedEquipmentSlot.Svr_Equip(equipment, equipmentType))
+                {
+                    Svr_SelectSlot(equipmentSlots.IndexOf(Svr_GetFirstSlotOfType(equipmentType)));
+                }
+                else
+                {
+                    return;
+                }
+            }
+            else
+            {
+                return;
             }
         }
         else
         {
             Svr_SelectSlot(equipmentSlots.IndexOf(Svr_GetAvailableSlot(equipmentType)));
+            if (!selectedEquipmentSlot.Svr_Equip(equipment, equipmentType))
+            {
+                Svr_SelectSlot(equipmentSlots.IndexOf(Svr_GetFirstSlotOfType(equipmentType)));
+            }
         }
 
         selectedEquipmentSlot.Svr_Equip(equipment, equipmentType);
@@ -162,11 +194,22 @@ public class Equipment : NetworkBehaviour
     [Server]
     private EquipmentSlot Svr_GetAvailableSlot(EquipmentType equipmentType)
     {
-        for (int i = 0; i < equipmentSlotsCount-1; i++)
+        for (int i = 0; i < equipmentSlotsCount; i++)
         {
             EquipmentSlot currentSlot = EquipmentSlots[i];
             if (currentSlot.EquipmentItem == null && currentSlot.EquipmentType == equipmentType)
-                return EquipmentSlots[i];
+                return currentSlot;
+        }
+        return SelectedEquipmentSlot;
+    }
+    [Server]
+    private EquipmentSlot Svr_GetFirstSlotOfType(EquipmentType equipmentType)
+    {
+        for (int i = 0; i < equipmentSlotsCount; i++)
+        {
+            EquipmentSlot currentSlot = EquipmentSlots[i];
+            if (currentSlot.EquipmentType == equipmentType)
+                return currentSlot;
         }
         return SelectedEquipmentSlot;
     }

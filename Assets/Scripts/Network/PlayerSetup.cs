@@ -34,8 +34,8 @@ public class PlayerSetup : NetworkBehaviour
     {
         if (hasAuthority)
         {
-            //NetworkServer.SpawnObjects();
             Cmd_SpawnEssentials();
+
             foreach (GameObject g in disableIfPlayer) { g.SetActive(false); }
             foreach (GameObject g in enableIfPlayer) { g.SetActive(true); }
 

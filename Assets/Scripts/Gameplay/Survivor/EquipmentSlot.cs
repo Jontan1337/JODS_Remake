@@ -14,7 +14,7 @@ public class EquipmentSlot : NetworkBehaviour
     {
         Rpc_UpdateUI(connectionToClient, newVal);
     }
-    [SerializeField]
+    [SerializeField, SyncVar]
     private EquipmentType equipmentType;
 
     [Header("Item index")]
@@ -31,7 +31,9 @@ public class EquipmentSlot : NetworkBehaviour
     [SerializeField]
     private Color deselectedColor;
     [SerializeField]
-    private TMP_Text textMesh;
+    private TMP_Text textItemName;
+    [SerializeField]
+    private TMP_Text textItemType;
     [SerializeField]
     private Image slotImage;
 
@@ -44,7 +46,8 @@ public class EquipmentSlot : NetworkBehaviour
         {
             uiSlot = value;
             slotImage = UISlot.GetComponent<Image>();
-            textMesh = UISlot.GetComponentInChildren<TMP_Text>();
+            textItemName = UISlot.GetComponentsInChildren<TMP_Text>()[0];
+            TextItemType = UISlot.GetComponentsInChildren<TMP_Text>()[1];
         }
     }
 
@@ -59,11 +62,14 @@ public class EquipmentSlot : NetworkBehaviour
     }
     public EquipmentType EquipmentType { get => equipmentType; set => equipmentType = value; }
     public KeyCode KeyCode { get => keyCode; private set => keyCode = value; }
-    //public int KeyNumber { get => keyNumber; private set => keyNumber = value; }
-    //public Color SelectedColor { get => selectedColor; private set => selectedColor = value; }
-    //public Color DeselectedColor { get => deselectedColor; private set => deselectedColor = value; }
-    //public TMP_Text TextMesh { get => textMesh; private set => textMesh = value; }
-    //public Image SlotImage { get => slotImage; private set => slotImage = value; }
+    public TMP_Text TextItemType {
+        get => textItemType;
+        private set
+        {
+            textItemType = value;
+            textItemType.text = EquipmentType.ToString();
+        }
+    }
     #endregion
 
     private void Awake()
@@ -72,14 +78,23 @@ public class EquipmentSlot : NetworkBehaviour
         keyCode = KeyCode.Alpha0 + keyNumber;
     }
 
+    #region NetworkBehaviour Callbacks
+    // ---- ON START ----
     public override void OnStartServer()
     {
-        //NetworkTest.RelayOnServerAddPlayer += Svr_UpdateVars;
+        NetworkTest.RelayOnServerAddPlayer += Svr_UpdateVars;
     }
     public override void OnStartAuthority()
     {
         playerEquipment = GetComponentInParent<Equipment>();
     }
+
+    // ---- ON STOP ----
+    public override void OnStopServer()
+    {
+        NetworkTest.RelayOnServerAddPlayer -= Svr_UpdateVars;
+    }
+    #endregion
 
     #region Serialization
     public override bool OnSerialize(NetworkWriter writer, bool initialState)
@@ -87,6 +102,7 @@ public class EquipmentSlot : NetworkBehaviour
         if (!initialState)
         {
             writer.WriteGameObject(equipmentItem);
+            writer.Write(equipmentType);
             return true;
         }
         else
@@ -100,9 +116,9 @@ public class EquipmentSlot : NetworkBehaviour
         if (!initialState)
         {
             equipmentItem = reader.ReadGameObject();
+            equipmentType = reader.Read<EquipmentType>();
         }
     }
-
     #endregion
 
     #region Late Joiner Synchronization
@@ -110,6 +126,7 @@ public class EquipmentSlot : NetworkBehaviour
     private void Svr_UpdateVars(NetworkConnection conn)
     {
         Rpc_UpdateItemObject(conn, EquipmentItem);
+        Rpc_UpdateItemType(conn, EquipmentType);
     }
 
     [TargetRpc]
@@ -117,6 +134,12 @@ public class EquipmentSlot : NetworkBehaviour
     {
         Debug.Log($"Received {value}");
         EquipmentItem = value;
+    }
+    [TargetRpc]
+    private void Rpc_UpdateItemType(NetworkConnection target, EquipmentType value)
+    {
+        Debug.Log($"Received {value}");
+        EquipmentType = value;
     }
     #endregion
 
@@ -160,11 +183,11 @@ public class EquipmentSlot : NetworkBehaviour
     {
         if (value != null)
         {
-            textMesh.SetText(value.name);
+            textItemName.SetText(value.name);
         }
         else
         {
-            textMesh.SetText("Empty");
+            textItemName.SetText("Empty");
         }
     }
 }
