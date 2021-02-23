@@ -5,14 +5,11 @@ using UnityEngine;
 
 public class SoldierClass : SurvivorClass
 {
-    SurvivorStats sStats;
     GameObject rocketSpawnPos;
     int rocketSpeed = 5000;
 
     private void Awake()
     {
-        sStats = GetComponent<SurvivorStats>();
-        sStats.armor = 80;
         rocketSpawnPos = new GameObject("rocketSpawnPos");
         rocketSpawnPos.transform.SetParent(transform);
         rocketSpawnPos.transform.position = new Vector3(0.5f, 2, 0.5f);

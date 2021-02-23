@@ -45,7 +45,6 @@ public class SurvivorController : MonoBehaviour
                 isJumping = false;
             }
         }
-        //if (JODSInput.Controls.Survivor.Jump.triggered) Jump();
         moveDirection.y -= gravity * Time.deltaTime;
         cc.Move(moveDirection * Time.deltaTime);
     }
@@ -60,7 +59,6 @@ public class SurvivorController : MonoBehaviour
     {
         if (isGrounded)
         {
-            //moveDirection.y = jumpSpeed;
             isJumping = true;
         }
     }

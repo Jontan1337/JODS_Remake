@@ -5,6 +5,8 @@ using UnityEngine;
 public class SurvivorSO : ScriptableObject
 {
     [Header("Stats")]
+    public int health;
+    public int armor;
     public float movementSpeed;
     public float abilityCooldown;
 

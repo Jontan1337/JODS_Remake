@@ -999,7 +999,6 @@ GameObject:
   - component: {fileID: 5953086225513061613}
   - component: {fileID: 6043028673134938683}
   - component: {fileID: 6043028673134938684}
-  - component: {fileID: 5674564939924490268}
   - component: {fileID: 140378723284269966}
   - component: {fileID: 140378723284269972}
   - component: {fileID: 748090733530408348}
@@ -1137,26 +1136,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rotY: 0
   rotX: 0
-  sensitivity: 0.02
+  sensitivity: 0.075
   playerCamera: {fileID: 13484714}
   rotateHorizontal: {fileID: 5922127114707103126}
   rotateVertical: {fileID: 13484711}
---- !u!114 &5674564939924490268
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5922127114707202486}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2283f88a7c3caf24a95cadc7a933b565, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  health: 100
-  armor: 0
 --- !u!114 &140378723284269966
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1171,8 +1154,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  survivorSO: {fileID: 11400000, guid: 01e3a2fd5de2ca54093550f70bd3b953, type: 2}
+  survivorSO: {fileID: 11400000, guid: 1217c7de04298614a84ebffa22d3814c, type: 2}
   survivorRenderer: {fileID: 5922127114693541090}
+  health: 100
+  armor: 0
   abilityCooldown: 0
   movementSpeed: 0
   reloadSpeed: 0

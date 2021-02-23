@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ActiveSClass : NetworkBehaviour
+public class ActiveSClass : NetworkBehaviour, IDamagable
 {
     private SurvivorClass sClass;
     private SurvivorController sController;
@@ -12,6 +12,8 @@ public class ActiveSClass : NetworkBehaviour
     [SerializeField] private SkinnedMeshRenderer survivorRenderer;
     [Space]
     [Header("Stats")]
+    [SerializeField] private int health = 100;
+    [SerializeField] private int armor = 0;
     [SerializeField] private float abilityCooldown = 0;
     [SerializeField] private float movementSpeed = 0;
 
@@ -31,6 +33,8 @@ public class ActiveSClass : NetworkBehaviour
         {
             sClass.abilityObject = survivorSO.abilityObject;
         }
+        health = survivorSO.health;
+        armor = survivorSO.armor;
         movementSpeed = survivorSO.movementSpeed;
         sController.speed *= movementSpeed;
         reloadSpeed = survivorSO.reloadSpeed;
@@ -55,5 +59,11 @@ public class ActiveSClass : NetworkBehaviour
         survivorRenderer.material = survivorSO.survivorMaterial;
         survivorRenderer.sharedMesh = survivorSO.survivorMesh;
     }
-
+    Teams IDamagable.Team => Teams.Player;
+    [Server]
+    void IDamagable.Svr_Damage(int damage)
+    {
+        if (armor > 0) armor -= damage;
+        else health -= damage;
+    }
 }
