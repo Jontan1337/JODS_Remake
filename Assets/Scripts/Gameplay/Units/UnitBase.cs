@@ -25,7 +25,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
 
     [Header("Stats")]
     [SerializeField] private int health = 100; //Upgradeable
-    [SyncVar, SerializeField] private bool isDead = false;
+    [SyncVar] public bool isDead = false;
     private int maxHealth = 0;
     private float upgradeMultiplier = 0f;
     private int refundAmount = 0;
@@ -437,7 +437,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
 
     private IEnumerator SearchCoroutine()
     {
-        while (true)
+        while (!isDead)
         {
             yield return new WaitForSeconds(0.5f);
 
@@ -526,7 +526,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
 
     private IEnumerator ChaseCoroutine()
     {
-        while (true)
+        while (!isDead)
         {
             yield return new WaitForSeconds(0.5f);
 
@@ -836,12 +836,33 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
 
     public void Die()
     {
-        isDead = true;
-        if (isDead)
+        if (!isDead)
         {
-            print(name + ": Am dead");
+            isDead = true; //Bool used to ensure this only happens once
 
+            //Stop all coroutines
+            StopAllCoroutines();
+
+            //Stop NavMesh Movement
+            navAgent.isStopped = true;
+
+            //Activate Ragdoll effect, or death animation
+            animator.SetBool("Die", true);
+
+            //Invoke this method after 5 seconds.
+            Invoke(nameof(PostDeath), 5f);
         }
+    }
+
+    private void PostDeath() 
+    {
+        //Either go underground slowly, or dissolve effect?
+        Svr_Destroy();
+    }
+    [Server]
+    private void Svr_Destroy()
+    {
+        NetworkServer.Destroy(gameObject);
     }
 
     public Teams Team => throw new System.NotImplementedException();
