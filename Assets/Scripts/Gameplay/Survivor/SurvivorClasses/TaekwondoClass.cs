@@ -46,7 +46,7 @@ public class TaekwondoClass : SurvivorClass
             flyingKickStart += 1;
             cController.Move(transform.forward * flyingDistance * Time.deltaTime);
 
-            yield return new WaitForSeconds(1 / flightSpeed / flyingKickEnd);
+            yield return new WaitForSeconds((1 / flightSpeed) / flyingKickEnd);
         };
 
         lController.EnableLook();
@@ -71,7 +71,7 @@ public class TaekwondoClass : SurvivorClass
             print(hit.gameObject.name);
             unitsHit.Add(hit.collider);
             Physics.IgnoreCollision(hit.collider, cController);
-            hit.gameObject.GetComponent<IDamagable>()?.Svr_Damage(flyingKickDamage);
+            hit.gameObject.GetComponent<IDamagable>().Svr_Damage(flyingKickDamage);
         }
         else if (hit.gameObject.layer == 0 && flying)
         {
