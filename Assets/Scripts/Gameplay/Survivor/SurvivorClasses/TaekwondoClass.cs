@@ -57,10 +57,7 @@ public class TaekwondoClass : SurvivorClass
 
         foreach (Collider item in unitsHit)
         {
-            if (item)
-            {
-                Physics.IgnoreCollision(item, cController, false);
-            }
+            Physics.IgnoreCollision(item, cController, false);
         }
     }
 
