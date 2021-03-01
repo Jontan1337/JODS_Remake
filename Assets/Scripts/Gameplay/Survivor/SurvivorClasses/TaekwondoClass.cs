@@ -12,12 +12,12 @@ public class TaekwondoClass : SurvivorClass
 
     public float flyingKickStart = 0;
     public float flyingKickEnd = 100;
-    public float flightSpeed = 1.5f;
+    public float flightSpeed = 10f;
     public int flyingKickDamage = 100;
     public int flyingDistance = 100;
     bool flying = false;
 
-    public List<Collider> unitsHit;
+    public List<Collider> unitsHit = new List<Collider>();
 
 
     private void Start()
@@ -29,7 +29,7 @@ public class TaekwondoClass : SurvivorClass
     }
     public override void ActiveAbility()
     {
-        if (!sController.isGrounded && sController.isSprinting && sController.IsMoving())
+        if (!sController.isGrounded)
         {
             flyingKick = StartCoroutine(FlyingKick());
         }
@@ -37,7 +37,7 @@ public class TaekwondoClass : SurvivorClass
 
     private IEnumerator FlyingKick()
     {
-        unitsHit = new List<Collider>();
+        
         flying = true;
         sController.enabled = false;
         lController.DisableLook();
@@ -57,10 +57,7 @@ public class TaekwondoClass : SurvivorClass
 
         foreach (Collider item in unitsHit)
         {
-            if (item)
-            {
-                Physics.IgnoreCollision(item, cController, false);
-            }
+            Physics.IgnoreCollision(item, cController, false);
         }
     }
 
