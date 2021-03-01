@@ -80,15 +80,6 @@ public class SurvivorController : MonoBehaviour
         speed /= sprintSpeedMultiplier;
     }
 
-    public bool IsMoving()
-    {
-        if (moveDirection.z != 0 || moveDirection.x != 0)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
+    public bool IsMoving() => (moveDirection.z != 0 || moveDirection.x != 0);
+
 }
