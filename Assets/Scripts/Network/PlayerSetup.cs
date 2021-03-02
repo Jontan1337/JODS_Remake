@@ -10,9 +10,10 @@ public class PlayerSetup : NetworkBehaviour
     [SerializeField] private GameObject playerHands;
     [SerializeField] private GameObject equipment;
     [SerializeField] private GameObject slotsUIParent;
-    [SerializeField] private bool doIHaveAuthority;
     [SerializeField] private bool Survivor;
     [SerializeField] private TextMesh playerNameText;
+    [SerializeField, Tooltip("A list of the equipment types, the player should start with.")]
+    private List<EquipmentType> equipmentSlotsTypes = new List<EquipmentType>();
 
     [SerializeField] private GameObject[] disableIfPlayer;
     [SerializeField] private GameObject[] disableIfNotPlayer;
@@ -20,15 +21,7 @@ public class PlayerSetup : NetworkBehaviour
     [SerializeField] private GameObject[] enableIfNotPlayer;
 
     [SerializeField] private bool isMe;
-
-    //Game Modes
-    //Survival
     [SerializeField] private int points;
-
-    public override void OnStartAuthority()
-    {
-        doIHaveAuthority = hasAuthority;
-    }
 
     private void Start()
     {

@@ -27,7 +27,8 @@ public class Equipment : NetworkBehaviour
     private const string slotsUIParentName = "CanvasInGame/Hotbar";
 
     private Action onChangeSelectedEquipmentSlot;
-
+    
+    public Transform PlayerHands { get; private set; }
 
     public EquipmentSlot SelectedEquipmentSlot
     {

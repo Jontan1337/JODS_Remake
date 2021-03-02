@@ -542,7 +542,7 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""id"": ""f411bafe-6630-4353-a27a-980dcbc3d809"",
                     ""expectedControlType"": ""Axis"",
                     ""processors"": """",
-                    ""interactions"": """"
+                    ""interactions"": ""Press""
                 },
                 {
                     ""name"": ""Hotbar selecting"",

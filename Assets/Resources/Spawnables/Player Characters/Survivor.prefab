@@ -1091,19 +1091,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 5922127114707202486}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 25fdc531e0bd16f439c6e55f30fae572, type: 3}
+  m_Script: {fileID: 11500000, guid: 29cae8105b87e784ea5f369b338582f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 4
+  speed: 3
   sprintSpeedMultiplier: 2
-  jumpSpeed: 4.5
+  jumpSpeed: 5
   gravity: 20
   isSprinting: 0
   groundCheck: {fileID: 1329358085}
   groundMask:
     serializedVersion: 2
     m_Bits: 1
-  isGrounded: 0
+  isGrounded: 1
 --- !u!143 &6043028673134938683
 CharacterController:
   m_ObjectHideFlags: 0
