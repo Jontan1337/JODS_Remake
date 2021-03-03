@@ -5,13 +5,16 @@ using System;
 
 public class Equipment : NetworkBehaviour
 {
+    [Tooltip("A list of the equipment types, the player should have.")]
+    public List<EquipmentType> equipmentSlotsTypes = new List<EquipmentType>();
+    [SerializeField]
+    public Transform playerHands;
+
     [SerializeField, SyncVar]
     private EquipmentSlot selectedEquipmentSlot;
     [SerializeField]
     private List<EquipmentSlot> equipmentSlots = new List<EquipmentSlot>();
 
-    [SerializeField, Tooltip("A list of the equipment types, the player should have.")]
-    private List<EquipmentType> equipmentSlotsTypes = new List<EquipmentType>();
     [Header("Equipment slot setup settings")]
     [SerializeField, Tooltip("The parent transform, where the equipment slots should be instantiated.")]
     private Transform equipmentSlotsParent;
@@ -19,16 +22,14 @@ public class Equipment : NetworkBehaviour
     private Transform equipmentSlotsUIParent;
     [SerializeField, Tooltip("The prefab of the equipment slots.")]
     private GameObject equipmentSlotPrefab;
-    [SerializeField, Tooltip("The prefab of the equipment slots.")]
+    [SerializeField, Tooltip("The prefab of the UI equipment slots.")]
     private GameObject equipmentSlotUIPrefab;
 
     private int equipmentSlotsCount = 0;
 
     private const string slotsUIParentName = "CanvasInGame/Hotbar";
 
-    private Action onChangeSelectedEquipmentSlot;
-    
-    public Transform PlayerHands { get; private set; }
+    private Action onSelectedEquipmentSlotChanged;
 
     public EquipmentSlot SelectedEquipmentSlot
     {
@@ -36,7 +37,7 @@ public class Equipment : NetworkBehaviour
         private set
         {
             selectedEquipmentSlot = value;
-            onChangeSelectedEquipmentSlot?.Invoke();
+            onSelectedEquipmentSlotChanged?.Invoke();
         }
     }
     public List<EquipmentSlot> EquipmentSlots
@@ -170,16 +171,19 @@ public class Equipment : NetworkBehaviour
                 }
                 else
                 {
+                    Svr_PlaceItemInHands();
                     return;
                 }
             }
             else
             {
+                Svr_PlaceItemInHands();
                 return;
             }
         }
         else
         {
+            Cmd_DropItem();
             Svr_SelectSlot(equipmentSlots.IndexOf(Svr_GetAvailableSlot(equipmentType)));
             if (!selectedEquipmentSlot.Svr_Equip(equipment, equipmentType))
             {
@@ -188,6 +192,7 @@ public class Equipment : NetworkBehaviour
         }
 
         selectedEquipmentSlot.Svr_Equip(equipment, equipmentType);
+        Svr_PlaceItemInHands();
     }
 
     // Finds and returns the first bar that has no equipment.
@@ -235,8 +240,16 @@ public class Equipment : NetworkBehaviour
         }
     }
 
+    [Server]
+    private void Svr_PlaceItemInHands()
+    {
+        selectedEquipmentSlot.EquipmentItem.transform.parent = playerHands;
+        selectedEquipmentSlot.EquipmentItem.transform.position = playerHands.position;
+        selectedEquipmentSlot.EquipmentItem.transform.rotation = playerHands.rotation;
+    }
+
     [Command]
-    private void Cmd_DropEquipmentItem()
+    private void Cmd_DropItem()
     {
         SelectedEquipmentSlot.Svr_Drop(transform);
     }

@@ -7,19 +7,24 @@ public class PlayerSetup : NetworkBehaviour
 {
     [SyncVar] public string playerName;
 
+    [Header("Prefabs for player setup")]
     [SerializeField] private GameObject playerHands;
     [SerializeField] private GameObject equipment;
     [SerializeField] private GameObject slotsUIParent;
-    [SerializeField] private bool Survivor;
     [SerializeField] private TextMesh playerNameText;
     [SerializeField, Tooltip("A list of the equipment types, the player should start with.")]
     private List<EquipmentType> equipmentSlotsTypes = new List<EquipmentType>();
+
+    [Header("References from player setup")]
+    [SerializeField] private Equipment playerEquipment;
+
 
     [SerializeField] private GameObject[] disableIfPlayer;
     [SerializeField] private GameObject[] disableIfNotPlayer;
     [SerializeField] private GameObject[] enableIfPlayer;
     [SerializeField] private GameObject[] enableIfNotPlayer;
 
+    [SerializeField] private bool Survivor;
     [SerializeField] private bool isMe;
     [SerializeField] private int points;
 
@@ -57,8 +62,18 @@ public class PlayerSetup : NetworkBehaviour
     [Command]
     private void Cmd_SpawnEssentials()
     {
-        Svr_SpawnHands();
         Svr_SpawnEquipment();
+        Svr_SpawnHands();
+    }
+    [Server]
+    private void Svr_SpawnEquipment()
+    {
+        GameObject GOEquipment = Instantiate(equipment);
+        GOEquipment.GetComponent<Equipment>().equipmentSlotsTypes = equipmentSlotsTypes;
+        NetworkServer.Spawn(GOEquipment, connectionToClient);
+        GOEquipment.transform.SetParent(transform);
+        GOEquipment.transform.localPosition = new Vector3();
+        playerEquipment = GOEquipment.GetComponent<Equipment>();
     }
     [Server]
     private void Svr_SpawnHands()
@@ -67,14 +82,7 @@ public class PlayerSetup : NetworkBehaviour
         NetworkServer.Spawn(GOPlayerHands, connectionToClient);
         GOPlayerHands.transform.SetParent(transform);
         GOPlayerHands.transform.localPosition = new Vector3(0.25f, 1.6f, 0.6f);
-    }
-    [Server]
-    private void Svr_SpawnEquipment()
-    {
-        GameObject GOEquipment = Instantiate(equipment);
-        NetworkServer.Spawn(GOEquipment, connectionToClient);
-        GOEquipment.transform.SetParent(transform);
-        GOEquipment.transform.localPosition = new Vector3();
+        playerEquipment.playerHands = GOPlayerHands.transform;
     }
 
 

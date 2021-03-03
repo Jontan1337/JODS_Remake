@@ -51,7 +51,8 @@ public class Interacter : NetworkBehaviour
         {
             Debug.Log($"Server: interact with {targetObject}", this);
             targetObject.TryGetComponent(out IInteractable interactable);
-            interactable?.Svr_Interact(gameObject);
+            if (interactable.IsInteractable)
+                interactable?.Svr_Interact(gameObject);
         }
     }
 }

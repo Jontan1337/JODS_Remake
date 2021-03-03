@@ -44,7 +44,7 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable
 
     public bool IsInteractable {
         get => isInteractable;
-        private set => isInteractable = value;
+        set => isInteractable = value;
     }
 
     public string ObjectName => gameObject.name;

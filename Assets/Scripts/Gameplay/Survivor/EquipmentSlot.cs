@@ -149,6 +149,10 @@ public class EquipmentSlot : NetworkBehaviour
         if (equipmentType == EquipmentType)
         {
             EquipmentItem = equipment;
+            if (EquipmentItem)
+            {
+                Svr_DisableItemPhysics();
+            }
             return true;
         }
         return false;
@@ -160,21 +164,55 @@ public class EquipmentSlot : NetworkBehaviour
         if (EquipmentItem != null)
         {
             Debug.Log("Drop", this);
+            Svr_ShowItem();
+            Svr_EnableItemPhysics();
+            EquipmentItem.GetComponent<IInteractable>().IsInteractable = true;
+            EquipmentItem.transform.parent = null;
             EquipmentItem = null;
             return true;
         }
         return false;
     }
 
+    [Server]
+    private void Svr_ShowItem()
+    {
+        EquipmentItem.SetActive(true);
+    }
+    [Server]
+    private void Svr_HideItem()
+    {
+        EquipmentItem.SetActive(false);
+    }
+
+    [Server]
+    private void Svr_EnableItemPhysics()
+    {
+        EquipmentItem.GetComponent<Rigidbody>().isKinematic = false;
+        EquipmentItem.GetComponent<Collider>().enabled = true;
+    }
+    [Server]
+    private void Svr_DisableItemPhysics()
+    {
+        EquipmentItem.GetComponent<Rigidbody>().isKinematic = true;
+        EquipmentItem.GetComponent<Collider>().enabled = false;
+    }
+
     [TargetRpc]
     public void Rpc_Select(NetworkConnection conn)
     {
+        if (EquipmentItem)
+            Svr_ShowItem();
+
         if (slotImage)
             slotImage.color = selectedColor;
     }
     [TargetRpc]
     public void Rpc_Deselect(NetworkConnection conn)
     {
+        if (EquipmentItem)
+            Svr_HideItem();
+
         if (slotImage)
             slotImage.color = deselectedColor;
     }

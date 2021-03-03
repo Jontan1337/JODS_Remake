@@ -14,10 +14,17 @@ public class SyncTransformParent : NetworkBehaviour
         }
     }
 
+    #region NetworkBehaviour Callbacks
     public override void OnStartServer()
     {
         NetworkTest.RelayOnServerAddPlayer += e => Rpc_UpdateParent(e, parent);
     }
+
+    public override void OnStopServer()
+    {
+        NetworkTest.RelayOnServerAddPlayer -= e => Rpc_UpdateParent(e, parent);
+    }
+    #endregion
 
     public override bool OnSerialize(NetworkWriter writer, bool initialState)
     {

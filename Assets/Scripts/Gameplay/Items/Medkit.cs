@@ -13,8 +13,14 @@ public class Medkit : NetworkBehaviour, IInteractable, IEquippable
     private string itemName = "Medkit name";
     [SerializeField]
     private EquipmentType equipmentType = EquipmentType.Meds;
+    [SerializeField]
+    private bool isInteractable;
 
-    public bool IsInteractable { get; set; }
+    public bool IsInteractable
+    {
+        get => isInteractable;
+        set => isInteractable = value;
+    }
 
     public string ObjectName { get; set; }
 
