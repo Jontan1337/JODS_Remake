@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Mirror;
 
-public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable
+public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IUsable
 {
     [Header("Settings")]
     [SerializeField]
@@ -62,18 +62,25 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable
     {
         if (!hasAuthority) return;
 
-        if (Input.GetMouseButtonDown(0))
-        {
-            Cmd_Shoot();
-        }
         if (Input.GetKeyDown(KeyCode.R))
         {
             Cmd_Reload();
         }
     }
 
-    [Command]
-    private void Cmd_Shoot()
+    [Server]
+    public void Svr_Use()
+    {
+        Svr_Shoot();
+    }
+    [Server]
+    public void Svr_AltUse()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    [Server]
+    private void Svr_Shoot()
     {
         if (currentAmmunition == 0) return;
 
@@ -120,4 +127,5 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable
             Debug.LogWarning($"{interacter} does not have an Equipment component");
         }
     }
+
 }
