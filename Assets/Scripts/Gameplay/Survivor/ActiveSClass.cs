@@ -15,6 +15,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
     [SerializeField] private int health = 100;
     [SerializeField] private int armor = 0;
     [SerializeField] private float abilityCooldown = 0;
+    [SerializeField] private float abilityCooldownCount = 0;
     [SerializeField] private float movementSpeed = 0;
 
     [Space]
@@ -22,12 +23,15 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
     [SerializeField] private float reloadSpeed = 0;
     [SerializeField] private float accuracy = 0;
     [SerializeField] private float ammoCapacity = 0;
+
+    private bool abilityIsReady = true;
+
     //public GameObject starterWeapon;
 
     private void Awake()
     {
         sController = GetComponent<SurvivorController>();
-        JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => sClass.ActiveAbility();
+        JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => Ability();
         SelectedClass();
         if (survivorSO.abilityObject)
         {
@@ -41,15 +45,36 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
         accuracy = survivorSO.accuracy;
         ammoCapacity = survivorSO.ammoCapacity;
         abilityCooldown = survivorSO.abilityCooldown;
-        //starterWeapon = soldier.starterWeapon;
+        abilityCooldownCount = abilityCooldown;
+        //starterWeapon     = soldier.starterWeapon;
     }
 
-    float abilityCooldownCount;
-
-    IEnumerator ActivateAbility()
+    void Ability()
     {
-        yield return new WaitForSeconds(abilityCooldownCount);
+        if (abilityIsReady)
+        {
+            sClass.ActiveAbility();
+            if (sClass.abilityActivatedSuccesfully)
+            {
+                StartCoroutine(AbilityCooldown());
+                sClass.abilityActivatedSuccesfully = false;
+            }
+        }
     }
+
+    IEnumerator AbilityCooldown()
+    {
+        abilityIsReady = false;
+        while (abilityCooldownCount > 0)
+        {
+            abilityCooldownCount -= 1;
+            yield return new WaitForSeconds(1);
+        }
+        abilityCooldownCount = abilityCooldown;
+        abilityIsReady = true;
+    }
+
+
 
     void SelectedClass()
     {

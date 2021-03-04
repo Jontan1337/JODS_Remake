@@ -5,7 +5,7 @@ using Mirror;
 
 public abstract class SurvivorClass : NetworkBehaviour
 {
-
+    public bool abilityActivatedSuccesfully = false;
     public GameObject abilityObject;
     public virtual void ActiveAbility()
     {
