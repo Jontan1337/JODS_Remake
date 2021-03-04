@@ -537,6 +537,30 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
+                    ""name"": ""LMB"",
+                    ""type"": ""Button"",
+                    ""id"": ""9846ef2e-34d6-48a5-b5d3-070dc33f2dc4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""RMB"",
+                    ""type"": ""Button"",
+                    ""id"": ""99caf4ec-47ad-4912-ad28-e7983ef0e694"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Reload"",
+                    ""type"": ""Button"",
+                    ""id"": ""98d2bbe1-9329-4b3d-b936-d0ade65520cc"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
                     ""name"": ""Interact"",
                     ""type"": ""PassThrough"",
                     ""id"": ""f411bafe-6630-4353-a27a-980dcbc3d809"",
@@ -778,6 +802,39 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""action"": ""Sprint"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5f9346c5-418b-4004-98ca-6e09753d9145"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Game Actions"",
+                    ""action"": ""LMB"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7b5ffd5c-da12-4d51-b118-0ca891118039"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Game Actions"",
+                    ""action"": ""RMB"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b1e454e4-7e89-4175-9b93-91e01e8a7dae"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Reload"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -811,6 +868,9 @@ public class @Controls : IInputActionCollection, IDisposable
         m_Survivor_Movement = m_Survivor.FindAction("Movement", throwIfNotFound: true);
         m_Survivor_Jump = m_Survivor.FindAction("Jump", throwIfNotFound: true);
         m_Survivor_Camera = m_Survivor.FindAction("Camera", throwIfNotFound: true);
+        m_Survivor_LMB = m_Survivor.FindAction("LMB", throwIfNotFound: true);
+        m_Survivor_RMB = m_Survivor.FindAction("RMB", throwIfNotFound: true);
+        m_Survivor_Reload = m_Survivor.FindAction("Reload", throwIfNotFound: true);
         m_Survivor_Interact = m_Survivor.FindAction("Interact", throwIfNotFound: true);
         m_Survivor_Hotbarselecting = m_Survivor.FindAction("Hotbar selecting", throwIfNotFound: true);
         m_Survivor_ActiveAbility = m_Survivor.FindAction("Active Ability", throwIfNotFound: true);
@@ -1004,6 +1064,9 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_Survivor_Movement;
     private readonly InputAction m_Survivor_Jump;
     private readonly InputAction m_Survivor_Camera;
+    private readonly InputAction m_Survivor_LMB;
+    private readonly InputAction m_Survivor_RMB;
+    private readonly InputAction m_Survivor_Reload;
     private readonly InputAction m_Survivor_Interact;
     private readonly InputAction m_Survivor_Hotbarselecting;
     private readonly InputAction m_Survivor_ActiveAbility;
@@ -1015,6 +1078,9 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @Movement => m_Wrapper.m_Survivor_Movement;
         public InputAction @Jump => m_Wrapper.m_Survivor_Jump;
         public InputAction @Camera => m_Wrapper.m_Survivor_Camera;
+        public InputAction @LMB => m_Wrapper.m_Survivor_LMB;
+        public InputAction @RMB => m_Wrapper.m_Survivor_RMB;
+        public InputAction @Reload => m_Wrapper.m_Survivor_Reload;
         public InputAction @Interact => m_Wrapper.m_Survivor_Interact;
         public InputAction @Hotbarselecting => m_Wrapper.m_Survivor_Hotbarselecting;
         public InputAction @ActiveAbility => m_Wrapper.m_Survivor_ActiveAbility;
@@ -1037,6 +1103,15 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Camera.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnCamera;
                 @Camera.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnCamera;
                 @Camera.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnCamera;
+                @LMB.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnLMB;
+                @LMB.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnLMB;
+                @LMB.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnLMB;
+                @RMB.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnRMB;
+                @RMB.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnRMB;
+                @RMB.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnRMB;
+                @Reload.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnReload;
+                @Reload.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnReload;
+                @Reload.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnReload;
                 @Interact.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnInteract;
                 @Interact.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnInteract;
                 @Interact.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnInteract;
@@ -1062,6 +1137,15 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Camera.started += instance.OnCamera;
                 @Camera.performed += instance.OnCamera;
                 @Camera.canceled += instance.OnCamera;
+                @LMB.started += instance.OnLMB;
+                @LMB.performed += instance.OnLMB;
+                @LMB.canceled += instance.OnLMB;
+                @RMB.started += instance.OnRMB;
+                @RMB.performed += instance.OnRMB;
+                @RMB.canceled += instance.OnRMB;
+                @Reload.started += instance.OnReload;
+                @Reload.performed += instance.OnReload;
+                @Reload.canceled += instance.OnReload;
                 @Interact.started += instance.OnInteract;
                 @Interact.performed += instance.OnInteract;
                 @Interact.canceled += instance.OnInteract;
@@ -1109,6 +1193,9 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnMovement(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnCamera(InputAction.CallbackContext context);
+        void OnLMB(InputAction.CallbackContext context);
+        void OnRMB(InputAction.CallbackContext context);
+        void OnReload(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
         void OnHotbarselecting(InputAction.CallbackContext context);
         void OnActiveAbility(InputAction.CallbackContext context);
