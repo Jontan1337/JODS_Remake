@@ -53,34 +53,19 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IUsabl
     public GameObject Item => gameObject;
     public EquipmentType EquipmentType => equipmentType;
 
-    private void Awake()
+    public void Bind()
     {
-        // Setup controls
+        JODSInput.Controls.Survivor.LMB.performed += ctx => Cmd_Shoot();
+        JODSInput.Controls.Survivor.Reload.performed += ctx => Cmd_Reload();
+    }
+    public void UnBind()
+    {
+        JODSInput.Controls.Survivor.LMB.performed -= ctx => Cmd_Shoot();
+        JODSInput.Controls.Survivor.Reload.performed -= ctx => Cmd_Reload();
     }
 
-    private void Update()
-    {
-        if (!hasAuthority) return;
-
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            Cmd_Reload();
-        }
-    }
-
-    [Server]
-    public void Svr_Use()
-    {
-        Svr_Shoot();
-    }
-    [Server]
-    public void Svr_AltUse()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    [Server]
-    private void Svr_Shoot()
+    [Command]
+    private void Cmd_Shoot()
     {
         if (currentAmmunition == 0) return;
 
@@ -99,9 +84,9 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IUsabl
         int currentAmmunition = this.currentAmmunition;
         int neededAmmunition = maxCurrentAmmunition % currentAmmunition;
 
-        this.currentAmmunition += (extraAmmunition < maxCurrentAmmunition 
+        this.currentAmmunition += extraAmmunition < maxCurrentAmmunition 
                                 ? neededAmmunition
-                                : maxCurrentAmmunition - currentAmmunition);
+                                : maxCurrentAmmunition - currentAmmunition;
 
         extraAmmunition -= neededAmmunition;
 
@@ -124,8 +109,8 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IUsabl
         }
         else
         {
+            // This should not be possible, but just to be absolutely sure.
             Debug.LogWarning($"{interacter} does not have an Equipment component");
         }
     }
-
 }

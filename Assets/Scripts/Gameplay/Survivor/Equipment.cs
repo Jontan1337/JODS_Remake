@@ -157,42 +157,31 @@ public class Equipment : NetworkBehaviour
     [Server]
     public void Svr_Equip(GameObject equipment, EquipmentType equipmentType)
     {
+        if (selectedEquipmentSlot.EquipmentType != equipmentType)
+        {
+            Svr_GetSlotOfType(equipmentType);
+        }
+
         // If selected equipment bar is empty, equip item in that bar,
         // else look for an available bar.
-        if (selectedEquipmentSlot.EquipmentItem == null)
+        if (selectedEquipmentSlot.EquipmentItem != null)
         {
-            // If selected slot can't equip, then equip on first availbable slot.
-            if (!selectedEquipmentSlot.Svr_Equip(equipment, equipmentType))
-            {
-                Svr_SelectSlot(equipmentSlots.IndexOf(Svr_GetAvailableSlot(equipmentType)));
-                if (!selectedEquipmentSlot.Svr_Equip(equipment, equipmentType))
-                {
-                    Svr_SelectSlot(equipmentSlots.IndexOf(Svr_GetFirstSlotOfType(equipmentType)));
-                }
-                else
-                {
-                    Svr_PlaceItemInHands();
-                    return;
-                }
-            }
-            else
-            {
-                Svr_PlaceItemInHands();
-                return;
-            }
-        }
-        else
-        {
+            Svr_GetSlotOfType(equipmentType);
             Cmd_DropItem();
-            Svr_SelectSlot(equipmentSlots.IndexOf(Svr_GetAvailableSlot(equipmentType)));
-            if (!selectedEquipmentSlot.Svr_Equip(equipment, equipmentType))
-            {
-                Svr_SelectSlot(equipmentSlots.IndexOf(Svr_GetFirstSlotOfType(equipmentType)));
-            }
         }
 
         selectedEquipmentSlot.Svr_Equip(equipment, equipmentType);
         Svr_PlaceItemInHands();
+    }
+
+    [Server]
+    private void Svr_GetSlotOfType(EquipmentType equipmentType)
+    {
+        Svr_SelectSlot(equipmentSlots.IndexOf(Svr_GetAvailableSlot(equipmentType)));
+        if (selectedEquipmentSlot.EquipmentType != equipmentType)
+        {
+            Svr_SelectSlot(equipmentSlots.IndexOf(Svr_GetFirstSlotOfType(equipmentType)));
+        }
     }
 
     // Finds and returns the first bar that has no equipment.

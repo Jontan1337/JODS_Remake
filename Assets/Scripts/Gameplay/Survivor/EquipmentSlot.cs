@@ -148,6 +148,10 @@ public class EquipmentSlot : NetworkBehaviour
     {
         if (equipmentType == EquipmentType)
         {
+            //if (EquipmentItem)
+            //{
+            //    Svr_Drop(transform);
+            //}
             EquipmentItem = equipment;
             if (EquipmentItem)
             {

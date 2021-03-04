@@ -524,6 +524,30 @@
                     "interactions": ""
                 },
                 {
+                    "name": "LMB",
+                    "type": "Button",
+                    "id": "9846ef2e-34d6-48a5-b5d3-070dc33f2dc4",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "RMB",
+                    "type": "Button",
+                    "id": "99caf4ec-47ad-4912-ad28-e7983ef0e694",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Reload",
+                    "type": "Button",
+                    "id": "98d2bbe1-9329-4b3d-b936-d0ade65520cc",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
                     "name": "Interact",
                     "type": "PassThrough",
                     "id": "f411bafe-6630-4353-a27a-980dcbc3d809",
@@ -763,6 +787,39 @@
                     "processors": "",
                     "groups": "",
                     "action": "Sprint",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5f9346c5-418b-4004-98ca-6e09753d9145",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Game Actions",
+                    "action": "LMB",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7b5ffd5c-da12-4d51-b118-0ca891118039",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Game Actions",
+                    "action": "RMB",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b1e454e4-7e89-4175-9b93-91e01e8a7dae",
+                    "path": "<Keyboard>/r",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Reload",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
