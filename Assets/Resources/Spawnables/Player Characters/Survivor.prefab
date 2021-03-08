@@ -1003,6 +1003,7 @@ GameObject:
   - component: {fileID: 140378723284269972}
   - component: {fileID: 748090733530408348}
   - component: {fileID: 6930014499059818200}
+  - component: {fileID: 8458703505067804603}
   m_Layer: 13
   m_Name: Survivor
   m_TagString: Player
@@ -1159,6 +1160,7 @@ MonoBehaviour:
   health: 100
   armor: 0
   abilityCooldown: 0
+  abilityCooldownCount: 0
   movementSpeed: 0
   reloadSpeed: 0
   accuracy: 0
@@ -1178,7 +1180,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   playerCamera: {fileID: 13484711}
-  interactionRange: 2
+  interactionRange: 3
   layerMask:
     serializedVersion: 2
     m_Bits: 8192
@@ -1214,9 +1216,9 @@ MonoBehaviour:
   equipment: {fileID: 5545151553288273671, guid: 8aa36f6128d160f4faea76bcdc7a1b24,
     type: 3}
   slotsUIParent: {fileID: 6850896366548614916}
-  Survivor: 0
   playerNameText: {fileID: 0}
   equipmentSlotsTypes: 00000000000000000100000002000000
+  playerEquipment: {fileID: 0}
   disableIfPlayer:
   - {fileID: 5922127114707202530}
   - {fileID: 5922127114707202528}
@@ -1227,8 +1229,23 @@ MonoBehaviour:
   enableIfNotPlayer:
   - {fileID: 5922127114707202530}
   - {fileID: 5922127114707202528}
+  Survivor: 0
   isMe: 0
   points: 0
+--- !u!114 &8458703505067804603
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5922127114707202486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51c0f4e0fa3f815428b833f014e9a760, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
 --- !u!1 &5922127114707202528
 GameObject:
   m_ObjectHideFlags: 0

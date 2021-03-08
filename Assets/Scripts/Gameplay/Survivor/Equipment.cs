@@ -7,8 +7,9 @@ public class Equipment : NetworkBehaviour
 {
     [Tooltip("A list of the equipment types, the player should have.")]
     public List<EquipmentType> equipmentSlotsTypes = new List<EquipmentType>();
-    [SerializeField]
+    [Space]
     public Transform playerHands;
+    public Action<GameObject, GameObject> onEquippedItemChange;
 
     [SerializeField, SyncVar]
     private EquipmentSlot selectedEquipmentSlot;
@@ -18,7 +19,7 @@ public class Equipment : NetworkBehaviour
     [Header("Equipment slot setup settings")]
     [SerializeField, Tooltip("The parent transform, where the equipment slots should be instantiated.")]
     private Transform equipmentSlotsParent;
-    [SerializeField, Tooltip("The parent transform, where the equipment slots should be instantiated.")]
+    [SerializeField, Tooltip("The parent transform, where the UI equipment slots should be instantiated.")]
     private Transform equipmentSlotsUIParent;
     [SerializeField, Tooltip("The prefab of the equipment slots.")]
     private GameObject equipmentSlotPrefab;
@@ -29,15 +30,25 @@ public class Equipment : NetworkBehaviour
 
     private const string slotsUIParentName = "CanvasInGame/Hotbar";
 
-    private Action onSelectedEquipmentSlotChanged;
 
     public EquipmentSlot SelectedEquipmentSlot
     {
         get => selectedEquipmentSlot;
         private set
         {
+            if (hasAuthority)
+            {
+                GameObject oldEquipmentItem = null;
+                if (selectedEquipmentSlot)
+                {
+                    selectedEquipmentSlot.onItemChange -= SelectedSlotItemChanged;
+                    oldEquipmentItem = selectedEquipmentSlot.EquipmentItem;
+                }
+                value.onItemChange += SelectedSlotItemChanged;
+                onEquippedItemChange?.Invoke(oldEquipmentItem, value.EquipmentItem);
+            }
+
             selectedEquipmentSlot = value;
-            onSelectedEquipmentSlotChanged?.Invoke();
         }
     }
     public List<EquipmentSlot> EquipmentSlots
@@ -70,6 +81,7 @@ public class Equipment : NetworkBehaviour
     }
     public override void OnStartAuthority()
     {
+        JODSInput.Controls.Survivor.Drop.performed += ctx => Cmd_DropItem();
         JODSInput.Controls.Survivor.Hotbarselecting.performed += number => Cmd_SelectSlot(Mathf.RoundToInt(number.ReadValue<float>()) - 1);
         Cmd_EquipmentSlotsSetup();
     }
@@ -84,6 +96,7 @@ public class Equipment : NetworkBehaviour
     }
     public override void OnStopAuthority()
     {
+        JODSInput.Controls.Survivor.Drop.performed -= ctx => Cmd_DropItem();
         JODSInput.Controls.Survivor.Hotbarselecting.performed -= number => Cmd_SelectSlot(Mathf.RoundToInt(number.ReadValue<float>()) - 1);
     }
     #endregion
@@ -207,6 +220,11 @@ public class Equipment : NetworkBehaviour
                 return currentSlot;
         }
         return SelectedEquipmentSlot;
+    }
+
+    private void SelectedSlotItemChanged(GameObject oldItem, GameObject newItem)
+    {
+        onEquippedItemChange?.Invoke(oldItem, newItem);
     }
 
     [Command]

@@ -538,27 +538,27 @@ public class @Controls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": ""LMB"",
-                    ""type"": ""Button"",
+                    ""type"": ""PassThrough"",
                     ""id"": ""9846ef2e-34d6-48a5-b5d3-070dc33f2dc4"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": ""Axis"",
                     ""processors"": """",
-                    ""interactions"": """"
+                    ""interactions"": ""Press""
                 },
                 {
                     ""name"": ""RMB"",
-                    ""type"": ""Button"",
+                    ""type"": ""PassThrough"",
                     ""id"": ""99caf4ec-47ad-4912-ad28-e7983ef0e694"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": ""Axis"",
                     ""processors"": """",
-                    ""interactions"": """"
+                    ""interactions"": ""Press""
                 },
                 {
                     ""name"": ""Reload"",
-                    ""type"": ""Button"",
+                    ""type"": ""PassThrough"",
                     ""id"": ""98d2bbe1-9329-4b3d-b936-d0ade65520cc"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": ""Axis"",
                     ""processors"": """",
-                    ""interactions"": """"
+                    ""interactions"": ""Press""
                 },
                 {
                     ""name"": ""Interact"",
@@ -567,6 +567,14 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Axis"",
                     ""processors"": """",
                     ""interactions"": ""Press""
+                },
+                {
+                    ""name"": ""Drop"",
+                    ""type"": ""Button"",
+                    ""id"": ""002ab637-4bee-4e77-9170-5e20e335752d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 },
                 {
                     ""name"": ""Hotbar selecting"",
@@ -784,7 +792,7 @@ public class @Controls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""adcb9946-3766-46d1-bcab-5de4aa89358e"",
-                    ""path"": ""<Keyboard>/q"",
+                    ""path"": ""<Keyboard>/f"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -835,6 +843,17 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""action"": ""Reload"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f4ed90bc-0822-4a22-a91d-a523c53ae7e1"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Drop"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -872,6 +891,7 @@ public class @Controls : IInputActionCollection, IDisposable
         m_Survivor_RMB = m_Survivor.FindAction("RMB", throwIfNotFound: true);
         m_Survivor_Reload = m_Survivor.FindAction("Reload", throwIfNotFound: true);
         m_Survivor_Interact = m_Survivor.FindAction("Interact", throwIfNotFound: true);
+        m_Survivor_Drop = m_Survivor.FindAction("Drop", throwIfNotFound: true);
         m_Survivor_Hotbarselecting = m_Survivor.FindAction("Hotbar selecting", throwIfNotFound: true);
         m_Survivor_ActiveAbility = m_Survivor.FindAction("Active Ability", throwIfNotFound: true);
         m_Survivor_Sprint = m_Survivor.FindAction("Sprint", throwIfNotFound: true);
@@ -1068,6 +1088,7 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_Survivor_RMB;
     private readonly InputAction m_Survivor_Reload;
     private readonly InputAction m_Survivor_Interact;
+    private readonly InputAction m_Survivor_Drop;
     private readonly InputAction m_Survivor_Hotbarselecting;
     private readonly InputAction m_Survivor_ActiveAbility;
     private readonly InputAction m_Survivor_Sprint;
@@ -1082,6 +1103,7 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @RMB => m_Wrapper.m_Survivor_RMB;
         public InputAction @Reload => m_Wrapper.m_Survivor_Reload;
         public InputAction @Interact => m_Wrapper.m_Survivor_Interact;
+        public InputAction @Drop => m_Wrapper.m_Survivor_Drop;
         public InputAction @Hotbarselecting => m_Wrapper.m_Survivor_Hotbarselecting;
         public InputAction @ActiveAbility => m_Wrapper.m_Survivor_ActiveAbility;
         public InputAction @Sprint => m_Wrapper.m_Survivor_Sprint;
@@ -1115,6 +1137,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Interact.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnInteract;
                 @Interact.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnInteract;
                 @Interact.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnInteract;
+                @Drop.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnDrop;
+                @Drop.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnDrop;
+                @Drop.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnDrop;
                 @Hotbarselecting.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnHotbarselecting;
                 @Hotbarselecting.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnHotbarselecting;
                 @Hotbarselecting.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnHotbarselecting;
@@ -1149,6 +1174,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Interact.started += instance.OnInteract;
                 @Interact.performed += instance.OnInteract;
                 @Interact.canceled += instance.OnInteract;
+                @Drop.started += instance.OnDrop;
+                @Drop.performed += instance.OnDrop;
+                @Drop.canceled += instance.OnDrop;
                 @Hotbarselecting.started += instance.OnHotbarselecting;
                 @Hotbarselecting.performed += instance.OnHotbarselecting;
                 @Hotbarselecting.canceled += instance.OnHotbarselecting;
@@ -1197,6 +1225,7 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnRMB(InputAction.CallbackContext context);
         void OnReload(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
+        void OnDrop(InputAction.CallbackContext context);
         void OnHotbarselecting(InputAction.CallbackContext context);
         void OnActiveAbility(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);

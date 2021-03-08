@@ -17,7 +17,6 @@ public class Interacter : NetworkBehaviour
     public override void OnStartAuthority()
     {
         JODSInput.Controls.Survivor.Interact.performed += ctx => Interact();
-
     }
 
     public override void OnStopAuthority()
@@ -39,6 +38,9 @@ public class Interacter : NetworkBehaviour
     {
         if (rayHit.collider)
         {
+            // Check if the interacted object is networked.
+            if (!rayHit.collider.GetComponent<NetworkIdentity>()) return;
+
             Debug.Log($"Client: interact with {rayHit.collider}", this);
             Cmd_Interact(rayHit.collider.gameObject);
         }
@@ -51,8 +53,7 @@ public class Interacter : NetworkBehaviour
         {
             Debug.Log($"Server: interact with {targetObject}", this);
             targetObject.TryGetComponent(out IInteractable interactable);
-            if (interactable.IsInteractable)
-                interactable?.Svr_Interact(gameObject);
+            interactable?.Svr_Interact(gameObject);
         }
     }
 }

@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using UnityEngine.InputSystem;
 
-public class Medkit : NetworkBehaviour, IInteractable, IEquippable
+public class Medkit : NetworkBehaviour, IInteractable, IEquippable, IBindable
 {
     public int uses;
     public bool big;
@@ -30,6 +31,18 @@ public class Medkit : NetworkBehaviour, IInteractable, IEquippable
 
     public EquipmentType EquipmentType => equipmentType;
 
+    public void Bind()
+    {
+        JODSInput.Controls.Survivor.LMB.performed += OnHeal;
+    }
+
+    public void UnBind()
+    {
+        JODSInput.Controls.Survivor.LMB.performed -= OnHeal;
+    }
+
+    private void OnHeal(InputAction.CallbackContext context) => UseMedkit(0);
+
     [Server]
     public void Svr_Interact(GameObject interacter)
     {
@@ -47,6 +60,17 @@ public class Medkit : NetworkBehaviour, IInteractable, IEquippable
         {
             Debug.LogWarning($"{interacter} does not have an Equipment component");
         }
+    }
+
+    [Server]
+    public void Svr_GiveAuthority(NetworkConnection conn)
+    {
+        netIdentity.AssignClientAuthority(conn);
+    }
+    [Server]
+    public void Svr_RemoveAuthority()
+    {
+        netIdentity.RemoveClientAuthority();
     }
 
     public float UseMedkit(float healthPoints)
@@ -78,4 +102,5 @@ public class Medkit : NetworkBehaviour, IInteractable, IEquippable
             return healthPoints;
         }	
 	}
+
 }

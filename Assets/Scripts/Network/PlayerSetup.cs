@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using System;
 
 public class PlayerSetup : NetworkBehaviour
 {
+    public Action<Equipment> onSpawnEquipment;
+
     [SyncVar] public string playerName;
 
     [Header("Prefabs for player setup")]
@@ -74,6 +77,7 @@ public class PlayerSetup : NetworkBehaviour
         GOEquipment.transform.SetParent(transform);
         GOEquipment.transform.localPosition = new Vector3();
         playerEquipment = GOEquipment.GetComponent<Equipment>();
+        onSpawnEquipment?.Invoke(playerEquipment);
     }
     [Server]
     private void Svr_SpawnHands()

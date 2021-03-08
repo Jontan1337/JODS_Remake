@@ -2,18 +2,16 @@
 using UnityEngine.UI;
 using Mirror;
 using TMPro;
+using System;
 
 public class EquipmentSlot : NetworkBehaviour
 {
     public string slotName;
+    public Action<GameObject, GameObject> onItemChange;
 
     [Header("Item info")]
     [SerializeField, SyncVar(hook = nameof(OnEquipmentChanged))]
     private GameObject equipmentItem;
-    private void OnEquipmentChanged(GameObject oldVal, GameObject newVal)
-    {
-        Rpc_UpdateUI(connectionToClient, newVal);
-    }
     [SerializeField, SyncVar]
     private EquipmentType equipmentType;
 
@@ -38,6 +36,7 @@ public class EquipmentSlot : NetworkBehaviour
     private Image slotImage;
 
     private Equipment playerEquipment;
+    [SyncVar, SerializeField] private bool hasPhysics;
 
     public GameObject UISlot
     {
@@ -57,7 +56,13 @@ public class EquipmentSlot : NetworkBehaviour
         get => equipmentItem;
         private set
         {
+            GameObject oldItem = equipmentItem;
+
+            if (equipmentItem)
+                equipmentItem.GetComponent<IEquippable>()?.Svr_RemoveAuthority();
+
             equipmentItem = value;
+            onItemChange?.Invoke(oldItem, equipmentItem);
         }
     }
     public EquipmentType EquipmentType { get => equipmentType; set => equipmentType = value; }
@@ -69,6 +74,13 @@ public class EquipmentSlot : NetworkBehaviour
             textItemType = value;
             textItemType.text = EquipmentType.ToString();
         }
+    }
+    #endregion
+
+    #region Hooks
+    private void OnEquipmentChanged(GameObject oldVal, GameObject newVal)
+    {
+        Rpc_UpdateUI(connectionToClient, newVal);
     }
     #endregion
 
@@ -127,6 +139,10 @@ public class EquipmentSlot : NetworkBehaviour
     {
         Rpc_UpdateItemObject(conn, EquipmentItem);
         Rpc_UpdateItemType(conn, EquipmentType);
+        Rpc_UpdateItemPhysics(conn,
+            EquipmentItem.GetComponent<Rigidbody>().isKinematic,
+            EquipmentItem.GetComponent<Collider>().enabled
+        );
     }
 
     [TargetRpc]
@@ -148,10 +164,6 @@ public class EquipmentSlot : NetworkBehaviour
     {
         if (equipmentType == EquipmentType)
         {
-            //if (EquipmentItem)
-            //{
-            //    Svr_Drop(transform);
-            //}
             EquipmentItem = equipment;
             if (EquipmentItem)
             {
@@ -167,7 +179,6 @@ public class EquipmentSlot : NetworkBehaviour
     {
         if (EquipmentItem != null)
         {
-            Debug.Log("Drop", this);
             Svr_ShowItem();
             Svr_EnableItemPhysics();
             EquipmentItem.GetComponent<IInteractable>().IsInteractable = true;
@@ -189,18 +200,42 @@ public class EquipmentSlot : NetworkBehaviour
         EquipmentItem.SetActive(false);
     }
 
+    #region Toggle physics
     [Server]
     private void Svr_EnableItemPhysics()
     {
+        hasPhysics = true;
         EquipmentItem.GetComponent<Rigidbody>().isKinematic = false;
         EquipmentItem.GetComponent<Collider>().enabled = true;
+        Rpc_EnableItemPhysics();
     }
     [Server]
     private void Svr_DisableItemPhysics()
     {
+        hasPhysics = false;
+        EquipmentItem.GetComponent<Rigidbody>().isKinematic = true;
+        EquipmentItem.GetComponent<Collider>().enabled = false;
+        Rpc_DisableItemPhysics();
+    }
+    [ClientRpc]
+    private void Rpc_EnableItemPhysics()
+    {
+        EquipmentItem.GetComponent<Rigidbody>().isKinematic = false;
+        EquipmentItem.GetComponent<Collider>().enabled = true;
+    }
+    [ClientRpc]
+    private void Rpc_DisableItemPhysics()
+    {
         EquipmentItem.GetComponent<Rigidbody>().isKinematic = true;
         EquipmentItem.GetComponent<Collider>().enabled = false;
     }
+    [TargetRpc]
+    private void Rpc_UpdateItemPhysics(NetworkConnection target, bool isKinematic, bool hasCollider)
+    {
+        EquipmentItem.GetComponent<Rigidbody>().isKinematic = false;
+        EquipmentItem.GetComponent<Collider>().enabled = true;
+    }
+    #endregion
 
     [TargetRpc]
     public void Rpc_Select(NetworkConnection conn)

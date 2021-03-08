@@ -525,27 +525,27 @@
                 },
                 {
                     "name": "LMB",
-                    "type": "Button",
+                    "type": "PassThrough",
                     "id": "9846ef2e-34d6-48a5-b5d3-070dc33f2dc4",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "Axis",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "Press"
                 },
                 {
                     "name": "RMB",
-                    "type": "Button",
+                    "type": "PassThrough",
                     "id": "99caf4ec-47ad-4912-ad28-e7983ef0e694",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "Axis",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "Press"
                 },
                 {
                     "name": "Reload",
-                    "type": "Button",
+                    "type": "PassThrough",
                     "id": "98d2bbe1-9329-4b3d-b936-d0ade65520cc",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "Axis",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "Press"
                 },
                 {
                     "name": "Interact",
@@ -554,6 +554,14 @@
                     "expectedControlType": "Axis",
                     "processors": "",
                     "interactions": "Press"
+                },
+                {
+                    "name": "Drop",
+                    "type": "Button",
+                    "id": "002ab637-4bee-4e77-9170-5e20e335752d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 },
                 {
                     "name": "Hotbar selecting",
@@ -771,7 +779,7 @@
                 {
                     "name": "",
                     "id": "adcb9946-3766-46d1-bcab-5de4aa89358e",
-                    "path": "<Keyboard>/q",
+                    "path": "<Keyboard>/f",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -820,6 +828,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Reload",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f4ed90bc-0822-4a22-a91d-a523c53ae7e1",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Drop",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

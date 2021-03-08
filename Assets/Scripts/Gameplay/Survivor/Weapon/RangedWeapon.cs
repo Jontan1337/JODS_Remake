@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using Mirror;
+using UnityEngine.InputSystem;
 
-public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IUsable
+public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBindable
 {
     [Header("Settings")]
     [SerializeField]
@@ -53,16 +54,24 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IUsabl
     public GameObject Item => gameObject;
     public EquipmentType EquipmentType => equipmentType;
 
+    private void OnValidate()
+    {
+        fireRate = Mathf.Clamp(fireRate, 0.1f, 100f);
+    }
+
     public void Bind()
     {
-        JODSInput.Controls.Survivor.LMB.performed += ctx => Cmd_Shoot();
-        JODSInput.Controls.Survivor.Reload.performed += ctx => Cmd_Reload();
+        JODSInput.Controls.Survivor.LMB.performed += OnShoot;
+        JODSInput.Controls.Survivor.Reload.performed += OnReload;
     }
     public void UnBind()
     {
-        JODSInput.Controls.Survivor.LMB.performed -= ctx => Cmd_Shoot();
-        JODSInput.Controls.Survivor.Reload.performed -= ctx => Cmd_Reload();
+        JODSInput.Controls.Survivor.LMB.performed -= OnShoot;
+        JODSInput.Controls.Survivor.Reload.performed -= OnReload;
     }
+
+    private void OnShoot(InputAction.CallbackContext context) => Cmd_Shoot();
+    private void OnReload(InputAction.CallbackContext context) => Cmd_Reload();
 
     [Command]
     private void Cmd_Shoot()
@@ -81,6 +90,8 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IUsabl
     [Command]
     private void Cmd_Reload()
     {
+        Debug.Log("Reload!", this);
+
         int currentAmmunition = this.currentAmmunition;
         int neededAmmunition = maxCurrentAmmunition % currentAmmunition;
 
@@ -97,20 +108,32 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IUsabl
     [Server]
     public void Svr_Interact(GameObject interacter)
     {
-        Debug.Log($"{interacter} interacted with {gameObject}");
+        if (!IsInteractable) return;
 
         // Equipment should be on a child object of the player.
         Equipment equipment = interacter.GetComponentInChildren<Equipment>();
 
         if (equipment != null)
         {
+            Svr_GiveAuthority(interacter.GetComponent<NetworkIdentity>().connectionToClient);
             equipment?.Svr_Equip(gameObject, equipmentType);
             IsInteractable = false;
         }
         else
         {
             // This should not be possible, but just to be absolutely sure.
-            Debug.LogWarning($"{interacter} does not have an Equipment component");
+            Debug.LogWarning($"{interacter} does not have an Equipment component", this);
         }
+    }
+
+    [Server]
+    public void Svr_GiveAuthority(NetworkConnection conn)
+    {
+        netIdentity.AssignClientAuthority(conn);
+    }
+    [Server]
+    public void Svr_RemoveAuthority()
+    {
+        netIdentity.RemoveClientAuthority();
     }
 }

@@ -1,4 +1,4 @@
-﻿public interface IUsable
+﻿public interface IBindable
 {
     void Bind();
     void UnBind();
