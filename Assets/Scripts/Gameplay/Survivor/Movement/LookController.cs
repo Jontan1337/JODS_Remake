@@ -1,9 +1,10 @@
-﻿using System.Collections;
+﻿using Mirror;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class LookController : MonoBehaviour
+public class LookController : NetworkBehaviour
 {
     float minRotY = -75f;
     float maxRotY = 75F;
@@ -17,15 +18,21 @@ public class LookController : MonoBehaviour
     [SerializeField]
     private Transform rotateVertical;
 
-
-    private void Start()
+    #region NetworkBehaviour Callbacks
+    public override void OnStartAuthority()
     {
         Cursor.lockState = CursorLockMode.Locked;
-        JODSInput.Controls.Survivor.Camera.performed += ctx => Look(ctx.ReadValue<Vector2>());
+        JODSInput.Controls.Survivor.Camera.performed += Look;
     }
-
-    void Look(Vector2 mouseDelta)
+    public override void OnStopAuthority()
     {
+        JODSInput.Controls.Survivor.Camera.performed -= Look;
+    }
+    #endregion
+
+    void Look(InputAction.CallbackContext context)
+    {
+        Vector2 mouseDelta = context.ReadValue<Vector2>();
         if (!canLook)
         {
             return;

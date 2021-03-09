@@ -115,12 +115,13 @@ public class EquipmentSlot : NetworkBehaviour
         {
             writer.WriteGameObject(equipmentItem);
             writer.Write(equipmentType);
+            if (EquipmentItem)
+            {
+                writer.WriteBoolean(EquipmentItem.activeSelf);
+            }
             return true;
         }
-        else
-        {
-            return false;
-        }
+        return false;
     }
 
     public override void OnDeserialize(NetworkReader reader, bool initialState)
@@ -129,6 +130,10 @@ public class EquipmentSlot : NetworkBehaviour
         {
             equipmentItem = reader.ReadGameObject();
             equipmentType = reader.Read<EquipmentType>();
+            if (EquipmentItem)
+            {
+                EquipmentItem.SetActive(reader.ReadBoolean());
+            }
         }
     }
     #endregion
@@ -139,23 +144,30 @@ public class EquipmentSlot : NetworkBehaviour
     {
         Rpc_UpdateItemObject(conn, EquipmentItem);
         Rpc_UpdateItemType(conn, EquipmentType);
-        Rpc_UpdateItemPhysics(conn,
-            EquipmentItem.GetComponent<Rigidbody>().isKinematic,
-            EquipmentItem.GetComponent<Collider>().enabled
-        );
+        if (EquipmentItem && EquipmentItem.activeSelf)
+        {
+            Rpc_UpdateItemPhysics(conn,
+                EquipmentItem.GetComponent<Rigidbody>().isKinematic,
+                EquipmentItem.GetComponent<Collider>().enabled
+            );
+        }
     }
 
     [TargetRpc]
     private void Rpc_UpdateItemObject(NetworkConnection target, GameObject value)
     {
-        Debug.Log($"Received {value}");
         EquipmentItem = value;
     }
     [TargetRpc]
     private void Rpc_UpdateItemType(NetworkConnection target, EquipmentType value)
     {
-        Debug.Log($"Received {value}");
         EquipmentType = value;
+    }
+    [TargetRpc]
+    private void Rpc_UpdateItemPhysics(NetworkConnection target, bool isKinematic, bool hasCollider)
+    {
+        EquipmentItem.GetComponent<Rigidbody>().isKinematic = false;
+        EquipmentItem.GetComponent<Collider>().enabled = true;
     }
     #endregion
 
@@ -189,6 +201,16 @@ public class EquipmentSlot : NetworkBehaviour
         return false;
     }
 
+    [Command]
+    private void Cmd_ShowItem()
+    {
+        EquipmentItem.SetActive(true);
+    }
+    [Command]
+    private void Cmd_HideItem()
+    {
+        EquipmentItem.SetActive(false);
+    }
     [Server]
     private void Svr_ShowItem()
     {
@@ -207,7 +229,7 @@ public class EquipmentSlot : NetworkBehaviour
         hasPhysics = true;
         EquipmentItem.GetComponent<Rigidbody>().isKinematic = false;
         EquipmentItem.GetComponent<Collider>().enabled = true;
-        Rpc_EnableItemPhysics();
+        Rpc_EnableItemPhysics(EquipmentItem);
     }
     [Server]
     private void Svr_DisableItemPhysics()
@@ -215,25 +237,19 @@ public class EquipmentSlot : NetworkBehaviour
         hasPhysics = false;
         EquipmentItem.GetComponent<Rigidbody>().isKinematic = true;
         EquipmentItem.GetComponent<Collider>().enabled = false;
-        Rpc_DisableItemPhysics();
+        Rpc_DisableItemPhysics(EquipmentItem);
     }
     [ClientRpc]
-    private void Rpc_EnableItemPhysics()
+    private void Rpc_EnableItemPhysics(GameObject item)
     {
-        EquipmentItem.GetComponent<Rigidbody>().isKinematic = false;
-        EquipmentItem.GetComponent<Collider>().enabled = true;
+        item.GetComponent<Rigidbody>().isKinematic = false;
+        item.GetComponent<Collider>().enabled = true;
     }
     [ClientRpc]
-    private void Rpc_DisableItemPhysics()
+    private void Rpc_DisableItemPhysics(GameObject item)
     {
-        EquipmentItem.GetComponent<Rigidbody>().isKinematic = true;
-        EquipmentItem.GetComponent<Collider>().enabled = false;
-    }
-    [TargetRpc]
-    private void Rpc_UpdateItemPhysics(NetworkConnection target, bool isKinematic, bool hasCollider)
-    {
-        EquipmentItem.GetComponent<Rigidbody>().isKinematic = false;
-        EquipmentItem.GetComponent<Collider>().enabled = true;
+        item.GetComponent<Rigidbody>().isKinematic = true;
+        item.GetComponent<Collider>().enabled = false;
     }
     #endregion
 
@@ -241,7 +257,7 @@ public class EquipmentSlot : NetworkBehaviour
     public void Rpc_Select(NetworkConnection conn)
     {
         if (EquipmentItem)
-            Svr_ShowItem();
+            Cmd_ShowItem();
 
         if (slotImage)
             slotImage.color = selectedColor;
@@ -250,7 +266,7 @@ public class EquipmentSlot : NetworkBehaviour
     public void Rpc_Deselect(NetworkConnection conn)
     {
         if (EquipmentItem)
-            Svr_HideItem();
+            Cmd_HideItem();
 
         if (slotImage)
             slotImage.color = deselectedColor;

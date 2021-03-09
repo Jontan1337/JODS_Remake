@@ -180,7 +180,7 @@ public class Equipment : NetworkBehaviour
         if (selectedEquipmentSlot.EquipmentItem != null)
         {
             Svr_GetSlotOfType(equipmentType);
-            Cmd_DropItem();
+            Svr_DropItem();
         }
 
         selectedEquipmentSlot.Svr_Equip(equipment, equipmentType);
@@ -257,6 +257,11 @@ public class Equipment : NetworkBehaviour
 
     [Command]
     private void Cmd_DropItem()
+    {
+        SelectedEquipmentSlot.Svr_Drop(transform);
+    }
+    [Server]
+    private void Svr_DropItem()
     {
         SelectedEquipmentSlot.Svr_Drop(transform);
     }

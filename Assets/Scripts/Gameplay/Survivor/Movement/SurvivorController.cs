@@ -1,9 +1,10 @@
-﻿using System.Collections;
+﻿using Mirror;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class SurvivorController : MonoBehaviour
+public class SurvivorController : NetworkBehaviour
 {
     CharacterController cc;
     public float speed;
@@ -25,16 +26,31 @@ public class SurvivorController : MonoBehaviour
 
     private void Start()
     {
-        JODSInput.Controls.Survivor.Movement.performed += ctx => Move(ctx.ReadValue<Vector2>());
-        JODSInput.Controls.Survivor.Jump.performed += ctx => Jump();
-        JODSInput.Controls.Survivor.Sprint.performed += ctx => OnSprintPerformed();
-        JODSInput.Controls.Survivor.Sprint.canceled += ctx => OnSprintCanceled();
+    }
+
+    #region NetworkBehaviour Callbacks
+    public override void OnStartAuthority()
+    {
+        JODSInput.Controls.Survivor.Movement.performed += Move;
+        JODSInput.Controls.Survivor.Jump.performed += Jump;
+        JODSInput.Controls.Survivor.Sprint.performed += OnSprintPerformed;
+        JODSInput.Controls.Survivor.Sprint.canceled += OnSprintCanceled;
         cc = GetComponent<CharacterController>();
     }
+    public override void OnStopAuthority()
+    {
+        JODSInput.Controls.Survivor.Movement.performed -= Move;
+        JODSInput.Controls.Survivor.Jump.performed -= Jump;
+        JODSInput.Controls.Survivor.Sprint.performed -= OnSprintPerformed;
+        JODSInput.Controls.Survivor.Sprint.canceled -= OnSprintCanceled;
+    }
+    #endregion
 
 
     private void Update()
     {
+        if (!hasAuthority) return;
+
         CheckGround();
         if (cc.isGrounded)
         {
@@ -49,13 +65,14 @@ public class SurvivorController : MonoBehaviour
         cc.Move(moveDirection * Time.deltaTime);
     }
 
-    private void Move(Vector2 moveValues)
+    private void Move(InputAction.CallbackContext context)
     {
+        Vector2 moveValues = context.ReadValue<Vector2>();
         horizontal = moveValues.x;
         vertical = moveValues.y;
     }
 
-    private void Jump()
+    private void Jump(InputAction.CallbackContext context)
     {
         if (isGrounded)
         {
@@ -68,13 +85,13 @@ public class SurvivorController : MonoBehaviour
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
     }
 
-    private void OnSprintPerformed()
+    private void OnSprintPerformed(InputAction.CallbackContext context)
     {
         isSprinting = true;
         speed *= sprintSpeedMultiplier;
     }
 
-    private void OnSprintCanceled()
+    private void OnSprintCanceled(InputAction.CallbackContext context)
     {
         isSprinting = false;
         speed /= sprintSpeedMultiplier;
