@@ -4,38 +4,43 @@ using Mirror;
 public class EquipmentControl : NetworkBehaviour
 {
     private Equipment equipment;
-    public override void OnStartAuthority()
+
+
+    public override void OnStartServer()
     {
         GetComponent<PlayerSetup>().onSpawnEquipment += GetEquipment;
     }
-    public override void OnStopAuthority()
+    public override void OnStopServer()
     {
         GetComponent<PlayerSetup>().onSpawnEquipment -= GetEquipment;
-        equipment.onEquippedItemChange -= ChangeControlBind;
+        equipment.onServerEquippedItemChange -= Svr_ChangeControlBind;
     }
 
     private void GetEquipment(Equipment equipment)
     {
         this.equipment = equipment;
-        this.equipment.onEquippedItemChange += ChangeControlBind;
+        this.equipment.onServerEquippedItemChange += Svr_ChangeControlBind;
     }
 
-    private void ChangeControlBind(GameObject oldItem, GameObject newItem)
+    [Server]
+    private void Svr_ChangeControlBind(GameObject oldItem, GameObject newItem)
     {
         print("ChangeControlBind");
 
         if (oldItem)
-            UnBind(oldItem);
+            Rpc_UnBind(connectionToClient, oldItem);
 
         if (newItem)
-            Bind(newItem);
+            Rpc_Bind(connectionToClient, newItem);
     }
-    private void Bind(GameObject item)
+    [TargetRpc]
+    private void Rpc_Bind(NetworkConnection target, GameObject item)
     {
         print("Bind");
         item.GetComponent<IBindable>().Bind();
     }
-    private void UnBind(GameObject item)
+    [TargetRpc]
+    private void Rpc_UnBind(NetworkConnection target, GameObject item)
     {
         print("UnBind");
         item.GetComponent<IBindable>().UnBind();

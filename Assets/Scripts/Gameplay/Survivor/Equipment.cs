@@ -2,6 +2,7 @@
 using UnityEngine;
 using Mirror;
 using System;
+using UnityEngine.InputSystem;
 
 public class Equipment : NetworkBehaviour
 {
@@ -9,8 +10,10 @@ public class Equipment : NetworkBehaviour
     public List<EquipmentType> equipmentSlotsTypes = new List<EquipmentType>();
     [Space]
     public Transform playerHands;
-    public Action<GameObject, GameObject> onEquippedItemChange;
+    public Action<GameObject, GameObject> onServerEquippedItemChange;
 
+    [SerializeField, SyncVar]
+    private GameObject equippedItem;
     [SerializeField, SyncVar]
     private EquipmentSlot selectedEquipmentSlot;
     [SerializeField]
@@ -30,25 +33,48 @@ public class Equipment : NetworkBehaviour
 
     private const string slotsUIParentName = "CanvasInGame/Hotbar";
 
+    public GameObject EquippedItem
+    {
+        get => equippedItem;
+        private set
+        {
+            if (!isServer) return;
+
+            GameObject oldEquippedItem = null;
+            if (equippedItem)
+            {
+                oldEquippedItem = equippedItem;
+            }
+            equippedItem = value;
+            if (equippedItem)
+            {
+                Svr_ShowItem(equippedItem);
+            }
+            Svr_EquippedItemChange(oldEquippedItem, equippedItem);
+        }
+    }
 
     public EquipmentSlot SelectedEquipmentSlot
     {
         get => selectedEquipmentSlot;
         private set
         {
-            if (hasAuthority)
+            if (!isServer) return;
+
+            // Stop listening if the old selected slot's item changes.
+            if (selectedEquipmentSlot)
             {
-                GameObject oldEquipmentItem = null;
-                if (selectedEquipmentSlot)
+                selectedEquipmentSlot.onServerItemChange -= (GameObject oldItem, GameObject newItem) => Svr_SelectedSlotItemChange(newItem);
+                if (EquippedItem)
                 {
-                    selectedEquipmentSlot.onItemChange -= SelectedSlotItemChanged;
-                    oldEquipmentItem = selectedEquipmentSlot.EquipmentItem;
+                    Svr_HideItem(EquippedItem);
                 }
-                value.onItemChange += SelectedSlotItemChanged;
-                onEquippedItemChange?.Invoke(oldEquipmentItem, value.EquipmentItem);
             }
+            // Listen if the new selected slot's item changes.
+            value.onServerItemChange += (GameObject oldItem, GameObject newItem) => Svr_SelectedSlotItemChange(newItem);
 
             selectedEquipmentSlot = value;
+            EquippedItem = selectedEquipmentSlot.EquipmentItem;
         }
     }
     public List<EquipmentSlot> EquipmentSlots
@@ -74,6 +100,19 @@ public class Equipment : NetworkBehaviour
         }
     }
 
+    [TargetRpc]
+    private void Rpc_UpdateEquipmentSlots(NetworkConnection conn, EquipmentSlot newEquipment, int value)
+    {
+        if (value == 1)
+        {
+            equipmentSlots.Add(newEquipment);
+        }
+        else if (value == -1)
+        {
+            equipmentSlots.Remove(newEquipment);
+        }
+    }
+
     #region NetworkBehaviour Callbacks
     public override void OnStartServer()
     {
@@ -81,7 +120,7 @@ public class Equipment : NetworkBehaviour
     }
     public override void OnStartAuthority()
     {
-        JODSInput.Controls.Survivor.Drop.performed += ctx => Cmd_DropItem();
+        JODSInput.Controls.Survivor.Drop.performed += OnDropItem;
         JODSInput.Controls.Survivor.Hotbarselecting.performed += number => Cmd_SelectSlot(Mathf.RoundToInt(number.ReadValue<float>()) - 1);
         Cmd_EquipmentSlotsSetup();
     }
@@ -96,23 +135,10 @@ public class Equipment : NetworkBehaviour
     }
     public override void OnStopAuthority()
     {
-        JODSInput.Controls.Survivor.Drop.performed -= ctx => Cmd_DropItem();
+        JODSInput.Controls.Survivor.Drop.performed -= OnDropItem;
         JODSInput.Controls.Survivor.Hotbarselecting.performed -= number => Cmd_SelectSlot(Mathf.RoundToInt(number.ReadValue<float>()) - 1);
     }
     #endregion
-
-    [TargetRpc]
-    private void Rpc_UpdateEquipmentSlots(NetworkConnection conn, EquipmentSlot newEquipment, int value)
-    {
-        if (value == 1)
-        {
-            equipmentSlots.Add(newEquipment);
-        }
-        else if (value == -1)
-        {
-            equipmentSlots.Remove(newEquipment);
-        }
-    }
 
     #region Serialization
     public override bool OnSerialize(NetworkWriter writer, bool initialState)
@@ -121,26 +147,12 @@ public class Equipment : NetworkBehaviour
         {
             if (selectedEquipmentSlot)
             {
+                writer.WriteGameObject(equippedItem);
                 writer.WriteEquipmentSlot(selectedEquipmentSlot);
             }
-            //writer.WriteList(equipmentSlots);
-            //writer.WriteList(equipmentSlotsTypes);
-            //writer.WriteTransform(equipmentSlotsParent);
-            //writer.WriteTransform(equipmentSlotsUIParent);
-            //writer.WriteGameObject(equipmentSlotPrefab);
-            //writer.WriteGameObject(equipmentSlotUIPrefab);
-            //writer.WriteInt32(equipmentSlotsCount);
-
-            //if (SelectedEquipmentSlot)
-            //{
-            //    initialized = true;
-            //}
             return true;
         }
-        else
-        {
-            return false;
-        }
+        return false;
 
     }
 
@@ -148,6 +160,7 @@ public class Equipment : NetworkBehaviour
     {
         if (!initialState)
         {
+            equippedItem = reader.ReadGameObject();
             selectedEquipmentSlot = reader.ReadEquipmentSlot();
         }
     }
@@ -158,37 +171,56 @@ public class Equipment : NetworkBehaviour
     private void Svr_UpdateVars(NetworkConnection conn)
     {
         Rpc_UpdateSelectedSlot(conn, SelectedEquipmentSlot);
+        Rpc_UpdateEquippedItem(conn, EquippedItem);
     }
 
     [TargetRpc]
     private void Rpc_UpdateSelectedSlot(NetworkConnection target, EquipmentSlot value)
     {
-        SelectedEquipmentSlot = value;
+        selectedEquipmentSlot = value;
+    }
+    [TargetRpc]
+    private void Rpc_UpdateEquippedItem(NetworkConnection target, GameObject value)
+    {
+        equippedItem = value;
     }
     #endregion
 
     [Server]
     public void Svr_Equip(GameObject equipment, EquipmentType equipmentType)
     {
-        if (selectedEquipmentSlot.EquipmentType != equipmentType)
+        if (SelectedEquipmentSlot.EquipmentType != equipmentType || SelectedEquipmentSlot.EquipmentItem != null)
         {
-            Svr_GetSlotOfType(equipmentType);
+            Svr_SelectSlotOfType(equipmentType);
         }
 
         // If selected equipment bar is empty, equip item in that bar,
         // else look for an available bar.
-        if (selectedEquipmentSlot.EquipmentItem != null)
+        if (SelectedEquipmentSlot.EquipmentType == equipmentType)
         {
-            Svr_GetSlotOfType(equipmentType);
-            Svr_DropItem();
+            Svr_DropItem(SelectedEquipmentSlot.EquipmentItem);
+            SelectedEquipmentSlot.Svr_EquipItem(equipment, equipmentType);
         }
 
-        selectedEquipmentSlot.Svr_Equip(equipment, equipmentType);
+        // EquipmentType none is meant for equipment
+        // that doesn't fit any of the slots.
+        if (equipmentType == EquipmentType.None)
+        {
+            if (equipment.TryGetComponent(out IEquippable equippable))
+            {
+                if (EquippedItem)
+                {
+                    Svr_HideItem(EquippedItem);
+                }
+                EquippedItem = equipment;
+            }
+        }
+
         Svr_PlaceItemInHands();
     }
 
     [Server]
-    private void Svr_GetSlotOfType(EquipmentType equipmentType)
+    private void Svr_SelectSlotOfType(EquipmentType equipmentType)
     {
         Svr_SelectSlot(equipmentSlots.IndexOf(Svr_GetAvailableSlot(equipmentType)));
         if (selectedEquipmentSlot.EquipmentType != equipmentType)
@@ -222,9 +254,15 @@ public class Equipment : NetworkBehaviour
         return SelectedEquipmentSlot;
     }
 
-    private void SelectedSlotItemChanged(GameObject oldItem, GameObject newItem)
+    [Server]
+    private void Svr_EquippedItemChange(GameObject oldItem, GameObject newItem)
     {
-        onEquippedItemChange?.Invoke(oldItem, newItem);
+        onServerEquippedItemChange?.Invoke(oldItem, newItem);
+    }
+    [Server]
+    private void Svr_SelectedSlotItemChange(GameObject newItem)
+    {
+        EquippedItem = newItem;
     }
 
     [Command]
@@ -232,7 +270,6 @@ public class Equipment : NetworkBehaviour
     {
         Svr_SelectSlot(slotIndex);
     }
-
     [Server]
     public void Svr_SelectSlot(int slotIndex)
     {
@@ -250,20 +287,75 @@ public class Equipment : NetworkBehaviour
     [Server]
     private void Svr_PlaceItemInHands()
     {
-        selectedEquipmentSlot.EquipmentItem.transform.parent = playerHands;
-        selectedEquipmentSlot.EquipmentItem.transform.position = playerHands.position;
-        selectedEquipmentSlot.EquipmentItem.transform.rotation = playerHands.rotation;
+        if (EquippedItem.TryGetComponent(out PhysicsToggler pt))
+        {
+            pt.Svr_DisableItemPhysics();
+        }
+        EquippedItem.transform.position = playerHands.position;
+        EquippedItem.transform.rotation = playerHands.rotation;
+        EquippedItem.transform.parent = playerHands;
     }
 
     [Command]
-    private void Cmd_DropItem()
+    private void Cmd_ShowItem(GameObject item)
     {
-        SelectedEquipmentSlot.Svr_Drop(transform);
+        Svr_ShowItem(item);
+    }
+    [Command]
+    private void Cmd_HideItem(GameObject item)
+    {
+        Svr_HideItem(item);
     }
     [Server]
-    private void Svr_DropItem()
+    private void Svr_ShowItem(GameObject item)
     {
-        SelectedEquipmentSlot.Svr_Drop(transform);
+        item.GetComponent<Renderer>().enabled = true;
+        Rpc_ShowItem(item);
+    }
+    [Server]
+    private void Svr_HideItem(GameObject item)
+    {
+        item.GetComponent<Renderer>().enabled = false;
+        Rpc_HideItem(item);
+    }
+    [ClientRpc]
+    private void Rpc_ShowItem(GameObject item)
+    {
+        item.GetComponent<Renderer>().enabled = true;
+    }
+    [ClientRpc]
+    private void Rpc_HideItem(GameObject item)
+    {
+        item.GetComponent<Renderer>().enabled = false;
+    }
+
+    private void OnDropItem(InputAction.CallbackContext context)
+    {
+        Cmd_DropItem(EquippedItem);
+    }
+    [Command]
+    private void Cmd_DropItem(GameObject item)
+    {
+        Svr_DropItem(item);
+    }
+    [Server]
+    private void Svr_DropItem(GameObject item)
+    {
+        if (item)
+        {
+            Svr_ShowItem(item);
+            if (item.TryGetComponent(out PhysicsToggler pt))
+            {
+                pt.Svr_EnableItemPhysics();
+            }
+            item.GetComponent<IInteractable>().IsInteractable = true;
+            item.transform.parent = null;
+
+            if (item == SelectedEquipmentSlot.EquipmentItem)
+            {
+                SelectedEquipmentSlot.Svr_RemoveItem();
+            }
+        }
     }
 
     [Command]

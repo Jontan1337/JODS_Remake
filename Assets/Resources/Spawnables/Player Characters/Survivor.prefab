@@ -1095,6 +1095,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29cae8105b87e784ea5f369b338582f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   speed: 3
   sprintSpeedMultiplier: 2
   jumpSpeed: 5
@@ -1135,6 +1137,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13196ee8a167fb14aa367f5b7056ccf8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   rotY: 0
   rotX: 0
   sensitivity: 0.075
@@ -1217,7 +1221,7 @@ MonoBehaviour:
     type: 3}
   slotsUIParent: {fileID: 6850896366548614916}
   playerNameText: {fileID: 0}
-  equipmentSlotsTypes: 00000000000000000100000002000000
+  equipmentSlotsTypes: 01000000010000000200000003000000
   playerEquipment: {fileID: 0}
   disableIfPlayer:
   - {fileID: 5922127114707202530}

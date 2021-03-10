@@ -77,7 +77,7 @@ public class PlayerSetup : NetworkBehaviour
         GOEquipment.transform.SetParent(transform);
         GOEquipment.transform.localPosition = new Vector3();
         playerEquipment = GOEquipment.GetComponent<Equipment>();
-        Rpc_InvokeOnSpawnEquipment(connectionToClient, playerEquipment);
+        onSpawnEquipment?.Invoke(playerEquipment);
     }
     [Server]
     private void Svr_SpawnHands()
@@ -87,12 +87,6 @@ public class PlayerSetup : NetworkBehaviour
         GOPlayerHands.transform.SetParent(transform);
         GOPlayerHands.transform.localPosition = new Vector3(0.25f, 1.6f, 0.6f);
         playerEquipment.playerHands = GOPlayerHands.transform;
-    }
-
-    [TargetRpc]
-    private void Rpc_InvokeOnSpawnEquipment(NetworkConnection target, Equipment playerEquipment)
-    {
-        onSpawnEquipment?.Invoke(playerEquipment);
     }
 
 

@@ -7,7 +7,7 @@ using System;
 public class EquipmentSlot : NetworkBehaviour
 {
     public string slotName;
-    public Action<GameObject, GameObject> onItemChange;
+    public Action<GameObject, GameObject> onServerItemChange;
 
     [Header("Item info")]
     [SerializeField, SyncVar(hook = nameof(OnEquipmentChanged))]
@@ -36,7 +36,6 @@ public class EquipmentSlot : NetworkBehaviour
     private Image slotImage;
 
     private Equipment playerEquipment;
-    [SyncVar, SerializeField] private bool hasPhysics;
 
     public GameObject UISlot
     {
@@ -56,13 +55,11 @@ public class EquipmentSlot : NetworkBehaviour
         get => equipmentItem;
         private set
         {
+            if (!isServer) return;
+
             GameObject oldItem = equipmentItem;
-
-            if (equipmentItem)
-                equipmentItem.GetComponent<IEquippable>()?.Svr_RemoveAuthority();
-
             equipmentItem = value;
-            onItemChange?.Invoke(oldItem, equipmentItem);
+            onServerItemChange?.Invoke(oldItem, equipmentItem);
         }
     }
     public EquipmentType EquipmentType { get => equipmentType; set => equipmentType = value; }
@@ -115,10 +112,6 @@ public class EquipmentSlot : NetworkBehaviour
         {
             writer.WriteGameObject(equipmentItem);
             writer.Write(equipmentType);
-            if (EquipmentItem)
-            {
-                writer.WriteBoolean(EquipmentItem.activeSelf);
-            }
             return true;
         }
         return false;
@@ -130,10 +123,6 @@ public class EquipmentSlot : NetworkBehaviour
         {
             equipmentItem = reader.ReadGameObject();
             equipmentType = reader.Read<EquipmentType>();
-            if (EquipmentItem)
-            {
-                EquipmentItem.SetActive(reader.ReadBoolean());
-            }
         }
     }
     #endregion
@@ -144,13 +133,6 @@ public class EquipmentSlot : NetworkBehaviour
     {
         Rpc_UpdateItemObject(conn, EquipmentItem);
         Rpc_UpdateItemType(conn, EquipmentType);
-        if (EquipmentItem && EquipmentItem.activeSelf)
-        {
-            Rpc_UpdateItemPhysics(conn,
-                EquipmentItem.GetComponent<Rigidbody>().isKinematic,
-                EquipmentItem.GetComponent<Collider>().enabled
-            );
-        }
     }
 
     [TargetRpc]
@@ -163,111 +145,37 @@ public class EquipmentSlot : NetworkBehaviour
     {
         EquipmentType = value;
     }
-    [TargetRpc]
-    private void Rpc_UpdateItemPhysics(NetworkConnection target, bool isKinematic, bool hasCollider)
-    {
-        EquipmentItem.GetComponent<Rigidbody>().isKinematic = false;
-        EquipmentItem.GetComponent<Collider>().enabled = true;
-    }
     #endregion
 
     [Server]
-    public bool Svr_Equip(GameObject equipment, EquipmentType equipmentType)
+    public bool Svr_EquipItem(GameObject equipment, EquipmentType equipmentType)
     {
         if (equipmentType == EquipmentType)
         {
             EquipmentItem = equipment;
-            if (EquipmentItem)
-            {
-                Svr_DisableItemPhysics();
-            }
             return true;
         }
         return false;
     }
 
     [Server]
-    public bool Svr_Drop(Transform dropTransform)
+    public void Svr_RemoveItem()
     {
-        if (EquipmentItem != null)
-        {
-            Svr_ShowItem();
-            Svr_EnableItemPhysics();
-            EquipmentItem.GetComponent<IInteractable>().IsInteractable = true;
-            EquipmentItem.transform.parent = null;
-            EquipmentItem = null;
-            return true;
-        }
-        return false;
-    }
+        if (EquipmentItem)
+            EquipmentItem.GetComponent<IEquippable>()?.Svr_RemoveAuthority();
 
-    [Command]
-    private void Cmd_ShowItem()
-    {
-        EquipmentItem.SetActive(true);
+        EquipmentItem = null;
     }
-    [Command]
-    private void Cmd_HideItem()
-    {
-        EquipmentItem.SetActive(false);
-    }
-    [Server]
-    private void Svr_ShowItem()
-    {
-        EquipmentItem.SetActive(true);
-    }
-    [Server]
-    private void Svr_HideItem()
-    {
-        EquipmentItem.SetActive(false);
-    }
-
-    #region Toggle physics
-    [Server]
-    private void Svr_EnableItemPhysics()
-    {
-        hasPhysics = true;
-        EquipmentItem.GetComponent<Rigidbody>().isKinematic = false;
-        EquipmentItem.GetComponent<Collider>().enabled = true;
-        Rpc_EnableItemPhysics(EquipmentItem);
-    }
-    [Server]
-    private void Svr_DisableItemPhysics()
-    {
-        hasPhysics = false;
-        EquipmentItem.GetComponent<Rigidbody>().isKinematic = true;
-        EquipmentItem.GetComponent<Collider>().enabled = false;
-        Rpc_DisableItemPhysics(EquipmentItem);
-    }
-    [ClientRpc]
-    private void Rpc_EnableItemPhysics(GameObject item)
-    {
-        item.GetComponent<Rigidbody>().isKinematic = false;
-        item.GetComponent<Collider>().enabled = true;
-    }
-    [ClientRpc]
-    private void Rpc_DisableItemPhysics(GameObject item)
-    {
-        item.GetComponent<Rigidbody>().isKinematic = true;
-        item.GetComponent<Collider>().enabled = false;
-    }
-    #endregion
 
     [TargetRpc]
     public void Rpc_Select(NetworkConnection conn)
     {
-        if (EquipmentItem)
-            Cmd_ShowItem();
-
         if (slotImage)
             slotImage.color = selectedColor;
     }
     [TargetRpc]
     public void Rpc_Deselect(NetworkConnection conn)
     {
-        if (EquipmentItem)
-            Cmd_HideItem();
-
         if (slotImage)
             slotImage.color = deselectedColor;
     }
