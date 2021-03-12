@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using System;
 
 public abstract class SurvivorClass : NetworkBehaviour
 {
+    public Action OnAbilityActivated;
     public bool abilityActivatedSuccesfully = false;
     public GameObject abilityObject;
     public virtual void ActiveAbility()

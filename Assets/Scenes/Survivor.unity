@@ -246,7 +246,7 @@ MonoBehaviour:
     m_Bits: 0
   damage: 0
   range: 0
-  fireRate: 0
+  fireRate: 0.1
   bulletsPerShot: 1
   currentAmmunition: 10
   maxCurrentAmmunition: 10
@@ -1214,7 +1214,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 787554084}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!20 &787554088
 Camera:
   m_ObjectHideFlags: 0
@@ -1471,7 +1471,7 @@ MonoBehaviour:
     m_Bits: 0
   damage: 0
   range: 0
-  fireRate: 0
+  fireRate: 0.1
   bulletsPerShot: 1
   currentAmmunition: 10
   maxCurrentAmmunition: 10
@@ -1695,7 +1695,7 @@ MonoBehaviour:
     m_Bits: 0
   damage: 0
   range: 0
-  fireRate: 0
+  fireRate: 0.1
   bulletsPerShot: 1
   currentAmmunition: 10
   maxCurrentAmmunition: 10
@@ -1872,6 +1872,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13196ee8a167fb14aa367f5b7056ccf8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   rotY: 0
   rotX: 0
   sensitivity: 0.075

@@ -2,17 +2,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EngineerClass : MonoBehaviour
+public class EngineerClass : SurvivorClass
 {
-    // Start is called before the first frame update
-    void Start()
+    PlaceItem place = new PlaceItem();
+    Equipment equipment;
+
+    private void Start()
     {
-        
+        place.look = GetComponent<LookController>();
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void ActiveAbility()
     {
-        
+        if (true)
+        {
+
+        }
+        place.Place(abilityObject, gameObject);
+
+        //equipment.Svr_Equip(abilityObject, EquipmentType.Special);
+        //abilityActivatedSuccesfully = true;
     }
+
 }

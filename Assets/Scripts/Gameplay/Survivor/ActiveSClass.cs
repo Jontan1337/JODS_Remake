@@ -7,6 +7,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 {
     private SurvivorClass sClass;
     private SurvivorController sController;
+    private Object classScript;
 
     [SerializeField] private SurvivorSO survivorSO;
     [SerializeField] private SkinnedMeshRenderer survivorRenderer;
@@ -31,21 +32,12 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
     private void Awake()
     {
         sController = GetComponent<SurvivorController>();
+        //JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => sClass.ActiveAbility();
         JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => Ability();
+        SurvivorSetup(survivorSO);
         SelectedClass();
-        if (survivorSO.abilityObject)
-        {
-            sClass.abilityObject = survivorSO.abilityObject;
-        }
-        health = survivorSO.health;
-        armor = survivorSO.armor;
-        movementSpeed = survivorSO.movementSpeed;
-        sController.speed *= movementSpeed;
-        reloadSpeed = survivorSO.reloadSpeed;
-        accuracy = survivorSO.accuracy;
-        ammoCapacity = survivorSO.ammoCapacity;
-        abilityCooldown = survivorSO.abilityCooldown;
-        abilityCooldownCount = abilityCooldown;
+
+
         //starterWeapon     = soldier.starterWeapon;
     }
 
@@ -74,7 +66,23 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
         abilityIsReady = true;
     }
 
-
+    public void SurvivorSetup(SurvivorSO survivorSO)
+    {
+        this.survivorSO = survivorSO;
+        if (survivorSO.abilityObject)
+        {
+            sClass.abilityObject = survivorSO.abilityObject;
+        }
+        armor                = survivorSO.armor;
+        health               = survivorSO.health;
+        accuracy             = survivorSO.accuracy;
+        reloadSpeed          = survivorSO.reloadSpeed;
+        ammoCapacity         = survivorSO.ammoCapacity;
+        movementSpeed        = survivorSO.movementSpeed;
+        abilityCooldown      = survivorSO.abilityCooldown;
+        abilityCooldownCount = abilityCooldown;
+        sController.speed   *= movementSpeed;
+    }
 
     void SelectedClass()
     {
