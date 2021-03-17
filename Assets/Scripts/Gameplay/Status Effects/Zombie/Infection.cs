@@ -40,8 +40,8 @@ public class Infection : StatusEffect
         if (infectionLevel == 3) return;
 
         infectionRate = Mathf.Clamp(infectionRate -= 1, 0, 100);
-        Debug.Log("My infection rate is: " + infectionRate);
-        Debug.Log("My infection level is: " + infectionLevel);
+        //Debug.Log("My infection rate is: " + infectionRate);
+        //Debug.Log("My infection level is: " + infectionLevel);
 
         if (infectionRate <= 0)
         {

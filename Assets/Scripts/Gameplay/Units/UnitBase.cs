@@ -103,6 +103,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     [SerializeField] protected Transform currentTarget = null;
     public NavMeshAgent navAgent;
     [SerializeField] private bool hasTarget = false;
+    [SerializeField] private bool permanentTarget = true;
 
     [Header("References")]
     public Animator animator;
@@ -340,7 +341,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         {
             Debug.LogError($"{name} had no Unit Scriptable Object and could not be setup properly. " +
                 $"This should not be possible, if the unit is spawned by the master." +
-                $"If this unit was not spawned by the Master, then ignore this.");
+                $"If this unit was not spawned by the-- Master, then ignore this.");
             return;
         }
 
@@ -396,7 +397,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     }
 
     //This is called by the Master, who sets the unit's level, which increases it's stats.
-    public void SetLevel(int level) => unitLevel = level;
+    public void SetLevel(int level) => unitLevel = Mathf.Clamp(level,1,100);
     private void IncreaseStats()
     {
         float multiplier = 1 + (upgradeMultiplier * (unitLevel - 1));
@@ -469,17 +470,9 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     {
         if (HasTarget()) return;
 
-        //Stop searching for more survivors
-        if (searching) { StopCoroutine(CoSearch); searching = false; }
-
         SetTarget(newTarget);
-        HasTarget();
 
-        chaseTime = unitSO.chaseTime;
-        navAgent.SetDestination(currentTarget.position);
-
-        if (!chasing) { CoChase = StartCoroutine(ChaseCoroutine()); chasing = true; }
-        if (!attacking) { CoAttack = StartCoroutine(AttackCoroutine()); attacking = true; }
+        NewTarget();
 
         if (!alerted) //If I got alerted, I won't alert others.
         {
@@ -518,7 +511,25 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         return hasTarget;
     }
 
-    private void SetTarget(Transform newTarget) => currentTarget = newTarget;
+    private void SetTarget(Transform newTarget, bool? permanent = false)
+    {
+        currentTarget = newTarget;
+        permanentTarget = permanent ?? false; //If the target is permanent, the unit will never stop chasing the target.
+    }
+
+    private void NewTarget()
+    {
+        //Stop searching for more survivors
+        if (searching) { StopCoroutine(CoSearch); searching = false; }
+
+        HasTarget();
+
+        chaseTime = unitSO.chaseTime;
+        navAgent.SetDestination(currentTarget.position);
+
+        if (!chasing) { CoChase = StartCoroutine(ChaseCoroutine()); chasing = true; }
+        if (!attacking) { CoAttack = StartCoroutine(AttackCoroutine()); attacking = true; }
+    }
 
     #endregion
 
@@ -533,7 +544,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
             //if (!HasTarget()) yield break; //WTF this wont work, but it works down at Walking?!??!?
 
             //Can I see the player?
-            if (CanSee(currentTarget))
+            if (CanSee(currentTarget) || permanentTarget) //Permanent targets dont need to be in view
             {
                 chaseTime = unitSO.chaseTime;
                 navAgent.SetDestination(currentTarget.position);
@@ -581,6 +592,16 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
             if (col.gameObject == gameObject) continue;
             col.gameObject.GetComponent<UnitBase>().AcquireTarget(currentTarget, true);
         }
+    }
+
+    //This is currently only used in Offline
+    public void SetPermanentTarget(Transform newTarget)
+    {
+        SetTarget(newTarget, true);
+
+        NewTarget();
+
+        //print($"{name} : Target acquired (Permanently)");
     }
 
     #endregion

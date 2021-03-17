@@ -124,7 +124,7 @@ NavMeshSettings:
     preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
-  m_NavMeshData: {fileID: 0}
+  m_NavMeshData: {fileID: 23800000, guid: 66a195127f8cd864d83356c8919f1f9a, type: 2}
 --- !u!1 &3594308
 GameObject:
   m_ObjectHideFlags: 0
@@ -283,6 +283,81 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 15657845}
   m_CullTransparentMesh: 0
+--- !u!1 &32749107
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 32749109}
+  - component: {fileID: 32749108}
+  m_Layer: 0
+  m_Name: Round Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &32749108
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 32749107}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7d84b92ca3dbff459bd7e0b80ddd94d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  round: 0
+  unitSpawner: {fileID: 444555673}
+--- !u!4 &32749109
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 32749107}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &68944692
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 68944693}
+  m_Layer: 0
+  m_Name: Spawn Point 3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &68944693
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 68944692}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 60}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 444555674}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &140760740
 GameObject:
   m_ObjectHideFlags: 0
@@ -649,6 +724,30 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 32749108}
+        m_TargetAssemblyTypeName: OfflineRoundManager, Assembly-CSharp
+        m_MethodName: StartGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 444555673}
+        m_TargetAssemblyTypeName: OfflineUnitSpawner, Assembly-CSharp
+        m_MethodName: SetupUnitSpawner
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &295652001
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -986,6 +1085,65 @@ Light:
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!1 &444555672
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 444555674}
+  - component: {fileID: 444555673}
+  m_Layer: 0
+  m_Name: Unit Spawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &444555673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 444555672}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4185870d01f784d4da2cd02370a1570b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  masterSO: {fileID: 11400000, guid: a6e713bc364b1a24786870f298bd8018, type: 2}
+  unitList: []
+  unitsLeftToSpawn: 0
+  spawnPoints:
+  - {fileID: 888801290}
+  - {fileID: 1538484271}
+  - {fileID: 68944693}
+  - {fileID: 1227183986}
+  player: {fileID: 0}
+  spawnRadius: 8
+--- !u!4 &444555674
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 444555672}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 888801290}
+  - {fileID: 1538484271}
+  - {fileID: 68944693}
+  - {fileID: 1227183986}
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &450408004
 GameObject:
   m_ObjectHideFlags: 0
@@ -1024,6 +1182,7 @@ Transform:
   - {fileID: 1038016795}
   - {fileID: 1014685557}
   - {fileID: 1588447697}
+  - {fileID: 1657816793}
   m_Father: {fileID: 944798978}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1217,7 +1376,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 'Apocalypse
+  m_Text: 'Zombie Apocalypse
 
 '
 --- !u!222 &617143577
@@ -1456,7 +1615,7 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 1, g: 0.88429403, b: 0.8160377, a: 1}
-  m_Intensity: 0.75
+  m_Intensity: 1
   m_Range: 15
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -1595,7 +1754,7 @@ GameObject:
   - component: {fileID: 737639259}
   - component: {fileID: 737639260}
   m_Layer: 5
-  m_Name: Apocalypse Classes
+  m_Name: Zombie Apocalypse Classes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1694,7 +1853,7 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 1, g: 0.88429403, b: 0.8160377, a: 1}
-  m_Intensity: 0.75
+  m_Intensity: 1
   m_Range: 15
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -1958,6 +2117,36 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 830293018}
   m_CullTransparentMesh: 0
+--- !u!1 &888801289
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 888801290}
+  m_Layer: 0
+  m_Name: Spawn Point 1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &888801290
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 888801289}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -60, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 444555674}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &944798977
 GameObject:
   m_ObjectHideFlags: 0
@@ -2037,7 +2226,7 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 1, g: 0.88429403, b: 0.8160377, a: 1}
-  m_Intensity: 0.75
+  m_Intensity: 1
   m_Range: 30
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -2184,6 +2373,30 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
         m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 32749108}
+        m_TargetAssemblyTypeName: OfflineRoundManager, Assembly-CSharp
+        m_MethodName: StartGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 444555673}
+        m_TargetAssemblyTypeName: OfflineUnitSpawner, Assembly-CSharp
+        m_MethodName: SetupUnitSpawner
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -2431,7 +2644,7 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 1, g: 0.88429403, b: 0.8160377, a: 1}
-  m_Intensity: 0.75
+  m_Intensity: 1
   m_Range: 15
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -2523,7 +2736,7 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 1, g: 0.88429403, b: 0.8160377, a: 1}
-  m_Intensity: 0.75
+  m_Intensity: 1
   m_Range: 15
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -2941,6 +3154,36 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1207153946}
   m_CullTransparentMesh: 0
+--- !u!1 &1227183985
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1227183986}
+  m_Layer: 0
+  m_Name: Spawn Point 4
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1227183986
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1227183985}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -60}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 444555674}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1229515817
 GameObject:
   m_ObjectHideFlags: 0
@@ -3458,6 +3701,30 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 32749108}
+        m_TargetAssemblyTypeName: OfflineRoundManager, Assembly-CSharp
+        m_MethodName: StartGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 444555673}
+        m_TargetAssemblyTypeName: OfflineUnitSpawner, Assembly-CSharp
+        m_MethodName: SetupUnitSpawner
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1319711150
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3861,6 +4128,30 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 32749108}
+        m_TargetAssemblyTypeName: OfflineRoundManager, Assembly-CSharp
+        m_MethodName: StartGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 444555673}
+        m_TargetAssemblyTypeName: OfflineUnitSpawner, Assembly-CSharp
+        m_MethodName: SetupUnitSpawner
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1476611908
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4019,6 +4310,36 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1528141440}
   m_CullTransparentMesh: 0
+--- !u!1 &1538484270
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1538484271}
+  m_Layer: 0
+  m_Name: Spawn Point 2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1538484271
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1538484270}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 60, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 444555674}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1540551035
 GameObject:
   m_ObjectHideFlags: 0
@@ -4129,7 +4450,7 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 1, g: 0.88429403, b: 0.8160377, a: 1}
-  m_Intensity: 0.75
+  m_Intensity: 1
   m_Range: 15
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -4221,7 +4542,7 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 1, g: 0.88429403, b: 0.8160377, a: 1}
-  m_Intensity: 0.75
+  m_Intensity: 1
   m_Range: 15
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -4270,6 +4591,187 @@ Light:
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!1 &1657816792
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1657816793}
+  - component: {fileID: 1657816794}
+  m_Layer: 0
+  m_Name: Light Probe Group
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1657816793
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1657816792}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 450408005}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!220 &1657816794
+LightProbeGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1657816792}
+  m_Enabled: 1
+  m_SourcePositions:
+  - {x: -70, y: 11, z: 11}
+  - {x: 11, y: 11, z: -11}
+  - {x: 11, y: 0, z: -11}
+  - {x: -20, y: 11, z: -19}
+  - {x: -11, y: 11, z: -11}
+  - {x: -20, y: 0, z: -19}
+  - {x: -11, y: 0, z: -11}
+  - {x: -9, y: 11, z: -11}
+  - {x: -9, y: 0, z: -11}
+  - {x: -11, y: 11, z: -9}
+  - {x: -11, y: 0, z: -9}
+  - {x: -9, y: 11, z: -9}
+  - {x: -9, y: 0, z: -9}
+  - {x: 11, y: 11, z: -9}
+  - {x: 11, y: 0, z: -9}
+  - {x: 9, y: 11, z: -11}
+  - {x: 9, y: 0, z: -11}
+  - {x: 9, y: 11, z: -9}
+  - {x: 9, y: 0, z: -9}
+  - {x: -20, y: 11, z: -21}
+  - {x: -20, y: 0, z: -21}
+  - {x: 20, y: 11, z: -19}
+  - {x: 20, y: 0, z: -19}
+  - {x: 20, y: 11, z: -21}
+  - {x: 20, y: 0, z: -21}
+  - {x: -9, y: 11, z: -1}
+  - {x: -9, y: 0, z: -1}
+  - {x: -72, y: 11, z: 11}
+  - {x: -72, y: 0, z: 11}
+  - {x: -20, y: 11, z: -1}
+  - {x: -20, y: 0, z: -1}
+  - {x: -70, y: 0, z: 11}
+  - {x: -70, y: 11, z: -11}
+  - {x: -70, y: 0, z: -11}
+  - {x: -72, y: 11, z: -11}
+  - {x: -72, y: 0, z: -11}
+  - {x: -9, y: 11, z: 1}
+  - {x: -9, y: 0, z: 1}
+  - {x: -20, y: 11, z: 1}
+  - {x: -20, y: 0, z: 1}
+  - {x: 20, y: 11, z: -1}
+  - {x: 20, y: 0, z: -1}
+  - {x: 9, y: 11, z: -1}
+  - {x: 9, y: 0, z: -1}
+  - {x: 20, y: 11, z: 1}
+  - {x: 20, y: 0, z: 1}
+  - {x: 9, y: 11, z: 1}
+  - {x: 9, y: 0, z: 1}
+  - {x: 11, y: 11, z: 11}
+  - {x: 9, y: 11, z: 11}
+  - {x: 9, y: 0, z: 11}
+  - {x: 11, y: 0, z: 11}
+  - {x: 11, y: 11, z: 9}
+  - {x: 11, y: 0, z: 9}
+  - {x: 9, y: 11, z: 9}
+  - {x: 9, y: 0, z: 9}
+  - {x: 20, y: 11, z: 52}
+  - {x: 18, y: 11, z: 52}
+  - {x: 18, y: 0, z: 52}
+  - {x: 20, y: 0, z: 52}
+  - {x: 20, y: 11, z: 30}
+  - {x: 20, y: 0, z: 30}
+  - {x: 18, y: 11, z: 30}
+  - {x: 70, y: 0, z: -11}
+  - {x: -11, y: 11, z: 11}
+  - {x: -11, y: 0, z: 11}
+  - {x: -11, y: 11, z: 9}
+  - {x: -11, y: 0, z: 9}
+  - {x: -9, y: 11, z: 11}
+  - {x: -9, y: 0, z: 11}
+  - {x: -9, y: 11, z: 9}
+  - {x: -9, y: 0, z: 9}
+  - {x: -20, y: 11, z: -70}
+  - {x: -20, y: 0, z: -70}
+  - {x: -20, y: 11, z: -72}
+  - {x: -20, y: 0, z: -72}
+  - {x: 20, y: 11, z: -70}
+  - {x: 20, y: 0, z: -70}
+  - {x: 20, y: 11, z: -72}
+  - {x: 20, y: 0, z: -72}
+  - {x: 72, y: 11, z: 11}
+  - {x: 70, y: 11, z: 11}
+  - {x: 70, y: 0, z: 11}
+  - {x: 72, y: 0, z: 11}
+  - {x: 72, y: 11, z: -11}
+  - {x: 72, y: 0, z: -11}
+  - {x: 70, y: 11, z: -11}
+  - {x: 20, y: 11, z: -30}
+  - {x: 18, y: 11, z: -30}
+  - {x: 18, y: 0, z: -30}
+  - {x: 20, y: 0, z: -30}
+  - {x: 20, y: 11, z: -52}
+  - {x: 20, y: 0, z: -52}
+  - {x: 18, y: 11, z: -52}
+  - {x: -18, y: 11, z: -30}
+  - {x: -20, y: 11, z: -30}
+  - {x: -20, y: 0, z: -30}
+  - {x: -18, y: 0, z: -30}
+  - {x: -18, y: 11, z: -52}
+  - {x: -18, y: 0, z: -52}
+  - {x: -20, y: 11, z: -52}
+  - {x: -18, y: 11, z: 52}
+  - {x: -20, y: 11, z: 52}
+  - {x: -20, y: 0, z: 52}
+  - {x: -18, y: 0, z: 52}
+  - {x: -18, y: 11, z: 30}
+  - {x: -18, y: 0, z: 30}
+  - {x: -20, y: 11, z: 30}
+  - {x: -29, y: 11, z: 11}
+  - {x: -31, y: 11, z: 11}
+  - {x: -31, y: 0, z: 11}
+  - {x: -29, y: 0, z: 11}
+  - {x: -29, y: 11, z: -11}
+  - {x: -29, y: 0, z: -11}
+  - {x: -31, y: 11, z: -11}
+  - {x: -31, y: 0, z: -11}
+  - {x: 29, y: 0, z: -11}
+  - {x: 31, y: 11, z: 11}
+  - {x: 29, y: 11, z: 11}
+  - {x: 29, y: 0, z: 11}
+  - {x: 31, y: 0, z: 11}
+  - {x: 31, y: 11, z: -11}
+  - {x: 31, y: 0, z: -11}
+  - {x: 29, y: 11, z: -11}
+  - {x: -20, y: 11, z: 21}
+  - {x: -20, y: 0, z: 21}
+  - {x: -20, y: 11, z: 19}
+  - {x: -20, y: 0, z: 19}
+  - {x: 20, y: 11, z: 21}
+  - {x: 20, y: 0, z: 21}
+  - {x: 20, y: 11, z: 19}
+  - {x: 20, y: 0, z: 19}
+  - {x: -20, y: 11, z: 70}
+  - {x: -20, y: 0, z: 70}
+  - {x: -20, y: 11, z: 68}
+  - {x: -20, y: 0, z: 68}
+  - {x: 20, y: 11, z: 70}
+  - {x: 20, y: 0, z: 70}
+  - {x: 20, y: 11, z: 68}
+  - {x: 20, y: 0, z: 68}
+  m_Dering: 1
 --- !u!1001 &1759187090
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4728,7 +5230,7 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 1, g: 0.88429403, b: 0.8160377, a: 1}
-  m_Intensity: 0.75
+  m_Intensity: 1
   m_Range: 15
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -4858,7 +5360,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2011524055}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.759808, y: 3.2833672, z: 9.265162}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -4986,7 +5488,7 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 1, g: 0.88429403, b: 0.8160377, a: 1}
-  m_Intensity: 0.75
+  m_Intensity: 1
   m_Range: 15
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
