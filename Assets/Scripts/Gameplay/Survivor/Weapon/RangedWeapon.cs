@@ -2,6 +2,7 @@
 using Mirror;
 using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(PhysicsToggler), typeof(Rigidbody), typeof(BoxCollider))]
 public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBindable
 {
     [Header("Settings")]

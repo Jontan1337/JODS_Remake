@@ -6,17 +6,23 @@ public class SyncGameObjectVisuals : NetworkBehaviour
     [SerializeField, SyncVar]
     private Transform parent;
     [SerializeField, SyncVar]
+    private bool syncParent = false;
+    [SerializeField, SyncVar]
     private Vector3 positionData;
     [SerializeField, SyncVar]
+    private bool syncPosition = false;
+    [SerializeField, SyncVar]
     private Quaternion rotationData;
+    [SerializeField, SyncVar]
+    private bool syncRotation = false;
 
     private void OnTransformParentChanged()
     {
         if (isServer)
         {
-            parent = transform.parent;
-            positionData = transform.position;
-            rotationData = transform.rotation;
+            if (syncParent) parent = transform.parent;
+            if (syncPosition) positionData = transform.position;
+            if (syncRotation) rotationData = transform.rotation;
         }
     }
 

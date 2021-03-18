@@ -63,32 +63,4 @@ public static class CustomReadWrite
         }
         return identity.GetComponent<EquipmentSlot>();
     }
-
-    //public static void WriteIEquippable(this NetworkWriter writer, IEquippable value)
-    //{
-    //    ILogger logger = LogFactory.GetLogger<NetworkWriter>();
-    //    if (value == null)
-    //    {
-    //        return;
-    //    }
-    //    NetworkIdentity networkIdentity = value.Item.GetComponent<NetworkIdentity>();
-    //    if (networkIdentity != null)
-    //    {
-    //        writer.WriteNetworkIdentity(networkIdentity);
-    //    }
-    //    else
-    //    {
-    //        logger.LogWarning("NetworkWriter " + value + " has no NetworkIdentity");
-    //        writer.WriteNetworkIdentity(null);
-    //    }
-    //}
-    //public static IEquippable ReadIEquippable(this NetworkReader reader)
-    //{
-    //    NetworkIdentity identity = reader.ReadNetworkIdentity();
-    //    if (identity == null)
-    //    {
-    //        return null;
-    //    }
-    //    return identity.GetComponent<IEquippable>();
-    //}
 }
