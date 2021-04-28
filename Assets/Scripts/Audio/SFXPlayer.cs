@@ -5,17 +5,33 @@ using UnityEngine;
 [RequireComponent(typeof(AudioSource))]
 public class SFXPlayer : MonoBehaviour
 {
-    public AudioClip[] clips;
-    [Range (0f,2f)] public float maxPitch = 1.05f;
-    [Range(0f, 2f)] public float minPitch = 0.95f;
-    public bool randomPitch;
-    public bool looping;
-    public bool playOnce;
-    public bool playOnAwake;
-    public bool playAmountOfTimes;
-    public int amountOfPlays = 2;
+    [SerializeField]
+    private AudioClip[] clips;
+    [SerializeField, Range(0f, 2f)] 
+    private float maxPitch = 1.05f;
+    [SerializeField, Range(0f, 2f)]
+    private float minPitch = 0.95f;
+    [SerializeField]
+    private bool randomPitch;
+    [SerializeField]
+    private bool looping;
+    [SerializeField]
+    private bool playOnce;
+    [SerializeField]
+    private bool playOnAwake;
+    [SerializeField]
+    private bool playAmountOfTimes;
+    [SerializeField]
+    private int amountOfPlays = 2;
 
     private AudioSource AS;
+
+    public bool RandomPitch { get => randomPitch; }
+    public bool Looping { get => looping; }
+    public bool PlayOnce { get => playOnce; }
+    public bool PlayOnAwake { get => playOnAwake; }
+    public bool PlayAmountOfTimes { get => playAmountOfTimes; }
+    public int AmountOfPlays { get => amountOfPlays; }
 
     private void Start()
     {
