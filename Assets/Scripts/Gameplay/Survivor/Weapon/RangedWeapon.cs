@@ -41,6 +41,16 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     [SerializeField]
     private Transform bulletRayOrigin = null;
 
+    [Header("Audio Settings")]
+    [SerializeField]
+    private AudioSource audioSource = null;
+    [SerializeField]
+    private AudioClip shootSound = null;
+    [SerializeField]
+    private AudioClip emptySound = null;
+    [SerializeField, Range(0f, 1f)]
+    private float volume = 1f;
+
     [SerializeField, SyncVar]
     private bool isInteractable = true;
 
@@ -77,8 +87,13 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     [Command]
     private void Cmd_Shoot()
     {
-        if (currentAmmunition == 0) return;
+        if (currentAmmunition == 0)
+        {
+            audioSource.PlayOneShot(emptySound, volume);
+            return;
+        }
 
+        audioSource.PlayOneShot(shootSound, volume);
         Ray shootRay = new Ray(bulletRayOrigin.position, transform.forward);
         RaycastHit rayHit;
         if (Physics.Raycast(shootRay, out rayHit, range, ~ignoreLayer))
