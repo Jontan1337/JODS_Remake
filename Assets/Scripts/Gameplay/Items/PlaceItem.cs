@@ -13,6 +13,7 @@ public class PlaceItem : NetworkBehaviour
     private void Start()
     {
         look = GetComponentInParent<LookController>();
+        StartCoroutine(PlaceHolderActive());
     }
 
     public IEnumerator PlaceHolderActive()
@@ -20,15 +21,13 @@ public class PlaceItem : NetworkBehaviour
         RaycastHit hit;
         Physics.Raycast(look.playerCamera.transform.position, look.playerCamera.transform.forward, out hit, 5f, 13);
         placeHolder = Instantiate(placeHolderPrefab, hit.point, transform.rotation);
-        while (true)
+        while (placeholderActive)
         {
             Physics.Raycast(look.playerCamera.transform.position, look.playerCamera.transform.forward, out hit, 5f, 13);
             placeHolder.transform.position = hit.point;
 
             yield return new WaitForSeconds(0.1f);
         }
-
-        placeholderActive = false;
     }
 
     public void Place(GameObject thing, GameObject self)
@@ -38,7 +37,7 @@ public class PlaceItem : NetworkBehaviour
         {
             print(hit.transform.name);
             CmdPlaceItem(thing.name, placeHolder.transform.position, placeHolder.transform.rotation);
-            //CmdPlaceItem(thing.name, hit.point, self.transform.rotation);
+            placeholderActive = false;
         }
     }
 
