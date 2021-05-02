@@ -11,16 +11,19 @@ public class AutoTurret : MonoBehaviour, IEquippable, IBindable
     private void Start()
     {
         place = GetComponent<PlaceItem>();
-        placeHolderActive = StartCoroutine(place.PlaceHolderActive());
     }
 
-    public string Name => throw new System.NotImplementedException();
+    public string Name => gameObject.name;
 
-    public GameObject Item => throw new System.NotImplementedException();
+    public GameObject Item => gameObject;
 
-    public EquipmentType EquipmentType => throw new System.NotImplementedException();
+    public EquipmentType EquipmentType => EquipmentType.None;
 
     public void Bind()
+    {
+        throw new System.NotImplementedException();
+    }
+    public void UnBind()
     {
         throw new System.NotImplementedException();
     }
@@ -35,10 +38,7 @@ public class AutoTurret : MonoBehaviour, IEquippable, IBindable
         throw new System.NotImplementedException();
     }
 
-    public void UnBind()
-    {
-        throw new System.NotImplementedException();
-    }
+
 
 
 }

@@ -36,7 +36,19 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
         JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => Ability();
         SurvivorSetup(survivorSO);
         SelectedClass();
-
+        if (survivorSO.abilityObject)
+        {
+            sClass.abilityObject = survivorSO.abilityObject;
+        }
+        armor                = survivorSO.armor;
+        health               = survivorSO.health;
+        accuracy             = survivorSO.accuracy;
+        reloadSpeed          = survivorSO.reloadSpeed;
+        ammoCapacity         = survivorSO.ammoCapacity;
+        movementSpeed        = survivorSO.movementSpeed;
+        abilityCooldown      = survivorSO.abilityCooldown;
+        abilityCooldownCount = abilityCooldown;
+        sController.speed   *= movementSpeed;
 
         //starterWeapon     = soldier.starterWeapon;
     }
@@ -69,19 +81,6 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
     public void SurvivorSetup(SurvivorSO survivorSO)
     {
         this.survivorSO = survivorSO;
-        if (survivorSO.abilityObject)
-        {
-            sClass.abilityObject = survivorSO.abilityObject;
-        }
-        armor                = survivorSO.armor;
-        health               = survivorSO.health;
-        accuracy             = survivorSO.accuracy;
-        reloadSpeed          = survivorSO.reloadSpeed;
-        ammoCapacity         = survivorSO.ammoCapacity;
-        movementSpeed        = survivorSO.movementSpeed;
-        abilityCooldown      = survivorSO.abilityCooldown;
-        abilityCooldownCount = abilityCooldown;
-        sController.speed   *= movementSpeed;
     }
 
     void SelectedClass()
