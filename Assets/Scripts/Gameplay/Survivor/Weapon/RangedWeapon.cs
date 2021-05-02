@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Mirror;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 [RequireComponent(typeof(PhysicsToggler), typeof(Rigidbody), typeof(BoxCollider))]
 public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBindable
@@ -39,11 +40,11 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     [SerializeField]
     private Animator weaponAnimator = null;
     [SerializeField]
+    private AudioSource audioSource = null;
+    [SerializeField]
     private Transform bulletRayOrigin = null;
 
     [Header("Audio Settings")]
-    [SerializeField]
-    private AudioSource audioSource = null;
     [SerializeField]
     private AudioClip shootSound = null;
     [SerializeField]
@@ -51,8 +52,11 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     [SerializeField, Range(0f, 1f)]
     private float volume = 1f;
 
+    [Space]
     [SerializeField, SyncVar]
     private bool isInteractable = true;
+
+    private Coroutine COShootingLoop;
 
     public bool IsInteractable {
         get => isInteractable;
@@ -67,21 +71,24 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
 
     private void OnValidate()
     {
-        fireRate = Mathf.Clamp(fireRate, 0.1f, 100f);
+        fireRate = Mathf.Clamp(fireRate, 0.1f, float.MaxValue);
     }
 
     public void Bind()
     {
         JODSInput.Controls.Survivor.LMB.performed += OnShoot;
+        JODSInput.Controls.Survivor.LMB.canceled += OnStopShoot;
         JODSInput.Controls.Survivor.Reload.performed += OnReload;
     }
     public void UnBind()
     {
         JODSInput.Controls.Survivor.LMB.performed -= OnShoot;
+        JODSInput.Controls.Survivor.LMB.canceled -= OnStopShoot;
         JODSInput.Controls.Survivor.Reload.performed -= OnReload;
     }
 
     private void OnShoot(InputAction.CallbackContext context) => Cmd_Shoot();
+    private void OnStopShoot(InputAction.CallbackContext context) => StopShootingLoop();
     private void OnReload(InputAction.CallbackContext context) => Cmd_Reload();
 
     [Command]
@@ -89,10 +96,8 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     {
         if (currentAmmunition == 0)
         {
-            audioSource.PlayOneShot(emptySound, volume);
             return;
         }
-
         audioSource.PlayOneShot(shootSound, volume);
         Ray shootRay = new Ray(bulletRayOrigin.position, transform.forward);
         RaycastHit rayHit;
@@ -101,19 +106,61 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
             rayHit.collider.GetComponent<IDamagable>()?.Svr_Damage(damage);
         }
         currentAmmunition -= bulletsPerShot;
+        //COShootingLoop = StartCoroutine(ShootingLoop());
     }
 
+    private IEnumerator ShootingLoop()
+    {
+        float fireInterval = Mathf.Clamp(fireRate / 1000, 0.1f, float.MaxValue);
+        while (true)
+        {
+            if (currentAmmunition == 0)
+            {
+                //audioSource.PlayOneShot(emptySound, volume);
+
+                yield return new WaitForSeconds(fireInterval);
+            }
+            else
+            {
+                audioSource.PlayOneShot(shootSound, volume);
+                Ray shootRay = new Ray(bulletRayOrigin.position, transform.forward);
+                RaycastHit rayHit;
+                if (Physics.Raycast(shootRay, out rayHit, range, ~ignoreLayer))
+                {
+                    rayHit.collider.GetComponent<IDamagable>()?.Svr_Damage(damage);
+                }
+                currentAmmunition -= bulletsPerShot;
+
+                yield return new WaitForSeconds(fireInterval);
+            }
+        }
+    }
+
+    private void StopShootingLoop()
+    {
+        Debug.Log("Stopped shooting", this);
+        if (COShootingLoop != null)
+        {
+            StopCoroutine(COShootingLoop);
+        }
+    }
+
+    // Later this should be called by a reload animation event.
     [Command]
     private void Cmd_Reload()
     {
         Debug.Log("Reload!", this);
+        int neededAmmunition = 0;
 
-        int currentAmmunition = this.currentAmmunition;
-        int neededAmmunition = maxCurrentAmmunition % currentAmmunition;
+        neededAmmunition = extraAmmunition < maxCurrentAmmunition
+                                ? extraAmmunition
+                                : maxCurrentAmmunition - this.currentAmmunition;
 
-        this.currentAmmunition += extraAmmunition < maxCurrentAmmunition 
-                                ? neededAmmunition
-                                : maxCurrentAmmunition - currentAmmunition;
+        this.currentAmmunition =+ neededAmmunition;
+
+        //this.currentAmmunition += extraAmmunition < maxCurrentAmmunition 
+        //                        ? neededAmmunition
+        //                        : maxCurrentAmmunition - currentAmmunition;
 
         extraAmmunition -= neededAmmunition;
 
