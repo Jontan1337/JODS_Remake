@@ -26,7 +26,7 @@ public class PlaceItem : NetworkBehaviour
             Physics.Raycast(look.playerCamera.transform.position, look.playerCamera.transform.forward, out hit, 5f, 13);
             placeHolder.transform.position = hit.point;
 
-            yield return new WaitForSeconds(0.1f);
+            yield return null;
         }
     }
 
