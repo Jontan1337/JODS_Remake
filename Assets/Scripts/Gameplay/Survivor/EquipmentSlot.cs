@@ -162,7 +162,7 @@ public class EquipmentSlot : NetworkBehaviour
     public void Svr_RemoveItem()
     {
         if (EquipmentItem)
-            EquipmentItem.GetComponent<IEquippable>()?.Svr_RemoveAuthority();
+            EquipmentItem.GetComponent<AuthorityController>()?.Svr_RemoveAuthority();
 
         EquipmentItem = null;
     }

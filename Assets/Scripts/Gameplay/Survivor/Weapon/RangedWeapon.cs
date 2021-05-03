@@ -16,9 +16,9 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
 
     [Header("Weapon stats")]
     [SerializeField]
-    private int damage = 0;
+    private int damage = 10;
     [SerializeField]
-    private float range = 0f;
+    private float range = 1000f;
     [SerializeField]
     private float fireRate = 0f;
     [SerializeField]
@@ -46,7 +46,11 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     [SerializeField]
     private Transform bulletRayOrigin = null;
     [SerializeField]
+    private GameObject muzzleFlash = null;
+    [SerializeField]
     private SFXPlayer sfxPlayer = null;
+    [SerializeField]
+    private AuthorityController authController = null;
 
     [Header("Audio Settings")]
     [SerializeField]
@@ -61,6 +65,7 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     private bool isInteractable = true;
 
     private Coroutine COShootingLoop;
+    private ParticleSystem muzzleParticle;
 
     public bool IsInteractable {
         get => isInteractable;
@@ -77,6 +82,13 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     {
         fireRate = Mathf.Clamp(fireRate, 0.01f, float.MaxValue);
         fireInterval = 60 / fireRate;
+        if (muzzleFlash != null)
+        {
+            if (muzzleFlash.TryGetComponent(out ParticleSystem particle))
+            {
+                muzzleParticle = particle;
+            }
+        }
     }
 
     public void Bind()
@@ -121,8 +133,10 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
                 RaycastHit rayHit;
                 if (Physics.Raycast(shootRay, out rayHit, range, ~ignoreLayer))
                 {
-                    rayHit.collider.GetComponent<IDamagable>()?.Svr_Damage(damage);
+                    rayHit.collider.transform.root.GetComponent<IDamagable>()?.Svr_Damage(damage);
                 }
+
+                muzzleParticle.Emit(15);
                 currentAmmunition -= bulletsPerShot;
 
                 yield return new WaitForSeconds(fireInterval);
@@ -171,7 +185,7 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
 
         if (equipment != null)
         {
-            Svr_GiveAuthority(interacter.GetComponent<NetworkIdentity>().connectionToClient);
+            authController.Svr_GiveAuthority(interacter.GetComponent<NetworkIdentity>().connectionToClient);
             equipment?.Svr_Equip(gameObject, equipmentType);
             IsInteractable = false;
         }
@@ -182,17 +196,6 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
         }
     }
 
-    [Server]
-    public void Svr_GiveAuthority(NetworkConnection conn)
-    {
-        netIdentity.AssignClientAuthority(conn);
-    }
-    [Server]
-    public void Svr_RemoveAuthority()
-    {
-        netIdentity.RemoveClientAuthority();
-    }
-
     #endregion
 
     #region Clients
@@ -200,7 +203,6 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     [ClientRpc]
     private void Rpc_ShootFX(bool hasAmmo)
     {
-        AudioClip clip;
         if (hasAmmo)
         {
             sfxPlayer.PlaySFX(shootSound);
