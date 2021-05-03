@@ -428,7 +428,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
             yield return new WaitForSeconds(0.5f);
 
             //Set Walk Animation, if walking
-            Walking = navAgent.velocity.magnitude > 0.5f;
+            Walking = navAgent.velocity.magnitude > 0.2f;
         }
     }
 
@@ -892,6 +892,9 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     public void Svr_Damage(int damage)
     {
         health -= damage;
+
+        Debug.Log("UWU");
+        animator.SetTrigger("Hit");
 
         if (health <= 0) Die();
     }

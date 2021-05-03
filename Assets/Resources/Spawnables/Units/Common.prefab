@@ -1609,7 +1609,7 @@ AudioSource:
   MinDistance: 1
   MaxDistance: 500
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -1749,6 +1749,7 @@ MonoBehaviour:
   currentTarget: {fileID: 0}
   navAgent: {fileID: 0}
   hasTarget: 0
+  permanentTarget: 1
   animator: {fileID: 2419495443484362416}
   sounds:
     headHeight: 2
