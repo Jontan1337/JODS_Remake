@@ -80,4 +80,20 @@ public class SFXPlayer : MonoBehaviour
             Destroy(gameObject, AS.clip.length);
         }
     }
+    public void PlaySFX(AudioClip clip)
+    {
+        if (playAmountOfTimes)
+        {
+            amountOfPlays--;
+        }
+        if (randomPitch)
+        {
+            AS.pitch = Random.Range(minPitch, maxPitch);
+        }
+        AS.PlayOneShot(clip);
+        if (playOnce)
+        {
+            Destroy(gameObject, clip.length);
+        }
+    }
 }

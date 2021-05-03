@@ -169,6 +169,7 @@ MonoBehaviour:
   damage: 0
   range: 0
   fireRate: 0.1
+  fireInterval: 600
   bulletsPerShot: 1
   currentAmmunition: 10
   maxCurrentAmmunition: 10
@@ -178,6 +179,7 @@ MonoBehaviour:
   weaponAnimator: {fileID: 0}
   audioSource: {fileID: 0}
   bulletRayOrigin: {fileID: 0}
+  sfxPlayer: {fileID: 0}
   shootSound: {fileID: 0}
   emptySound: {fileID: 0}
   volume: 1
@@ -645,11 +647,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d44ca6bac25424e429c1dd77d1bbd1c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clips:
-  - {fileID: 8300000, guid: b569bb42ec9c2cd4b886a69e7a3e1b57, type: 3}
-  maxPitch: 1.05
-  minPitch: 0.95
-  randomPitch: 0
+  clips: []
+  maxPitch: 2
+  minPitch: 0
+  randomPitch: 1
   looping: 0
   playOnce: 0
   playOnAwake: 0
@@ -1934,16 +1935,18 @@ MonoBehaviour:
     m_Bits: 0
   damage: 0
   range: 0
-  fireRate: 120
+  fireRate: 600
+  fireInterval: 0.1
   bulletsPerShot: 1
-  currentAmmunition: 10
-  maxCurrentAmmunition: 10
-  extraAmmunition: 20
-  maxExtraAmmunition: 20
+  currentAmmunition: 30
+  maxCurrentAmmunition: 30
+  extraAmmunition: 60
+  maxExtraAmmunition: 60
   player: Player name
   weaponAnimator: {fileID: 0}
   audioSource: {fileID: 373591106}
   bulletRayOrigin: {fileID: 1536717495}
+  sfxPlayer: {fileID: 373591105}
   shootSound: {fileID: 8300000, guid: b569bb42ec9c2cd4b886a69e7a3e1b57, type: 3}
   emptySound: {fileID: 0}
   volume: 1
@@ -3466,6 +3469,7 @@ MonoBehaviour:
   damage: 0
   range: 0
   fireRate: 0.1
+  fireInterval: 600
   bulletsPerShot: 1
   currentAmmunition: 10
   maxCurrentAmmunition: 10
@@ -3475,6 +3479,7 @@ MonoBehaviour:
   weaponAnimator: {fileID: 0}
   audioSource: {fileID: 0}
   bulletRayOrigin: {fileID: 0}
+  sfxPlayer: {fileID: 0}
   shootSound: {fileID: 0}
   emptySound: {fileID: 0}
   volume: 1
@@ -3746,6 +3751,7 @@ MonoBehaviour:
   damage: 0
   range: 0
   fireRate: 0.1
+  fireInterval: 600
   bulletsPerShot: 1
   currentAmmunition: 10
   maxCurrentAmmunition: 10
@@ -3755,6 +3761,7 @@ MonoBehaviour:
   weaponAnimator: {fileID: 0}
   audioSource: {fileID: 0}
   bulletRayOrigin: {fileID: 0}
+  sfxPlayer: {fileID: 0}
   shootSound: {fileID: 0}
   emptySound: {fileID: 0}
   volume: 1
@@ -3951,7 +3958,8 @@ MonoBehaviour:
     m_Bits: 0
   damage: 0
   range: 0
-  fireRate: 0.1
+  fireRate: 160
+  fireInterval: 0.375
   bulletsPerShot: 1
   currentAmmunition: 10
   maxCurrentAmmunition: 10
@@ -3961,6 +3969,7 @@ MonoBehaviour:
   weaponAnimator: {fileID: 0}
   audioSource: {fileID: 0}
   bulletRayOrigin: {fileID: 0}
+  sfxPlayer: {fileID: 0}
   shootSound: {fileID: 0}
   emptySound: {fileID: 0}
   volume: 1
@@ -4967,6 +4976,7 @@ MonoBehaviour:
   damage: 0
   range: 0
   fireRate: 0.1
+  fireInterval: 600
   bulletsPerShot: 1
   currentAmmunition: 10
   maxCurrentAmmunition: 10
@@ -4976,6 +4986,7 @@ MonoBehaviour:
   weaponAnimator: {fileID: 0}
   audioSource: {fileID: 0}
   bulletRayOrigin: {fileID: 0}
+  sfxPlayer: {fileID: 0}
   shootSound: {fileID: 0}
   emptySound: {fileID: 0}
   volume: 1
@@ -6528,6 +6539,7 @@ MonoBehaviour:
   damage: 0
   range: 0
   fireRate: 0.1
+  fireInterval: 600
   bulletsPerShot: 1
   currentAmmunition: 10
   maxCurrentAmmunition: 10
@@ -6537,6 +6549,7 @@ MonoBehaviour:
   weaponAnimator: {fileID: 0}
   audioSource: {fileID: 0}
   bulletRayOrigin: {fileID: 0}
+  sfxPlayer: {fileID: 0}
   shootSound: {fileID: 0}
   emptySound: {fileID: 0}
   volume: 1

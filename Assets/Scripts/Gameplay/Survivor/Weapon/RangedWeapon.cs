@@ -22,6 +22,8 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     [SerializeField]
     private float fireRate = 0f;
     [SerializeField]
+    private float fireInterval = 0f;
+    [SerializeField]
     private int bulletsPerShot = 1;
     [SerializeField, SyncVar]
     private int currentAmmunition = 10;
@@ -43,6 +45,8 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     private AudioSource audioSource = null;
     [SerializeField]
     private Transform bulletRayOrigin = null;
+    [SerializeField]
+    private SFXPlayer sfxPlayer = null;
 
     [Header("Audio Settings")]
     [SerializeField]
@@ -71,7 +75,8 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
 
     private void OnValidate()
     {
-        fireRate = Mathf.Clamp(fireRate, 0.1f, float.MaxValue);
+        fireRate = Mathf.Clamp(fireRate, 0.01f, float.MaxValue);
+        fireInterval = 60 / fireRate;
     }
 
     public void Bind()
@@ -91,27 +96,16 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     private void OnStopShoot(InputAction.CallbackContext context) => StopShootingLoop();
     private void OnReload(InputAction.CallbackContext context) => Cmd_Reload();
 
+    #region Server
+
     [Command]
     private void Cmd_Shoot()
     {
-        if (currentAmmunition == 0)
-        {
-            return;
-        }
-        audioSource.PlayOneShot(shootSound, volume);
-        Ray shootRay = new Ray(bulletRayOrigin.position, transform.forward);
-        RaycastHit rayHit;
-        if (Physics.Raycast(shootRay, out rayHit, range, ~ignoreLayer))
-        {
-            rayHit.collider.GetComponent<IDamagable>()?.Svr_Damage(damage);
-        }
-        currentAmmunition -= bulletsPerShot;
-        //COShootingLoop = StartCoroutine(ShootingLoop());
+        COShootingLoop = StartCoroutine(ShootingLoop());
     }
 
     private IEnumerator ShootingLoop()
     {
-        float fireInterval = Mathf.Clamp(fireRate / 1000, 0.1f, float.MaxValue);
         while (true)
         {
             if (currentAmmunition == 0)
@@ -122,7 +116,7 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
             }
             else
             {
-                audioSource.PlayOneShot(shootSound, volume);
+                Rpc_ShootFX(true);
                 Ray shootRay = new Ray(bulletRayOrigin.position, transform.forward);
                 RaycastHit rayHit;
                 if (Physics.Raycast(shootRay, out rayHit, range, ~ignoreLayer))
@@ -152,17 +146,16 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
         Debug.Log("Reload!", this);
         int neededAmmunition = 0;
 
-        neededAmmunition = extraAmmunition < maxCurrentAmmunition
-                                ? extraAmmunition
-                                : maxCurrentAmmunition - this.currentAmmunition;
-
-        this.currentAmmunition =+ neededAmmunition;
-
-        //this.currentAmmunition += extraAmmunition < maxCurrentAmmunition 
-        //                        ? neededAmmunition
-        //                        : maxCurrentAmmunition - currentAmmunition;
-
-        extraAmmunition -= neededAmmunition;
+        if (extraAmmunition > (maxCurrentAmmunition - currentAmmunition))
+        {
+            extraAmmunition = extraAmmunition - (maxCurrentAmmunition - currentAmmunition);
+            currentAmmunition = maxCurrentAmmunition;
+        }
+        else
+        {
+            currentAmmunition = currentAmmunition + extraAmmunition;
+            extraAmmunition = 0;
+        }
 
         Debug.Log(neededAmmunition);
         Debug.Log(extraAmmunition);
@@ -199,4 +192,25 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     {
         netIdentity.RemoveClientAuthority();
     }
+
+    #endregion
+
+    #region Clients
+
+    [ClientRpc]
+    private void Rpc_ShootFX(bool hasAmmo)
+    {
+        AudioClip clip;
+        if (hasAmmo)
+        {
+            sfxPlayer.PlaySFX(shootSound);
+        }
+        else
+        {
+            sfxPlayer.PlaySFX(emptySound);
+        }
+        // Implement partyicle efect.
+    }
+
+    #endregion
 }
