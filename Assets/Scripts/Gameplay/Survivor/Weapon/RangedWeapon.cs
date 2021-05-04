@@ -33,6 +33,8 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     [SerializeField]
     private float fireInterval = 0f;
     [SerializeField]
+    private float fireCooldownInterval = 0f;
+    [SerializeField]
     private int bulletsPerShot = 1;
     [SerializeField, SyncVar]
     private int currentAmmunition = 10;
@@ -74,7 +76,9 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     private bool isInteractable = true;
 
     private Coroutine COShootLoop;
+    private Coroutine COStopShootLoop;
     private ParticleSystem muzzleParticle;
+    private bool canShoot = true;
 
     public bool IsInteractable {
         get => isInteractable;
@@ -121,7 +125,7 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     }
 
     private void OnShoot(InputAction.CallbackContext context) => Cmd_Shoot();
-    private void OnStopShoot(InputAction.CallbackContext context) => StopShootLoop();
+    private void OnStopShoot(InputAction.CallbackContext context) => Cmd_StopShoot();
     private void OnReload(InputAction.CallbackContext context) => Cmd_Reload();
     private void OnChangeFireMode(InputAction.CallbackContext context) => Cmd_ChangeFireMode();
 
@@ -131,6 +135,8 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     [Command]
     private void Cmd_Shoot()
     {
+        if (!canShoot) return;
+
         switch (fireMode)
         {
             case FireModes.Single:
@@ -138,10 +144,16 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
                 ShootSingle();
                 break;
             case FireModes.Burst:
-                COShootLoop = StartCoroutine(BurstShootLoop());
+                if (COShootLoop == null)
+                {
+                    StartCoroutine(BurstShootLoop());
+                }
                 break;
             case FireModes.FullAuto:
-                COShootLoop = StartCoroutine(FullAutoShootLoop());
+                if (COShootLoop == null)
+                {
+                    COShootLoop = StartCoroutine(FullAutoShootLoop());
+                }
                 break;
         }
     }
@@ -185,14 +197,27 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
         Shoot();
     }
 
-    // Stop any shoot coroutine.
-    private void StopShootLoop()
+    [Command]
+    private void Cmd_StopShoot()
     {
-        Debug.Log("Stopped shooting", this);
+        if (COStopShootLoop == null)
+        {
+            COStopShootLoop = StartCoroutine(IEStopShoot());
+        }
+    }
+
+    // Stop any shoot coroutine.
+    private IEnumerator IEStopShoot()
+    {
+        canShoot = false;
         if (COShootLoop != null)
         {
             StopCoroutine(COShootLoop);
+            COShootLoop = null;
         }
+        yield return new WaitForSeconds(fireInterval);
+        canShoot = true;
+        COStopShootLoop = null;
     }
 
 
@@ -232,7 +257,7 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     [Command]
     private void Cmd_ChangeFireMode()
     {
-        StopShootLoop();
+        StartCoroutine(IEStopShoot());
         if (fireModeIndex == fireModes.Length-1)
         {
             fireModeIndex = 0;
