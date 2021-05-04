@@ -1420,6 +1420,10 @@ MonoBehaviour:
     m_Bits: 0
   damage: 30
   range: 1000
+  fireMode: 3
+  fireModes: 0100000003000000
+  fireModeIndex: 2
+  burstBulletAmount: 3
   fireRate: 600
   fireInterval: 0.1
   bulletsPerShot: 1
@@ -1435,7 +1439,7 @@ MonoBehaviour:
   sfxPlayer: {fileID: 8677567993216096715}
   authController: {fileID: 8296172669356463415}
   shootSound: {fileID: 8300000, guid: b569bb42ec9c2cd4b886a69e7a3e1b57, type: 3}
-  emptySound: {fileID: 0}
+  emptySound: {fileID: 8300000, guid: 6e8772b49f34d402a90016ed445d8a2f, type: 3}
   volume: 1
   isInteractable: 1
 --- !u!114 &8677567993216096717
