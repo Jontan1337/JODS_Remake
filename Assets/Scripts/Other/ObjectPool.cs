@@ -1,0 +1,102 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class ObjectPool : MonoBehaviour
+{
+    [System.Serializable]
+    public class Pool
+    {
+        public string tag;
+        public GameObject[] prefab;
+        public int amount;
+    }
+
+    #region Singleton
+
+    public static ObjectPool Instance;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
+    #endregion
+
+    public List<Pool> pools;
+
+    [Space]
+
+    //The dictionary is used to keep all the objects, enemies, decals and whatever else, all seperated by their tags
+    public Dictionary<string, Queue<GameObject>> poolDictionary;
+
+
+
+    private void Start()
+    {
+        poolDictionary = new Dictionary<string, Queue<GameObject>>();
+
+        InitializePools(pools);
+    }
+
+    public void InitializePools(List<Pool> poolsToAdd) 
+    {
+        //For each pool of objects (Prop Group, Obstacles, etc)
+        foreach (Pool pool in poolsToAdd)
+        {
+            //If the tag already exists within the pool dictionary, do not add this pool.
+            if (poolDictionary.ContainsKey(tag))
+            {
+                Debug.LogWarning("Pool with tag " + tag + " already exists, cannot have multiple pools with the same tag");
+                continue;
+            }
+
+            //Queue which will be used to store and keep order of objects
+            Queue<GameObject> objectPool = new Queue<GameObject>();
+
+            //For each object in the pool
+            for (int i = 0; i < pool.prefab.Length * pool.amount; i++)
+            {
+                //Create the object, and add it to the queue
+                GameObject obj = Instantiate(pool.prefab[Random.Range(0, pool.prefab.Length)], transform);
+                obj.name = "(" + pool.tag + ") " + obj.name; //Give it a name to represent which pool it is from
+                obj.SetActive(false);
+                objectPool.Enqueue(obj);
+            }
+
+            //Add the queue to the dictionary
+            poolDictionary.Add(pool.tag, objectPool);
+        }
+    }
+
+
+    public GameObject SpawnFromPool(string tag, Vector3 position, Quaternion rotation)
+    {
+        //If the tag does not exist within the pool dictionary, return nothing.
+        if (!poolDictionary.ContainsKey(tag))
+        {
+            Debug.LogWarning("Pool with tag " + tag + " doesn't exist");
+            return null;
+        }
+
+        //Take the next object out of the queue
+        GameObject objectToSpawn = poolDictionary[tag].Dequeue();
+
+        //Activate it and put it where it needs to be
+        objectToSpawn.SetActive(true);
+        objectToSpawn.transform.position = position;
+        objectToSpawn.transform.rotation = rotation;
+
+        //If the section has a IPooledObject script, call the method
+        IPooledObject pooledObj = objectToSpawn.GetComponent<IPooledObject>();
+        if (pooledObj != null)
+        {
+            pooledObj.OnObjectSpawn();
+        }
+
+        //Put the object back in the queue (putting it at the back of the queue)
+        poolDictionary[tag].Enqueue(objectToSpawn);
+
+        return objectToSpawn;
+    }
+}
