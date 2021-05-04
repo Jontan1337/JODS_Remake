@@ -2,6 +2,7 @@
 using Mirror;
 using UnityEngine.InputSystem;
 using System.Collections;
+using System;
 
 [RequireComponent(typeof(PhysicsToggler), typeof(Rigidbody), typeof(BoxCollider))]
 public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBindable
@@ -33,6 +34,10 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     private int extraAmmunition = 20;
     [SerializeField]
     private int maxExtraAmmunition = 20;
+    [SerializeField]
+    private FireModes fireMode = FireModes.Single;
+    [SerializeField]
+    private FireModes[] fireModes;
 
     [Header("Game details")]
     [SerializeField, SyncVar]
@@ -96,17 +101,21 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
         JODSInput.Controls.Survivor.LMB.performed += OnShoot;
         JODSInput.Controls.Survivor.LMB.canceled += OnStopShoot;
         JODSInput.Controls.Survivor.Reload.performed += OnReload;
+        JODSInput.Controls.Survivor.Changefiremode.performed += OnChangeFireMode;
     }
     public void UnBind()
     {
         JODSInput.Controls.Survivor.LMB.performed -= OnShoot;
         JODSInput.Controls.Survivor.LMB.canceled -= OnStopShoot;
         JODSInput.Controls.Survivor.Reload.performed -= OnReload;
+        JODSInput.Controls.Survivor.Changefiremode.performed -= OnChangeFireMode;
     }
 
     private void OnShoot(InputAction.CallbackContext context) => Cmd_Shoot();
     private void OnStopShoot(InputAction.CallbackContext context) => StopShootingLoop();
     private void OnReload(InputAction.CallbackContext context) => Cmd_Reload();
+    private void OnChangeFireMode(InputAction.CallbackContext context) => Cmd_ChangeFireMode();
+
 
     #region Server
 
@@ -133,7 +142,7 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
                 RaycastHit rayHit;
                 if (Physics.Raycast(shootRay, out rayHit, range, ~ignoreLayer))
                 {
-                    rayHit.collider.transform.root.GetComponent<IDamagable>()?.Svr_Damage(damage);
+                    rayHit.collider.GetComponent<IDamagable>()?.Svr_Damage(damage);
                 }
 
                 muzzleParticle.Emit(15);
@@ -173,6 +182,19 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
 
         Debug.Log(neededAmmunition);
         Debug.Log(extraAmmunition);
+    }
+
+    [Command]
+    private void Cmd_ChangeFireMode()
+    {
+        if ((int)fireMode == fireModes.Length)
+        {
+            fireMode = fireModes[0];
+        }
+        else
+        {
+            fireMode = fireModes[(int)fireMode+1];
+        }
     }
 
     [Server]

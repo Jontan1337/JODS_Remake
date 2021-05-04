@@ -586,6 +586,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Change fire mode",
+                    "type": "Button",
+                    "id": "45d8c89c-a966-4ff9-8ee3-10f1bf18fb8e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -839,6 +847,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Drop",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8116cd39-96d0-48e9-91c0-4f32fef1a30a",
+                    "path": "<Keyboard>/b",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Change fire mode",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -599,6 +599,14 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Change fire mode"",
+                    ""type"": ""Button"",
+                    ""id"": ""45d8c89c-a966-4ff9-8ee3-10f1bf18fb8e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -854,6 +862,17 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""action"": ""Drop"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8116cd39-96d0-48e9-91c0-4f32fef1a30a"",
+                    ""path"": ""<Keyboard>/b"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Change fire mode"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -895,6 +914,7 @@ public class @Controls : IInputActionCollection, IDisposable
         m_Survivor_Hotbarselecting = m_Survivor.FindAction("Hotbar selecting", throwIfNotFound: true);
         m_Survivor_ActiveAbility = m_Survivor.FindAction("Active Ability", throwIfNotFound: true);
         m_Survivor_Sprint = m_Survivor.FindAction("Sprint", throwIfNotFound: true);
+        m_Survivor_Changefiremode = m_Survivor.FindAction("Change fire mode", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -1092,6 +1112,7 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_Survivor_Hotbarselecting;
     private readonly InputAction m_Survivor_ActiveAbility;
     private readonly InputAction m_Survivor_Sprint;
+    private readonly InputAction m_Survivor_Changefiremode;
     public struct SurvivorActions
     {
         private @Controls m_Wrapper;
@@ -1107,6 +1128,7 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @Hotbarselecting => m_Wrapper.m_Survivor_Hotbarselecting;
         public InputAction @ActiveAbility => m_Wrapper.m_Survivor_ActiveAbility;
         public InputAction @Sprint => m_Wrapper.m_Survivor_Sprint;
+        public InputAction @Changefiremode => m_Wrapper.m_Survivor_Changefiremode;
         public InputActionMap Get() { return m_Wrapper.m_Survivor; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1149,6 +1171,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Sprint.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnSprint;
                 @Sprint.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnSprint;
                 @Sprint.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnSprint;
+                @Changefiremode.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnChangefiremode;
+                @Changefiremode.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnChangefiremode;
+                @Changefiremode.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnChangefiremode;
             }
             m_Wrapper.m_SurvivorActionsCallbackInterface = instance;
             if (instance != null)
@@ -1186,6 +1211,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Sprint.started += instance.OnSprint;
                 @Sprint.performed += instance.OnSprint;
                 @Sprint.canceled += instance.OnSprint;
+                @Changefiremode.started += instance.OnChangefiremode;
+                @Changefiremode.performed += instance.OnChangefiremode;
+                @Changefiremode.canceled += instance.OnChangefiremode;
             }
         }
     }
@@ -1229,5 +1257,6 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnHotbarselecting(InputAction.CallbackContext context);
         void OnActiveAbility(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
+        void OnChangefiremode(InputAction.CallbackContext context);
     }
 }
