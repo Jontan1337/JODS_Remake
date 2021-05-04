@@ -325,7 +325,12 @@ MonoBehaviour:
     m_Bits: 0
   damage: 0
   range: 0
+  fireMode: 0
+  fireModes: 
+  fireModeIndex: 0
+  burstBulletAmount: 3
   fireRate: 0.1
+  fireInterval: 600
   bulletsPerShot: 1
   currentAmmunition: 10
   maxCurrentAmmunition: 10
@@ -333,7 +338,14 @@ MonoBehaviour:
   maxExtraAmmunition: 20
   player: Player name
   weaponAnimator: {fileID: 0}
+  audioSource: {fileID: 0}
   bulletRayOrigin: {fileID: 0}
+  muzzleFlash: {fileID: 0}
+  sfxPlayer: {fileID: 0}
+  authController: {fileID: 0}
+  shootSound: {fileID: 0}
+  emptySound: {fileID: 0}
+  volume: 1
   isInteractable: 1
 --- !u!114 &588477625
 MonoBehaviour:
@@ -1056,7 +1068,8 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2021729853, guid: dbc482463a9940540a8de57e3e20b70b, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: dbc482463a9940540a8de57e3e20b70b, type: 3}
 --- !u!1001 &676323785
 PrefabInstance:
@@ -1550,7 +1563,12 @@ MonoBehaviour:
     m_Bits: 0
   damage: 0
   range: 0
+  fireMode: 0
+  fireModes: 
+  fireModeIndex: 0
+  burstBulletAmount: 3
   fireRate: 0.1
+  fireInterval: 600
   bulletsPerShot: 1
   currentAmmunition: 10
   maxCurrentAmmunition: 10
@@ -1558,7 +1576,14 @@ MonoBehaviour:
   maxExtraAmmunition: 20
   player: Player name
   weaponAnimator: {fileID: 0}
+  audioSource: {fileID: 0}
   bulletRayOrigin: {fileID: 0}
+  muzzleFlash: {fileID: 0}
+  sfxPlayer: {fileID: 0}
+  authController: {fileID: 0}
+  shootSound: {fileID: 0}
+  emptySound: {fileID: 0}
+  volume: 1
   isInteractable: 1
 --- !u!114 &953202340
 MonoBehaviour:
@@ -1774,7 +1799,12 @@ MonoBehaviour:
     m_Bits: 0
   damage: 0
   range: 0
+  fireMode: 0
+  fireModes: 
+  fireModeIndex: 0
+  burstBulletAmount: 3
   fireRate: 0.1
+  fireInterval: 600
   bulletsPerShot: 1
   currentAmmunition: 10
   maxCurrentAmmunition: 10
@@ -1782,7 +1812,14 @@ MonoBehaviour:
   maxExtraAmmunition: 20
   player: Player name
   weaponAnimator: {fileID: 0}
+  audioSource: {fileID: 0}
   bulletRayOrigin: {fileID: 0}
+  muzzleFlash: {fileID: 0}
+  sfxPlayer: {fileID: 0}
+  authController: {fileID: 0}
+  shootSound: {fileID: 0}
+  emptySound: {fileID: 0}
+  volume: 1
   isInteractable: 1
 --- !u!850595691 &1342831457
 LightingSettings:
