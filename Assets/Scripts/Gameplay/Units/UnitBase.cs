@@ -893,7 +893,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     {
         health -= damage;
 
-        Debug.Log("UWU");
+        
         animator.SetTrigger("Hit");
 
         if (health <= 0) Die();
