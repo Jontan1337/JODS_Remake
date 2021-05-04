@@ -91,6 +91,7 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     {
         fireRate = Mathf.Clamp(fireRate, 0.01f, float.MaxValue);
         fireInterval = 60 / fireRate;
+        fireModeIndex = 0;
         foreach (int modeIndex in fireModes) {
             if ((int)fireMode == modeIndex) break;
             fireModeIndex++;
@@ -174,6 +175,16 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
         Rpc_EmptySFX();
     }
 
+    private void ShootSingle()
+    {
+        if (currentAmmunition == 0)
+        {
+            Rpc_EmptySFX();
+            return;
+        }
+        Shoot();
+    }
+
     // Stop any shoot coroutine.
     private void StopShootLoop()
     {
@@ -184,15 +195,6 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
         }
     }
 
-    private void ShootSingle()
-    {
-        if (currentAmmunition == 0)
-        {
-            Rpc_EmptySFX();
-            return;
-        }
-        Shoot();
-    }
 
     // Main shoot method.
     private void Shoot()
