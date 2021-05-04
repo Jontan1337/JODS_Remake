@@ -134,7 +134,7 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
         {
             case FireModes.Single:
             case FireModes.SemiAuto:
-                Shoot();
+                ShootSingle();
                 break;
             case FireModes.Burst:
                 COShootLoop = StartCoroutine(BurstShootLoop());
@@ -171,7 +171,7 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
             yield return new WaitForSeconds(fireInterval);
         }
         // If the magazine runs out of bullets, this will be called.
-        Rpc_ShootSFX();
+        Rpc_EmptySFX();
     }
 
     // Stop any shoot coroutine.
@@ -182,6 +182,16 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
         {
             StopCoroutine(COShootLoop);
         }
+    }
+
+    private void ShootSingle()
+    {
+        if (currentAmmunition == 0)
+        {
+            Rpc_EmptySFX();
+            return;
+        }
+        Shoot();
     }
 
     // Main shoot method.
@@ -220,7 +230,8 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     [Command]
     private void Cmd_ChangeFireMode()
     {
-        if (fireMode == fireModes[fireModes.Length-1])
+        StopShootLoop();
+        if (fireModeIndex == fireModes.Length-1)
         {
             fireModeIndex = 0;
             fireMode = fireModes[fireModeIndex];
