@@ -21,7 +21,10 @@ public class PlayerSetup : NetworkBehaviour
     [Header("References from player setup")]
     [SerializeField] private Equipment playerEquipment;
 
+    [Header("References")]
+    [SerializeField] private Transform playerHandsParent;
 
+    [Space]
     [SerializeField] private GameObject[] disableIfPlayer;
     [SerializeField] private GameObject[] disableIfNotPlayer;
     [SerializeField] private GameObject[] enableIfPlayer;
@@ -84,8 +87,8 @@ public class PlayerSetup : NetworkBehaviour
     {
         GameObject GOPlayerHands = Instantiate(playerHands);
         NetworkServer.Spawn(GOPlayerHands, connectionToClient);
-        GOPlayerHands.transform.SetParent(transform);
-        GOPlayerHands.transform.localPosition = new Vector3(0.25f, 1.6f, 0.6f);
+        GOPlayerHands.transform.SetParent(playerHandsParent);
+        GOPlayerHands.transform.localPosition = new Vector3(0.25f, 0f, 0.6f);
         playerEquipment.playerHands = GOPlayerHands.transform;
     }
 
