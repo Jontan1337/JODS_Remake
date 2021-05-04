@@ -414,11 +414,13 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         stoppedMoving = true;
         navAgent.isStopped = true;
         navAgent.ResetPath();
+        print("stop");
     }
     private void ResumeMovement()
     {
         navAgent.speed = movementSpeed;
         stoppedMoving = false;
+        print("resume");
     }
 
     private IEnumerator MovementAnimationCoroutine()

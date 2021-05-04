@@ -47,7 +47,8 @@ public class ObjectPool : MonoBehaviour
             //If the tag already exists within the pool dictionary, do not add this pool.
             if (poolDictionary.ContainsKey(tag))
             {
-                Debug.LogWarning("Pool with tag " + tag + " already exists, cannot have multiple pools with the same tag");
+                Debug.LogWarning($"Trying to add new pool with tag {tag}.");
+                Debug.LogWarning($"Pool with tag {tag} already exists, cannot have multiple pools with the same tag.");
                 continue;
             }
 
