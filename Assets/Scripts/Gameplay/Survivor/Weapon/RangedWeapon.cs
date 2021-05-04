@@ -21,7 +21,15 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     [SerializeField]
     private float range = 1000f;
     [SerializeField]
-    private float fireRate = 0f;
+    private FireModes fireMode = FireModes.Single;
+    [SerializeField]
+    private FireModes[] fireModes;
+    [SerializeField]
+    private int fireModeIndex = 0;
+    [SerializeField]
+    private int burstBulletAmount = 3;
+    [SerializeField]
+    private float fireRate = 600f;
     [SerializeField]
     private float fireInterval = 0f;
     [SerializeField]
@@ -34,10 +42,6 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     private int extraAmmunition = 20;
     [SerializeField]
     private int maxExtraAmmunition = 20;
-    [SerializeField]
-    private FireModes fireMode = FireModes.Single;
-    [SerializeField]
-    private FireModes[] fireModes;
 
     [Header("Game details")]
     [SerializeField, SyncVar]
@@ -69,7 +73,7 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     [SerializeField, SyncVar]
     private bool isInteractable = true;
 
-    private Coroutine COShootingLoop;
+    private Coroutine COShootLoop;
     private ParticleSystem muzzleParticle;
 
     public bool IsInteractable {
@@ -87,6 +91,10 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     {
         fireRate = Mathf.Clamp(fireRate, 0.01f, float.MaxValue);
         fireInterval = 60 / fireRate;
+        foreach (int modeIndex in fireModes) {
+            if ((int)fireMode == modeIndex) break;
+            fireModeIndex++;
+        }
         if (muzzleFlash != null)
         {
             if (muzzleFlash.TryGetComponent(out ParticleSystem particle))
@@ -112,7 +120,7 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     }
 
     private void OnShoot(InputAction.CallbackContext context) => Cmd_Shoot();
-    private void OnStopShoot(InputAction.CallbackContext context) => StopShootingLoop();
+    private void OnStopShoot(InputAction.CallbackContext context) => StopShootLoop();
     private void OnReload(InputAction.CallbackContext context) => Cmd_Reload();
     private void OnChangeFireMode(InputAction.CallbackContext context) => Cmd_ChangeFireMode();
 
@@ -122,53 +130,81 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     [Command]
     private void Cmd_Shoot()
     {
-        COShootingLoop = StartCoroutine(ShootingLoop());
-    }
-
-    private IEnumerator ShootingLoop()
-    {
-        while (true)
+        switch (fireMode)
         {
-            if (currentAmmunition == 0)
-            {
-                //audioSource.PlayOneShot(emptySound, volume);
-
-                yield return new WaitForSeconds(fireInterval);
-            }
-            else
-            {
-                Rpc_ShootFX(true);
-                Ray shootRay = new Ray(bulletRayOrigin.position, transform.forward);
-                RaycastHit rayHit;
-                if (Physics.Raycast(shootRay, out rayHit, range, ~ignoreLayer))
-                {
-                    rayHit.collider.GetComponent<IDamagable>()?.Svr_Damage(damage);
-                }
-
-                muzzleParticle.Emit(15);
-                currentAmmunition -= bulletsPerShot;
-
-                yield return new WaitForSeconds(fireInterval);
-            }
+            case FireModes.Single:
+            case FireModes.SemiAuto:
+                Shoot();
+                break;
+            case FireModes.Burst:
+                COShootLoop = StartCoroutine(BurstShootLoop());
+                break;
+            case FireModes.FullAuto:
+                COShootLoop = StartCoroutine(FullAutoShootLoop());
+                break;
         }
     }
 
-    private void StopShootingLoop()
+    private IEnumerator BurstShootLoop()
+    {
+        int firedRounds = 0;
+        // The loop will keep going, as long as there
+        // are bullets in the magazine and burst hasn't finished.
+        while (currentAmmunition > 0 && firedRounds < burstBulletAmount)
+        {
+            Shoot();
+            firedRounds++;
+            yield return new WaitForSeconds(fireInterval);
+        }
+        if (currentAmmunition == 0)
+        {
+            Rpc_EmptySFX();
+        }
+    }
+    private IEnumerator FullAutoShootLoop()
+    {
+        // The loop will keep going, as long as there
+        // are bullets in the magazine.
+        while (currentAmmunition > 0)
+        {
+            Shoot();
+            yield return new WaitForSeconds(fireInterval);
+        }
+        // If the magazine runs out of bullets, this will be called.
+        Rpc_ShootSFX();
+    }
+
+    // Stop any shoot coroutine.
+    private void StopShootLoop()
     {
         Debug.Log("Stopped shooting", this);
-        if (COShootingLoop != null)
+        if (COShootLoop != null)
         {
-            StopCoroutine(COShootingLoop);
+            StopCoroutine(COShootLoop);
         }
     }
+
+    // Main shoot method.
+    private void Shoot()
+    {
+        Rpc_ShootSFX();
+        Ray shootRay = new Ray(bulletRayOrigin.position, transform.forward);
+        RaycastHit rayHit;
+        if (Physics.Raycast(shootRay, out rayHit, range, ~ignoreLayer))
+        {
+            rayHit.collider.GetComponent<IDamagable>()?.Svr_Damage(damage);
+        }
+
+        muzzleParticle.Emit(15);
+        currentAmmunition -= bulletsPerShot;
+    }
+
 
     // Later this should be called by a reload animation event.
     [Command]
     private void Cmd_Reload()
     {
         Debug.Log("Reload!", this);
-        int neededAmmunition = 0;
-
         if (extraAmmunition > (maxCurrentAmmunition - currentAmmunition))
         {
             extraAmmunition = extraAmmunition - (maxCurrentAmmunition - currentAmmunition);
@@ -179,21 +215,19 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
             currentAmmunition = currentAmmunition + extraAmmunition;
             extraAmmunition = 0;
         }
-
-        Debug.Log(neededAmmunition);
-        Debug.Log(extraAmmunition);
     }
 
     [Command]
     private void Cmd_ChangeFireMode()
     {
-        if ((int)fireMode == fireModes.Length)
+        if (fireMode == fireModes[fireModes.Length-1])
         {
-            fireMode = fireModes[0];
+            fireModeIndex = 0;
+            fireMode = fireModes[fireModeIndex];
         }
         else
         {
-            fireMode = fireModes[(int)fireMode+1];
+            fireMode = fireModes[++fireModeIndex];
         }
     }
 
@@ -223,16 +257,21 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     #region Clients
 
     [ClientRpc]
-    private void Rpc_ShootFX(bool hasAmmo)
+    private void Rpc_ShootSFX()
     {
-        if (hasAmmo)
-        {
-            sfxPlayer.PlaySFX(shootSound);
-        }
-        else
-        {
-            sfxPlayer.PlaySFX(emptySound);
-        }
+        sfxPlayer.PlaySFX(shootSound);
+        // Implement partyicle efect.
+    }
+    [ClientRpc]
+    private void Rpc_EmptySFX()
+    {
+        sfxPlayer.PlaySFX(emptySound);
+        // Implement partyicle efect.
+    }
+    [ClientRpc]
+    private void Rpc_ChangeFireModeSFX()
+    {
+        sfxPlayer.PlaySFX(emptySound);
         // Implement partyicle efect.
     }
 
