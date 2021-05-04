@@ -859,6 +859,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     {
         if (!isDead)
         {
+            print("dead");
             isDead = true; //Bool used to ensure this only happens once
 
             //Stop all coroutines
@@ -868,7 +869,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
             navAgent.isStopped = true;
 
             //Activate Ragdoll effect, or death animation
-            animator.SetBool("Die", true);
+            animator.SetTrigger("Die");
 
             //Invoke this method after 5 seconds.
             Invoke(nameof(PostDeath), 5f);
