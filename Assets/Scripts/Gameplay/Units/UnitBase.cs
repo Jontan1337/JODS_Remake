@@ -861,7 +861,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     {
         if (!isDead)
         {
-            print("dead");
             isDead = true; //Bool used to ensure this only happens once
 
             //Stop all coroutines
@@ -874,12 +873,17 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
             animator.SetTrigger("Die");
 
             //Invoke this method after 5 seconds.
-            Invoke(nameof(PostDeath), 5f);
+            StartCoroutine(PostDeath());
         }
     }
 
-    private void PostDeath() 
+    private IEnumerator PostDeath() 
     {
+        yield return new WaitForSeconds(3);
+
+        select.unitMat.SetInt("_Dissolve", 1);
+
+        yield return new WaitForSeconds(3);
         //Either go underground slowly, or dissolve effect?
         Svr_Destroy();
     }
