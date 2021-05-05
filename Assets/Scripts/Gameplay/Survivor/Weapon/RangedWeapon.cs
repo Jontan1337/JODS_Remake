@@ -4,7 +4,8 @@ using UnityEngine.InputSystem;
 using System.Collections;
 using System;
 
-[RequireComponent(typeof(PhysicsToggler), typeof(Rigidbody), typeof(BoxCollider))]
+[RequireComponent(typeof(PhysicsToggler), typeof(Rigidbody), typeof(BoxCollider)),
+ RequireComponent(typeof(AuthorityController))]
 public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBindable
 {
     [Header("Settings")]

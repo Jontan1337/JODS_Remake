@@ -170,10 +170,10 @@ MonoBehaviour:
   range: 0
   fireMode: 0
   fireModes: 
-  fireModeIndex: 0
   burstBulletAmount: 3
   fireRate: 0.1
   fireInterval: 600
+  fireCooldownInterval: 0
   bulletsPerShot: 1
   currentAmmunition: 10
   maxCurrentAmmunition: 10
@@ -1989,10 +1989,10 @@ MonoBehaviour:
   range: 0
   fireMode: 0
   fireModes: 
-  fireModeIndex: 0
   burstBulletAmount: 3
   fireRate: 0.1
   fireInterval: 600
+  fireCooldownInterval: 0
   bulletsPerShot: 1
   currentAmmunition: 10
   maxCurrentAmmunition: 10
@@ -2277,10 +2277,10 @@ MonoBehaviour:
   range: 0
   fireMode: 0
   fireModes: 
-  fireModeIndex: 0
   burstBulletAmount: 3
   fireRate: 0.1
   fireInterval: 600
+  fireCooldownInterval: 0
   bulletsPerShot: 1
   currentAmmunition: 10
   maxCurrentAmmunition: 10
@@ -2491,10 +2491,10 @@ MonoBehaviour:
   range: 0
   fireMode: 0
   fireModes: 
-  fireModeIndex: 0
   burstBulletAmount: 3
   fireRate: 160
   fireInterval: 0.375
+  fireCooldownInterval: 0
   bulletsPerShot: 1
   currentAmmunition: 10
   maxCurrentAmmunition: 10
@@ -3531,10 +3531,10 @@ MonoBehaviour:
   range: 0
   fireMode: 0
   fireModes: 
-  fireModeIndex: 0
   burstBulletAmount: 3
   fireRate: 0.1
   fireInterval: 600
+  fireCooldownInterval: 0
   bulletsPerShot: 1
   currentAmmunition: 10
   maxCurrentAmmunition: 10
@@ -5100,10 +5100,10 @@ MonoBehaviour:
   range: 0
   fireMode: 0
   fireModes: 
-  fireModeIndex: 0
   burstBulletAmount: 3
   fireRate: 0.1
   fireInterval: 600
+  fireCooldownInterval: 0
   bulletsPerShot: 1
   currentAmmunition: 10
   maxCurrentAmmunition: 10
@@ -5389,21 +5389,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AssetId
       value: 01c4a3d1834a449439a57ffa8ea61184
-      objectReference: {fileID: 0}
-    - target: {fileID: 8677567993216096718, guid: 01c4a3d1834a449439a57ffa8ea61184,
-        type: 3}
-      propertyPath: fireModes.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 8677567993216096718, guid: 01c4a3d1834a449439a57ffa8ea61184,
-        type: 3}
-      propertyPath: fireModeIndex
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8677567993216096718, guid: 01c4a3d1834a449439a57ffa8ea61184,
-        type: 3}
-      propertyPath: fireModes.Array.data[2]
-      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 01c4a3d1834a449439a57ffa8ea61184, type: 3}
