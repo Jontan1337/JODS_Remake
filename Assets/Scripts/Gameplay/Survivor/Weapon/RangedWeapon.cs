@@ -25,8 +25,6 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     [SerializeField]
     private FireModes[] fireModes;
     [SerializeField]
-    private int fireModeIndex = 0;
-    [SerializeField]
     private int burstBulletAmount = 3;
     [SerializeField]
     private float fireRate = 600f;
@@ -77,8 +75,12 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
 
     private Coroutine COShootLoop;
     private Coroutine COStopShootLoop;
+
     private ParticleSystem muzzleParticle;
+
     private bool canShoot = true;
+
+    private int fireModeIndex = 0;
 
     public bool IsInteractable {
         get => isInteractable;
@@ -136,7 +138,7 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     private void Cmd_Shoot()
     {
         if (!canShoot) return;
-
+        
         switch (fireMode)
         {
             case FireModes.Single:
@@ -146,42 +148,49 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
             case FireModes.Burst:
                 if (COShootLoop == null)
                 {
-                    StartCoroutine(BurstShootLoop());
+                    COShootLoop = StartCoroutine(IEBurstShootLoop());
                 }
                 break;
             case FireModes.FullAuto:
                 if (COShootLoop == null)
                 {
-                    COShootLoop = StartCoroutine(FullAutoShootLoop());
+                    COShootLoop = StartCoroutine(IEFullAutoShootLoop());
                 }
                 break;
         }
     }
 
-    private IEnumerator BurstShootLoop()
+    private IEnumerator IEBurstShootLoop()
     {
         int firedRounds = 0;
         // The loop will keep going, as long as there
         // are bullets in the magazine and burst hasn't finished.
         while (currentAmmunition > 0 && firedRounds < burstBulletAmount)
         {
-            Shoot();
-            firedRounds++;
-            yield return new WaitForSeconds(fireInterval);
+            if (canShoot)
+            {
+                Shoot();
+                firedRounds++;
+            }
+            yield return null;
         }
         if (currentAmmunition == 0)
         {
             Rpc_EmptySFX();
         }
+        COShootLoop = null;
     }
-    private IEnumerator FullAutoShootLoop()
+    private IEnumerator IEFullAutoShootLoop()
     {
         // The loop will keep going, as long as there
         // are bullets in the magazine.
         while (currentAmmunition > 0)
         {
-            Shoot();
-            yield return new WaitForSeconds(fireInterval);
+            if (canShoot)
+            {
+                Shoot();
+            }
+            yield return null;
         }
         // If the magazine runs out of bullets, this will be called.
         Rpc_EmptySFX();
@@ -198,32 +207,32 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     }
 
     [Command]
+    // Stop any shoot coroutine.
     private void Cmd_StopShoot()
     {
-        if (COStopShootLoop == null)
-        {
-            COStopShootLoop = StartCoroutine(IEStopShoot());
-        }
-    }
-
-    // Stop any shoot coroutine.
-    private IEnumerator IEStopShoot()
-    {
-        canShoot = false;
-        if (COShootLoop != null)
+        // Stop shoot loops from firing except burst mode because
+        // it needs to shoot all burst rounds before stopping.
+        if (COShootLoop != null && fireMode != FireModes.Burst)
         {
             StopCoroutine(COShootLoop);
             COShootLoop = null;
         }
+    }
+
+    // A cooldown to simulate the time it takes
+    // for a bullet to get chambered.
+    private IEnumerator IEShootCooldown()
+    {
+        canShoot = false;
         yield return new WaitForSeconds(fireInterval);
         canShoot = true;
-        COStopShootLoop = null;
     }
 
 
     // Main shoot method.
     private void Shoot()
     {
+        StartCoroutine(IEShootCooldown());
         Rpc_ShootSFX();
         Ray shootRay = new Ray(bulletRayOrigin.position, transform.forward);
         RaycastHit rayHit;
@@ -257,7 +266,7 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     [Command]
     private void Cmd_ChangeFireMode()
     {
-        StartCoroutine(IEStopShoot());
+        Cmd_StopShoot();
         if (fireModeIndex == fireModes.Length-1)
         {
             fireModeIndex = 0;
@@ -267,6 +276,7 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
         {
             fireMode = fireModes[++fireModeIndex];
         }
+        Rpc_ChangeFireModeSFX();
     }
 
     [Server]
