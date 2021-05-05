@@ -881,10 +881,14 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     {
         yield return new WaitForSeconds(3);
 
+        //Dissolve Effect
+        //Enable the Dissolve Boolean on the material, which allows for the material to do the dissolve effect
+        //Start the DissolveCoroutine which slowly dissolves over a set amount of time.
         select.unitMat.SetInt("_Dissolve", 1);
+        StartCoroutine(DissolveCoroutine(2)); //Dissolve over 2 seconds
 
         yield return new WaitForSeconds(3);
-        //Either go underground slowly, or dissolve effect?
+        //After 3 seconds, tell the server to destroy the object/unit
         Svr_Destroy();
     }
     [Server]
@@ -898,8 +902,9 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     [Server]
     public void Svr_Damage(int damage)
     {
-        health -= damage;
+        if (isDead) return;
 
+        health -= damage;
         
         animator.SetTrigger("Hit");
 
@@ -1026,6 +1031,19 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     }
 
     public void Trap() { /*trapped = !trapped;*/ }
+
+
+    private IEnumerator DissolveCoroutine(float timeToDissolve)
+    {
+        float dissolveTime = 0;
+        while (dissolveTime < timeToDissolve)
+        {
+            yield return new WaitForEndOfFrame();
+            dissolveTime += Time.deltaTime;
+            select.unitMat.SetFloat("_DissolveAmount", dissolveTime / timeToDissolve);
+        }
+
+    }
 
     #endregion
 

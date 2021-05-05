@@ -13,14 +13,11 @@ public class ZombieStronk : UnitBase, IZombie, IControllable
     public int InfectionAmount { get => infectionAmount; set => infectionAmount = value; }
 
     [Header("Stronk")]
-    [SerializeField] private Mesh[] weaponMeshes = null;
-    [SerializeField] private GameObject weapon = null;
     public ParticleSystem slamFX;
 
     public override void Start()
     {
         base.Start();
-        weapon.GetComponent<MeshFilter>().mesh = weaponMeshes[Random.Range(0, weaponMeshes.Length)];
     }
 
     public override void Attack()

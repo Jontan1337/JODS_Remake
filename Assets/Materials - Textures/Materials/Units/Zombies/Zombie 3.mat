@@ -24,6 +24,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _BaseTexture:
+        m_Texture: {fileID: 2800000, guid: 8406c29d2c0d90f4e8b4f854d5266f7c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -32,12 +36,20 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _EmissionTexture:
+        m_Texture: {fileID: 2800000, guid: d4b809e7ca817c942aeb55873f300596, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicTexture:
+        m_Texture: {fileID: 2800000, guid: f9a78f4d9f53ed64a8b47d95ea118d7d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -54,9 +66,11 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - Vector1_3C478F0C: 0
+    - Vector1_3E964183: 0
     - Vector1_4198C3BC: 0.1
-    - Vector1_81E6CC42: 0
+    - Vector1_81E6CC42: 1
     - Vector1_A90BE872: 1.8
+    - Vector1_BEE7531D: 0.05
     - Vector1_D0268D9F: 0
     - Vector1_DE82D28D: 68.4
     - _AlphaClip: 0
@@ -64,6 +78,9 @@ Material:
     - _BumpScale: 1
     - _Cull: 2
     - _Cutoff: 0.5
+    - _Dissolve: 0
+    - _DissolveAmount: 0
+    - _DissolveSize: 0.05
     - _DstBlend: 0
     - _EnvironmentReflections: 1
     - _GlossMapScale: 0
@@ -84,6 +101,7 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Dissolve_Color: {r: 0.5660378, g: 0, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _HighlightColor: {r: 1, g: 0.5019608, b: 0, a: 1}
     - _Highlight_Color: {r: 1, g: 0, b: 0, a: 1}
