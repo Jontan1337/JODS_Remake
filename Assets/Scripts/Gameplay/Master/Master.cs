@@ -185,33 +185,7 @@ public class Master : NetworkBehaviour
 
     private void Awake()
     {
-        // OI DIK'EDS, THIS DOES NOT WORK, BECAUSE IT DOESN'T GET AUTHORITY BY THE TIME THIS RUNS, SO IT WILL ALWAYS RETURN.
-        //if (!hasAuthority) return;
-        /*
-        //Get the Master Input Action Map
-        InputActionMap masterControls = controls.FindActionMap("Master");
-        masterControls.Enable();
 
-        //Main Input / Left Mouse basically
-        mainInput = masterControls.FindAction("Main");
-        mainInput.performed += OnMainInput;
-
-        //Alternate Input / Right Mouse basically
-        altInput = masterControls.FindAction("Alt");
-        altInput.performed += OnAltInput;
-
-        floorUpInput = masterControls.FindAction("Change Floor Up");
-        floorUpInput.performed += context =>
-        {
-            ChangeFloor(true);
-        };
-        
-        floorDownInput = masterControls.FindAction("Change Floor Down");
-        floorDownInput.performed += context =>
-        {
-            ChangeFloor(false);
-        };
-        */
     }
 
     private void OnEnable()
@@ -229,6 +203,10 @@ public class Master : NetworkBehaviour
         //Ctrl Input
         JODSInput.Controls.Master.Ctrl.started += ctx => CtrlButton(true);
         JODSInput.Controls.Master.Ctrl.canceled += ctx => CtrlButton(false);
+
+        //Alt Input
+        JODSInput.Controls.Master.Alt.started += ctx => AltButton(true);
+        JODSInput.Controls.Master.Alt.canceled += ctx => AltButton(false);
 
         // Unit Select Input
         JODSInput.Controls.Master.UnitSelecting.performed += ctx => ChooseUnit(Mathf.FloorToInt(ctx.ReadValue<float>() - 1));
@@ -253,6 +231,10 @@ public class Master : NetworkBehaviour
         JODSInput.Controls.Master.Ctrl.started -= ctx => CtrlButton(true);
         JODSInput.Controls.Master.Ctrl.canceled -= ctx => CtrlButton(false);
 
+        //Alt Input
+        JODSInput.Controls.Master.Alt.started += ctx => AltButton(true);
+        JODSInput.Controls.Master.Alt.canceled += ctx => AltButton(false);
+
         // Unit Select Input
         JODSInput.Controls.Master.UnitSelecting.performed -= ctx => ChooseUnit(Mathf.FloorToInt(ctx.ReadValue<float>() - 1));
 
@@ -276,6 +258,7 @@ public class Master : NetworkBehaviour
 
     [SerializeField] private bool shift = false;
     [SerializeField] private bool ctrl = false;
+    [SerializeField] private bool alt = false;
     private void ShiftButton(bool down)
     {
         shift = down;
@@ -283,6 +266,16 @@ public class Master : NetworkBehaviour
     private void CtrlButton(bool down)
     {
         ctrl = down;
+    }
+    private void AltButton(bool down)
+    {
+        alt = down;
+        if (!inTopdownView)
+        {
+            //Change the cursor settings to be either visible or not visible
+            Cursor.lockState = down ? CursorLockMode.None : CursorLockMode.Locked;
+            Cursor.visible = down; //Visible in Topdown view mode, not visible in flying mode
+        }
     }
 
     public void SetMasterClass(MasterSO mClass)
@@ -295,6 +288,7 @@ public class Master : NetworkBehaviour
     #region Normal Mouse
     private void LMB()
     {
+        if (alt) return;
         if (EventSystem.current.IsPointerOverGameObject()) { return; }
         if (shift && !ctrl) { Shift_LMB(); return; }
         else if (ctrl && !shift) { Ctrl_LMB(); return; }
@@ -305,6 +299,7 @@ public class Master : NetworkBehaviour
     }
     private void RMB()
     {
+        if (alt) return;
         if (EventSystem.current.IsPointerOverGameObject()) { return; }
         if (shift && !ctrl) { Shift_RMB(); return; }
         else if (ctrl && !shift) { Ctrl_RMB(); return; }
