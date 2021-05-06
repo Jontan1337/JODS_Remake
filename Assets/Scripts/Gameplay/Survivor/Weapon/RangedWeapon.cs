@@ -89,7 +89,6 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     }
 
     public string ObjectName => gameObject.name;
-
     public string Name => weaponName;
     public GameObject Item => gameObject;
     public EquipmentType EquipmentType => equipmentType;
