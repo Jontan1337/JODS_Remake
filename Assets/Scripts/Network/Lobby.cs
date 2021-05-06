@@ -79,6 +79,7 @@ public class Lobby : NetworkManager
 
         MatchListing.AdvertiseServer();
 
+
         //GameObject newLobbySync = Instantiate(GOLobbySync);
         //newLobbySync.GetComponent<LobbySync>().lobbySeats = playerSeats;
         //NetworkServer.Spawn(newLobbySync);
@@ -192,12 +193,18 @@ public class Lobby : NetworkManager
         if (LobbySync.Instance.isServer)
         {
             NetworkServer.DisconnectAllConnections();
+            //for (int i = numPlayers-1; i >= 0; i--)
+            //{
+            //    Debug.Log($"Destroying player connection {roomPlayers[i].connectionToServer}");
+            //    NetworkServer.DestroyPlayerForConnection(roomPlayers[i].connectionToServer);
+            //}
+            MatchListing.StopDiscovery();
             Shutdown();
             print("Shutdown");
         }
         else
         {
-            singleton.StopClient();
+            StopClient();
         }
     }
 
@@ -206,8 +213,6 @@ public class Lobby : NetworkManager
         base.OnStopServer();
 
         print("OnStopServer");
-
-        //GetComponent<TelepathyTransport>().Shutdown();
 
         Destroy(LobbySync.Instance.gameObject);
         Destroy(gameObject);
