@@ -11,15 +11,14 @@ public class PlaceItem : NetworkBehaviour, IEquippable, IBindable, IInteractable
 	[SerializeField]
 	private UnityEvent OnPlaced;
 	[SerializeField]
-	private GameObject placeHolderPrefab;
+	private GameObject placeHolder;
 	[SerializeField]
 	private LayerMask ignoreLayer;
 
 	private LookController look;
 	private AuthorityController authController;
 	private bool isInteractable = true;
-	private GameObject placeHolder;
-	private bool placeholderActive = true;
+	public bool placeholderActive = true;
 
 
 	public string Name => throw new System.NotImplementedException();
@@ -32,13 +31,15 @@ public class PlaceItem : NetworkBehaviour, IEquippable, IBindable, IInteractable
 		set => isInteractable = value;
 	}
 	private void Start()
-	{		
+	{
 		authController = GetComponent<AuthorityController>();
 	}
 
 	// Called when item is picked up and ready to be placed
 	private void Equipped()
 	{
+		print(placeHolder);
+		placeHolder.SetActive(true);
 		look = GetComponentInParent<LookController>();
 		StartCoroutine(PlaceHolderActive());
 	}
@@ -46,13 +47,13 @@ public class PlaceItem : NetworkBehaviour, IEquippable, IBindable, IInteractable
 	public IEnumerator PlaceHolderActive()
 	{
 		RaycastHit hit;
-		placeHolder = Instantiate(placeHolderPrefab, gameObject.transform.position, transform.rotation);
 		while (placeholderActive)
 		{
-			Physics.Raycast(look.playerCamera.transform.position, look.playerCamera.transform.forward, out hit, 5f, ignoreLayer);
-			placeHolder.transform.position = hit.point;
-			print(hit.point);
-			print(hit.transform.name);
+			Physics.Raycast(look.playerCamera.transform.position, look.playerCamera.transform.forward, out hit, 5f, ~ignoreLayer);
+
+
+			placeHolder.transform.eulerAngles = new Vector3(0, transform.rotation.y, transform.rotation.z);
+			placeHolder.transform.position = new Vector3(hit.point.x, hit.point.y + (placeHolder.transform.localScale.y /1.99f), hit.point.z);
 			yield return null;
 		}
 	}
@@ -60,23 +61,40 @@ public class PlaceItem : NetworkBehaviour, IEquippable, IBindable, IInteractable
 	public void Place(GameObject thing)
 	{
 		RaycastHit hit;
-		if (Physics.Raycast(look.playerCamera.transform.position, look.playerCamera.transform.forward, out hit, 5f, ignoreLayer))
+		if (Physics.Raycast(look.playerCamera.transform.position, look.playerCamera.transform.forward, out hit, 5f, ~ignoreLayer))
 		{
-			//CmdPlaceItem(thing.name, placeHolder.transform.position, placeHolder.transform.rotation);
-			gameObject.transform.parent = null;
-			gameObject.transform.position = placeHolder.transform.position;
-			gameObject.transform.rotation = placeHolder.transform.rotation;
+			print(hit.transform.name);
+			transform.position = placeHolder.transform.position;
+			transform.rotation = placeHolder.transform.rotation;
+			transform.parent = null;
 			placeholderActive = false;
 			Destroy(placeHolder);
 
 		}
 	}
 
-	void CmdPlaceItem(string prefabName, Vector3 position, Quaternion rotation)
+	[ContextMenu("Create Placeholder")]
+	void CreatePlaceHolder()
 	{
-		gameObject.transform.parent = null;
-	}
+		GameObject placeHolderChildParentObject = new GameObject();
+		placeHolderChildParentObject.transform.SetParent(transform);
+		placeHolderChildParentObject.name = "PlaceholderParent";
+		placeHolderChildParentObject.AddComponent<ItemPlaceholder>();
+		placeHolderChildParentObject.AddComponent<BoxCollider>().isTrigger = true;
+		placeHolderChildParentObject.AddComponent<Rigidbody>().isKinematic = true;
 
+		MeshFilter[] childFilters = GetComponentsInChildren<MeshFilter>();
+		MeshRenderer[] childRenderes = GetComponentsInChildren<MeshRenderer>();
+		for (int i = 0; i < childFilters.Length; i++)
+		{
+			GameObject placeHolderChildObject = new GameObject();
+			placeHolderChildObject.transform.SetParent(placeHolderChildParentObject.transform);
+			placeHolderChildObject.AddComponent<MeshFilter>().sharedMesh = childFilters[i].sharedMesh;
+			placeHolderChildObject.AddComponent<MeshRenderer>().sharedMaterials = childRenderes[i].sharedMaterials;
+			placeHolderChildObject.transform.position = childFilters[i].transform.position;
+			placeHolderChildObject.name = childRenderes[i].name + "_Mesh";
+		}
+	}
 
 	public void Bind()
 	{
