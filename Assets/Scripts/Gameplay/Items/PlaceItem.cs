@@ -19,7 +19,7 @@ public class PlaceItem : NetworkBehaviour, IEquippable, IBindable, IInteractable
 	private AuthorityController authController;
 	private bool isInteractable = true;
 	private GameObject placeHolder;
-	public bool placeholderActive = true;
+	private bool placeholderActive = true;
 
 
 	public string Name => throw new System.NotImplementedException();
@@ -32,7 +32,7 @@ public class PlaceItem : NetworkBehaviour, IEquippable, IBindable, IInteractable
 		set => isInteractable = value;
 	}
 	private void Start()
-	{
+	{		
 		authController = GetComponent<AuthorityController>();
 	}
 
@@ -47,15 +47,12 @@ public class PlaceItem : NetworkBehaviour, IEquippable, IBindable, IInteractable
 	{
 		RaycastHit hit;
 		placeHolder = Instantiate(placeHolderPrefab, gameObject.transform.position, transform.rotation);
-		
-
-
-		placeHolder.transform.parent = gameObject.transform;
 		while (placeholderActive)
 		{
-			Physics.Raycast(look.playerCamera.transform.position, look.playerCamera.transform.forward, out hit, 5f, ~ignoreLayer);
-			print(hit.transform.name);
+			Physics.Raycast(look.playerCamera.transform.position, look.playerCamera.transform.forward, out hit, 5f, ignoreLayer);
 			placeHolder.transform.position = hit.point;
+			print(hit.point);
+			print(hit.transform.name);
 			yield return null;
 		}
 	}
@@ -65,7 +62,7 @@ public class PlaceItem : NetworkBehaviour, IEquippable, IBindable, IInteractable
 		RaycastHit hit;
 		if (Physics.Raycast(look.playerCamera.transform.position, look.playerCamera.transform.forward, out hit, 5f, ignoreLayer))
 		{
-			print(hit.transform.name);
+			//CmdPlaceItem(thing.name, placeHolder.transform.position, placeHolder.transform.rotation);
 			gameObject.transform.parent = null;
 			gameObject.transform.position = placeHolder.transform.position;
 			gameObject.transform.rotation = placeHolder.transform.rotation;
@@ -75,24 +72,11 @@ public class PlaceItem : NetworkBehaviour, IEquippable, IBindable, IInteractable
 		}
 	}
 
-	[ContextMenu("Create Placeholder")]
-	void CreatePlaceHolder()
+	void CmdPlaceItem(string prefabName, Vector3 position, Quaternion rotation)
 	{
-		GameObject placeHolderChildParentObject = new GameObject();
-		placeHolderChildParentObject.transform.SetParent(transform);
-		placeHolderChildParentObject.name = "PlaceholderParent";
-		MeshFilter[] childFilters = GetComponentsInChildren<MeshFilter>();
-		MeshRenderer[] childRenderes = GetComponentsInChildren<MeshRenderer>();
-		for (int i = 0; i < childFilters.Length; i++)
-		{
-			GameObject placeHolderChildObject = new GameObject();
-			placeHolderChildObject.transform.SetParent(placeHolderChildParentObject.transform);
-			placeHolderChildObject.AddComponent<MeshFilter>().sharedMesh = childFilters[i].mesh;
-			placeHolderChildObject.AddComponent<MeshRenderer>().sharedMaterials = childRenderes[i].materials;
-			placeHolderChildObject.transform.position = childFilters[i].transform.position;
-			placeHolderChildObject.name = childRenderes[i].name + "_Mesh";
-		}
+		gameObject.transform.parent = null;
 	}
+
 
 	public void Bind()
 	{

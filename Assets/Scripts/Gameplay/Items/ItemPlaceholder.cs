@@ -8,14 +8,10 @@ public class ItemPlaceholder : MonoBehaviour
     public Material cannotPlace;
     public MeshRenderer[] renderers;
     public bool obstructed;
-
-
     // Start is called before the first frame update
     void Start()
     {
-        gameObject.GetComponent<Rigidbody>().isKinematic = true;
         renderers = GetComponentsInChildren<MeshRenderer>(true);
-        
         foreach (MeshRenderer r in renderers)
         {
             var mats = r.materials;
