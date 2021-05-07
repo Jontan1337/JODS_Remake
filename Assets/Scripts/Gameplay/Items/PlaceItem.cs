@@ -53,7 +53,7 @@ public class PlaceItem : NetworkBehaviour, IEquippable, IBindable, IInteractable
 
 
 			placeHolder.transform.eulerAngles = new Vector3(0, transform.rotation.y, transform.rotation.z);
-			placeHolder.transform.position = new Vector3(hit.point.x, hit.point.y + (placeHolder.transform.localScale.y /1.99f), hit.point.z);
+			placeHolder.transform.position = new Vector3(hit.point.x, 0.01f, hit.point.z);
 			yield return null;
 		}
 	}
@@ -81,6 +81,8 @@ public class PlaceItem : NetworkBehaviour, IEquippable, IBindable, IInteractable
 		placeHolderChildParentObject.name = "PlaceholderParent";
 		placeHolderChildParentObject.AddComponent<ItemPlaceholder>();
 		placeHolderChildParentObject.AddComponent<BoxCollider>().isTrigger = true;
+		placeHolderChildParentObject.GetComponent<BoxCollider>().size = GetComponent<BoxCollider>().size;
+		placeHolderChildParentObject.GetComponent<BoxCollider>().center = GetComponent<BoxCollider>().center;
 		placeHolderChildParentObject.AddComponent<Rigidbody>().isKinematic = true;
 
 		MeshFilter[] childFilters = GetComponentsInChildren<MeshFilter>();
