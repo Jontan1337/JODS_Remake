@@ -33,24 +33,7 @@ public class Master_TopdownController : MonoBehaviour
 
 
         //Default floor stuff
-
-        //Get all floors in level
-        amountOfFloors = GameObject.FindGameObjectsWithTag("Floor").Length;
-        Debug.Log($"There are {amountOfFloors} floors on this map");
-
-        //Instantiate floor indicators for each floor on the map
-        for (int i = 0; i < amountOfFloors; i++)
-        {
-            floorIndicators.Add(Instantiate(floorIndicatorPrefab, floorUIContainer).GetComponent<FloorIndicator>());
-        }
-
-        //Start on a random floor
-        int rndFloor = Random.Range(1, amountOfFloors + 1);
-        currentFloor = rndFloor;
-        Debug.Log($"Current floor : {currentFloor}");
-
-        ChangeFloor();
-
+        FloorSetup();
 
 
         //Input stuff
@@ -89,6 +72,32 @@ public class Master_TopdownController : MonoBehaviour
     }
     #endregion
     #region Floor Navigation
+
+    void FloorSetup()
+    {
+        WorldSettings worldSettings = WorldSettings.instance;
+
+        //Get amount of floors from WorldSettings. If there is no worldSettings then assign with a value of 1.
+        amountOfFloors = worldSettings == null ? 1 : worldSettings.amountOfFloors;
+
+        Debug.Log($"There are {amountOfFloors} floors on this map");
+
+
+
+        //Instantiate floor indicators for each floor on the map
+        for (int i = 0; i < amountOfFloors; i++)
+        {
+            floorIndicators.Add(Instantiate(floorIndicatorPrefab, floorUIContainer).GetComponent<FloorIndicator>());
+        }
+
+        //Start on a random floor
+        int rndFloor = Random.Range(1, amountOfFloors + 1);
+        currentFloor = rndFloor;
+        Debug.Log($"Current floor : {currentFloor}");
+
+        ChangeFloor();
+    }
+
     void ChangeFloor()
     {
         for (int i = 0; i < floorIndicators.Count; i++)
