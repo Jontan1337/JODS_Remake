@@ -4,12 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Mirror;
+using System;
 
 public class Lobby : NetworkManager
 {
     [Header("References")]
     public Transform matchListContent;
     public InputField matchNameInputField;
+    public InputField ipAddressInputField;
     public GameObject startButton;
     public GameObject disconnectButton;
     public GameObject MMPanel;
@@ -71,6 +73,17 @@ public class Lobby : NetworkManager
         mainCamera.SetActive(false);
         lobbyCamera.SetActive(true);
         singleton.StartClient(uri);
+    }
+    public void MMJoinMatch()
+    {
+        string ipAddress = ipAddressInputField.text;
+        LobbyPanel.SetActive(true);
+        MMPanel.SetActive(false);
+        MainMenuPanel.SetActive(false);
+        mainCamera.SetActive(false);
+        lobbyCamera.SetActive(true);
+        UriBuilder uriBuilder = new UriBuilder("tcp4", ipAddress);
+        singleton.StartClient(uriBuilder.Uri);
     }
 
     public void MMCreateMatch()
@@ -256,7 +269,7 @@ public class Lobby : NetworkManager
         // PICK RANDOM PLAYER TO BECOME MASTER (FROM THE MASTERS LIST)
         if (masters.Count != 0)
         {
-            PickMaster(masters[Random.Range(0, masters.Count)]);
+            PickMaster(masters[UnityEngine.Random.Range(0, masters.Count)]);
         }
         startButton.SetActive(false);
         Invoke(nameof(SwitchScene), 1f);
