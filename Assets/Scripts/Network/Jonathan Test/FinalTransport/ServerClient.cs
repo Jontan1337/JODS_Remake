@@ -7,14 +7,14 @@ using System;
 
 namespace FinalNetwork
 {
-    public class Client : MonoBehaviour
+    public class ServerClient : MonoBehaviour
     {
         public static int dataBufferSize = 4096;
         public int id;
         public TCP tcp;
         public UDP udp;
 
-        public Client(int _clientId)
+        public ServerClient(int _clientId)
         {
             id = _clientId;
             tcp = new TCP(id);

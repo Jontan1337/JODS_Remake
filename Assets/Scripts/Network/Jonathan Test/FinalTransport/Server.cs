@@ -11,7 +11,7 @@ namespace FinalNetwork
     {
         public static int MaxPlayers { get; private set; }
         public static int Port { get; private set; }
-        public static Dictionary<int, Client> clients = new Dictionary<int, Client>();
+        public static Dictionary<int, ServerClient> clients = new Dictionary<int, ServerClient>();
         public delegate void PacketHandler(int _fromClient, Packet _packet);
         public static Dictionary<int, PacketHandler> packetHandlers;
 
@@ -118,7 +118,7 @@ namespace FinalNetwork
         {
             for (int i = 1; i <= MaxPlayers; i++)
             {
-                clients.Add(i, new Client(i));
+                clients.Add(i, new ServerClient(i));
             }
 
             packetHandlers = new Dictionary<int, PacketHandler>()

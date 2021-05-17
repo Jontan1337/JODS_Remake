@@ -19,13 +19,11 @@ namespace FinalNetwork
         [SerializeField]
         private static int serverTicks = 60;
 
-        private static Client myClient;
-
         public static int ServerTicks { get => serverTicks; }
 
         public override bool Available()
         {
-            throw new NotImplementedException();
+            return Application.platform != RuntimePlatform.WebGLPlayer;
         }
 
         private void Awake()
@@ -37,9 +35,11 @@ namespace FinalNetwork
         public override void ClientConnect(string address)
         {
             int newClientId = Server.clients.Count + 1;
-            myClient = new Client(newClientId);
-            TcpClient socket = new TcpClient();
-            myClient.tcp.Connect(socket);
+            Client.instance.ip = address;
+            Client.instance.ConnectToServer();
+            //myClient = new Client(newClientId);
+            //TcpClient socket = new TcpClient();
+            //myClient.tcp.Connect(socket);
         }
 
         public override bool ClientConnected()
@@ -49,15 +49,17 @@ namespace FinalNetwork
 
         public override void ClientDisconnect()
         {
-            if (myClient != null)
+            if (Client.instance != null)
             {
-                myClient.Disconnect();
+                Server.clients[Client.instance.myId].Disconnect();
             }
         }
 
         public override void ClientSend(int channelId, ArraySegment<byte> segment)
         {
-            throw new NotImplementedException();
+            Packet packet = new Packet();
+            packet.Write(segment.Array);
+            Client.instance.udp.SendData(packet);
         }
 
         #endregion
@@ -72,7 +74,15 @@ namespace FinalNetwork
 
         public override bool ServerDisconnect(int connectionId)
         {
-            throw new NotImplementedException();
+            if (Server.clients[connectionId] = null)
+            {
+                Server.clients[connectionId].Disconnect();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public override string ServerGetClientAddress(int connectionId)
