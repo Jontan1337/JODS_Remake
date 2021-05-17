@@ -34,25 +34,19 @@ namespace FinalNetwork
         #region Client
         public override void ClientConnect(string address)
         {
-            int newClientId = Server.clients.Count + 1;
-            Client.instance.ip = address;
-            Client.instance.ConnectToServer();
-            //myClient = new Client(newClientId);
-            //TcpClient socket = new TcpClient();
-            //myClient.tcp.Connect(socket);
+            //int newClientId = Server.clients.Count + 1;
+            //Client.instance.ip = address;
+            //Client.instance.ConnectToServer();
         }
 
         public override bool ClientConnected()
         {
-            throw new NotImplementedException();
+            return Client.instance.IsConnected;
         }
 
         public override void ClientDisconnect()
         {
-            if (Client.instance != null)
-            {
-                Server.clients[Client.instance.myId].Disconnect();
-            }
+            Client.instance.tcp.Disconnect();
         }
 
         public override void ClientSend(int channelId, ArraySegment<byte> segment)
@@ -63,7 +57,6 @@ namespace FinalNetwork
         }
 
         #endregion
-
 
         #region Server
 

@@ -13074,7 +13074,7 @@ MonoBehaviour:
   secretHandshake: 4646773027833140141
   serverBroadcastListenPort: 47777
   ActiveDiscoveryInterval: 3
-  transport: {fileID: 0}
+  transport: {fileID: 7107372927296446057}
   OnServerFound:
     m_PersistentCalls:
       m_Calls:
@@ -14465,12 +14465,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 7107372927296446056}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7bc80f42c1f47a4b87e5b52a2c46fb2, type: 3}
+  m_Script: {fileID: 11500000, guid: c7424c1070fad4ba2a7a96b02fbeb4bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxPlayers: 4
-  ipaddress: 
-  port: 26950
+  port: 7777
+  NoDelay: 1
+  serverMaxMessageSize: 16384
+  serverMaxReceivesPerTick: 10000
+  clientMaxMessageSize: 16384
+  clientMaxReceivesPerTick: 1000
 --- !u!114 &7107372927296446058
 MonoBehaviour:
   m_ObjectHideFlags: 0

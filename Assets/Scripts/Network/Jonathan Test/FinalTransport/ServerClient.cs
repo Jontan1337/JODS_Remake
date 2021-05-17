@@ -191,7 +191,7 @@ namespace FinalNetwork
 
         public void Disconnect()
         {
-            Debug.Log($"{tcp.socket.Client.RemoteEndPoint} has disconnected.");
+            //Debug.Log($"{tcp.socket.Client.RemoteEndPoint} has disconnected.");
 
             tcp.Disconnect();
             udp.Disconnect();

@@ -131,7 +131,6 @@ namespace FinalNetwork
 
         public static void Stop()
         {
-            DisconnectAllClients();
             tcpListener.Stop();
             udpListener.Close();
         }

@@ -20,6 +20,8 @@ public class Client : MonoBehaviour
     private delegate void PacketHandler(Packet packet);
     private static Dictionary<int, PacketHandler> packetHandlers;
 
+    public bool IsConnected { get => isConnected; }
+
     private void Awake()
     {
         if (instance == null)
@@ -174,7 +176,7 @@ public class Client : MonoBehaviour
             return false;
         }
 
-        private void Disconnect()
+        public void Disconnect()
         {
             instance.Disconnect();
 
@@ -263,7 +265,7 @@ public class Client : MonoBehaviour
             });
         }
         
-        private void Disconnect()
+        public void Disconnect()
         {
             instance.Disconnect();
 

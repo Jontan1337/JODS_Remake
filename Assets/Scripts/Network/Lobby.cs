@@ -65,7 +65,7 @@ public class Lobby : NetworkManager
         MainMenuPanel.SetActive(true);
     }
 
-    public void MMJoinMatch(System.Uri uri)
+    public void MMJoinMatch(Uri uri)
     {
         LobbyPanel.SetActive(true);
         MMPanel.SetActive(false);
