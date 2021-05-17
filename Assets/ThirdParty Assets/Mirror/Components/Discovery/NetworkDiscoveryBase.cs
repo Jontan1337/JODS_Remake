@@ -236,7 +236,7 @@ namespace Mirror.Discovery
             try
             {
                 // Setup port
-                clientUdpClient = new UdpClient(serverBroadcastListenPort)
+                clientUdpClient = new UdpClient(7777)
                 {
                     EnableBroadcast = true,
                     MulticastLoopback = false
