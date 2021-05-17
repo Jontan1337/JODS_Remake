@@ -49,6 +49,9 @@ public class Lobby : NetworkManager
         if (isInitialized) return;
 
         Start();
+#if UNITY_SERVER
+        MatchListing.AdvertiseServer();
+#endif
         isInitialized = true;
 
         if (Instance != null)

@@ -10,7 +10,6 @@ public class MatchListing : NetworkDiscovery
     public Button CreateMatch;
     public Button RefreshList;
 
-    public ApiConnector connector;
     public Transform ListOfMatches = null;
     public GameObject SingleServerListItem = null;
     [SerializeField] private List<GameObject> discoveredServers = new List<GameObject>();
@@ -20,7 +19,6 @@ public class MatchListing : NetworkDiscovery
     {
         RefreshList.onClick.AddListener(delegate() { StartNetDiscovery(); } );
         OnServerFound.AddListener(delegate(ServerResponse response) { OnDiscoveredServer(response); });
-        //UnityEditor.Events.UnityEventTools.AddPersistentListener(OnServerFound, OnDiscoveredServer);
     }
 
     public void StartNetDiscovery()
@@ -31,7 +29,6 @@ public class MatchListing : NetworkDiscovery
         }
         discoveredServers.Clear();
         StartDiscovery();
-        //connector.ListServer.ClientApi.GetServerList();
     }
 
     public void OnDiscoveredServer(ServerResponse response)
