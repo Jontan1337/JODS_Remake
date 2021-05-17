@@ -13023,8 +13023,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7107372926057023628}
   - component: {fileID: 7107372926057023631}
-  - component: {fileID: 7107372926057023633}
-  - component: {fileID: 7107372926057023632}
   - component: {fileID: 7107372926057023630}
   m_Layer: 5
   m_Name: Online
@@ -13092,55 +13090,10 @@ MonoBehaviour:
         m_CallState: 2
   CreateMatch: {fileID: 7107372927925968404}
   RefreshList: {fileID: 7107372925998988659}
-  connector: {fileID: 0}
   ListOfMatches: {fileID: 7107372926176858247}
   SingleServerListItem: {fileID: 7355722686921229032, guid: 0b5c82561e7ae8b41bc7ff2be956dcc1,
     type: 3}
   discoveredServers: []
---- !u!114 &7107372926057023632
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7107372926057023629}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 88c37d3deca7a834d80cfd8d3cfcc510, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  networkDiscovery: {fileID: 7107372926057023633}
---- !u!114 &7107372926057023633
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7107372926057023629}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c761308e733c51245b2e8bb4201f46dc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  secretHandshake: 4406879841478387163
-  serverBroadcastListenPort: 47777
-  ActiveDiscoveryInterval: 3
-  transport: {fileID: 0}
-  OnServerFound:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7107372926057023632}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: OndiscoveredServer
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!1 &7107372926176858244
 GameObject:
   m_ObjectHideFlags: 0
