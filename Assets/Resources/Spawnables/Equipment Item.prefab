@@ -71,7 +71,8 @@ MonoBehaviour:
   uiSlot: {fileID: 0}
   selectedColor: {r: 1, g: 1, b: 1, a: 0.7058824}
   deselectedColor: {r: 0.62352943, g: 0.62352943, b: 0.62352943, a: 0.7058824}
-  textMesh: {fileID: 0}
+  textItemName: {fileID: 0}
+  textItemType: {fileID: 0}
   slotImage: {fileID: 0}
 --- !u!114 &1741895825134749742
 MonoBehaviour:
@@ -88,3 +89,8 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   parent: {fileID: 0}
+  syncParent: 1
+  positionData: {x: 0, y: 0, z: 0}
+  syncPosition: 1
+  rotationData: {x: 0, y: 0, z: 0, w: 0}
+  syncRotation: 1

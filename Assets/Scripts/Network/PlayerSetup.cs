@@ -3,9 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using System;
+using UnityEngine.Events;
+
+[System.Serializable]
+public struct NetworkItem<ItemType> {
+    public GameObject prefab;
+    public Vector3 position;
+    public UnityEvent<ItemType> onSpawnItem;
+    public List<NetworkItem<GameObject>> children;
+}
 
 public class PlayerSetup : NetworkBehaviour
 {
+    public List<NetworkItem<GameObject>> networkItems;
+    
     public Action<Equipment> onSpawnEquipment;
 
     [SyncVar] public string playerName;
@@ -71,9 +82,40 @@ public class PlayerSetup : NetworkBehaviour
         Svr_SpawnEquipment();
         Svr_SpawnHands();
     }
+
+    private void RecursiveChildren(NetworkItem<GameObject> child, Transform parent)
+    {
+        GameObject GOItem = Instantiate(child.prefab);
+        //GOEquipment.GetComponent<Equipment>().equipmentSlotsTypes = equipmentSlotsTypes;
+        NetworkServer.Spawn(GOItem, connectionToClient);
+        GOItem.transform.SetParent(parent);
+        foreach (var childsChild in child.children)
+        {
+            RecursiveChildren(childsChild, GOItem.transform);
+        }
+    }
+
     [Server]
     private void Svr_SpawnEquipment()
     {
+        foreach (var item in networkItems)
+        {
+            GameObject GOItem = Instantiate(item.prefab);
+            //GOEquipment.GetComponent<Equipment>().equipmentSlotsTypes = equipmentSlotsTypes;
+            NetworkServer.Spawn(GOItem, connectionToClient);
+
+            foreach (var child in item.children)
+            {
+                RecursiveChildren(child, GOItem.transform);
+            }
+        }
+
+
+
+
+
+
+
         GameObject GOEquipment = Instantiate(equipment);
         GOEquipment.GetComponent<Equipment>().equipmentSlotsTypes = equipmentSlotsTypes;
         NetworkServer.Spawn(GOEquipment, connectionToClient);

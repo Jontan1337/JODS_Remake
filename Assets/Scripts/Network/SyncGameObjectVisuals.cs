@@ -1,19 +1,20 @@
 ﻿using UnityEngine;
 using Mirror;
+using System.Collections;
 
 public class SyncGameObjectVisuals : NetworkBehaviour
 {
     [SerializeField, SyncVar]
     private Transform parent;
-    [SerializeField, SyncVar]
+    [SerializeField]
     private bool syncParent = false;
     [SerializeField, SyncVar]
     private Vector3 positionData;
-    [SerializeField, SyncVar]
+    [SerializeField]
     private bool syncPosition = false;
     [SerializeField, SyncVar]
     private Quaternion rotationData;
-    [SerializeField, SyncVar]
+    [SerializeField]
     private bool syncRotation = false;
 
     private void OnTransformParentChanged()

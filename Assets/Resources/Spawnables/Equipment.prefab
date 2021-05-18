@@ -63,9 +63,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  equipmentSlotsTypes: 00000000000000000100000002000000
+  playerHands: {fileID: 0}
+  equippedItem: {fileID: 0}
   selectedEquipmentSlot: {fileID: 0}
   equipmentSlots: []
-  equipmentSlotsTypes: 00000000000000000100000002000000
   equipmentSlotsParent: {fileID: 0}
   equipmentSlotsUIParent: {fileID: 0}
   equipmentSlotPrefab: {fileID: 3049965623166493680, guid: a3735b513ada53f4ebc1432cfef77583,
@@ -87,3 +89,8 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   parent: {fileID: 0}
+  syncParent: 1
+  positionData: {x: 0, y: 0, z: 0}
+  syncPosition: 1
+  rotationData: {x: 0, y: 0, z: 0, w: 0}
+  syncRotation: 1
