@@ -26,6 +26,7 @@ public class MasterSO : ScriptableObject
     public Color unitSelectColor;
     [Space]
     public Color screenTintColor;
+    public Color topdownLightColor;
     [Space]
     public Mesh selectPositionMarkerMesh;
     public Color selectPositionMarkerColor;

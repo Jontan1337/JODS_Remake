@@ -74,6 +74,8 @@ public class Master : NetworkBehaviour
         [Space]
         public GameObject unitButtonPrefab;
         public Transform unitButtonContainer;
+        [Space]
+        public Image screenTint;
     }
     [Space]
     public UserInterface UI;
@@ -136,7 +138,8 @@ public class Master : NetworkBehaviour
             UI.energyFillImage.color = masterSO.energyColor;
             UI.energyUseFillImage.color = masterSO.energyUseColor;
 
-            tintLight.color = masterSO.screenTintColor;
+            tintLight.color = masterSO.topdownLightColor;
+            UI.screenTint.color = masterSO.screenTintColor;
 
             //Update the Energy UI
             UpdateEnergyUI();
@@ -257,6 +260,7 @@ public class Master : NetworkBehaviour
 
     #region Gameplay Functions
 
+    [Header("Debugging")]
     [SerializeField] private bool shift = false;
     [SerializeField] private bool ctrl = false;
     [SerializeField] private bool alt = false;
@@ -548,6 +552,7 @@ public class Master : NetworkBehaviour
             if (selectedUnit)
             {
                 unitDestinationMarker.SetActive(true);
+                unitDestinationMarker.transform.Rotate(0, Random.Range(0, 360),0);
                 unitDestinationMarker.transform.position = selectedUnit.GetComponent<NavMeshAgent>().destination;
             }
             else unitDestinationMarker.SetActive(false);
@@ -1021,6 +1026,7 @@ public class Master : NetworkBehaviour
         Cursor.lockState = top ? CursorLockMode.None : CursorLockMode.Locked;
         Cursor.visible = top; //Visible in Topdown view mode, not visible in flying mode
 
+        tintLight.enabled = top;
 
         if (hasChosenAUnit) //If a unit is currently chosen, then enable/disable marker
         {
