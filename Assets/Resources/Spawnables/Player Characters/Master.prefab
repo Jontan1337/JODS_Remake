@@ -1778,7 +1778,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 0.4, y: 0.6}
-  m_AnchoredPosition: {x: 0, y: -0.00002670288}
+  m_AnchoredPosition: {x: 0, y: -0.000030517578}
   m_SizeDelta: {x: 240, y: -0.0000076293945}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7656666172369582015
@@ -2015,7 +2015,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6894463585626301129
 Transform:
   m_ObjectHideFlags: 0
@@ -2037,7 +2037,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5008021065148739664}
-  m_Mesh: {fileID: 0}
+  m_Mesh: {fileID: -8803937527578110353, guid: 1012fb092bf32c0438b760d541e93161, type: 3}
 --- !u!23 &5629443220709947048
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2057,7 +2057,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9e749132e5d82434e831e7e9df088139, type: 2}
+  - {fileID: 2100000, guid: 1c082e5d5bbe64f4c83b83496f37fac6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3145,7 +3145,7 @@ MonoBehaviour:
     camera: {fileID: 5789487352027957895}
   flying:
     camera: {fileID: 5488602245502417414}
-    flyingController: {fileID: 0}
+    flyingController: {fileID: 3014207087323595373}
   inTopdownView: 1
   ignoreOnRaycast:
     serializedVersion: 2
@@ -3154,6 +3154,7 @@ MonoBehaviour:
   spawnSmokeEffect: {fileID: 5285726392367847325}
   shift: 0
   ctrl: 0
+  alt: 0
 --- !u!82 &4540335981313188789
 AudioSource:
   m_ObjectHideFlags: 0
@@ -3502,7 +3503,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movementSpeed: 20
   currentFloor: 1
-  positionChange: 5
+  positionChange: 50
   amountOfFloors: 0
   floorUIContainer: {fileID: 4653617952221370194}
   floorIndicatorPrefab: {fileID: 5380386011376542271, guid: 63ebac98d4d2af149b552d1b6c9d26ca,

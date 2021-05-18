@@ -125,7 +125,7 @@ public class Master : NetworkBehaviour
             flying.flyingController = flying.camera.GetComponent<Master_FlyingController>();
             flying.flyingController.master = this; //Assign the reference.
             inTopdownView = false; //This bool is simply to stop a raycast from being performed.
-            //The bool will be set to true in this function.
+             //The bool will be set to true in this function.
             SwitchCamera(true);
 
             //Default starting energy stats
@@ -146,12 +146,16 @@ public class Master : NetworkBehaviour
 
             //Change the Flying controller's marker visuals (Mesh and colour)
             flying.flyingController.ChangeMarker(masterSO.markerMesh, masterSO.markerColor);
+            EnableFlyingMarker(false); //Disable the marker on start. Default view mode is Topdown.
 
             //Change Select's position marker visuals (Mesh and colour)
             Material markerMat = unitDestinationMarker.GetComponent<MeshRenderer>().sharedMaterial;
             markerMat.color = masterSO.selectPositionMarkerColor;
             markerMat.SetColor("_EmissionColor", masterSO.selectPositionMarkerColor);
             unitDestinationMarker.GetComponent<MeshFilter>().mesh = masterSO.selectPositionMarkerMesh;
+            unitDestinationMarker.transform.SetParent(null);
+
+            SetUnitDestinationMarker(false);
 
             //Make Unit Buttons
             InitializeUnitButtons();
@@ -172,9 +176,6 @@ public class Master : NetworkBehaviour
 
             globalAudio = GetComponent<AudioSource>();
             globalAudio.clip = masterSO.globalSound;
-
-            SetUnitDestinationMarker(false);
-            unitDestinationMarker.transform.SetParent(null);
 
             //Attach the master's custom script to the gameobject.
             System.Type masterType = System.Type.GetType(masterSO.masterClass.name + ",Assembly-CSharp");
