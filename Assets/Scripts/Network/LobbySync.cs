@@ -184,7 +184,7 @@ public class LobbySync : NetworkBehaviour
     private void Rpc_SetLobbyCamera(GameObject player)
     {
         LobbyPlayer tempLP = player.GetComponent<LobbyPlayer>();
-        tempLP.lobbyCamera = Lobby.Instance.lobbyCamera;
+        tempLP.lobbyCamera = Lobby.Instance.mainCamera;
         tempLP._lobbyCam = tempLP.lobbyCamera.GetComponent<Camera>();
     }
 
@@ -196,7 +196,7 @@ public class LobbySync : NetworkBehaviour
             Quaternion.LookRotation
             (
                 character.GetComponent<LobbyCharacters>().nameTag.transform.position - 
-                Lobby.Instance.lobbyCamera.transform.position
+                Lobby.Instance.mainCamera.transform.position
             );
     }
 

@@ -3,8 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.PostProcessing;
 
+[System.Serializable]
+public class CameraPosition
+{
+    public string name;
+    public Transform position;
+}
 public class MenuCamera : MonoBehaviour
 {
+    [SerializeField] private List<CameraPosition> cameraPositions = new List<CameraPosition>();
+
+    [Header("Post Processing")]
     private PostProcessingProfile PP;
     void Start()
     {
@@ -26,4 +35,27 @@ public class MenuCamera : MonoBehaviour
             PP.colorGrading.settings = col;
         }
     }
+
+
+    #region Camera Position Changes
+
+    public void ChangePosition(string position)
+    {
+        bool positionAvailable = false;
+        foreach(var cameraPosition in cameraPositions)
+        {
+            if (cameraPosition.name == position)
+            {
+                //TODO : Start coroutine which smoothly moves the camera to the new position.
+                positionAvailable = true;
+                break;
+            }
+        }
+        if (!positionAvailable)
+        {
+            Debug.LogWarning($"No position with the name: ({position}) could be found. Make sure the names match.");
+        }
+    }
+
+    #endregion
 }
