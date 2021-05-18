@@ -18,7 +18,6 @@ public class Lobby : NetworkManager
     public GameObject LobbyPanel;
     public GameObject MainMenuPanel;
     public GameObject mainCamera;
-    public GameObject lobbyCamera;
     public LobbySeat[] playerSeats;
     [Header("Prefabs")]
     public GameObject playerSpawner;
@@ -73,8 +72,6 @@ public class Lobby : NetworkManager
         LobbyPanel.SetActive(true);
         MMPanel.SetActive(false);
         MainMenuPanel.SetActive(false);
-        mainCamera.SetActive(false);
-        lobbyCamera.SetActive(true);
         singleton.StartClient(uri);
     }
     public void MMJoinMatch()
@@ -83,8 +80,6 @@ public class Lobby : NetworkManager
         LobbyPanel.SetActive(true);
         MMPanel.SetActive(false);
         MainMenuPanel.SetActive(false);
-        mainCamera.SetActive(false);
-        lobbyCamera.SetActive(true);
         UriBuilder uriBuilder = new UriBuilder("tcp4", ipAddress);
         singleton.StartClient(uriBuilder.Uri);
     }
