@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5379154559914556784}
   - component: {fileID: 4870481525464496537}
   - component: {fileID: 321334809165654797}
+  - component: {fileID: 1727601403793144797}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -84,6 +85,37 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3990608687468112644}
   m_Enabled: 1
+--- !u!114 &1727601403793144797
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3990608687468112644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
 --- !u!1 &4840928526252414882
 GameObject:
   m_ObjectHideFlags: 0
@@ -243,6 +275,8 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -308,11 +342,9 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   survivorPrefab:
-  - {fileID: 2421754405375140133, guid: 0c8b6d406bb502e4f81d84533f09f714, type: 3}
-  - {fileID: 2200508194433763455, guid: 210339072d9f59f4e8a5aa51958de42b, type: 3}
-  - {fileID: 286672049600161654, guid: 716e2a412b3680b49a623f3c88316214, type: 3}
+  - {fileID: 5922127114707202486, guid: 2b66a0b1aff738e4fb22273ddadde428, type: 3}
   masterPrefab:
-  - {fileID: 7458314931304268821, guid: c9877df34bfc7e44ea0ca3bf98a05071, type: 3}
+  - {fileID: 7458314931304268821, guid: 0a863dc1cdde06b4eba6432311cb90c5, type: 3}
   characterNum: 0
   survivorNum: 0
   masterNum: 0
