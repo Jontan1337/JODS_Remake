@@ -42,7 +42,7 @@ public class LookController : NetworkBehaviour
         rotY = Mathf.Clamp(rotY, minRotY, maxRotY);
         //transform.Rotate(0, rotX, 0);
         rotateHorizontal.rotation = Quaternion.Euler(0, rotX, 0);
-        playerCamera.transform.rotation = Quaternion.Euler(-rotY, rotX, 0f);
+        rotateVertical.rotation = Quaternion.Euler(-rotY, rotX, 0f);
     }
 
     public void EnableLook()
@@ -52,7 +52,7 @@ public class LookController : NetworkBehaviour
     public void DisableLook()
     {
         rotY = 0;
-        playerCamera.transform.rotation = Quaternion.Euler(0f, rotX, 0f);
+        rotateVertical.rotation = Quaternion.Euler(0f, rotX, 0f);
         canLook = false;
     }
 }
