@@ -19,7 +19,8 @@ public class PlayerSpawner : NetworkBehaviour
         // Check if this is currently the server and if the object is is not the same as the host.
         if (!hasAuthority) return;
 
-        spawns = GameObject.FindGameObjectsWithTag("PlayerSpawn");
+        //spawns = GameObject.FindGameObjectsWithTag("PlayerSpawn");
+        spawns = new GameObject[0];
         if (spawns.Length != 0 && !spawned)
         {
             spawned = true;
