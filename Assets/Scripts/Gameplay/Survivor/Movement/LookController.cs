@@ -19,6 +19,15 @@ public class LookController : NetworkBehaviour
     private Transform rotateVertical;
 
     #region NetworkBehaviour Callbacks
+
+    public override void OnStartServer()
+    {
+        GetComponent<PlayerSetup>().onSpawnItem += GetCamera;
+    }
+    public override void OnStopServer()
+    {
+        GetComponent<PlayerSetup>().onSpawnItem -= GetCamera;
+    }
     public override void OnStartAuthority()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -54,5 +63,14 @@ public class LookController : NetworkBehaviour
         rotY = 0;
         rotateVertical.rotation = Quaternion.Euler(0f, rotX, 0f);
         canLook = false;
+    }
+
+    private void GetCamera(GameObject item)
+    {
+        if (item.TryGetComponent(out Camera camera))
+        {
+            playerCamera = camera;
+            rotateVertical = camera.transform;
+        }
     }
 }

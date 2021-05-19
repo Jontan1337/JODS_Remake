@@ -5,21 +5,23 @@ public class EquipmentControl : NetworkBehaviour
 {
     private Equipment equipment;
 
-
     public override void OnStartServer()
     {
-        GetComponent<PlayerSetup>().onSpawnEquipment += GetEquipment;
+        GetComponent<PlayerSetup>().onSpawnItem += GetEquipment;
     }
     public override void OnStopServer()
     {
-        GetComponent<PlayerSetup>().onSpawnEquipment -= GetEquipment;
+        GetComponent<PlayerSetup>().onSpawnItem -= GetEquipment;
         equipment.onServerEquippedItemChange -= Svr_ChangeControlBind;
     }
 
-    private void GetEquipment(Equipment equipment)
+    public void GetEquipment(GameObject item)
     {
-        this.equipment = equipment;
-        this.equipment.onServerEquippedItemChange += Svr_ChangeControlBind;
+        if (item.TryGetComponent(out Equipment equipment))
+        {
+            this.equipment = equipment.GetComponent<Equipment>();
+            this.equipment.onServerEquippedItemChange += Svr_ChangeControlBind;
+        }
     }
 
     [Server]

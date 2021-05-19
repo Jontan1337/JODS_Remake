@@ -86,6 +86,11 @@ public class Equipment : NetworkBehaviour
         }
     }
 
+    private void Awake()
+    {
+        equipmentSlotsTypes = GetComponentInParent<PlayerSetup>().equipmentSlotsTypes;
+    }
+
     private void OnTransformParentChanged()
     {
         if (hasAuthority)

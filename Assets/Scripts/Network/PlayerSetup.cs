@@ -1,24 +1,35 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using System;
 using UnityEngine.Events;
 
+public enum CallType
+{
+    Local,
+    ClientRPC,
+    TargetRPC
+}
+
 [System.Serializable]
-public struct NetworkItem<ItemType> {
+public struct DynamicItem {
     public GameObject prefab;
     public Vector3 position;
-    public UnityEvent<ItemType> onSpawnItem;
-    public List<NetworkItem<GameObject>> children;
+    [Tooltip("Choose how the item should spawn. " +
+            "\nLocal: Called on server only." +
+            "\nClientRPC: Called on all clients." +
+            "\nTargetRPC: Called on the player that owns this object.")] public CallType callType;
+    public List<DynamicItem> children;
 }
 
 public class PlayerSetup : NetworkBehaviour
 {
-    public List<NetworkItem<GameObject>> networkItems;
-    
-    public Action<Equipment> onSpawnEquipment;
+    public List<DynamicItem> dynamicItems;
 
+    public Action<GameObject> onSpawnItem;
+
+    [Space]
+    [Space]
     [SyncVar] public string playerName;
 
     [Header("Prefabs for player setup")]
@@ -27,7 +38,7 @@ public class PlayerSetup : NetworkBehaviour
     [SerializeField] private GameObject slotsUIParent;
     [SerializeField] private TextMesh playerNameText;
     [SerializeField, Tooltip("A list of the equipment types, the player should start with.")]
-    private List<EquipmentType> equipmentSlotsTypes = new List<EquipmentType>();
+    public List<EquipmentType> equipmentSlotsTypes = new List<EquipmentType>();
 
     [Header("References from player setup")]
     [SerializeField] private Equipment playerEquipment;
@@ -79,34 +90,34 @@ public class PlayerSetup : NetworkBehaviour
     [Command]
     private void Cmd_SpawnEssentials()
     {
-        Svr_SpawnEquipment();
-        Svr_SpawnHands();
+        Svr_SpawnItems();
+        //Svr_SpawnHands();
     }
 
-    private void RecursiveChildren(NetworkItem<GameObject> child, Transform parent)
+    [Server]
+    private void Svr_RecursiveChildren(DynamicItem child, Transform parent)
     {
         GameObject GOItem = Instantiate(child.prefab);
-        //GOEquipment.GetComponent<Equipment>().equipmentSlotsTypes = equipmentSlotsTypes;
-        NetworkServer.Spawn(GOItem, connectionToClient);
-        GOItem.transform.SetParent(parent);
+        Svr_CallType(child.callType, GOItem, parent);
+
         foreach (var childsChild in child.children)
         {
-            RecursiveChildren(childsChild, GOItem.transform);
+            Svr_RecursiveChildren(childsChild, GOItem.transform);
         }
     }
 
     [Server]
-    private void Svr_SpawnEquipment()
+    private void Svr_SpawnItems()
     {
-        foreach (var item in networkItems)
+        for (int i = 0; i < dynamicItems.Count; i++)
         {
-            GameObject GOItem = Instantiate(item.prefab);
-            //GOEquipment.GetComponent<Equipment>().equipmentSlotsTypes = equipmentSlotsTypes;
-            NetworkServer.Spawn(GOItem, connectionToClient);
-
-            foreach (var child in item.children)
+            DynamicItem currentItem = dynamicItems[i];
+            GameObject GOItem = Instantiate(currentItem.prefab);
+            Svr_CallType(currentItem.callType, GOItem, transform);
+            List<DynamicItem> dynamicChildren = currentItem.children;
+            for (int x = 0; x < dynamicChildren.Count; x++)
             {
-                RecursiveChildren(child, GOItem.transform);
+                Svr_RecursiveChildren(dynamicChildren[x], GOItem.transform);
             }
         }
 
@@ -116,14 +127,55 @@ public class PlayerSetup : NetworkBehaviour
 
 
 
-        GameObject GOEquipment = Instantiate(equipment);
-        GOEquipment.GetComponent<Equipment>().equipmentSlotsTypes = equipmentSlotsTypes;
-        NetworkServer.Spawn(GOEquipment, connectionToClient);
-        GOEquipment.transform.SetParent(transform);
-        GOEquipment.transform.localPosition = new Vector3();
-        playerEquipment = GOEquipment.GetComponent<Equipment>();
-        onSpawnEquipment?.Invoke(playerEquipment);
+        //GameObject GOEquipment = Instantiate(equipment);
+        //GOEquipment.GetComponent<Equipment>().equipmentSlotsTypes = equipmentSlotsTypes;
+        //NetworkServer.Spawn(GOEquipment, connectionToClient);
+        //GOEquipment.transform.SetParent(transform);
+        //GOEquipment.transform.localPosition = new Vector3();
+        //playerEquipment = GOEquipment.GetComponent<Equipment>();
+        //onSpawnEquipment?.Invoke(playerEquipment);
     }
+
+    [Server]
+    private void Svr_CallType(CallType type, GameObject GOItem, Transform parentTransform)
+    {
+        switch (type)
+        {
+            case global::CallType.Local:
+                LocalSetup(GOItem, parentTransform);
+                break;
+            case global::CallType.ClientRPC:
+                Rpc_ClientSetup(GOItem, parentTransform);
+                break;
+            case global::CallType.TargetRPC:
+                Rpc_TargetSetup(connectionToClient, GOItem, parentTransform);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void LocalSetup(GameObject GOItem, Transform parentTransform)
+    {
+        NetworkServer.Spawn(GOItem, connectionToClient);
+        GOItem.transform.SetParent(transform);
+        onSpawnItem?.Invoke(GOItem);
+    }
+    [ClientRpc]
+    private void Rpc_ClientSetup(GameObject GOItem, Transform parentTransform)
+    {
+        NetworkServer.Spawn(GOItem, connectionToClient);
+        GOItem.transform.SetParent(parentTransform);
+        onSpawnItem?.Invoke(GOItem);
+    }
+    [TargetRpc]
+    private void Rpc_TargetSetup(NetworkConnection target, GameObject GOItem, Transform parentTransform)
+    {
+        NetworkServer.Spawn(GOItem, connectionToClient);
+        GOItem.transform.SetParent(parentTransform);
+        onSpawnItem?.Invoke(GOItem);
+    }
+
     [Server]
     private void Svr_SpawnHands()
     {

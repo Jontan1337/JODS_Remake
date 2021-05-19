@@ -14,6 +14,15 @@ public class Interacter : NetworkBehaviour
     private RaycastHit rayHit;
     private IInteractable currentInteractable;
 
+    public override void OnStartServer()
+    {
+        GetComponent<PlayerSetup>().onSpawnItem += GetCamera;
+    }
+    public override void OnStopServer()
+    {
+        GetComponent<PlayerSetup>().onSpawnItem -= GetCamera;
+    }
+
     public override void OnStartAuthority()
     {
         JODSInput.Controls.Survivor.Interact.performed += ctx => Interact();
@@ -54,6 +63,14 @@ public class Interacter : NetworkBehaviour
             Debug.Log($"Server: interact with {targetObject}", this);
             targetObject.TryGetComponent(out IInteractable interactable);
             interactable?.Svr_Interact(gameObject);
+        }
+    }
+
+    private void GetCamera(GameObject item)
+    {
+        if (item.TryGetComponent(out Camera camera))
+        {
+            playerCamera = camera.transform;
         }
     }
 }
