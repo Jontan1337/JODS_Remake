@@ -14,6 +14,7 @@ public class AutoTurret : NetworkBehaviour
 
 	private bool active = true;
 	private Collider[] targets;
+	private GameObject target;
 
 	private void Start()
 	{
@@ -22,23 +23,40 @@ public class AutoTurret : NetworkBehaviour
 
 	IEnumerator TurretShoot()
 	{
+		print("CMON");
+		if (!target)
+		{
+			FindTargets();
+		}
 		Debug.DrawRay(transform.position, transform.forward * range);
-
 		print("yeeee1");
 		while (active)
 		{
-			targets = Physics.OverlapSphere(transform.position, range, ~ignoreLayer);
-			for (int i = 0; i < targets.Length; i++)
-			{
-
-
-
-				//print(Vector3.Distance(targets[i].transform.position, gameObject.transform.position));
-				//print(targets[i].name);
-
-			}
-			yield return new WaitForSeconds(1);
+			target.GetComponent<IDamagable>()?.Svr_Damage(2);
+			print("yeeee2");
+			yield return new WaitForSeconds(0.1f);
 		}
 
+	}
+
+	void FindTargets()
+	{
+		targets = Physics.OverlapSphere(transform.position, range, ~ignoreLayer);
+		for (int i = 0; i < targets.Length; i++)
+		{
+
+			if (Vector3.Distance(target.transform.position, gameObject.transform.position) > Vector3.Distance(targets[i].transform.position, gameObject.transform.position))
+			{
+				target = targets[i].gameObject;
+			}
+		}
+	}
+	IEnumerator Searching()
+	{
+		while (!target)
+		{
+			FindTargets();
+			yield return new WaitForSeconds(1);
+		}
 	}
 }
