@@ -97,27 +97,25 @@ public class PlayerSetup : NetworkBehaviour
     [Server]
     private void Svr_RecursiveChildren(DynamicItem child, Transform parent)
     {
-        GameObject GOItem = Instantiate(child.prefab);
-        Svr_CallType(child.callType, GOItem, parent);
-
-        foreach (var childsChild in child.children)
+        Svr_CallType(child.callType, child.prefab, parent);
+        List<DynamicItem> dynamicChildren = child.children;
+        foreach (var childsChild in dynamicChildren)
         {
-            Svr_RecursiveChildren(childsChild, GOItem.transform);
+            Svr_RecursiveChildren(childsChild, child.prefab.transform);
         }
     }
 
     [Server]
     private void Svr_SpawnItems()
     {
-        for (int i = 0; i < dynamicItems.Count; i++)
+        foreach (DynamicItem item in dynamicItems)
         {
-            DynamicItem currentItem = dynamicItems[i];
-            GameObject GOItem = Instantiate(currentItem.prefab);
-            Svr_CallType(currentItem.callType, GOItem, transform);
-            List<DynamicItem> dynamicChildren = currentItem.children;
-            for (int x = 0; x < dynamicChildren.Count; x++)
+            
+            Svr_CallType(item.callType, item.prefab, transform);
+            List<DynamicItem> dynamicChildren = item.children;
+            foreach (DynamicItem child in dynamicChildren)
             {
-                Svr_RecursiveChildren(dynamicChildren[x], GOItem.transform);
+                Svr_RecursiveChildren(child, item.prefab.transform);
             }
         }
 
@@ -137,40 +135,43 @@ public class PlayerSetup : NetworkBehaviour
     }
 
     [Server]
-    private void Svr_CallType(CallType type, GameObject GOItem, Transform parentTransform)
+    private void Svr_CallType(CallType type, GameObject prefabItem, Transform parentTransform)
     {
         switch (type)
         {
-            case global::CallType.Local:
-                LocalSetup(GOItem, parentTransform);
+            case CallType.Local:
+                LocalSetup(prefabItem, parentTransform);
                 break;
-            case global::CallType.ClientRPC:
-                Rpc_ClientSetup(GOItem, parentTransform);
+            case CallType.ClientRPC:
+                Rpc_ClientSetup(prefabItem, parentTransform);
                 break;
-            case global::CallType.TargetRPC:
-                Rpc_TargetSetup(connectionToClient, GOItem, parentTransform);
+            case CallType.TargetRPC:
+                Rpc_TargetSetup(connectionToClient, prefabItem, parentTransform);
                 break;
             default:
                 break;
         }
     }
 
-    private void LocalSetup(GameObject GOItem, Transform parentTransform)
+    private void LocalSetup(GameObject prefabItem, Transform parentTransform)
     {
+        GameObject GOItem = Instantiate(prefabItem);
         NetworkServer.Spawn(GOItem, connectionToClient);
         GOItem.transform.SetParent(transform);
         onSpawnItem?.Invoke(GOItem);
     }
     [ClientRpc]
-    private void Rpc_ClientSetup(GameObject GOItem, Transform parentTransform)
+    private void Rpc_ClientSetup(GameObject prefabItem, Transform parentTransform)
     {
+        GameObject GOItem = Instantiate(prefabItem);
         NetworkServer.Spawn(GOItem, connectionToClient);
         GOItem.transform.SetParent(parentTransform);
         onSpawnItem?.Invoke(GOItem);
     }
     [TargetRpc]
-    private void Rpc_TargetSetup(NetworkConnection target, GameObject GOItem, Transform parentTransform)
+    private void Rpc_TargetSetup(NetworkConnection target, GameObject prefabItem, Transform parentTransform)
     {
+        GameObject GOItem = Instantiate(prefabItem);
         NetworkServer.Spawn(GOItem, connectionToClient);
         GOItem.transform.SetParent(parentTransform);
         onSpawnItem?.Invoke(GOItem);
