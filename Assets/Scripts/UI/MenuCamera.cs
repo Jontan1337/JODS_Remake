@@ -11,6 +11,13 @@ public class CameraPosition
 }
 public class MenuCamera : MonoBehaviour
 {
+    public static MenuCamera instance;
+    private void Awake()
+    {
+        instance = this;
+    }
+
+
     [SerializeField] private List<CameraPosition> cameraPositions = new List<CameraPosition>();
 
     [Header("Post Processing")]
@@ -39,6 +46,8 @@ public class MenuCamera : MonoBehaviour
 
     #region Camera Position Changes
 
+    private Coroutine MoveCamera;
+    public bool moving = false;
     public void ChangePosition(string position)
     {
         bool positionAvailable = false;
@@ -46,7 +55,13 @@ public class MenuCamera : MonoBehaviour
         {
             if (cameraPosition.name == position)
             {
-                //TODO : Start coroutine which smoothly moves the camera to the new position.
+                if (cameraPosition.position == null)
+                {
+                    Debug.LogWarning($"Position with the name: ({position}) had no transform reference. ");
+                    continue;
+                }
+                if (moving) StopCoroutine(MoveCamera);
+                MoveCamera = StartCoroutine(MoveToPosition(cameraPosition.position,1f));
                 positionAvailable = true;
                 break;
             }
@@ -55,6 +70,28 @@ public class MenuCamera : MonoBehaviour
         {
             Debug.LogWarning($"No position with the name: ({position}) could be found. Make sure the names match.");
         }
+    }
+
+    private IEnumerator MoveToPosition(Transform to, float time)
+    {
+        moving = true;
+        //references
+        Transform from = transform;
+        float t = 0f;
+
+        //This while loop will smoothly transition the camera's position and rotation to the "to" values.
+        while (t < time)
+        {
+            transform.position = Vector3.Lerp(from.position, to.position, t / time);
+            transform.rotation = Quaternion.Lerp(from.rotation, to.rotation, t / time);
+            t += Time.deltaTime;
+            yield return null;
+        }
+        //After the smooth transition,
+        //set the position and rotation as the exact "to" position/rotation.
+        transform.position = to.position;
+        transform.rotation = to.rotation;
+        moving = false;
     }
 
     #endregion

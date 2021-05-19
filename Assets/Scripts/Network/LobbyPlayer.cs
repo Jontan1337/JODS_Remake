@@ -20,7 +20,6 @@ public class LobbyPlayer : NetworkBehaviour
     [Header("References")]
     public Toggle masterToggle;
     public Dropdown survivorDropdown;
-    public Dropdown masterDropdown;
     public GameObject _nameLabel;
     public Image _nameLabelMasterColor;
     public GameObject lobbyCharacter;
@@ -145,6 +144,9 @@ public class LobbyPlayer : NetworkBehaviour
     {
         yield return new WaitForSeconds(0.2f);
 
+        Debug.LogError("'Find Compontents' enumerator needs to be reworked.");
+
+        /*
         GameObject.Find("Master Toggle").GetComponent<Button>().onClick.AddListener(delegate () { Cmd_TogglePreference(gameObject); });
 
         survivorDropdown = GameObject.Find("Survivor Dropdown").GetComponent<Dropdown>();
@@ -152,6 +154,7 @@ public class LobbyPlayer : NetworkBehaviour
 
         masterDropdown = GameObject.Find("Master Dropdown").GetComponent<Dropdown>();
         masterDropdown.onValueChanged.AddListener(delegate { ChangeMaster(masterDropdown.value); });
+        */
     }
     [Server]
     public void Svr_PlayerChangeCharacter(GameObject player, int characterIndex)
