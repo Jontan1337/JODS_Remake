@@ -4,6 +4,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Survivor", menuName = "Classes/Survivor/New Survivor Class", order = 1)]
 public class SurvivorSO : ScriptableObject
 {
+    public string survivorName = "Default Survivor";
+
     [Header("Stats")]
     public int health;
     public int armor;
@@ -21,4 +23,12 @@ public class SurvivorSO : ScriptableObject
     public GameObject abilityObject;
     public Mesh survivorMesh;
     public Material survivorMaterial;
+
+    [Header("Survivor Class Description")]
+    [TextArea(10, 20)]
+    public string classDescription = "This survivor survives";
+
+    [Header("Survivor Class Special Description")]
+    [TextArea(10, 20)]
+    public string classSpecialDescription = "This survivor can do special stuff";
 }
