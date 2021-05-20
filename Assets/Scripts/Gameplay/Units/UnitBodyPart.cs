@@ -28,7 +28,7 @@ public class UnitBodyPart : MonoBehaviour, IDamagable
 
     public Teams Team => throw new System.NotImplementedException();
 
-    public void Svr_Damage(int damage)
+    public void Svr_Damage(int damage, Transform target = null)
     {
         unitBase.Svr_Damage(Mathf.RoundToInt(damage * multiplier));
     }

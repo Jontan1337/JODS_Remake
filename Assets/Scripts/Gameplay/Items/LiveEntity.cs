@@ -298,7 +298,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
     }
 
     [Server]
-    public void Svr_Damage(int damage)
+    public void Svr_Damage(int damage, Transform target = null)
     {
         health -= damage;
     }
