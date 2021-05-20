@@ -313,5 +313,15 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
             Gizmos.DrawWireSphere(transform.position, explosionRadius);
         }
     }
-    #endregion
+
+	int IDamagable.GetHealth()
+	{
+		throw new System.NotImplementedException();
+	}
+
+	bool IDamagable.IsDead()
+	{
+		throw new System.NotImplementedException();
+	}
+	#endregion
 }

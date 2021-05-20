@@ -894,6 +894,52 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Main Menu"",
+            ""id"": ""cbf3e55b-31a0-4f7c-abdf-8ed2b09a6040"",
+            ""actions"": [
+                {
+                    ""name"": ""LMB"",
+                    ""type"": ""Button"",
+                    ""id"": ""caadbba8-dba2-4cb9-80af-7fc723446bdb"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Space"",
+                    ""type"": ""Button"",
+                    ""id"": ""8eebb104-479d-4ccc-8359-69473b8b69fb"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""8abfd830-c3db-487e-bae4-be2b7dc3afd0"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LMB"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0fb8f5d9-f7a0-40e4-a23d-74185244e47f"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Space"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -935,6 +981,10 @@ public class @Controls : IInputActionCollection, IDisposable
         m_Survivor_ActiveAbility = m_Survivor.FindAction("Active Ability", throwIfNotFound: true);
         m_Survivor_Sprint = m_Survivor.FindAction("Sprint", throwIfNotFound: true);
         m_Survivor_Changefiremode = m_Survivor.FindAction("Change fire mode", throwIfNotFound: true);
+        // Main Menu
+        m_MainMenu = asset.FindActionMap("Main Menu", throwIfNotFound: true);
+        m_MainMenu_LMB = m_MainMenu.FindAction("LMB", throwIfNotFound: true);
+        m_MainMenu_Space = m_MainMenu.FindAction("Space", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -1246,6 +1296,47 @@ public class @Controls : IInputActionCollection, IDisposable
         }
     }
     public SurvivorActions @Survivor => new SurvivorActions(this);
+
+    // Main Menu
+    private readonly InputActionMap m_MainMenu;
+    private IMainMenuActions m_MainMenuActionsCallbackInterface;
+    private readonly InputAction m_MainMenu_LMB;
+    private readonly InputAction m_MainMenu_Space;
+    public struct MainMenuActions
+    {
+        private @Controls m_Wrapper;
+        public MainMenuActions(@Controls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @LMB => m_Wrapper.m_MainMenu_LMB;
+        public InputAction @Space => m_Wrapper.m_MainMenu_Space;
+        public InputActionMap Get() { return m_Wrapper.m_MainMenu; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(MainMenuActions set) { return set.Get(); }
+        public void SetCallbacks(IMainMenuActions instance)
+        {
+            if (m_Wrapper.m_MainMenuActionsCallbackInterface != null)
+            {
+                @LMB.started -= m_Wrapper.m_MainMenuActionsCallbackInterface.OnLMB;
+                @LMB.performed -= m_Wrapper.m_MainMenuActionsCallbackInterface.OnLMB;
+                @LMB.canceled -= m_Wrapper.m_MainMenuActionsCallbackInterface.OnLMB;
+                @Space.started -= m_Wrapper.m_MainMenuActionsCallbackInterface.OnSpace;
+                @Space.performed -= m_Wrapper.m_MainMenuActionsCallbackInterface.OnSpace;
+                @Space.canceled -= m_Wrapper.m_MainMenuActionsCallbackInterface.OnSpace;
+            }
+            m_Wrapper.m_MainMenuActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @LMB.started += instance.OnLMB;
+                @LMB.performed += instance.OnLMB;
+                @LMB.canceled += instance.OnLMB;
+                @Space.started += instance.OnSpace;
+                @Space.performed += instance.OnSpace;
+                @Space.canceled += instance.OnSpace;
+            }
+        }
+    }
+    public MainMenuActions @MainMenu => new MainMenuActions(this);
     private int m_GameActionsSchemeIndex = -1;
     public InputControlScheme GameActionsScheme
     {
@@ -1287,5 +1378,10 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnActiveAbility(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
         void OnChangefiremode(InputAction.CallbackContext context);
+    }
+    public interface IMainMenuActions
+    {
+        void OnLMB(InputAction.CallbackContext context);
+        void OnSpace(InputAction.CallbackContext context);
     }
 }

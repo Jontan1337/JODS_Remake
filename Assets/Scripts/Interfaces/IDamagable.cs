@@ -7,4 +7,8 @@ public interface IDamagable
 
     [Server]
     void Svr_Damage(int damage);
+
+    int GetHealth();
+
+    bool IsDead();
 }

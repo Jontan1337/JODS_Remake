@@ -14,8 +14,10 @@ public class MainMenuVisuals : MonoBehaviour
 {
     [SerializeField] private List<WorldVisual> worldVisuals = new List<WorldVisual>();
 
-    public void LoadVisual(int value)
+    public void LoadVisual()
     {
+        int value = MasterSelection.instance.GetMaster;
+
         Debug.Log("Loading world visuals with index " + value);
 
         bool worldLoaded = false;
@@ -30,7 +32,7 @@ public class MainMenuVisuals : MonoBehaviour
         }
         if (!worldLoaded)
         {
-            Debug.LogWarning($"No world with index: ({value}) could be found. Make sure the names match.");
+            Debug.LogWarning($"No world with index: ({value}) could be found. Make sure the indexes match.");
         }
     }
 }

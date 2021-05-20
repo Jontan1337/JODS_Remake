@@ -872,6 +872,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
             //Activate Ragdoll effect, or death animation
             animator.SetTrigger("Die");
 
+            GetComponent<BoxCollider>().enabled = false;
+
             //Invoke this method after 5 seconds.
             StartCoroutine(PostDeath());
         }
@@ -898,18 +900,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     }
 
     public Teams Team => throw new System.NotImplementedException();
-
-    [Server]
-    public void Svr_Damage(int damage)
-    {
-        if (isDead) return;
-
-        health -= damage;
-        
-        animator.SetTrigger("Hit");
-
-        if (health <= 0) Die();
-    }
 
     #endregion
 
@@ -1056,6 +1046,32 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
             Gizmos.color = Color.green;
             Gizmos.DrawSphere(new Vector3(currentTarget.position.x, currentTarget.position.y + 2, currentTarget.position.z),0.6f);
         }
+    }
+
+    #endregion
+
+    #region IDamagable
+
+    [Server]
+    public void Svr_Damage(int damage)
+    {
+        if (isDead) return;
+
+        health -= damage;
+
+        animator.SetTrigger("Hit");
+
+        if (health <= 0) Die();
+    }
+
+    public int GetHealth()
+    {
+        return Health;
+    }
+
+    public bool IsDead()
+    {
+        return isDead;
     }
 
     #endregion
