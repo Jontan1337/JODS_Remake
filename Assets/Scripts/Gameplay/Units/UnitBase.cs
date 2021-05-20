@@ -899,18 +899,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
 
     public Teams Team => throw new System.NotImplementedException();
 
-    [Server]
-    public void Svr_Damage(int damage)
-    {
-        if (isDead) return;
-
-        health -= damage;
-        
-        animator.SetTrigger("Hit");
-
-        if (health <= 0) Die();
-    }
-
     #endregion
 
     #region Sounds
@@ -1056,6 +1044,32 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
             Gizmos.color = Color.green;
             Gizmos.DrawSphere(new Vector3(currentTarget.position.x, currentTarget.position.y + 2, currentTarget.position.z),0.6f);
         }
+    }
+
+    #endregion
+
+    #region IDamagable
+
+    [Server]
+    public void Svr_Damage(int damage)
+    {
+        if (isDead) return;
+
+        health -= damage;
+
+        animator.SetTrigger("Hit");
+
+        if (health <= 0) Die();
+    }
+
+    public int GetHealth()
+    {
+        return Health;
+    }
+
+    public bool IsDead()
+    {
+        return isDead;
     }
 
     #endregion
