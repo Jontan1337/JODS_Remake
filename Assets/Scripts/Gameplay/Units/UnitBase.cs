@@ -872,6 +872,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
             //Activate Ragdoll effect, or death animation
             animator.SetTrigger("Die");
 
+            GetComponent<BoxCollider>().enabled = false;
+
             //Invoke this method after 5 seconds.
             StartCoroutine(PostDeath());
         }
