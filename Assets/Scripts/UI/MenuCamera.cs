@@ -17,6 +17,10 @@ public class MenuCamera : MonoBehaviour
         instance = this;
     }
 
+    private void OnEnable()
+    {
+        JODSInput.Controls.MainMenu.Space.performed += ctx => ColorChange();
+    }
 
     [SerializeField] private List<CameraPosition> cameraPositions = new List<CameraPosition>();
 
@@ -33,14 +37,12 @@ public class MenuCamera : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
-    private void Update()
+    private void ColorChange()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            ColorGradingModel.Settings col = PP.colorGrading.settings;
-            col.basic.hueShift = Random.Range(-180, 180);
-            PP.colorGrading.settings = col;
-        }
+        print("ASS");
+        ColorGradingModel.Settings col = PP.colorGrading.settings;
+        col.basic.hueShift = Random.Range(-180, 180);
+        PP.colorGrading.settings = col;
     }
 
 

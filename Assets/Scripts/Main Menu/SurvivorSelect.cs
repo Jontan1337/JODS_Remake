@@ -14,8 +14,15 @@ public class SurvivorSelect : MonoBehaviour
     {
         Select(false);
     }
-    private void Select(bool value)
+    public void Select(bool value)
     {
+        selected = value;
+        selectedVisual.SetActive(value);
+    }
+    public void Select()
+    {
+        bool value = !selected;
+        selected = value;
         selectedVisual.SetActive(value);
     }
 }

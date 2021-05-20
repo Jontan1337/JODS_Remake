@@ -20,12 +20,18 @@ public class SurvivorSelector : MonoBehaviour
     [SerializeField] private Text survivorNameText;
     [SerializeField] private Text survivorDescriptionText;
     [SerializeField] private Text survivorSpecialText;
+    [SerializeField] private GameObject descriptionGroup;
+    [SerializeField] private GameObject specialGroup;
 
+    private void OnEnable()
+    {
+        JODSInput.Controls.MainMenu.LMB.performed += ctx => SelectSurvivor();
+    }
 
     public bool CanSelect
     {
         get { return canSelect; }
-        set { 
+        set {
             canSelect = value;
             if (value == true)
             {
@@ -47,12 +53,14 @@ public class SurvivorSelector : MonoBehaviour
             {
                 if (hit.collider.gameObject.TryGetComponent(out SurvivorSelect select))
                 {
+                    ActivateUI(true);
                     survivorNameText.text = select.survivor.survivorName;
                     survivorDescriptionText.text = select.survivor.classDescription;
                     survivorSpecialText.text = select.survivor.classSpecialDescription;
                 }
                 else
                 {
+                    ActivateUI(false);
                     survivorNameText.text = "";
                     survivorDescriptionText.text = "";
                     survivorSpecialText.text = "";
@@ -60,6 +68,7 @@ public class SurvivorSelector : MonoBehaviour
             }
             else
             {
+                ActivateUI(false);
                 survivorNameText.text = "";
                 survivorDescriptionText.text = "";
                 survivorSpecialText.text = "";
@@ -67,5 +76,28 @@ public class SurvivorSelector : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
     }
+    private void SelectSurvivor()
+    {
+        if (!canSelect) return;
 
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out hit))
+        {
+            if (hit.collider.gameObject.TryGetComponent(out SurvivorSelect select))
+            {
+                select.Select();
+            }
+        }
+    }
+    private void ActivateUI(bool active)
+    {
+        survivorNameText.enabled = active;
+        survivorDescriptionText.enabled = active;
+        survivorSpecialText.enabled = active;
+
+        descriptionGroup.SetActive(active);
+        specialGroup.SetActive(active);
+    }
 }
