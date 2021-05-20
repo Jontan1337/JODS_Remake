@@ -13,41 +13,42 @@ public class AutoTurret : NetworkBehaviour
 	private LayerMask ignoreLayer;
 
 	private bool active = true;
-	private Collider[] targets;
+	private Collider[] enemiesInRange;
 	private GameObject target;
 
 	private void Start()
 	{
-		StartCoroutine(TurretShoot());
+		StartCoroutine(Searching());
 	}
 
 	IEnumerator TurretShoot()
 	{
-		print("CMON");
-		if (!target)
+		print("Start shooting...");
+		IDamagable targetHealth = target.GetComponent<IDamagable>();
+		while (target)
 		{
-			FindTargets();
-		}
-		Debug.DrawRay(transform.position, transform.forward * range);
-		print("yeeee1");
-		while (active)
-		{
-			target.GetComponent<IDamagable>()?.Svr_Damage(2);
-			print("yeeee2");
+			targetHealth?.Svr_Damage(2);
+			if (targetHealth.IsDead())
+			{
+				target = null;
+			}
+			//print("Shooting...");
 			yield return new WaitForSeconds(0.1f);
 		}
-
+		StartCoroutine(Searching());
 	}
 
-	void FindTargets()
+	void FindTarget()
 	{
-		targets = Physics.OverlapSphere(transform.position, range, ~ignoreLayer);
-		for (int i = 0; i < targets.Length; i++)
+		enemiesInRange = Physics.OverlapSphere(transform.position, range, ~ignoreLayer);
+		target = enemiesInRange[0].gameObject;
+		print(enemiesInRange.Length);
+		for (int i = 0; i < enemiesInRange.Length; i++)
 		{
-
-			if (Vector3.Distance(target.transform.position, gameObject.transform.position) > Vector3.Distance(targets[i].transform.position, gameObject.transform.position))
+			if (Vector3.Distance(target.transform.position, gameObject.transform.position) > Vector3.Distance(enemiesInRange[i].transform.position, gameObject.transform.position))
 			{
-				target = targets[i].gameObject;
+				target = enemiesInRange[i].gameObject;
+				print(target.name);
 			}
 		}
 	}
@@ -55,8 +56,12 @@ public class AutoTurret : NetworkBehaviour
 	{
 		while (!target)
 		{
-			FindTargets();
-			yield return new WaitForSeconds(1);
+			print("Searching...");
+			FindTarget();
+			yield return new WaitForSeconds(0.1f);
 		}
+
+		print("Target found: " + target.name);
+		StartCoroutine(TurretShoot());
 	}
 }

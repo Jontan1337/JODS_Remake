@@ -98,4 +98,14 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
         if (armor > 0) armor -= damage;
         else health -= damage;
     }
+
+	int IDamagable.GetHealth()
+	{
+		throw new System.NotImplementedException();
+	}
+
+	bool IDamagable.IsDead()
+	{
+		throw new System.NotImplementedException();
+	}
 }

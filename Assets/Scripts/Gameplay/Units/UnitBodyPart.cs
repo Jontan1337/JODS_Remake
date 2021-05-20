@@ -33,7 +33,17 @@ public class UnitBodyPart : MonoBehaviour, IDamagable
         unitBase.Svr_Damage(Mathf.RoundToInt(damage * multiplier));
     }
 
-    void Start()
+	int IDamagable.GetHealth()
+	{
+		throw new System.NotImplementedException();
+	}
+
+	bool IDamagable.IsDead()
+	{
+		throw new System.NotImplementedException();
+	}
+
+	void Start()
     {
         unitBase = transform.root.GetComponent<UnitBase>();
 
