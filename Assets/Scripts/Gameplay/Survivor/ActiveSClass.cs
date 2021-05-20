@@ -91,20 +91,20 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
         survivorRenderer.material = survivorSO.survivorMaterial;
         survivorRenderer.sharedMesh = survivorSO.survivorMesh;
     }
-    Teams IDamagable.Team => Teams.Player;
+    public Teams Team => Teams.Player;
     [Server]
-    void IDamagable.Svr_Damage(int damage)
+    public void Svr_Damage(int damage, Transform target = null)
     {
         if (armor > 0) armor -= damage;
         else health -= damage;
     }
 
-	int IDamagable.GetHealth()
+	public int GetHealth()
 	{
 		throw new System.NotImplementedException();
 	}
 
-	bool IDamagable.IsDead()
+	public bool IsDead()
 	{
 		throw new System.NotImplementedException();
 	}

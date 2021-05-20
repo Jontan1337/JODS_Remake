@@ -1053,7 +1053,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     #region IDamagable
 
     [Server]
-    public void Svr_Damage(int damage)
+    public void Svr_Damage(int damage, Transform target = null)
     {
         if (isDead) return;
 
