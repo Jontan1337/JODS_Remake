@@ -86,7 +86,7 @@ public class Equipment : NetworkBehaviour
         }
     }
 
-    private void Awake()
+    private void Start()
     {
         equipmentSlotsTypes = GetComponentInParent<PlayerSetup>().equipmentSlotsTypes;
     }
@@ -121,8 +121,10 @@ public class Equipment : NetworkBehaviour
     #region NetworkBehaviour Callbacks
     public override void OnStartServer()
     {
+        transform.root.GetComponent<PlayerSetup>().onSpawnItem += GetReferences;
         NetworkTest.RelayOnServerAddPlayer += Svr_UpdateVars;
     }
+
     public override void OnStartAuthority()
     {
         JODSInput.Controls.Survivor.Drop.performed += OnDropItem;
@@ -136,6 +138,7 @@ public class Equipment : NetworkBehaviour
 
     public override void OnStopServer()
     {
+        transform.root.GetComponent<PlayerSetup>().onSpawnItem -= GetReferences;
         NetworkTest.RelayOnServerAddPlayer -= Svr_UpdateVars;
     }
     public override void OnStopAuthority()
@@ -392,5 +395,21 @@ public class Equipment : NetworkBehaviour
         tempSlot.gameObject.transform.parent = equipmentSlotsParent;
         GameObject hotbarSlotUI = Instantiate(equipmentSlotUIPrefab, equipmentSlotsUIParent);
         tempSlot.UISlot = hotbarSlotUI;
+    }
+
+    private void GetReferences(GameObject item)
+    {
+
+        if (item.TryGetComponent(out ItemName itemName))
+        {
+            switch (itemName.itemName)
+            {
+                case ItemNames.PlayerHands:
+                    playerHands = item.transform;
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }

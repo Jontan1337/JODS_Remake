@@ -889,7 +889,6 @@ GameObject:
   - component: {fileID: 748090733530408348}
   - component: {fileID: 6930014499059818200}
   - component: {fileID: 8458703505067804603}
-  - component: {fileID: 8951334521252855171}
   m_Layer: 13
   m_Name: Survivor
   m_TagString: Player
@@ -1100,25 +1099,29 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   dynamicItems:
-  - prefab: {fileID: 1449629511276398419, guid: 6348f645c14c56e42b4b7d8f34498b26,
+  - listItemName: Virtual Head
+    prefab: {fileID: 1449629511276398419, guid: 6348f645c14c56e42b4b7d8f34498b26,
       type: 3}
     position: {x: 0, y: 1.9, z: 0}
-    callType: 1
+    activeType: 2
     children:
-    - prefab: {fileID: 6222407410909346251, guid: beeedc4be235b6744aca80b4be429040,
+    - listItemName: Camera
+      prefab: {fileID: 6222407410909346251, guid: beeedc4be235b6744aca80b4be429040,
         type: 3}
       position: {x: 0, y: 0.1, z: 0}
-      callType: 2
+      activeType: 0
       children: []
-    - prefab: {fileID: 7469820133590246594, guid: c35b413099755c84488f6bd89608381b,
+    - listItemName: PlayerHands
+      prefab: {fileID: 7469820133590246594, guid: c35b413099755c84488f6bd89608381b,
         type: 3}
       position: {x: 0.25, y: 0.1, z: 0.6}
-      callType: 1
+      activeType: 2
       children: []
-  - prefab: {fileID: 5545151553288273671, guid: 8aa36f6128d160f4faea76bcdc7a1b24,
+  - listItemName: Equipment
+    prefab: {fileID: 5545151553288273671, guid: 8aa36f6128d160f4faea76bcdc7a1b24,
       type: 3}
     position: {x: 0, y: 0, z: 0}
-    callType: 1
+    activeType: 2
     children: []
   playerName: 
   playerHands: {fileID: 7469820133590246594, guid: c35b413099755c84488f6bd89608381b,
@@ -1128,18 +1131,15 @@ MonoBehaviour:
   slotsUIParent: {fileID: 6850896366548614916}
   playerNameText: {fileID: 0}
   equipmentSlotsTypes: 01000000010000000200000003000000
-  playerEquipment: {fileID: 0}
-  playerHandsParent: {fileID: 0}
-  disableIfPlayer:
+  prefabDisableIfPlayer:
   - {fileID: 5922127114707202530}
   - {fileID: 5922127114707202528}
-  disableIfNotPlayer:
-  - {fileID: 0}
-  enableIfPlayer:
-  - {fileID: 0}
-  enableIfNotPlayer:
+  prefabDisableIfNotPlayer: []
+  prefabEnableIfPlayer: []
+  prefabEnableIfNotPlayer:
   - {fileID: 5922127114707202530}
   - {fileID: 5922127114707202528}
+  dynamicallySpawnedItems: []
   Survivor: 0
   isMe: 0
   points: 0
@@ -1157,25 +1157,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
---- !u!114 &8951334521252855171
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5922127114707202486}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 734b48bea0b204338958ee3d885e11f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  clientAuthority: 1
-  localPositionSensitivity: 0.01
-  localRotationSensitivity: 0.01
-  localScaleSensitivity: 0.01
-  target: {fileID: 0}
 --- !u!1 &5922127114707202528
 GameObject:
   m_ObjectHideFlags: 0

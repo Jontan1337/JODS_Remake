@@ -22,11 +22,11 @@ public class LookController : NetworkBehaviour
 
     public override void OnStartServer()
     {
-        GetComponent<PlayerSetup>().onSpawnItem += GetCamera;
+        transform.root.GetComponent<PlayerSetup>().onSpawnItem += GetCamera;
     }
     public override void OnStopServer()
     {
-        GetComponent<PlayerSetup>().onSpawnItem -= GetCamera;
+        transform.root.GetComponent<PlayerSetup>().onSpawnItem -= GetCamera;
     }
     public override void OnStartAuthority()
     {
@@ -67,10 +67,19 @@ public class LookController : NetworkBehaviour
 
     private void GetCamera(GameObject item)
     {
-        if (item.TryGetComponent(out Camera camera))
+        if (item.TryGetComponent(out ItemName itemName))
         {
-            playerCamera = camera;
-            rotateVertical = camera.transform;
+            switch (itemName.itemName)
+            {
+                case ItemNames.VirtualHead:
+                    rotateVertical = item.transform;
+                    break;
+                case ItemNames.Camera:
+                    playerCamera = item.GetComponent<Camera>();
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

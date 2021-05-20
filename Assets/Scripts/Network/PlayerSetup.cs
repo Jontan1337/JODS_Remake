@@ -4,21 +4,22 @@ using Mirror;
 using System;
 using UnityEngine.Events;
 
-public enum CallType
+public enum ActiveType
 {
-    Local,
-    ClientRPC,
-    TargetRPC
+    OnlyLocal,
+    OnlyOthers,
+    All
 }
 
 [System.Serializable]
 public struct DynamicItem {
+    public string listItemName;
     public GameObject prefab;
     public Vector3 position;
     [Tooltip("Choose how the item should spawn. " +
             "\nLocal: Called on server only." +
             "\nClientRPC: Called on all clients." +
-            "\nTargetRPC: Called on the player that owns this object.")] public CallType callType;
+            "\nTargetRPC: Called on the player that owns this object.")] public ActiveType activeType;
     public List<DynamicItem> children;
 }
 
@@ -40,30 +41,98 @@ public class PlayerSetup : NetworkBehaviour
     [SerializeField, Tooltip("A list of the equipment types, the player should start with.")]
     public List<EquipmentType> equipmentSlotsTypes = new List<EquipmentType>();
 
-    [Header("References from player setup")]
-    [SerializeField] private Equipment playerEquipment;
-
     [Header("References")]
-    [SerializeField] private Transform playerHandsParent;
 
     [Space]
-    [SerializeField] private GameObject[] disableIfPlayer;
-    [SerializeField] private GameObject[] disableIfNotPlayer;
-    [SerializeField] private GameObject[] enableIfPlayer;
-    [SerializeField] private GameObject[] enableIfNotPlayer;
+
+    [SerializeField] private List<GameObject> disableIfPlayer = new List<GameObject>();
+    [SerializeField] private List<GameObject> disableIfNotPlayer = new List<GameObject>();
+    [SerializeField] private List<GameObject> enableIfPlayer = new List<GameObject>();
+    [SerializeField] private List<GameObject> enableIfNotPlayer = new List<GameObject>();
+    [SerializeField] private GameObject[] prefabDisableIfPlayer;
+    [SerializeField] private GameObject[] prefabDisableIfNotPlayer;
+    [SerializeField] private GameObject[] prefabEnableIfPlayer;
+    [SerializeField] private GameObject[] prefabEnableIfNotPlayer;
+
+    [SerializeField] private List<GameObject> dynamicallySpawnedItems;
 
     [SerializeField] private bool Survivor;
     [SerializeField] private bool isMe;
     [SerializeField] private int points;
 
+    public override void OnStartServer()
+    {
+        if (isServer)
+        {
+            NetworkTest.RelayOnServerAddPlayer += Svr_UpdateVars;
+        }
+    }
+    public override void OnStopServer()
+    {
+        if (isServer)
+        {
+            NetworkTest.RelayOnServerAddPlayer -= Svr_UpdateVars;
+        }
+    }
+
     private void Start()
     {
+        if (isServer)
+            InitSetup();
+    }
+
+    [Server]
+    private void Svr_UpdateVars(NetworkConnection target)
+    {
+        Rpc_SetSyncLists(
+            target,
+            disableIfPlayer,
+            disableIfNotPlayer,
+            enableIfPlayer,
+            enableIfNotPlayer,
+            dynamicallySpawnedItems
+        );
+        Rpc_InitSetup(target);
+    }
+
+    [TargetRpc]
+    private void Rpc_SetSyncLists(NetworkConnection target,
+        List<GameObject> disableIfPlayer,
+        List<GameObject> disableIfNotPlayer,
+        List<GameObject> enableIfPlayer,
+        List<GameObject> enableIfNotPlayer,
+        List<GameObject> dynamicallySpawnedItems)
+    {
+        this.disableIfPlayer = disableIfPlayer;
+        this.disableIfNotPlayer = disableIfNotPlayer;
+        this.enableIfPlayer = enableIfPlayer;
+        this.enableIfNotPlayer = enableIfNotPlayer;
+        this.dynamicallySpawnedItems = dynamicallySpawnedItems;
+    }
+
+    [TargetRpc]
+    private void Rpc_InitSetup(NetworkConnection target)
+    {
+        InitSetup();
+    }
+
+    private void InitSetup()
+    {
+        if (isServer)
+        {
+            Svr_SpawnItems();
+        }
         if (hasAuthority)
         {
-            Cmd_SpawnEssentials();
-
             foreach (GameObject g in disableIfPlayer) { g.SetActive(false); }
             foreach (GameObject g in enableIfPlayer) { g.SetActive(true); }
+            foreach (GameObject g in prefabDisableIfPlayer) { g.SetActive(false); }
+            foreach (GameObject g in prefabEnableIfPlayer) { g.SetActive(true); }
+
+            foreach (GameObject dynamicItem in dynamicallySpawnedItems)
+            {
+                onSpawnItem?.Invoke(dynamicItem);
+            }
 
             TryGetComponent(out Spectator spectator);
             // Only set player name if player is not a spectator.
@@ -84,6 +153,8 @@ public class PlayerSetup : NetworkBehaviour
         {
             foreach (GameObject g in disableIfNotPlayer) { g.SetActive(false); }
             foreach (GameObject g in enableIfNotPlayer) { g.SetActive(true); }
+            foreach (GameObject g in prefabDisableIfNotPlayer) { g.SetActive(false); }
+            foreach (GameObject g in prefabEnableIfNotPlayer) { g.SetActive(true); }
         }
     }
 
@@ -97,95 +168,102 @@ public class PlayerSetup : NetworkBehaviour
     [Server]
     private void Svr_RecursiveChildren(DynamicItem child, Transform parent)
     {
-        Svr_CallType(child.callType, child.prefab, parent);
+        GameObject GOItem = Svr_SpawnDynamicItem(child, parent);
+        Svr_CheckType(child.activeType, GOItem);
         List<DynamicItem> dynamicChildren = child.children;
+        // Loop through current child's children.
         foreach (var childsChild in dynamicChildren)
         {
-            Svr_RecursiveChildren(childsChild, child.prefab.transform);
+            Svr_RecursiveChildren(childsChild, parent);
         }
     }
 
     [Server]
     private void Svr_SpawnItems()
     {
+        // Loop through top parents in the list.
         foreach (DynamicItem item in dynamicItems)
         {
-            
-            Svr_CallType(item.callType, item.prefab, transform);
+            GameObject GOItem = Svr_SpawnDynamicItem(item, transform);
+            Svr_CheckType(item.activeType, GOItem);
             List<DynamicItem> dynamicChildren = item.children;
+            // Loop through current parent's children.
             foreach (DynamicItem child in dynamicChildren)
             {
-                Svr_RecursiveChildren(child, item.prefab.transform);
+                Svr_RecursiveChildren(child, GOItem.transform);
             }
         }
-
-
-
-
-
-
-
-        //GameObject GOEquipment = Instantiate(equipment);
-        //GOEquipment.GetComponent<Equipment>().equipmentSlotsTypes = equipmentSlotsTypes;
-        //NetworkServer.Spawn(GOEquipment, connectionToClient);
-        //GOEquipment.transform.SetParent(transform);
-        //GOEquipment.transform.localPosition = new Vector3();
-        //playerEquipment = GOEquipment.GetComponent<Equipment>();
-        //onSpawnEquipment?.Invoke(playerEquipment);
     }
 
     [Server]
-    private void Svr_CallType(CallType type, GameObject prefabItem, Transform parentTransform)
+    private void Svr_CheckType(ActiveType type, GameObject GOItem)
     {
         switch (type)
         {
-            case CallType.Local:
-                LocalSetup(prefabItem, parentTransform);
+            case ActiveType.OnlyLocal:
+                disableIfNotPlayer.Add(GOItem);
+                enableIfPlayer.Add(GOItem);
+                //LocalSetup(prefabItem, parentTransform);
                 break;
-            case CallType.ClientRPC:
-                Rpc_ClientSetup(prefabItem, parentTransform);
+            case ActiveType.OnlyOthers:
+                disableIfPlayer.Add(GOItem);
+                enableIfNotPlayer.Add(GOItem);
+                //Rpc_ClientSetup(prefabItem, parentTransform);
                 break;
-            case CallType.TargetRPC:
-                Rpc_TargetSetup(connectionToClient, prefabItem, parentTransform);
+            case ActiveType.All:
+                enableIfPlayer.Add(GOItem);
+                enableIfNotPlayer.Add(GOItem);
+                //Rpc_TargetSetup(connectionToClient, prefabItem, parentTransform);
                 break;
             default:
                 break;
         }
     }
 
-    private void LocalSetup(GameObject prefabItem, Transform parentTransform)
+    [Server]
+    private GameObject Svr_SpawnDynamicItem(DynamicItem item, Transform parent)
     {
-        GameObject GOItem = Instantiate(prefabItem);
+        GameObject GOItem = Instantiate(item.prefab);
         NetworkServer.Spawn(GOItem, connectionToClient);
-        GOItem.transform.SetParent(transform);
-        onSpawnItem?.Invoke(GOItem);
-    }
-    [ClientRpc]
-    private void Rpc_ClientSetup(GameObject prefabItem, Transform parentTransform)
-    {
-        GameObject GOItem = Instantiate(prefabItem);
-        NetworkServer.Spawn(GOItem, connectionToClient);
-        GOItem.transform.SetParent(parentTransform);
-        onSpawnItem?.Invoke(GOItem);
-    }
-    [TargetRpc]
-    private void Rpc_TargetSetup(NetworkConnection target, GameObject prefabItem, Transform parentTransform)
-    {
-        GameObject GOItem = Instantiate(prefabItem);
-        NetworkServer.Spawn(GOItem, connectionToClient);
-        GOItem.transform.SetParent(parentTransform);
-        onSpawnItem?.Invoke(GOItem);
+        GOItem.transform.SetParent(parent);
+        GOItem.transform.localPosition = item.position;
+        dynamicallySpawnedItems.Add(GOItem);
+        return GOItem;
     }
 
-    [Server]
-    private void Svr_SpawnHands()
-    {
-        GameObject GOPlayerHands = Instantiate(playerHands);
-        NetworkServer.Spawn(GOPlayerHands, connectionToClient);
-        GOPlayerHands.transform.SetParent(playerHandsParent);
-        GOPlayerHands.transform.localPosition = new Vector3(0.25f, 0f, 0.6f);
-        playerEquipment.playerHands = GOPlayerHands.transform;
-    }
+    //private void LocalSetup(GameObject prefabItem, Transform parentTransform)
+    //{
+    //    GameObject GOItem = Instantiate(prefabItem);
+    //    NetworkServer.Spawn(GOItem, connectionToClient);
+    //    GOItem.transform.SetParent(transform);
+    //    onSpawnItem?.Invoke(GOItem);
+    //}
+    //[ClientRpc]
+    //private void Rpc_ClientSetup(GameObject prefabItem, Transform parentTransform)
+    //{
+    //    GameObject GOItem = Instantiate(prefabItem);
+    //    NetworkServer.Spawn(GOItem, connectionToClient);
+    //    GOItem.transform.SetParent(parentTransform);
+    //    onSpawnItem?.Invoke(GOItem);
+    //}
+    //[TargetRpc]
+    //private void Rpc_TargetSetup(NetworkConnection target, GameObject prefabItem, Transform parentTransform)
+    //{
+    //    GameObject GOItem = Instantiate(prefabItem);
+    //    NetworkServer.Spawn(GOItem, connectionToClient);
+    //    GOItem.transform.SetParent(parentTransform);
+    //    onSpawnItem?.Invoke(GOItem);
+    //}
+
+    //[Server]
+    //private void Svr_SpawnHands()
+    //{
+    //    GameObject GOPlayerHands = Instantiate(playerHands);
+    //    NetworkServer.Spawn(GOPlayerHands, connectionToClient);
+    //    GOPlayerHands.transform.SetParent(playerHandsParent);
+    //    GOPlayerHands.transform.localPosition = new Vector3(0.25f, 0f, 0.6f);
+    //    playerEquipment.playerHands = GOPlayerHands.transform;
+    //}
 
 
     //[Command]
