@@ -656,6 +656,16 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         return angle <= 10;
     }
 
+    private bool CloserThanTarget(Transform compareTarget)
+    {
+        if (!HasTarget()) return false;
+
+        float distance1 = Vector3.Distance(transform.position, currentTarget.position);
+        float distance2 = Vector3.Distance(transform.position, compareTarget.position);
+
+        return distance2 < distance1;
+    }
+
     #endregion
 
     #region Attacks
@@ -1056,6 +1066,12 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     public void Svr_Damage(int damage, Transform target = null)
     {
         if (isDead) return;
+
+        if (CloserThanTarget(target))
+        {
+            SetTarget(target);
+            NewTarget();
+        }
 
         health -= damage;
 
