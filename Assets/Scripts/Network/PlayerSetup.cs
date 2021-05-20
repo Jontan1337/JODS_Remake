@@ -223,7 +223,7 @@ public class PlayerSetup : NetworkBehaviour
     [Server]
     private GameObject Svr_SpawnDynamicItem(DynamicItem item, Transform parent)
     {
-        GameObject GOItem = Instantiate(item.prefab);
+        GameObject GOItem = Instantiate(item.prefab, parent);
         NetworkServer.Spawn(GOItem, connectionToClient);
         GOItem.transform.SetParent(parent);
         GOItem.transform.localPosition = item.position;

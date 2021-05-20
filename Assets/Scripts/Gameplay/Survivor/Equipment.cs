@@ -88,7 +88,14 @@ public class Equipment : NetworkBehaviour
 
     private void Start()
     {
-        equipmentSlotsTypes = GetComponentInParent<PlayerSetup>().equipmentSlotsTypes;
+        // This is run in Start instead of OnStartServer because
+        // OnStartServer gets called before Start when equipment object
+        // is not set as child to player yet.
+        if (transform.root.GetComponent<PlayerSetup>())
+        {
+            transform.root.GetComponent<PlayerSetup>().onSpawnItem += GetReferences;
+            equipmentSlotsTypes = transform.root.GetComponent<PlayerSetup>().equipmentSlotsTypes;
+        }
     }
 
     private void OnTransformParentChanged()
@@ -121,7 +128,7 @@ public class Equipment : NetworkBehaviour
     #region NetworkBehaviour Callbacks
     public override void OnStartServer()
     {
-        transform.root.GetComponent<PlayerSetup>().onSpawnItem += GetReferences;
+        
         NetworkTest.RelayOnServerAddPlayer += Svr_UpdateVars;
     }
 
@@ -133,6 +140,7 @@ public class Equipment : NetworkBehaviour
     }
     public override void OnStartClient()
     {
+        //transform.root.GetComponent<PlayerSetup>().onSpawnItem += GetReferences;
         equipmentSlotsParent = transform;
     }
 
