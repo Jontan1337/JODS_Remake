@@ -10,7 +10,7 @@ public class MenuHandler : NetworkBehaviour
     [Header("Submenus")]
     public GameObject options;
 
-    private Interacter interact;
+    private Interactor interact;
     [Space]
     [SerializeField] private HandSway handSway = null;
 
@@ -24,7 +24,7 @@ public class MenuHandler : NetworkBehaviour
 
     private void Start()
     {
-        interact = GetComponent<Interacter>();
+        interact = GetComponent<Interactor>();
     }
 
     private void Update()

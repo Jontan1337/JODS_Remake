@@ -5,14 +5,17 @@ public class EquipmentControl : NetworkBehaviour
 {
     private Equipment equipment;
 
-    public override void OnStartServer()
+    public override void OnStopServer()
+    {
+        equipment.onServerEquippedItemChange -= Svr_ChangeControlBind;
+    }
+    public override void OnStartAuthority()
     {
         transform.root.GetComponent<PlayerSetup>().onSpawnItem += GetEquipment;
     }
-    public override void OnStopServer()
+    public override void OnStopAuthority()
     {
         transform.root.GetComponent<PlayerSetup>().onSpawnItem -= GetEquipment;
-        equipment.onServerEquippedItemChange -= Svr_ChangeControlBind;
     }
 
     public void GetEquipment(GameObject item)
@@ -22,8 +25,7 @@ public class EquipmentControl : NetworkBehaviour
             switch (itemName.itemName)
             {
                 case ItemNames.Equipment:
-                    this.equipment = item.GetComponent<Equipment>();
-                    this.equipment.onServerEquippedItemChange += Svr_ChangeControlBind;
+                    Cmd_SetEquipment(item);
                     break;
                 default:
                     break;
@@ -31,11 +33,16 @@ public class EquipmentControl : NetworkBehaviour
         }
     }
 
+    [Command]
+    private void Cmd_SetEquipment(GameObject item)
+    {
+        equipment = item.GetComponent<Equipment>();
+        equipment.onServerEquippedItemChange += Svr_ChangeControlBind;
+    }
+
     [Server]
     private void Svr_ChangeControlBind(GameObject oldItem, GameObject newItem)
     {
-        print("ChangeControlBind");
-
         if (oldItem)
             Rpc_UnBind(connectionToClient, oldItem);
 
