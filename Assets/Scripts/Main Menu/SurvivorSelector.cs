@@ -49,6 +49,8 @@ public class SurvivorSelector : NetworkBehaviour
     {
         while (canSelect)
         {
+            if (highlight == null) highlight = SurvivorSelectHighlight.instance;
+
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
