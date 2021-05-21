@@ -468,11 +468,14 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         }
     }
 
-    public void AcquireTarget(Transform newTarget, bool alerted)
+    public void AcquireTarget(Transform newTarget, bool alerted, bool closerThanCurrent = false)
     {
-        if (HasTarget())
+        if (!closerThanCurrent)
         {
-            if (!CloserThanTarget(newTarget)) return;
+            if (HasTarget())
+            {
+                if (!CloserThanTarget(newTarget)) return;
+            }
         }
 
         SetTarget(newTarget);
@@ -1074,7 +1077,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         if (CloserThanTarget(target))
         {
             Debug.Log("I got shot by someone closer than my target");
-            AcquireTarget(target,false);
+            AcquireTarget(target,false, true);
         }
 
         health -= damage;
