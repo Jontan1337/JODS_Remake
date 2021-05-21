@@ -20,21 +20,15 @@ public class LookController : NetworkBehaviour
 
     #region NetworkBehaviour Callbacks
 
-    public override void OnStartServer()
-    {
-        transform.root.GetComponent<PlayerSetup>().onSpawnItem += GetCamera;
-    }
-    public override void OnStopServer()
-    {
-        transform.root.GetComponent<PlayerSetup>().onSpawnItem -= GetCamera;
-    }
     public override void OnStartAuthority()
     {
+        transform.root.GetComponent<PlayerSetup>().onSpawnItem += GetCamera;
         Cursor.lockState = CursorLockMode.Locked;
         JODSInput.Controls.Survivor.Camera.performed += Look;
     }
     public override void OnStopAuthority()
     {
+        transform.root.GetComponent<PlayerSetup>().onSpawnItem -= GetCamera;
         JODSInput.Controls.Survivor.Camera.performed -= Look;
     }
     #endregion

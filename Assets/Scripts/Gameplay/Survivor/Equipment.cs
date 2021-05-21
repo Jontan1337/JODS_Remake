@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using Mirror;
 using System;
 using UnityEngine.InputSystem;
 
-public class Equipment : NetworkBehaviour
+public class Equipment : NetworkBehaviour, IInitializable<PlayerSetup>
 {
     [Tooltip("A list of the equipment types, the player should have.")]
     public List<EquipmentType> equipmentSlotsTypes = new List<EquipmentType>();
@@ -85,17 +86,23 @@ public class Equipment : NetworkBehaviour
             equipmentSlots = value;
         }
     }
+    public bool IsInitialized { get; private set; }
 
-    private void Start()
+    public void Init(PlayerSetup initializer)
     {
-        // This is run in Start instead of OnStartServer because
-        // OnStartServer gets called before Start when equipment object
-        // is not set as child to player yet.
-        if (transform.root.GetComponent<PlayerSetup>())
+        if (IsInitialized) return;
+
+        if (hasAuthority)
         {
-            transform.root.GetComponent<PlayerSetup>().onSpawnItem += GetReferences;
-            equipmentSlotsTypes = transform.root.GetComponent<PlayerSetup>().equipmentSlotsTypes;
+            Cmd_EquipmentSlotsSetup();
+
+            // This is run in Start instead of OnStartServer because
+            // OnStartServer gets called before Start when equipment object
+            // is not set as child to player yet.
+            initializer.onSpawnItem += GetReferences;
         }
+
+        IsInitialized = true;
     }
 
     private void OnTransformParentChanged()
@@ -105,9 +112,11 @@ public class Equipment : NetworkBehaviour
             // When parent changed, check if it's correctly set to player Survivor
             // and then find UI hotbar under Survivors canvas.
             Debug.Log($"My parent {transform.parent}", this);
+
             if (transform.parent.name.Contains("Survivor"))
             {
                 equipmentSlotsUIParent = transform.parent.Find(slotsUIParentName);
+                equipmentSlotsTypes = transform.root.GetComponent<PlayerSetup>().equipmentSlotsTypes;
             }
         }
     }
@@ -128,7 +137,6 @@ public class Equipment : NetworkBehaviour
     #region NetworkBehaviour Callbacks
     public override void OnStartServer()
     {
-        
         NetworkTest.RelayOnServerAddPlayer += Svr_UpdateVars;
     }
 
@@ -136,21 +144,20 @@ public class Equipment : NetworkBehaviour
     {
         JODSInput.Controls.Survivor.Drop.performed += OnDropItem;
         JODSInput.Controls.Survivor.Hotbarselecting.performed += number => Cmd_SelectSlot(Mathf.RoundToInt(number.ReadValue<float>()) - 1);
-        Cmd_EquipmentSlotsSetup();
+        
     }
     public override void OnStartClient()
     {
-        //transform.root.GetComponent<PlayerSetup>().onSpawnItem += GetReferences;
         equipmentSlotsParent = transform;
     }
 
     public override void OnStopServer()
     {
-        transform.root.GetComponent<PlayerSetup>().onSpawnItem -= GetReferences;
         NetworkTest.RelayOnServerAddPlayer -= Svr_UpdateVars;
     }
     public override void OnStopAuthority()
     {
+        transform.root.GetComponent<PlayerSetup>().onSpawnItem -= GetReferences;
         JODSInput.Controls.Survivor.Drop.performed -= OnDropItem;
         JODSInput.Controls.Survivor.Hotbarselecting.performed -= number => Cmd_SelectSlot(Mathf.RoundToInt(number.ReadValue<float>()) - 1);
     }
@@ -161,11 +168,8 @@ public class Equipment : NetworkBehaviour
     {
         if (!initialState)
         {
-            if (selectedEquipmentSlot)
-            {
-                writer.WriteGameObject(equippedItem);
-                writer.WriteEquipmentSlot(selectedEquipmentSlot);
-            }
+            writer.WriteGameObject(equippedItem);
+            writer.WriteEquipmentSlot(selectedEquipmentSlot);
             return true;
         }
         return false;
@@ -186,19 +190,30 @@ public class Equipment : NetworkBehaviour
     [Server]
     private void Svr_UpdateVars(NetworkConnection conn)
     {
-        Rpc_UpdateSelectedSlot(conn, SelectedEquipmentSlot);
-        Rpc_UpdateEquippedItem(conn, EquippedItem);
+        if (SelectedEquipmentSlot)
+            Rpc_UpdateSelectedSlot(conn, SelectedEquipmentSlot);
+
+        if (EquippedItem)
+            Rpc_UpdateEquippedItem(conn, EquippedItem);
+
+        if (playerHands)
+            Rpc_UpdatePlayerHands(conn, playerHands);
     }
 
     [TargetRpc]
     private void Rpc_UpdateSelectedSlot(NetworkConnection target, EquipmentSlot value)
     {
-        selectedEquipmentSlot = value;
+        SelectedEquipmentSlot = value;
     }
     [TargetRpc]
     private void Rpc_UpdateEquippedItem(NetworkConnection target, GameObject value)
     {
-        equippedItem = value;
+        EquippedItem = value;
+    }
+    [TargetRpc]
+    private void Rpc_UpdatePlayerHands(NetworkConnection target, Transform value)
+    {
+        playerHands = value;
     }
     #endregion
 
@@ -307,9 +322,35 @@ public class Equipment : NetworkBehaviour
         {
             pt.Svr_DisableItemPhysics();
         }
-        EquippedItem.transform.position = playerHands.position;
-        EquippedItem.transform.rotation = playerHands.rotation;
         EquippedItem.transform.parent = playerHands;
+        Rpc_MoveToHands();
+    }
+
+    [ClientRpc]
+    private void Rpc_MoveToHands()
+    {
+        StartCoroutine(MoveToHands());
+    }
+
+    private IEnumerator MoveToHands()
+    {
+        while (!Equals(EquippedItem.transform.position, playerHands.position)
+                && !Equals(EquippedItem.transform.rotation, playerHands.rotation))
+        {
+            EquippedItem.transform.position = Vector3.Lerp(EquippedItem.transform.position, playerHands.position, Time.deltaTime * 20);
+            EquippedItem.transform.rotation = Quaternion.Lerp(EquippedItem.transform.rotation, playerHands.rotation, Time.deltaTime * 20);
+
+            yield return null;
+
+            if (Vector3.Distance(EquippedItem.transform.position, playerHands.position) < 0.08f
+                && Vector3.Distance(EquippedItem.transform.eulerAngles, playerHands.eulerAngles) < 0.08f)
+            {
+                EquippedItem.transform.position = playerHands.position;
+                EquippedItem.transform.rotation = playerHands.rotation;
+                print("MoveToHands finish");
+                yield break;
+            }
+        }
     }
 
     [Command]
@@ -407,17 +448,23 @@ public class Equipment : NetworkBehaviour
 
     private void GetReferences(GameObject item)
     {
-
         if (item.TryGetComponent(out ItemName itemName))
         {
             switch (itemName.itemName)
             {
                 case ItemNames.PlayerHands:
                     playerHands = item.transform;
+                    Cmd_SetPlayerHands(playerHands);
                     break;
                 default:
                     break;
             }
         }
+    }
+
+    [Command]
+    private void Cmd_SetPlayerHands(Transform playerHands)
+    {
+        this.playerHands = playerHands;
     }
 }

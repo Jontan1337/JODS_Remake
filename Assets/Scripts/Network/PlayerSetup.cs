@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using Mirror;
 using System;
@@ -78,7 +79,7 @@ public class PlayerSetup : NetworkBehaviour
     private void Start()
     {
         if (isServer)
-            InitSetup();
+            StartCoroutine(InitSetup());
     }
 
     [Server]
@@ -113,21 +114,28 @@ public class PlayerSetup : NetworkBehaviour
     [TargetRpc]
     private void Rpc_InitSetup(NetworkConnection target)
     {
-        InitSetup();
+        StartCoroutine(InitSetup());
     }
 
-    private void InitSetup()
+    private IEnumerator InitSetup()
     {
         if (isServer)
         {
             Svr_SpawnItems();
         }
+        yield return new WaitForSeconds(0.1f);
         if (hasAuthority)
         {
             foreach (GameObject g in disableIfPlayer) { g.SetActive(false); }
             foreach (GameObject g in enableIfPlayer) { g.SetActive(true); }
             foreach (GameObject g in prefabDisableIfPlayer) { g.SetActive(false); }
             foreach (GameObject g in prefabEnableIfPlayer) { g.SetActive(true); }
+
+            foreach (GameObject dynamicItem in dynamicallySpawnedItems)
+            {
+                dynamicItem.TryGetComponent(out IInitializable<PlayerSetup> initializable);
+                initializable?.Init(this);
+            }
 
             foreach (GameObject dynamicItem in dynamicallySpawnedItems)
             {
@@ -223,7 +231,7 @@ public class PlayerSetup : NetworkBehaviour
     [Server]
     private GameObject Svr_SpawnDynamicItem(DynamicItem item, Transform parent)
     {
-        GameObject GOItem = Instantiate(item.prefab, parent);
+        GameObject GOItem = Instantiate(item.prefab);
         NetworkServer.Spawn(GOItem, connectionToClient);
         GOItem.transform.SetParent(parent);
         GOItem.transform.localPosition = item.position;

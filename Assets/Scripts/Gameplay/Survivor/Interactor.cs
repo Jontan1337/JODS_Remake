@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Interacter : NetworkBehaviour
+public class Interactor : NetworkBehaviour
 {
     [SerializeField]
     private Transform playerCamera;
@@ -14,15 +14,12 @@ public class Interacter : NetworkBehaviour
     private RaycastHit rayHit;
     private IInteractable currentInteractable;
 
-    public override void OnStartServer()
+    private void Awake()
     {
         transform.root.GetComponent<PlayerSetup>().onSpawnItem += GetCamera;
     }
-    public override void OnStopServer()
-    {
-        transform.root.GetComponent<PlayerSetup>().onSpawnItem -= GetCamera;
-    }
 
+    #region NetworkCallbacks
     public override void OnStartAuthority()
     {
         JODSInput.Controls.Survivor.Interact.performed += ctx => Interact();
@@ -30,12 +27,15 @@ public class Interacter : NetworkBehaviour
 
     public override void OnStopAuthority()
     {
+        transform.root.GetComponent<PlayerSetup>().onSpawnItem -= GetCamera;
         JODSInput.Controls.Survivor.Interact.performed -= ctx => Interact();
     }
+    #endregion
 
     private void Update()
     {
         if (!hasAuthority) return;
+        if (!playerCamera) return;
 
         Ray ray = new Ray(playerCamera.position, playerCamera.forward);
 
