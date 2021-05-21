@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class SurvivorSelect : MonoBehaviour
+public class SurvivorSelect : NetworkBehaviour
 {
     public SurvivorSO survivor;
     [Space]
-    [SerializeField] private bool selected;
+    [SyncVar, SerializeField] private bool selected;
+    [SyncVar, SerializeField] private int playerIndex;
     [Header("Visual")]
     [SerializeField] private GameObject selectedVisual;
 
@@ -14,13 +16,20 @@ public class SurvivorSelect : MonoBehaviour
     {
         Select(false);
     }
-    public void Select(bool value)
+    private void Select(bool value)
     {
         selected = value;
         selectedVisual.SetActive(value);
     }
-    public void Select()
+    [Server]
+    public void Svr_Select(int index)
     {
+        if (selected)
+        {
+            if (index != playerIndex) return;
+        }
+
+
         bool value = !selected;
         selected = value;
         selectedVisual.SetActive(value);

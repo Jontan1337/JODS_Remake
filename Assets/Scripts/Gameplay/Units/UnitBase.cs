@@ -659,11 +659,12 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     private bool CloserThanTarget(Transform compareTarget)
     {
         if (!HasTarget()) return false;
+        if (compareTarget == null) return false;
 
-        float distance1 = Vector3.Distance(transform.position, currentTarget.position);
-        float distance2 = Vector3.Distance(transform.position, compareTarget.position);
+        float newTargetDistance = Vector3.Distance(transform.position, currentTarget.position);
+        float currentTargetDistance = Vector3.Distance(transform.position, compareTarget.position);
 
-        return distance2 < distance1;
+        return currentTargetDistance > newTargetDistance;
     }
 
     #endregion

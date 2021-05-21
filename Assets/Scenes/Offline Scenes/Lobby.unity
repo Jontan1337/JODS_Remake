@@ -2711,6 +2711,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 564613099}
+  - component: {fileID: 564613100}
   m_Layer: 5
   m_Name: Highlight
   m_TagString: Untagged
@@ -2740,6 +2741,23 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &564613100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 564613098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f15e837f679ee54ea54a25ffae61a1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  survivorNameText: {fileID: 922135880}
+  survivorDescriptionText: {fileID: 1145974251}
+  survivorSpecialText: {fileID: 216370622}
+  descriptionGroup: {fileID: 1125408291}
+  specialGroup: {fileID: 1864533771}
 --- !u!1 &571122399
 GameObject:
   m_ObjectHideFlags: 0
@@ -3248,7 +3266,6 @@ GameObject:
   - component: {fileID: 630011240}
   - component: {fileID: 630011243}
   - component: {fileID: 630011244}
-  - component: {fileID: 630011245}
   - component: {fileID: 630011246}
   m_Layer: 0
   m_Name: Main Camera
@@ -3357,24 +3374,6 @@ MonoBehaviour:
   - name: Selection
     position: {fileID: 928042384}
   moving: 0
---- !u!114 &630011245
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 630011239}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73c67edb0a893f44d98ffd82d4637690, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  canSelect: 0
-  survivorNameText: {fileID: 922135880}
-  survivorDescriptionText: {fileID: 1145974251}
-  survivorSpecialText: {fileID: 216370622}
-  descriptionGroup: {fileID: 1125408291}
-  specialGroup: {fileID: 1864533771}
 --- !u!114 &630011246
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7122,6 +7121,28 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eeb47b9629e54bf4f832768831653d61, type: 3}
+--- !u!1 &1384002087 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2732755357831092622, guid: ee3d97e840279e546806e95e93f76a19,
+    type: 3}
+  m_PrefabInstance: {fileID: 2732755357671114119}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1384002088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1384002087}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 3569712150
+  serverOnly: 0
+  m_AssetId: ee3d97e840279e546806e95e93f76a19
+  hasSpawned: 0
 --- !u!1 &1393273315
 GameObject:
   m_ObjectHideFlags: 0
@@ -8221,6 +8242,18 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: Lobby
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: SurvivorSelector, Assembly-CSharp
+        m_MethodName: set_CanSelect
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1458854416
@@ -11959,18 +11992,6 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 630011245}
-        m_TargetAssemblyTypeName: SurvivorSelector, Assembly-CSharp
-        m_MethodName: set_CanSelect
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
         m_CallState: 2
 --- !u!114 &2081044324
 MonoBehaviour:

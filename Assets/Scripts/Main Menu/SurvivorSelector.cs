@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Mirror;
+using UnityEngine.InputSystem;
 
-public class SurvivorSelector : MonoBehaviour
+public class SurvivorSelector : NetworkBehaviour
 {
     #region Singleton
     public static SurvivorSelector instance;
@@ -15,17 +17,11 @@ public class SurvivorSelector : MonoBehaviour
     #endregion
 
     [SerializeField] private bool canSelect = false;
+    private SurvivorSelectHighlight highlight;
 
-    [Header("UI")]
-    [SerializeField] private Text survivorNameText;
-    [SerializeField] private Text survivorDescriptionText;
-    [SerializeField] private Text survivorSpecialText;
-    [SerializeField] private GameObject descriptionGroup;
-    [SerializeField] private GameObject specialGroup;
-
-    private void OnEnable()
+    private void Start()
     {
-        JODSInput.Controls.MainMenu.LMB.performed += ctx => SelectSurvivor();
+        highlight = SurvivorSelectHighlight.instance;
     }
 
     public bool CanSelect
@@ -35,9 +31,14 @@ public class SurvivorSelector : MonoBehaviour
             canSelect = value;
             if (value == true)
             {
+                JODSInput.Controls.MainMenu.LMB.performed += SelectSurvivor;
                 RaycastCoroutine = StartCoroutine(SelectCoroutine());
             }
-            else if (value == false) StopCoroutine(RaycastCoroutine);
+            else if (value == false)
+            {
+                JODSInput.Controls.MainMenu.LMB.performed -= SelectSurvivor;
+                StopCoroutine(RaycastCoroutine);
+            }
         }
     }
 
@@ -53,30 +54,27 @@ public class SurvivorSelector : MonoBehaviour
             {
                 if (hit.collider.gameObject.TryGetComponent(out SurvivorSelect select))
                 {
-                    ActivateUI(true);
-                    survivorNameText.text = select.survivor.survivorName;
-                    survivorDescriptionText.text = select.survivor.classDescription;
-                    survivorSpecialText.text = select.survivor.classSpecialDescription;
+                    highlight.Highlight(select.survivor);
                 }
                 else
                 {
-                    ActivateUI(false);
-                    survivorNameText.text = "";
-                    survivorDescriptionText.text = "";
-                    survivorSpecialText.text = "";
+                    highlight.Highlight(null);
                 }
             }
             else
             {
-                ActivateUI(false);
-                survivorNameText.text = "";
-                survivorDescriptionText.text = "";
-                survivorSpecialText.text = "";
+                highlight.Highlight(null);
             }
             yield return new WaitForSeconds(0.1f);
         }
     }
-    private void SelectSurvivor()
+    private void SelectSurvivor(InputAction.CallbackContext context)
+    {
+        Cmd_SelectSurvivor();
+    }
+
+    [Command]
+    private void Cmd_SelectSurvivor()
     {
         if (!canSelect) return;
 
@@ -87,17 +85,9 @@ public class SurvivorSelector : MonoBehaviour
         {
             if (hit.collider.gameObject.TryGetComponent(out SurvivorSelect select))
             {
-                select.Select();
+                select.Svr_Select(1);
             }
         }
     }
-    private void ActivateUI(bool active)
-    {
-        survivorNameText.enabled = active;
-        survivorDescriptionText.enabled = active;
-        survivorSpecialText.enabled = active;
 
-        descriptionGroup.SetActive(active);
-        specialGroup.SetActive(active);
-    }
 }
