@@ -10,7 +10,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	[SerializeField]
 	private float range = 10000;
 	[SerializeField]
-	private int damage = 2;
+	private int damage = 20;
 	[SerializeField]
 	private LayerMask ignoreLayer;
 
@@ -25,7 +25,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	[SerializeField]
 	private Transform barrel;
 
-	bool isSearching;
+	bool isSearching = false;
 
 
 
@@ -33,7 +33,6 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	private void Start()
 	{
 		StartSearching();
-		print(SearchingCo);
 	}
 
 	Coroutine TurretCo;
@@ -46,11 +45,10 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		}
 	}
 
-	Coroutine SearchingCo;
+	IEnumerator SearchingCo;
 	IEnumerator Searching()
 	{
 		isSearching = true;
-		print("searching");
 		while (true)
 		{
 			FindTarget();
@@ -72,19 +70,17 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	}
 	void FindTarget()
 	{
+		//RaycastHit hit;
+		//Physics.Raycast();
 		enemiesInRange = Physics.OverlapSphere(transform.position, range, ignoreLayer);
 		if (enemiesInRange[0])
 		{
 			NewTarget(enemiesInRange[0].transform);
 		}
-
-
-
 	}
 	void Shoot()
 	{
-		print("shoot");
-		target.GetComponent<IDamagable>()?.Svr_Damage(damage);
+		target.GetComponent<IDamagable>()?.Svr_Damage(damage, transform);
 		if (target.GetComponent<IDamagable>().IsDead())
 		{
 			LostTarget();
@@ -93,7 +89,6 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 
 	void NewTarget(Transform newTarget)
 	{
-		print(SearchingCo);
 		target = newTarget;
 		if (isSearching)
 		{
@@ -107,15 +102,16 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	void LostTarget()
 	{
 		target = null;
-		StartSearching();
 		StopCoroutine(RotateYCo);
 		StopCoroutine(TurretCo);
+		StartSearching();
 	}
 
 	void StartSearching()
 	{
-		SearchingCo = StartCoroutine(Searching());
-		print(SearchingCo);
+		SearchingCo = Searching();
+		StartCoroutine(SearchingCo);
+
 		//TO DO - TING DER SKER NÅR MAN STARTER MED AT SØGE
 	}
 
