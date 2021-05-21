@@ -22,6 +22,8 @@ public class SurvivorSelector : NetworkBehaviour
     private void Start()
     {
         highlight = SurvivorSelectHighlight.instance;
+
+        CanSelect = true;
     }
 
     public bool CanSelect

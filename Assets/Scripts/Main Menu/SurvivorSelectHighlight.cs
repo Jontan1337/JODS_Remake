@@ -20,7 +20,10 @@ public class SurvivorSelectHighlight : MonoBehaviour
     [SerializeField] private Text survivorSpecialText;
     [SerializeField] private GameObject descriptionGroup;
     [SerializeField] private GameObject specialGroup;
-
+    private void Start()
+    {
+        ActivateUI(false);
+    }
     public void Highlight(SurvivorSO so)
     {
         if (so != null)

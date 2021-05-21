@@ -29,7 +29,7 @@ public class SurvivorSelect : NetworkBehaviour
             if (index != playerIndex) return;
         }
 
-
+        playerIndex = index;
         bool value = !selected;
         selected = value;
         selectedVisual.SetActive(value);
