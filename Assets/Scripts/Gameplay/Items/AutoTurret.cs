@@ -83,13 +83,17 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		}
 	}
 
-	//IEnumerator RotateX()
-	//{
-	//	Quaternion lookRotation = Quaternion.LookRotation((target.position - cylinder.position));
-	//	swivel.rotation = Quaternion.Slerp(swivel.rotation, lookRotation, 3 * Time.deltaTime);
-	//	swivel.localEulerAngles = new Vector3(0, swivel.localEulerAngles.y, 0);
-	//	yield return null;
-	//}
+	Coroutine RotateXCo;
+	IEnumerator RotateX()
+	{
+		while (true)
+		{
+			Quaternion lookRotation = Quaternion.LookRotation(((target.position + target.GetComponent<BoxCollider>().center * 1.5f) - pivot.position));
+			pivot.rotation = Quaternion.Slerp(pivot.rotation, lookRotation, 3 * Time.deltaTime);
+			pivot.localEulerAngles = new Vector3(pivot.localEulerAngles.x, 0, 0);
+			yield return null;
+		}
+	}
 
 	IEnumerator Duration()
 	{
@@ -142,6 +146,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 			isSearching = false;
 		}
 		RotateYCo = StartCoroutine(RotateY());
+		RotateXCo = StartCoroutine(RotateX());
 		ShootIntervalCo = StartCoroutine(ShootInterval());
 	}
 
@@ -149,6 +154,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	{
 		target = null;
 		StopCoroutine(RotateYCo);
+		StopCoroutine(RotateXCo);
 		StopCoroutine(ShootIntervalCo);
 		StartSearching();
 	}
