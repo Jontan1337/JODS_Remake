@@ -549,7 +549,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         {
             yield return new WaitForSeconds(0.5f);
 
-            //if (!HasTarget()) yield break; //WTF this wont work, but it works down at Walking?!??!?
+            if (!hasTarget) LoseTarget();
 
             //Can I see the player?
             if (CanSee(currentTarget) || permanentTarget) //Permanent targets dont need to be in view
