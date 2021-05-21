@@ -1058,7 +1058,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
 
     private void OnDrawGizmos()
     {
-        if (hasTarget)
+        if (currentTarget)
         {
             Gizmos.color = Color.green;
             Gizmos.DrawSphere(new Vector3(currentTarget.position.x, currentTarget.position.y + 2, currentTarget.position.z),0.6f);
