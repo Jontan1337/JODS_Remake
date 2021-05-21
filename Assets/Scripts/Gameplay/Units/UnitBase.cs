@@ -1066,7 +1066,12 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         if (searching)
         {
             Gizmos.color = Color.yellow;
-            Gizmos.DrawCube(new Vector3(transform.position.x, transform.position.y + 3, transform.position.z), new Vector3(0.5f, 1, 0.5f));
+            Gizmos.DrawCube(new Vector3(transform.position.x, transform.position.y + 3, transform.position.z), new Vector3(0.25f, 1, 0.25f));
+        }
+        if (chasing)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawCube(new Vector3(transform.position.x, transform.position.y + 3, transform.position.z), new Vector3(0.25f, 1, 0.25f));
         }
     }
 
