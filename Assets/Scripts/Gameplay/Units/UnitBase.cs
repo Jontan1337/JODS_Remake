@@ -470,7 +470,10 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
 
     public void AcquireTarget(Transform newTarget, bool alerted)
     {
-        if (HasTarget()) return;
+        if (HasTarget())
+        {
+            if (!CloserThanTarget(newTarget)) return;
+        }
 
         SetTarget(newTarget);
 
@@ -658,15 +661,11 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
 
     private bool CloserThanTarget(Transform compareTarget)
     {
-        print("eh?");
         if (!HasTarget()) return true;
         if (compareTarget == null) return false;
 
         float newTargetDistance = Vector3.Distance(transform.position, currentTarget.position);
         float currentTargetDistance = Vector3.Distance(transform.position, compareTarget.position);
-
-        Debug.Log("new target distance: " + newTargetDistance);
-        Debug.Log("current target distance: " + currentTargetDistance);
 
         return currentTargetDistance > newTargetDistance;
     }
@@ -1075,8 +1074,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         if (CloserThanTarget(target))
         {
             Debug.Log("I got shot by someone closer than my target");
-            SetTarget(target);
-            NewTarget();
+            AcquireTarget(target,false);
         }
 
         health -= damage;
