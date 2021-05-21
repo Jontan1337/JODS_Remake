@@ -152,8 +152,19 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     bool attacking = false;
 
     protected bool meleeCooldown = false;
-    protected bool rangedCooldown = false; // Same witht these
+    [SerializeField]protected bool rangedCooldown = false; // Same witht these
     protected bool specialCooldown = false;
+
+    public bool RangedCooldown 
+    {
+        get { return rangedCooldown; }
+        
+        set 
+        { 
+            rangedCooldown = value;
+            ranged.canRanged = !value;
+        }
+    }
 
     #endregion
 
@@ -193,7 +204,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
             if (value == attackRange) return;
             attackRange = value;
             animator.SetBool("Ranged", attackRange);
-            ranged.canRanged = false;
         }
     }
     public bool AttackSpecial
@@ -678,7 +688,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     #region Attacks
 
     //This is the function that applies damage to the current target.
-    //Give damage ----- THIS NEEDS TO CHANGE WHEN SURVIVORS ARE REMADE
     protected void Damage(int damage) => currentTarget.GetComponent<IDamagable>()?.Svr_Damage(damage);
     //This function is an override that is called by projectiles or other.
     //Called when not necessarily damaging the current target
@@ -689,6 +698,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         while (true)
         {
             yield return new WaitForSeconds(0.1f);
+
+            if (!hasTarget) LoseTarget();
 
             Attack();
         }
@@ -713,13 +724,11 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     {
         if (rangedCooldown) yield break; //if an instance is already running, exit this one.
 
-        rangedCooldown = true;
-        ranged.canRanged = false;
+        RangedCooldown = true;
 
         yield return new WaitForSeconds(ranged.rangedCooldown);
 
-        ranged.canRanged = true;
-        rangedCooldown = false;
+        RangedCooldown = false;
     }
     protected IEnumerator SpecialCooldownCoroutine()
     {
@@ -1058,6 +1067,11 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
 
     private void OnDrawGizmos()
     {
+        //Has a target  =   Green
+        //Is searching  =   Yellow
+        //Is chasing    =   Red
+        //Is Attacking  =   Blue
+
         if (currentTarget)
         {
             Gizmos.color = Color.green;
@@ -1071,6 +1085,11 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         if (chasing)
         {
             Gizmos.color = Color.red;
+            Gizmos.DrawCube(new Vector3(transform.position.x, transform.position.y + 3, transform.position.z), new Vector3(0.25f, 1, 0.25f));
+        }
+        if (attacking)
+        {
+            Gizmos.color = Color.blue;
             Gizmos.DrawCube(new Vector3(transform.position.x, transform.position.y + 3, transform.position.z), new Vector3(0.25f, 1, 0.25f));
         }
     }
