@@ -424,13 +424,11 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         stoppedMoving = true;
         navAgent.isStopped = true;
         navAgent.ResetPath();
-        print("stop");
     }
     private void ResumeMovement()
     {
         navAgent.speed = movementSpeed;
         stoppedMoving = false;
-        print("resume");
     }
 
     private IEnumerator MovementAnimationCoroutine()
@@ -1091,6 +1089,21 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         {
             Gizmos.color = Color.blue;
             Gizmos.DrawCube(new Vector3(transform.position.x, transform.position.y + 3, transform.position.z), new Vector3(0.25f, 1, 0.25f));
+        }
+        if (attackRange)
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawCube(new Vector3(transform.position.x, transform.position.y + 5, transform.position.z), new Vector3(0.25f, 1, 0.25f));
+        }
+        if (ranged.canRanged)
+        {
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawCube(new Vector3(transform.position.x, transform.position.y + 6, transform.position.z), new Vector3(0.25f, 1, 0.25f));
+        }
+        if (rangedCooldown)
+        {
+            Gizmos.color = Color.black;
+            Gizmos.DrawCube(new Vector3(transform.position.x, transform.position.y + 7, transform.position.z), new Vector3(0.25f, 1, 0.25f));
         }
     }
 
