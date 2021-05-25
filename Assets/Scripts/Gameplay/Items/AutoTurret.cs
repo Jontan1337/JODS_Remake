@@ -49,12 +49,13 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	}
 
 	#region Coroutines
-	Coroutine ShootIntervalCo;
+	IEnumerator ShootIntervalCo;
 	IEnumerator ShootInterval()
 	{
 		while (true)
 		{
 			if (CanShoot()) Shoot();
+			//else LostTarget();
 			yield return new WaitForSeconds(fireRate);
 		}
 	}
@@ -65,13 +66,14 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		isSearching = true;
 		while (true)
 		{
+			print("Searching...");
 			FindTarget();
 			yield return new WaitForSeconds(1f);
 		}
 
 	}
 
-	Coroutine RotateYCo;
+	IEnumerator RotateYCo;
 	IEnumerator RotateY()
 	{
 		while (true)
@@ -83,7 +85,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		}
 	}
 
-	Coroutine RotateXCo;
+	IEnumerator RotateXCo;
 	IEnumerator RotateX()
 	{
 		while (true)
@@ -109,6 +111,17 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	#endregion
 
 	#region Methods
+	void Shoot()
+	{
+		Ray(out bool didHit, out RaycastHit hit, out bool lineOfSightCheck);
+		print("Shooting...");
+		Debug.DrawRay(barrel.position, barrel.forward * 10, Color.red, 0.1f);
+		hit.transform.GetComponent<IDamagable>()?.Svr_Damage(damage, transform);
+		if (target.GetComponent<IDamagable>().IsDead())
+		{
+			LostTarget();
+		}
+	}
 	void FindTarget()
 	{
 		enemiesInSight = new List<Collider>();
@@ -119,21 +132,12 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 			Physics.Raycast(transform.position, (item.transform.position - transform.position), out hit);
 			if (hit.transform == item.transform)
 			{
-				print(hit.transform.name);
 				enemiesInSight.Add(item);
 			}
 		}
 		if (enemiesInSight.Count > 0 && enemiesInSight[0])
 		{
 			NewTarget(enemiesInSight[0].transform);
-		}
-	}
-	void Shoot()
-	{
-		target.GetComponent<IDamagable>()?.Svr_Damage(damage, transform);
-		if (target.GetComponent<IDamagable>().IsDead())
-		{
-			LostTarget();
 		}
 	}
 
@@ -145,9 +149,13 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 			StopCoroutine(SearchingCo);
 			isSearching = false;
 		}
-		RotateYCo = StartCoroutine(RotateY());
-		RotateXCo = StartCoroutine(RotateX());
-		ShootIntervalCo = StartCoroutine(ShootInterval());
+		RotateYCo = RotateY();
+		RotateXCo = RotateX();
+		ShootIntervalCo = ShootInterval();
+
+		StartCoroutine(RotateXCo);
+		StartCoroutine(RotateYCo);
+		StartCoroutine(ShootIntervalCo);
 	}
 
 	void LostTarget()
@@ -169,11 +177,36 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 
 	bool CanShoot()
 	{
-		RaycastHit hit;
-		Debug.DrawRay(barrel.position, barrel.forward * 10, Color.red, 0.1f);
-		Physics.Raycast(barrel.position, barrel.forward, out hit, range, ignoreLayer);
-		if (hit.transform == target.transform)	return true;
+		Ray(out bool didHit, out RaycastHit hit, out bool lineOfSightCheck);
+		if (didHit)
+		{
+			if (hit.transform.TryGetComponent(out IDamagable a))
+			{
+				if (lineOfSightCheck) return true;
+				else
+				{
+					print("Lost target...");
+
+					LostTarget();
+				}
+			}
+		}
+
+
 		return false;
+	}
+
+	void Ray(out bool didHit, out RaycastHit hit, out bool lineOfSightCheck)
+	{
+		RaycastHit hit2;
+		Physics.Raycast(transform.position, (target.transform.position - transform.position), out hit2);
+
+		// LINE OF SIGHT BROKEN BY OTHER ZOMBIES - FIX
+		lineOfSightCheck = hit2.transform == target.transform;
+
+
+		Physics.Raycast(barrel.position, barrel.forward, out hit, range);
+		didHit = hit.transform;
 	}
 
 	void Die()
@@ -204,6 +237,8 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	}
 
 	public bool IsDead() => isDead;
+
+
 
 	#endregion
 }
