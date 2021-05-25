@@ -1,4 +1,7 @@
 ﻿using Mirror;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +13,10 @@ public class Interactor : NetworkBehaviour
     private float interactionRange = 2f;
     [SerializeField]
     private LayerMask layerMask = 15;
+    [SerializeField]
+    private float inRangeOutline = 3f;
+    [SerializeField]
+    private float interactionOutline = 10f;
 
     private RaycastHit rayHit;
     private IInteractable currentInteractable;
@@ -40,17 +47,52 @@ public class Interactor : NetworkBehaviour
         Ray ray = new Ray(playerCamera.position, playerCamera.forward);
 
         Physics.Raycast(ray, out rayHit, interactionRange, ~layerMask);
-        Debug.DrawRay(playerCamera.position, playerCamera.forward * interactionRange);
+        UnityEngine.Debug.DrawRay(playerCamera.position, playerCamera.forward * interactionRange);
+    }
+
+    RaycastHit[] boxHit = new RaycastHit[999];
+    RaycastHit[] previousItems = new RaycastHit[999];
+    private void FixedUpdate()
+    {
+        boxHit = Physics.BoxCastAll(new Vector3(transform.position.x, transform.position.y + 2f, transform.position.z) + transform.forward * interactionRange,
+            new Vector3(0.45f, 0.45f, interactionRange / 2),
+            transform.forward, transform.rotation, interactionRange, ~layerMask);
+
+        for (int i = 0; i < boxHit.Length; i++)
+        {
+            if (boxHit[i].collider.TryGetComponent(out Outline outline))
+            {
+                for (int x = 0; x < previousItems.Length; x++)
+                {
+                    if (previousItems[i].collider == boxHit[i].collider)
+                    {
+                        // TODO: Check if previous found item is no longer found, then turn off outline.
+                    }
+                }
+                previousItems[i] = boxHit[i];
+                outline.OutlineWidth = 3;
+            }
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        //Gizmos.DrawWireCube(new Vector3(transform.position.x, transform.position.y + 2f, transform.position.z) + transform.forward * interactionRange / 2, new Vector3(0.9f, 0.9f, interactionRange));
+        Gizmos.DrawRay(new Vector3(transform.position.x, transform.position.y + 2f, transform.position.z), transform.forward * interactionRange);
     }
 
     public void Interact()
     {
         if (rayHit.collider)
         {
+            foreach (var item in boxHit)
+            {
+                UnityEngine.Debug.Log(item.collider.name);
+            }
             // Check if the interacted object is networked.
             if (!rayHit.collider.GetComponent<NetworkIdentity>()) return;
 
-            Debug.Log($"Client: interact with {rayHit.collider}", this);
+            UnityEngine.Debug.Log($"Client: interact with {rayHit.collider}", this);
             Cmd_Interact(rayHit.collider.gameObject);
         }
     }
@@ -60,7 +102,7 @@ public class Interactor : NetworkBehaviour
     {
         if (targetObject)
         {
-            Debug.Log($"Server: interact with {targetObject}", this);
+            UnityEngine.Debug.Log($"Server: interact with {targetObject}", this);
             targetObject.TryGetComponent(out IInteractable interactable);
             interactable?.Svr_Interact(gameObject);
         }

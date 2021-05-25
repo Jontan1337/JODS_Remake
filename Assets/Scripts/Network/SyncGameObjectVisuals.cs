@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using Mirror;
 using System.Collections;
+using System;
 
 public class SyncGameObjectVisuals : NetworkBehaviour
 {
     [SerializeField, SyncVar]
-    private Transform parent;
+    private Transform parentData;
     [SerializeField]
     private bool syncParent = false;
     [SerializeField, SyncVar]
@@ -21,29 +22,30 @@ public class SyncGameObjectVisuals : NetworkBehaviour
     {
         if (isServer)
         {
-            if (syncParent) parent = transform.parent;
-            if (syncPosition) positionData = transform.position;
-            if (syncRotation) rotationData = transform.rotation;
+            Initialize();
         }
+    }
+
+    private void Initialize()
+    {
+        if (syncParent) parentData = transform.parent;
+        if (syncPosition) positionData = transform.position;
+        if (syncRotation) rotationData = transform.rotation;
     }
 
     #region NetworkBehaviour Callbacks
     public override void OnStartServer()
     {
-        if (isServer)
-        {
-            NetworkTest.RelayOnServerAddPlayer += Svr_UpdateVars;
-        }
+        NetworkTest.RelayOnServerAddPlayer += Svr_UpdateVars;
     }
 
     public override void OnStopServer()
     {
-        if (isServer)
-        {
-            NetworkTest.RelayOnServerAddPlayer -= Svr_UpdateVars;
-        }
+        NetworkTest.RelayOnServerAddPlayer -= Svr_UpdateVars;
     }
     #endregion
+
+    #region Serialization
 
     public override bool OnSerialize(NetworkWriter writer, bool initialState)
     {
@@ -61,8 +63,8 @@ public class SyncGameObjectVisuals : NetworkBehaviour
     {
         if (!initialState)
         {
-            parent = reader.ReadTransform();
-            transform.parent = parent;
+            parentData = reader.ReadTransform();
+            transform.parent = parentData;
             positionData = reader.ReadVector3();
             transform.position = positionData;
             rotationData = reader.ReadQuaternion();
@@ -70,17 +72,20 @@ public class SyncGameObjectVisuals : NetworkBehaviour
         }
     }
 
+    #endregion
+
     [Server]
     private void Svr_UpdateVars(NetworkConnection conn)
     {
-        Rpc_UpdateParent(conn, parent);
+        Initialize();
+        Rpc_UpdateParent(conn, parentData);
         Rpc_UpdateTransform(conn, positionData, rotationData);
     }
 
     [TargetRpc]
     private void Rpc_UpdateParent(NetworkConnection target, Transform newParent)
     {
-        parent = newParent;
+        parentData = newParent;
         transform.parent = newParent;
     }
     [TargetRpc]

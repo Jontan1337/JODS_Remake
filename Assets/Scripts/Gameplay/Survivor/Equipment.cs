@@ -107,7 +107,7 @@ public class Equipment : NetworkBehaviour, IInitializable<PlayerSetup>
 
     private void OnTransformParentChanged()
     {
-        if (hasAuthority)
+        //if (hasAuthority)
         {
             // When parent changed, check if it's correctly set to player Survivor
             // and then find UI hotbar under Survivors canvas.
@@ -334,6 +334,13 @@ public class Equipment : NetworkBehaviour, IInitializable<PlayerSetup>
 
     private IEnumerator MoveToHands()
     {
+        yield return null;
+        yield return null;
+        if (!EquippedItem)
+        {
+            yield return null;
+            yield return null;
+        }
         while (!Equals(EquippedItem.transform.position, playerHands.position)
                 && !Equals(EquippedItem.transform.rotation, playerHands.rotation))
         {
