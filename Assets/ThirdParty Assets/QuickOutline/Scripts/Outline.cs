@@ -7,6 +7,7 @@
 //
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -274,4 +275,36 @@ public class Outline : MonoBehaviour {
         break;
     }
   }
+
+    private float outlineTime = 0f;
+    bool isOutlining = false;
+    private Coroutine OutlineCo;
+
+    public void ShowOutline(float time)
+    {
+        outlineTime = time + 0.1f;
+        if (!isOutlining)
+        {
+            OutlineCo = StartCoroutine(OutlineEnumerator());
+        }
+    }
+
+    private IEnumerator OutlineEnumerator()
+    {
+        isOutlining = true;
+
+        OutlineWidth = 2;
+
+        while (outlineTime > 0)
+        {
+            outlineTime -= Time.deltaTime;
+            yield return null;
+        }
+
+        OutlineWidth = 0;
+
+        outlineTime = 0;
+
+        isOutlining = false;
+    }
 }

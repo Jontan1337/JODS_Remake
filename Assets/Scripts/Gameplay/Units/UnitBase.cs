@@ -138,6 +138,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         public bool canSelect = true;
         public SkinnedMeshRenderer unitRenderer;
         public Material unitMat;
+        public bool isSelected = false;
     }
     [Space]
     public Selectable select;
@@ -911,7 +912,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         //Enable the Dissolve Boolean on the material, which allows for the material to do the dissolve effect
         //Start the DissolveCoroutine which slowly dissolves over a set amount of time.
         select.unitMat.SetInt("_Dissolve", 1);
-        StartCoroutine(DissolveCoroutine(2)); //Dissolve over 2 seconds
+        GetComponent<Timer>()?.StartTimer(true, 2, select.unitMat);
 
         yield return new WaitForSeconds(3);
         //After 3 seconds, tell the server to destroy the object/unit
@@ -968,6 +969,10 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     #region Selecting
     public void Select(Color highlightColor)
     {
+        select.isSelected = true;
+
+        OnSelect();
+
         if (!select.unitMat)
         {
             Debug.LogWarning($"{name} had no material assigned and could not be highlighted. -" +
@@ -979,6 +984,10 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     }
     public void Deselect()
     {
+        select.isSelected = false;
+
+        OnDeselect();
+
         if (!select.unitMat)
         {
             Debug.LogWarning($"{name} had no material assigned and could not be highlighted. -" +
@@ -988,6 +997,9 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         select.unitMat.SetInt("_Highlight", 0);
     }
     #endregion
+
+    public abstract void OnSelect();
+    public abstract void OnDeselect();
 
     #region Commands
 
@@ -1046,19 +1058,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
 
     public void Trap() { /*trapped = !trapped;*/ }
 
-
-    private IEnumerator DissolveCoroutine(float timeToDissolve)
-    {
-        float dissolveTime = 0;
-        while (dissolveTime < timeToDissolve)
-        {
-            yield return new WaitForEndOfFrame();
-            dissolveTime += Time.deltaTime;
-            select.unitMat.SetFloat("_DissolveAmount", dissolveTime / timeToDissolve);
-        }
-
-    }
-
     #endregion
 
     #region Gizmos
@@ -1115,6 +1114,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     public void Svr_Damage(int damage, Transform target = null)
     {
         if (isDead) return;
+        print(target);
         if (CloserThanTarget(target))
         {
             Debug.Log("I got shot by someone closer than my target");
