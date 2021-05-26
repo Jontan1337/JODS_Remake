@@ -22,14 +22,14 @@ public abstract class Timer : MonoBehaviour
     [SerializeField] private bool timerEnabled = false;
     [SerializeField, Range(0,100)] protected float timerProgress = 0f;
 
-    public void StartTimer(bool start, float _stopTime = 5f)
-    {
+    public virtual void StartTimer(bool start, float _stopTime = 5f)
+    { 
         timerEnabled = start;
 
         if (start == true)
         {
             stopTime = _stopTime == 0 ? stopTime : _stopTime;
-
+            
             switch (timerType)
             {
                 case TimerType.tickContinuously:
@@ -60,6 +60,11 @@ public abstract class Timer : MonoBehaviour
                     break;
             }
         }
+    }
+
+    public virtual void StartTimer(bool start, float _stopTime = 5f, Material mat = null)
+    {
+        StartTimer(start, _stopTime);
     }
 
     #region Coroutines

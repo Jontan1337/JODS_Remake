@@ -30,6 +30,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
     [SerializeField] private GameObject singleBrokenObject = null;
     [SerializeField] private SFXPlayer wallDestruction = null;
     [SerializeField] private GameObject wallIcon = null;
+    [SerializeField] private bool destroySelf = false;
 
     [Header("Other entity settings")]
     [SyncVar] public bool isBurning = false;
@@ -149,7 +150,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
                 wallDestruction.PlaySFX();
             }
         }
-        gameObject.layer = 11;
+        //gameObject.layer = 11;
     }
     private void RemoveDebris()
     {
@@ -157,13 +158,15 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
         {
             StartCoroutine(DissolvePiece(piece));
         }
+        if (destroySelf) Destroy(gameObject,6f);
     }
     private IEnumerator DissolvePiece(GameObject piece)
     {
+        piece.transform.SetParent(null);
         float interval = Random.Range(3f, 5f);
         yield return new WaitForSeconds(interval);
 
-        piece.GetComponent<Timer>().StartTimer(true);
+        piece.GetComponent<Timer>()?.StartTimer(true, 5f);
     }
 
     private void DestroyEntity()

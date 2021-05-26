@@ -13,7 +13,12 @@ public class ZombieStronk : UnitBase, IZombie, IControllable
     public int InfectionAmount { get => infectionAmount; set => infectionAmount = value; }
 
     [Header("Stronk")]
-    public ParticleSystem slamFX;
+    [SerializeField] private float destructibleSearchRange = 20f;
+    [SerializeField] private LayerMask destructibleLayerMask = 1 << 17;
+    [Space]
+    [SerializeField] private ParticleSystem slamFX;
+    
+
 
     public override void Start()
     {
@@ -37,6 +42,33 @@ public class ZombieStronk : UnitBase, IZombie, IControllable
         Infect(currentTarget);
     }
 
+    private IEnumerator SearchForDestructibleCo;
+    Collider[] destructiblesInRange;
+    private IEnumerator SearchForDestructible()
+    {
+        while (select.isSelected)
+        {
+            destructiblesInRange = Physics.OverlapSphere(transform.position, destructibleSearchRange, destructibleLayerMask);
+            foreach (Collider destructible in destructiblesInRange)
+            {
+                destructible.GetComponent<Outline>().ShowOutline(0.5f);
+            }
+
+            yield return new WaitForSeconds(0.5f);
+        }
+    }
+
+    public override void OnSelect()
+    {
+        SearchForDestructibleCo = SearchForDestructible();
+        StartCoroutine(SearchForDestructibleCo);
+    }
+
+    public override void OnDeselect()
+    {
+        StopCoroutine(SearchForDestructibleCo);
+    }
+
     #region Interface Functions
     public void TakeControl()
     {
@@ -52,5 +84,20 @@ public class ZombieStronk : UnitBase, IZombie, IControllable
         }
         target.GetComponent<StatusEffectManager>()?.ApplyStatusEffect(infection.ApplyEffect(target.gameObject), infectionAmount);
     }
+
     #endregion
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, destructibleSearchRange);
+    }
+    private void OnDrawGizmos()
+    {
+        if (select.isSelected)
+        {
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawWireSphere(transform.position, destructibleSearchRange);
+        }
+    }
 }
