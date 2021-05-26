@@ -52,28 +52,35 @@ public class Interactor : NetworkBehaviour
 
     RaycastHit[] boxHit = new RaycastHit[999];
     RaycastHit[] previousItems = new RaycastHit[999];
-    private void FixedUpdate()
-    {
-        boxHit = Physics.BoxCastAll(new Vector3(transform.position.x, transform.position.y + 2f, transform.position.z) + transform.forward * interactionRange,
-            new Vector3(0.45f, 0.45f, interactionRange / 2),
-            transform.forward, transform.rotation, interactionRange, ~layerMask);
+    //private void FixedUpdate()
+    //{
+    //    boxHit = Physics.BoxCastAll(new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z) + transform.forward * interactionRange,
+    //        new Vector3(0.45f, 0.45f, interactionRange / 2),
+    //        transform.forward, transform.rotation, interactionRange, ~layerMask);
 
-        for (int i = 0; i < boxHit.Length; i++)
-        {
-            if (boxHit[i].collider.TryGetComponent(out Outline outline))
-            {
-                for (int x = 0; x < previousItems.Length; x++)
-                {
-                    if (previousItems[i].collider == boxHit[i].collider)
-                    {
-                        // TODO: Check if previous found item is no longer found, then turn off outline.
-                    }
-                }
-                previousItems[i] = boxHit[i];
-                outline.OutlineWidth = 3;
-            }
-        }
-    }
+    //    for (int i = 0; i < boxHit.Length; i++)
+    //    {
+    //        Collider currentCollider = boxHit[i].collider;
+    //        if (currentCollider != null)
+    //        {
+    //            print($"BoxHit item: {currentCollider.name}");
+    //        }
+    //        if (currentCollider.TryGetComponent(out Outline outline))
+    //        {
+    //            for (int x = 0; x < previousItems.Length; x++)
+    //            {
+    //                outline.OutlineWidth = 0;
+    //                if (previousItems[i].collider == currentCollider)
+    //                {
+    //                    outline.OutlineWidth = 3;
+    //                    // TODO: Check if previous found item is no longer found, then turn off outline.
+    //                }
+    //            }
+    //            previousItems[i] = boxHit[i];
+    //            outline.OutlineWidth = 3;
+    //        }
+    //    }
+    //}
 
     private void OnDrawGizmosSelected()
     {
@@ -85,10 +92,10 @@ public class Interactor : NetworkBehaviour
     {
         if (rayHit.collider)
         {
-            foreach (var item in boxHit)
-            {
-                UnityEngine.Debug.Log(item.collider.name);
-            }
+            //foreach (var item in boxHit)
+            //{
+            //    UnityEngine.Debug.Log(item.collider.name);
+            //}
             // Check if the interacted object is networked.
             if (!rayHit.collider.GetComponent<NetworkIdentity>()) return;
 
