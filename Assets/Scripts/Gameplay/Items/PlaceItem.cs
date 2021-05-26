@@ -53,9 +53,15 @@ public class PlaceItem : NetworkBehaviour, IEquippable, IBindable, IInteractable
 
 
 			placeHolder.transform.eulerAngles = new Vector3(0, transform.rotation.y, transform.rotation.z);
-			placeHolder.transform.position = new Vector3(hit.point.x, 0.01f, hit.point.z);
+			placeHolder.transform.position = new Vector3(hit.point.x,  PlaceOnTop(hit), hit.point.z);
+			placeHolder.SetActive(hit.transform);
 			yield return null;
 		}
+	}
+
+	float PlaceOnTop(RaycastHit hit)
+	{
+		return hit.transform.localScale.y / 2 + transform.localScale.y / 2;
 	}
 
 	public void Place(GameObject thing)
