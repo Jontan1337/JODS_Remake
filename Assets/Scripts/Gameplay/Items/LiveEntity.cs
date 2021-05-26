@@ -162,9 +162,8 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
     {
         float interval = Random.Range(3f, 5f);
         yield return new WaitForSeconds(interval);
-        Animator ani = piece.GetComponent<Animator>();
-        ani.SetTrigger("dissolve");
-        Destroy(piece, 2.5f);
+
+        piece.GetComponent<Timer>().StartTimer(true);
     }
 
     private void DestroyEntity()
