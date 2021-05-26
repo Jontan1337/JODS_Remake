@@ -280,8 +280,9 @@ public class Outline : MonoBehaviour {
     bool isOutlining = false;
     private Coroutine OutlineCo;
 
-    public void ShowOutline(float time)
+    public void ShowOutline(float time, float width = 2f)
     {
+        OutlineWidth = width;
         outlineTime = time + 0.1f;
         if (!isOutlining)
         {
@@ -292,8 +293,6 @@ public class Outline : MonoBehaviour {
     private IEnumerator OutlineEnumerator()
     {
         isOutlining = true;
-
-        OutlineWidth = 2;
 
         while (outlineTime > 0)
         {
