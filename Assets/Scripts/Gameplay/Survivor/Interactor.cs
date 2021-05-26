@@ -1,5 +1,6 @@
 ﻿using Mirror;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
@@ -30,6 +31,7 @@ public class Interactor : NetworkBehaviour
     public override void OnStartAuthority()
     {
         JODSInput.Controls.Survivor.Interact.performed += ctx => Interact();
+        StartCoroutine(CreateOutlines());
     }
 
     public override void OnStopAuthority()
@@ -47,44 +49,46 @@ public class Interactor : NetworkBehaviour
         Ray ray = new Ray(playerCamera.position, playerCamera.forward);
 
         Physics.Raycast(ray, out rayHit, interactionRange, ~layerMask);
+
         UnityEngine.Debug.DrawRay(playerCamera.position, playerCamera.forward * interactionRange);
     }
 
-    RaycastHit[] boxHit = new RaycastHit[999];
-    RaycastHit[] previousItems = new RaycastHit[999];
-    //private void FixedUpdate()
-    //{
-    //    boxHit = Physics.BoxCastAll(new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z) + transform.forward * interactionRange,
-    //        new Vector3(0.45f, 0.45f, interactionRange / 2),
-    //        transform.forward, transform.rotation, interactionRange, ~layerMask);
+    RaycastHit[] boxHit = new RaycastHit[0];
+    private IEnumerator CreateOutlines()
+    {
+        while (true)
+        {
+            print(playerCamera);
+            if (!playerCamera) yield return null;
 
-    //    for (int i = 0; i < boxHit.Length; i++)
-    //    {
-    //        Collider currentCollider = boxHit[i].collider;
-    //        if (currentCollider != null)
-    //        {
-    //            print($"BoxHit item: {currentCollider.name}");
-    //        }
-    //        if (currentCollider.TryGetComponent(out Outline outline))
-    //        {
-    //            for (int x = 0; x < previousItems.Length; x++)
-    //            {
-    //                outline.OutlineWidth = 0;
-    //                if (previousItems[i].collider == currentCollider)
-    //                {
-    //                    outline.OutlineWidth = 3;
-    //                    // TODO: Check if previous found item is no longer found, then turn off outline.
-    //                }
-    //            }
-    //            previousItems[i] = boxHit[i];
-    //            outline.OutlineWidth = 3;
-    //        }
-    //    }
-    //}
+            boxHit = Physics.BoxCastAll(new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z) + transform.forward * interactionRange,
+                new Vector3(0.45f, 0.45f, interactionRange / 2),
+                transform.forward, playerCamera.rotation, interactionRange, ~layerMask);
+
+            if (rayHit.collider.TryGetComponent(out Outline outline))
+            {
+                outline.ShowOutline(0.1f, 10f);
+            }
+
+            foreach (var item in boxHit)
+            {
+                if (rayHit.collider)
+                    if (item.collider == rayHit.collider)
+                        continue;
+
+                if (item.collider.TryGetComponent(out Outline outline2))
+                {
+                    outline2.ShowOutline(0.1f, 3f);
+                }
+            }
+
+            yield return new WaitForFixedUpdate();
+        }
+    }
 
     private void OnDrawGizmosSelected()
     {
-        //Gizmos.DrawWireCube(new Vector3(transform.position.x, transform.position.y + 2f, transform.position.z) + transform.forward * interactionRange / 2, new Vector3(0.9f, 0.9f, interactionRange));
+        //Gizmos.DrawWireCube(new Vector3(transform.position.x, transform.position.y + 2f, transform.position.z) + playerCamera.forward * interactionRange / 2, new Vector3(0.9f, 0.9f, interactionRange));
         Gizmos.DrawRay(new Vector3(transform.position.x, transform.position.y + 2f, transform.position.z), transform.forward * interactionRange);
     }
 
@@ -92,10 +96,10 @@ public class Interactor : NetworkBehaviour
     {
         if (rayHit.collider)
         {
-            //foreach (var item in boxHit)
-            //{
-            //    UnityEngine.Debug.Log(item.collider.name);
-            //}
+            foreach (var item in boxHit)
+            {
+                UnityEngine.Debug.Log(item.collider.name);
+            }
             // Check if the interacted object is networked.
             if (!rayHit.collider.GetComponent<NetworkIdentity>()) return;
 
