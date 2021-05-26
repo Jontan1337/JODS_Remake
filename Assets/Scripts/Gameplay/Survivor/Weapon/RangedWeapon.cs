@@ -241,7 +241,7 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
             rayHit.collider.GetComponent<IDamagable>()?.Svr_Damage(damage);
         }
 
-        muzzleParticle.Emit(15);
+        
         currentAmmunition -= bulletsPerShot;
     }
 
@@ -308,6 +308,7 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     private void Rpc_ShootSFX()
     {
         sfxPlayer.PlaySFX(shootSound);
+        muzzleParticle.Emit(10);
         // Implement partyicle efect.
     }
     [ClientRpc]

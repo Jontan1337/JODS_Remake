@@ -11,7 +11,6 @@ public class Equipment : NetworkBehaviour, IInitializable<PlayerSetup>
     public List<EquipmentType> equipmentSlotsTypes = new List<EquipmentType>();
     [Space]
     public Transform playerHands;
-    public Action<GameObject, GameObject> onServerEquippedItemChange;
 
     [SerializeField, SyncVar]
     private GameObject equippedItem;
@@ -34,6 +33,19 @@ public class Equipment : NetworkBehaviour, IInitializable<PlayerSetup>
 
     private const string slotsUIParentName = "CanvasInGame/Hotbar";
 
+    #region ServerOnly Fields
+
+    public Action<GameObject, GameObject> onServerEquippedItemChange;
+    private Action<GameObject> onServerItemPickedUp;
+
+    #endregion
+
+    #region ClientOnly Fields
+
+    private Action<GameObject> onClientItemPickedUp;
+
+    #endregion
+
     public GameObject EquippedItem
     {
         get => equippedItem;
@@ -51,7 +63,7 @@ public class Equipment : NetworkBehaviour, IInitializable<PlayerSetup>
             {
                 Svr_ShowItem(equippedItem);
             }
-            Svr_EquippedItemChange(oldEquippedItem, equippedItem);
+            Svr_InvokeEquippedItemChange(oldEquippedItem, equippedItem);
         }
     }
 
@@ -87,6 +99,18 @@ public class Equipment : NetworkBehaviour, IInitializable<PlayerSetup>
         }
     }
     public bool IsInitialized { get; private set; }
+
+    private void Awake()
+    {
+        if (!isServer)
+        {
+            onClientItemPickedUp += Rpc_OnItemPickedUp;
+        }
+        if (isServer)
+        {
+            onServerItemPickedUp += Svr_OnItemPickedUp;
+        }
+    }
 
     public void Init(PlayerSetup initializer)
     {
@@ -246,8 +270,9 @@ public class Equipment : NetworkBehaviour, IInitializable<PlayerSetup>
                 EquippedItem = equipment;
             }
         }
-
         Svr_PlaceItemInHands();
+        Svr_InvokeItemPickedUp(EquippedItem);
+        Rpc_InvokeItemPickedUp(EquippedItem);
     }
 
     [Server]
@@ -286,10 +311,32 @@ public class Equipment : NetworkBehaviour, IInitializable<PlayerSetup>
     }
 
     [Server]
-    private void Svr_EquippedItemChange(GameObject oldItem, GameObject newItem)
+    private void Svr_InvokeEquippedItemChange(GameObject oldItem, GameObject newItem)
     {
         onServerEquippedItemChange?.Invoke(oldItem, newItem);
     }
+    [Server]
+    private void Svr_InvokeItemPickedUp(GameObject newItem)
+    {
+        onServerItemPickedUp?.Invoke(newItem);
+    }
+    [ClientRpc]
+    private void Rpc_InvokeItemPickedUp(GameObject newItem)
+    {
+        onClientItemPickedUp?.Invoke(newItem);
+    }
+
+    [Server]
+    private void Svr_OnItemPickedUp(GameObject newItem)
+    {
+        StartCoroutine(MoveToHands(newItem));
+    }
+    [ClientRpc]
+    private void Rpc_OnItemPickedUp(GameObject newItem)
+    {
+        StartCoroutine(MoveToHands(newItem));
+    }
+
     [Server]
     private void Svr_SelectedSlotItemChange(GameObject newItem)
     {
@@ -323,38 +370,23 @@ public class Equipment : NetworkBehaviour, IInitializable<PlayerSetup>
             pt.Svr_DisableItemPhysics();
         }
         EquippedItem.transform.parent = playerHands;
-        Rpc_MoveToHands();
     }
 
-    [ClientRpc]
-    private void Rpc_MoveToHands()
+    private IEnumerator MoveToHands(GameObject newItem)
     {
-        StartCoroutine(MoveToHands());
-    }
-
-    private IEnumerator MoveToHands()
-    {
-        yield return null;
-        yield return null;
-        if (!EquippedItem)
+        while (!Equals(newItem.transform.position, playerHands.position)
+                && !Equals(newItem.transform.rotation, playerHands.rotation))
         {
-            yield return null;
-            yield return null;
-        }
-        while (!Equals(EquippedItem.transform.position, playerHands.position)
-                && !Equals(EquippedItem.transform.rotation, playerHands.rotation))
-        {
-            EquippedItem.transform.position = Vector3.Lerp(EquippedItem.transform.position, playerHands.position, Time.deltaTime * 20);
-            EquippedItem.transform.rotation = Quaternion.Lerp(EquippedItem.transform.rotation, playerHands.rotation, Time.deltaTime * 20);
+            newItem.transform.position = Vector3.Lerp(newItem.transform.position, playerHands.position, Time.deltaTime * 20);
+            newItem.transform.rotation = Quaternion.Lerp(newItem.transform.rotation, playerHands.rotation, Time.deltaTime * 20);
 
             yield return null;
 
-            if (Vector3.Distance(EquippedItem.transform.position, playerHands.position) < 0.08f
-                && Vector3.Distance(EquippedItem.transform.eulerAngles, playerHands.eulerAngles) < 0.08f)
+            if (Vector3.Distance(newItem.transform.position, playerHands.position) < 0.08f
+                && Vector3.Distance(newItem.transform.eulerAngles, playerHands.eulerAngles) < 0.08f)
             {
-                EquippedItem.transform.position = playerHands.position;
-                EquippedItem.transform.rotation = playerHands.rotation;
-                print("MoveToHands finish");
+                newItem.transform.position = playerHands.position;
+                newItem.transform.rotation = playerHands.rotation;
                 yield break;
             }
         }
