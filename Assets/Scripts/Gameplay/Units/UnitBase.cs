@@ -627,8 +627,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
 
                 else
                 {
-                    bool nextToTarget = NextToTarget();
-                    if (nextToTarget) StopMovement();
+                    if (NextToTarget()) StopMovement();
                     //else if (!nextToTarget) ResumeMovement();
                 }
             }
@@ -729,7 +728,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         return currentTargetDistance > newTargetDistance;
     }
 
-    protected bool NextToTarget() => Vector3.Distance(transform.position, currentTarget.position) <= navAgent.radius + 0.4f;
+    protected bool NextToTarget() => Vector3.Distance(transform.position, currentTarget.position) <= Mathf.Clamp(navAgent.radius + 0.4f,melee.meleeRange - 0.1f,100);
 
     #endregion
 
