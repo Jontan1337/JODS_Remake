@@ -400,7 +400,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         navAgent = GetComponent<NavMeshAgent>();
         navAgent.speed = movementSpeed;
         navAgent.acceleration = 60;
-        navAgent.stoppingDistance = Mathf.Clamp(melee.meleeRange - 1, 1f, 20f);
+        navAgent.stoppingDistance = Mathf.Clamp(melee.meleeRange - 0.5f, 1f, 20f);
         navAgent.avoidancePriority = Random.Range(1, 100);
 
         //Animations -----------------------
@@ -629,7 +629,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
                 {
                     bool nextToTarget = NextToTarget();
                     if (nextToTarget) StopMovement();
-                    else if (!nextToTarget) ResumeMovement();
+                    //else if (!nextToTarget) ResumeMovement();
                 }
             }
             else
