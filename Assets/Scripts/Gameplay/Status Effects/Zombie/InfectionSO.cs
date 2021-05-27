@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Status Effect/Debuff/Infection")]
+[CreateAssetMenu(menuName = "Status Effect/Debuff/Zombie/Infection")]
 public class InfectionSO : StatusEffectSO
 {
 

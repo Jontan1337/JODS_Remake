@@ -99,13 +99,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
         else health -= damage;
     }
 
-	public int GetHealth()
-	{
-		throw new System.NotImplementedException();
-	}
+    public int GetHealth() => health;
 
-	public bool IsDead()
-	{
-		throw new System.NotImplementedException();
-	}
+    public bool IsDead() => false;
 }

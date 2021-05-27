@@ -43,6 +43,9 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         public float meleeCooldown = 0;
         [Space]
         public bool canMelee = true;
+        [Space]
+        public StatusEffectSO statusEffectToApply = null;
+        public int amount = 0;
     }
     [Space]
     public Melee melee;
@@ -64,6 +67,9 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         public bool directRangedAttack = false;
         [Space]
         public bool canRanged = false;
+        [Space]
+        public StatusEffectSO statusEffectToApply = null;
+        public int amount = 0;
     }
     public Ranged ranged;
 
@@ -79,6 +85,9 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         public bool availableFromStart = true;
         [Space]
         public bool canSpecial = false;
+        [Space]
+        public StatusEffectSO statusEffectToApply = null;
+        public int amount = 0;
     }
     public Special special;
 
@@ -279,6 +288,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         melee.meleeDamageMax = unitSO.melee.meleeDamageMax;
         melee.meleeRange = unitSO.melee.meleeRange;
         melee.meleeCooldown = unitSO.melee.meleeCooldown;
+        melee.statusEffectToApply = unitSO.melee.statusEffectToApply;
+        melee.amount = unitSO.melee.amount;
 
         //Ranged
         ranged.rangedDamage = unitSO.ranged.rangedDamage;
@@ -291,6 +302,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         ranged.standStill = unitSO.ranged.standStill;
         ranged.directRangedAttack = unitSO.ranged.directRangedAttack;
         ranged.preferredRange = unitSO.ranged.preferredRange;
+        ranged.statusEffectToApply = unitSO.ranged.statusEffectToApply;
+        ranged.amount = unitSO.ranged.amount;
 
         //Special
         special.specialCooldown = unitSO.special.specialCooldown;
@@ -299,6 +312,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         special.standStill = unitSO.special.standStill;
         special.lookAtTarget = unitSO.special.lookAtTarget;
         special.availableFromStart = unitSO.special.availableFromStart;
+        special.statusEffectToApply = unitSO.special.statusEffectToApply;
+        special.amount = unitSO.special.amount;
 
         //Movement
         movementSpeed = unitSO.movementSpeed;
@@ -702,7 +717,17 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         {
             yield return new WaitForSeconds(0.1f);
 
-            if (!hasTarget) LoseTarget();
+            if (!HasTarget())
+            {
+                LoseTarget();
+                yield return null;
+            }
+
+            if (currentTarget.GetComponent<IDamagable>().IsDead())
+            {
+                LoseTarget();
+                yield return null;
+            }
 
             Attack();
         }
@@ -750,11 +775,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     #region Melee
     public virtual void TryMeleeAttack()
     {
-        if (currentTarget.GetComponent<IDamagable>().IsDead())
-        {
-            LoseTarget();
-        }
-
         if (CanSee(currentTarget) && CanMeleeAttack)
         {
             bool inRange = WithinMeleeRange(); //This could be optimized later
@@ -786,6 +806,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         //Apply the proper damage number
         int damage = Random.Range(melee.meleeDamageMin, melee.meleeDamageMax + 1); //why the fok is max exclusive??? stoopid unity 
 
+        if (melee.statusEffectToApply) ApplyStatusEffect(melee.statusEffectToApply, currentTarget, melee.amount);
         StartCoroutine(MeleeCooldownCoroutine());
         Damage(damage);
     }
@@ -793,11 +814,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     #region Ranged
     public virtual void TryRangedAttack()
     {
-        if (currentTarget.GetComponent<IDamagable>().IsDead())
-        {
-            LoseTarget();
-        }
-
         if (CanSee(currentTarget) && CanRangedAttack)
         {
             AttackRange = true;
@@ -819,6 +835,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         AttackRange = false;
 
         if (ranged.standStill) ResumeMovement();
+
+        if (ranged.statusEffectToApply) ApplyStatusEffect(ranged.statusEffectToApply, currentTarget, ranged.amount);
 
         //Apply the proper damage number
         Damage(ranged.rangedDamage);
@@ -848,7 +866,10 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
 
         projectile.transform.SetParent(null);
 
-        projectile.GetComponent<UnitProjectile>().damage = ranged.rangedDamage;
+        UnitProjectile uProjectile = projectile.GetComponent<UnitProjectile>();
+        uProjectile.damage = ranged.rangedDamage;
+        uProjectile.statusEffectToApply = ranged.statusEffectToApply;
+        uProjectile.amount = ranged.amount;
 
         AttackRange = false; //Disables this bool, allowing the unit to do another ranged attack.
         StartCoroutine(RangedCooldownCoroutine()); //Start cooldown
@@ -864,11 +885,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     #region Special
     public virtual void TrySpecialAttack()
     {
-        if (currentTarget.GetComponent<IDamagable>().IsDead())
-        {
-            LoseTarget();
-        }
-
         if (CanSee(currentTarget) && CanSpecialAttack)
         {
             AttackSpecial = true;
@@ -889,11 +905,22 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     //This is the actual special, which is usually called from an animation event.
     public virtual void SpecialAttack()
     {
+        if (special.statusEffectToApply) ApplyStatusEffect(special.statusEffectToApply, currentTarget, special.amount);
+
         AttackSpecial = false;
         StartCoroutine(SpecialCooldownCoroutine()); 
     }
 
     #endregion
+
+    protected void ApplyStatusEffect(StatusEffectSO effect, Transform target, int? amount = null)
+    {
+        if (effect == null || target == null)
+        {
+            return;
+        }
+        target.GetComponent<StatusEffectManager>()?.ApplyStatusEffect(effect.ApplyEffect(target.gameObject), amount);
+    }
 
     #endregion
 

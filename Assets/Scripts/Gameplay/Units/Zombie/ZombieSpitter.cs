@@ -2,14 +2,13 @@
 
 public class ZombieSpitter : UnitBase, IZombie, IControllable
 {
-    [SerializeField]
-    private InfectionSO infection;
-    public InfectionSO Infection { get => infection; set => infection = value; }
-    [SerializeField]
-    private int infectionAmount = 15;
-    public int InfectionAmount { get => infectionAmount; set => infectionAmount = value; }
     public override void Attack()
     {
+        if (!Infect())
+        {
+            return;
+        }
+
         if (CanRangedAttack)
         {
             TryRangedAttack();
@@ -18,15 +17,6 @@ public class ZombieSpitter : UnitBase, IZombie, IControllable
         {
             TryMeleeAttack();
         }
-    }
-
-    public override void MeleeAttack()
-    {
-        base.MeleeAttack();
-
-        if (!WithinMeleeRange() || !CanSee(currentTarget)) return;
-
-        Infect(currentTarget);
     }
 
     public override void OnSelect()
@@ -45,14 +35,19 @@ public class ZombieSpitter : UnitBase, IZombie, IControllable
         throw new System.NotImplementedException();
     }
 
-    public void Infect(Transform target)
+    public bool Infect()
     {
-        if (infection == null)
+        if (melee.statusEffectToApply == null)
         {
             Debug.LogError(name + " had no infection debuff assigned and could not infect the target");
-            return;
+            return false;
         }
-        target.GetComponent<StatusEffectManager>()?.ApplyStatusEffect(infection.ApplyEffect(target.gameObject), infectionAmount);
+        if (melee.amount == 0)
+        {
+            Debug.LogError(name + " had no infection amount and could not infect the target");
+            return false;
+        }
+        return true;
     }
     #endregion
 }

@@ -5,18 +5,16 @@ using UnityEngine.AI;
 
 public class ZombieTentacle : UnitBase, IZombie, IControllable
 {
-    [SerializeField]
-    private InfectionSO infection;
-    public InfectionSO Infection { get => infection; set => infection = value; }
-    [SerializeField]
-    private int infectionAmount = 15;
-    public int InfectionAmount { get => infectionAmount; set => infectionAmount = value; }
-
     [Header("Tentacle")]
     [SerializeField] private bool CaughtSurvivor = false;
-    //private player playerInGrasp; //Ya know, make this when players are made
+
     public override void Attack()
     {
+        if (!Infect())
+        {
+            return;
+        }
+
         if (CanSpecialAttack)
         {
             TrySpecialAttack();
@@ -27,43 +25,22 @@ public class ZombieTentacle : UnitBase, IZombie, IControllable
         }
     }
 
-    public override void MeleeAttack()
-    {
-        base.MeleeAttack();
-
-        if (!WithinMeleeRange() || !CanSee(currentTarget)) return;
-
-        Infect(currentTarget);
-    }
-
     public override void SpecialAttack()
     {
         Debug.Log("Gotcha bitch!");
 
         //Try to capture a player, making them unable to move or use weapons.
 
+        if (special.statusEffectToApply == null)
+        {
+            Debug.LogError(name + " had no grapple debuff assigned and could not grapple the target");
+            return;
+        }
+        currentTarget.GetComponent<StatusEffectManager>()?.ApplyStatusEffect(special.statusEffectToApply.ApplyEffect(currentTarget.gameObject));
+
         //If successful ------
         CaughtSurvivor = true;
         animator.SetBool("Grapple", true);
-
-        //Call DamageOverTime
-        StartCoroutine(DamageOverTime());
-    }
-
-    private IEnumerator DamageOverTime()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(1);
-
-            //Check if unit still has a player to damage (maybe the player died while in its grasp)
-            //If so, leave the special attack, and continue searching for other survivors.
-            if (!CaughtSurvivor) yield break;
-
-            //Do some damage yo
-            Damage(special.specialDamage);
-            print("oof");
-        }
     }
 
     public override void OnSelect()
@@ -82,14 +59,19 @@ public class ZombieTentacle : UnitBase, IZombie, IControllable
         throw new System.NotImplementedException();
     }
 
-    public void Infect(Transform target)
+    public bool Infect()
     {
-        if (infection == null)
+        if (melee.statusEffectToApply == null)
         {
             Debug.LogError(name + " had no infection debuff assigned and could not infect the target");
-            return;
+            return false;
         }
-        target.GetComponent<StatusEffectManager>()?.ApplyStatusEffect(infection.ApplyEffect(target.gameObject), infectionAmount);
+        if (melee.amount == 0)
+        {
+            Debug.LogError(name + " had no infection amount and could not infect the target");
+            return false;
+        }
+        return true;
     }
     #endregion
 }
