@@ -676,9 +676,9 @@ MonoBehaviour:
   syncInterval: 0.1
   range: 10000
   fireRate: 0.5
-  damage: 10
+  damage: 1
   duration: 20000
-  health: 2000000
+  health: 200000
   target: {fileID: 0}
   swivel: {fileID: 1483150756538309283}
   pivot: {fileID: 591017393817333658}
@@ -686,6 +686,9 @@ MonoBehaviour:
   ignoreLayer:
     serializedVersion: 2
     m_Bits: 512
+  ignoreLayerLOS:
+    serializedVersion: 2
+    m_Bits: 513
 --- !u!114 &-5203044163589500449
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -12,7 +12,11 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	[SerializeField]
 	private float range = 10000;
 	[SerializeField]
-	private float fireRate = 0.1f;
+	private float fireRate = 240f;
+	[SerializeField]
+	private float rotateSpeed = 1f;
+	[SerializeField]
+	private float searchInterval = 1f;
 	[SerializeField]
 	private int damage = 20;
 	[SerializeField]
@@ -35,9 +39,11 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	[Space]
 	[SerializeField]
 	private LayerMask ignoreLayer;
+	[SerializeField]
+	private LayerMask ignoreLayerLOS;
 
 	private Collider[] enemiesInRange;
-	private List<Collider> enemiesInSight;
+	private List<Collider> enemiesInSight = new List<Collider>();
 	private bool isSearching = false;
 	private bool isDead;
 
@@ -55,8 +61,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		while (true)
 		{
 			if (CanShoot()) Shoot();
-			//else LostTarget();
-			yield return new WaitForSeconds(fireRate);
+			yield return new WaitForSeconds(1 / (fireRate / 60));
 		}
 	}
 
@@ -68,7 +73,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		{
 			print("Searching...");
 			FindTarget();
-			yield return new WaitForSeconds(1f);
+			yield return new WaitForSeconds(searchInterval);
 		}
 
 	}
@@ -78,8 +83,9 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	{
 		while (true)
 		{
+
 			Quaternion lookRotation = Quaternion.LookRotation((target.position - swivel.position));
-			swivel.rotation = Quaternion.Slerp(swivel.rotation, lookRotation, 3 * Time.deltaTime);
+			swivel.rotation = Quaternion.RotateTowards(swivel.rotation, lookRotation, rotateSpeed);
 			swivel.localEulerAngles = new Vector3(0, swivel.localEulerAngles.y, 0);
 			yield return null;
 		}
@@ -91,9 +97,20 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		while (true)
 		{
 			Quaternion lookRotation = Quaternion.LookRotation(((target.position + target.GetComponent<BoxCollider>().center * 1.5f) - pivot.position));
-			pivot.rotation = Quaternion.Slerp(pivot.rotation, lookRotation, 3 * Time.deltaTime);
+			pivot.rotation = Quaternion.RotateTowards(pivot.rotation, lookRotation, rotateSpeed);
 			pivot.localEulerAngles = new Vector3(pivot.localEulerAngles.x, 0, 0);
 			yield return null;
+		}
+	}
+
+	IEnumerator RotatePassiveCo;
+	IEnumerator RotatePassive()
+	{
+		while (true)
+		{
+			//swivel.rotation = Quaternion.Euler(0, 1, 0);
+			//print("rotate");
+			yield return new WaitForSeconds(0.1f);
 		}
 	}
 
@@ -114,8 +131,9 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	void Shoot()
 	{
 		Ray(out bool didHit, out RaycastHit hit, out bool lineOfSightCheck);
-		print("Shooting...");
+
 		Debug.DrawRay(barrel.position, barrel.forward * 10, Color.red, 0.1f);
+
 		hit.transform.GetComponent<IDamagable>()?.Svr_Damage(damage, transform);
 		if (target.GetComponent<IDamagable>().IsDead())
 		{
@@ -124,20 +142,23 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	}
 	void FindTarget()
 	{
-		enemiesInSight = new List<Collider>();
+		enemiesInSight.Clear();
 		enemiesInRange = Physics.OverlapSphere(transform.position, range, ignoreLayer);
 		RaycastHit hit;
 		foreach (Collider item in enemiesInRange)
 		{
-			Physics.Raycast(transform.position, (item.transform.position - transform.position), out hit);
+			Physics.Raycast(swivel.transform.position, ((item.transform.position + item.GetComponent<BoxCollider>().center) - transform.position), out hit);
+			Debug.DrawLine(swivel.transform.position, (item.transform.position + item.GetComponent<BoxCollider>().center), Color.blue, 0.2f);
+
 			if (hit.transform == item.transform)
 			{
+				print(hit.transform.name);
 				enemiesInSight.Add(item);
 			}
 		}
-		if (enemiesInSight.Count > 0 && enemiesInSight[0])
+		if (GetClosestEnemyCollider(enemiesInSight))
 		{
-			NewTarget(enemiesInSight[0].transform);
+			NewTarget(GetClosestEnemyCollider(enemiesInSight).transform);
 		}
 	}
 
@@ -156,6 +177,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		StartCoroutine(RotateXCo);
 		StartCoroutine(RotateYCo);
 		StartCoroutine(ShootIntervalCo);
+		StopCoroutine(RotatePassiveCo);
 	}
 
 	void LostTarget()
@@ -169,10 +191,31 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 
 	void StartSearching()
 	{
+		RotatePassiveCo = RotatePassive();
+		StartCoroutine(RotatePassiveCo);
+
 		SearchingCo = Searching();
 		StartCoroutine(SearchingCo);
 
 		//TO DO - TING DER SKER NÅR MAN STARTER MED AT SØGE
+	}
+
+	Collider GetClosestEnemyCollider(List<Collider> enemyColliders)
+	{
+		float bestDistance = 99999.0f;
+		Collider bestCollider = null;
+
+		foreach (Collider enemy in enemyColliders)
+		{
+			float distance = Vector3.Distance(transform.position, enemy.transform.position);
+
+			if (distance < bestDistance)
+			{
+				bestDistance = distance;
+				bestCollider = enemy;
+			}
+		}
+		return bestCollider;
 	}
 
 	bool CanShoot()
@@ -182,7 +225,10 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		{
 			if (hit.transform.TryGetComponent(out IDamagable a))
 			{
-				if (lineOfSightCheck) return true;
+				if (lineOfSightCheck)
+				{
+					return true;
+				}
 				else
 				{
 					print("Lost target...");
@@ -190,19 +236,22 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 					LostTarget();
 				}
 			}
+			else if (!lineOfSightCheck)
+			{
+				print("Lost target...");
+				LostTarget();
+			}
 		}
-
-
 		return false;
 	}
 
 	void Ray(out bool didHit, out RaycastHit hit, out bool lineOfSightCheck)
 	{
-		RaycastHit hit2;
-		Physics.Raycast(transform.position, (target.transform.position - transform.position), out hit2);
+		RaycastHit hitLOS;
+		Physics.Raycast(transform.position, ((target.transform.position + target.GetComponent<BoxCollider>().center) - transform.position), out hitLOS, ignoreLayerLOS);
 
-		// LINE OF SIGHT BROKEN BY OTHER ZOMBIES - FIX
-		lineOfSightCheck = hit2.transform == target.transform;
+		// LINE OF SIGHT BROKEN BY OTHER ZOMBIES - FIX???
+		lineOfSightCheck = hitLOS.transform == target.transform;
 
 
 		Physics.Raycast(barrel.position, barrel.forward, out hit, range);
