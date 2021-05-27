@@ -50,7 +50,8 @@ public class ZombieStronk : UnitBase, IZombie, IControllable
             destructiblesInRange = Physics.OverlapSphere(transform.position, destructibleSearchRange, destructibleLayerMask);
             foreach (Collider destructible in destructiblesInRange)
             {
-                destructible.GetComponent<Outline>().ShowOutline(0.5f, 2f);
+                destructible.GetComponent<Outline>().ShowOutline(0.5f,
+                    destructible.transform == currentTarget ? 8 : 2f);
             }
 
             yield return new WaitForSeconds(0.5f);

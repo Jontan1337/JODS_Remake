@@ -220,7 +220,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
                 // Temporary position to look at the middle of the figure
                 Vector3 tempPosMid = new Vector3(targetCollider.transform.position.x, targetCollider.transform.position.y + targetCollider.transform.localScale.y / 2, targetCollider.transform.position.z);
                 // Did the raycast hit something and is it not Untagged
-                tempCheckIsHit = Physics.Raycast(fromPosMid, tempPosMid - fromPosMid, out hit, explosionRadius) && hit.collider.tag != "Untagged";
+                tempCheckIsHit = Physics.Raycast(fromPosMid, tempPosMid - fromPosMid, out hit, explosionRadius);
 
                 // -- TOP --
                 // If the first raycast doesn't hit, check if the next does 
@@ -230,7 +230,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
                     // if an object is in the way in the middle
                     Vector3 tempPosTop = new Vector3(tempPosMid.x, targetCollider.transform.position.y + targetCollider.transform.localScale.y - 0.01f, tempPosMid.z);
                     // Did the raycast hit something and is it not Untagged
-                    tempCheckIsHit = Physics.Raycast(fromPosTop, tempPosTop - fromPosTop, out hit, explosionRadius) && hit.collider.tag != "Untagged";
+                    tempCheckIsHit = Physics.Raycast(fromPosTop, tempPosTop - fromPosTop, out hit, explosionRadius);
                 }
 
                 // -- BOTTOM --
@@ -241,7 +241,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
                     // if an object is in the way at the top
                     Vector3 tempPosBottom = new Vector3(tempPosMid.x, targetCollider.transform.position.y, tempPosMid.z);
                     // Did the raycast hit something and is it not Untagged
-                    tempCheckIsHit = Physics.Raycast(fromPosBottom, tempPosBottom - fromPosBottom, out hit, explosionRadius) && hit.collider.tag != "Untagged";
+                    tempCheckIsHit = Physics.Raycast(fromPosBottom, tempPosBottom - fromPosBottom, out hit, explosionRadius);
                 }
                 #endregion
 
