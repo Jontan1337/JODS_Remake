@@ -29,7 +29,6 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
     [SerializeField] private bool removeDebris = false;
     [SerializeField] private GameObject singleBrokenObject = null;
     [SerializeField] private SFXPlayer wallDestruction = null;
-    [SerializeField] private GameObject wallIcon = null;
     [SerializeField] private bool destroySelf = false;
 
     [Header("Other entity settings")]
@@ -105,12 +104,8 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
     /// Transform is the source of the "explosion".
     /// </summary>
     /// <param name="sourceOfExplosion"></param>
-    public void DestroyWall(Transform sourceOfExplosion)
+    public void DestroyWall(Transform sourceOfExplosion = null)
     {
-        if (wallIcon)
-        {
-            wallIcon.SetActive(false);
-        }
         // Get the BoxCollider of the parent that is used
         // to damage the object and then disable the collider
         // before adding explosionforce to the pieces.
@@ -158,7 +153,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
         {
             StartCoroutine(DissolvePiece(piece));
         }
-        if (destroySelf) Destroy(gameObject,6f);
+        if (destroySelf) Destroy(gameObject,10f);
     }
     private IEnumerator DissolvePiece(GameObject piece)
     {
@@ -169,8 +164,9 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
         piece.GetComponent<Timer>()?.StartTimer(true, 5f);
     }
 
-    private void DestroyEntity()
+    public void DestroyEntity(Transform sourceOfExplosion = null)
     {
+        isDead = true;
         // Prevent this entity from running code with bool
         // since Destroy(gameObject) takes some time
         // and will cause a repeating chain reaction with other explosives.
@@ -278,6 +274,10 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
                 // If the breakable object contains one broken object
                 Instantiate(singleBrokenObject, transform.position, transform.rotation);
             }
+            else
+            {
+                DestroyWall(sourceOfExplosion);
+            }
         }
         // Is the entity a single destructable object or an explosive
         if (singleDestructable || entityType == EntityType.explosive)
@@ -296,7 +296,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
     public void Explode(Transform explosionSource)
     {
         if (entityType != EntityType.nonexplosive) return;
-        DestroyWall(explosionSource);
+        DestroyWall();
     }
 
     [Server]
@@ -316,14 +316,8 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
         }
     }
 
-	int IDamagable.GetHealth()
-	{
-		throw new System.NotImplementedException();
-	}
+    int IDamagable.GetHealth() => health;
 
-	bool IDamagable.IsDead()
-	{
-		throw new System.NotImplementedException();
-	}
+    bool IDamagable.IsDead() => isDead;
 	#endregion
 }

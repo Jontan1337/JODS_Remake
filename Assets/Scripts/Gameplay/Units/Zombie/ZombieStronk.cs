@@ -18,13 +18,6 @@ public class ZombieStronk : UnitBase, IZombie, IControllable
     [Space]
     [SerializeField] private ParticleSystem slamFX;
     
-
-
-    public override void Start()
-    {
-        base.Start();
-    }
-
     public override void Attack()
     {
         if (CanMeleeAttack)
@@ -35,11 +28,23 @@ public class ZombieStronk : UnitBase, IZombie, IControllable
 
     public override void MeleeAttack()
     {
+        if (targetIsLiveEntity) SpecialAttack();
+
         base.MeleeAttack();
 
         if (!WithinMeleeRange() || !CanSee(currentTarget)) return;
 
         Infect(currentTarget);
+    }
+
+    public override void SpecialAttack()
+    {
+        print("sepck");
+        if (!WithinMeleeRange() || !CanSee(currentTarget)) return;
+
+        currentTarget.GetComponent<LiveEntity>().DestroyEntity(transform);
+
+        base.SpecialAttack();
     }
 
     private IEnumerator SearchForDestructibleCo;
@@ -56,6 +61,13 @@ public class ZombieStronk : UnitBase, IZombie, IControllable
 
             yield return new WaitForSeconds(0.5f);
         }
+    }
+
+    public override void AcquireTarget(Transform newTarget, bool alerted, bool closerThanCurrent = false, bool liveEntity = false)
+    {
+        print("o shit boi a wall");
+
+        base.AcquireTarget(newTarget, alerted, closerThanCurrent, liveEntity);
     }
 
     public override void OnSelect()

@@ -104,6 +104,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     public NavMeshAgent navAgent;
     [SerializeField] private bool hasTarget = false;
     [SerializeField] private bool permanentTarget = true;
+    protected bool targetIsLiveEntity = false;
 
     [Header("References")]
     public Animator animator;
@@ -471,14 +472,17 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
                 if (canSee && inViewAngle || Vector3.Distance(transform.position, col.transform.position) <= 10)
                 {
                     //I can see the player, go go go!
-                    AcquireTarget(col.transform, false);
+                    AcquireTarget(col.transform, false, default);
                 }
             }
         }
     }
 
-    public void AcquireTarget(Transform newTarget, bool alerted, bool closerThanCurrent = false)
+    public virtual void AcquireTarget(Transform newTarget, bool alerted = false, bool closerThanCurrent = false, bool liveEntity = false)
     {
+        print("ass : " + liveEntity);
+        targetIsLiveEntity = liveEntity;
+
         if (!closerThanCurrent)
         {
             if (HasTarget())
@@ -561,7 +565,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
             if (!hasTarget) LoseTarget();
 
             //Can I see the player?
-            if (CanSee(currentTarget) || permanentTarget) //Permanent targets dont need to be in view
+            if (CanSee(currentTarget) || permanentTarget) //Permanent targets don't need to be in view
             {
                 chaseTime = unitSO.chaseTime;
                 navAgent.SetDestination(currentTarget.position);
@@ -607,7 +611,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         foreach (Collider col in adjacentUnits)
         {
             if (col.gameObject == gameObject) continue;
-            col.gameObject.GetComponent<UnitBase>().AcquireTarget(currentTarget, true);
+            col.gameObject.GetComponent<UnitBase>().AcquireTarget(currentTarget, true, default);
         }
     }
 
@@ -746,6 +750,11 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     #region Melee
     public virtual void TryMeleeAttack()
     {
+        if (currentTarget.GetComponent<IDamagable>().IsDead())
+        {
+            LoseTarget();
+        }
+
         if (CanSee(currentTarget) && CanMeleeAttack)
         {
             bool inRange = WithinMeleeRange(); //This could be optimized later
@@ -784,6 +793,11 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     #region Ranged
     public virtual void TryRangedAttack()
     {
+        if (currentTarget.GetComponent<IDamagable>().IsDead())
+        {
+            LoseTarget();
+        }
+
         if (CanSee(currentTarget) && CanRangedAttack)
         {
             AttackRange = true;
@@ -850,6 +864,11 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     #region Special
     public virtual void TrySpecialAttack()
     {
+        if (currentTarget.GetComponent<IDamagable>().IsDead())
+        {
+            LoseTarget();
+        }
+
         if (CanSee(currentTarget) && CanSpecialAttack)
         {
             AttackSpecial = true;

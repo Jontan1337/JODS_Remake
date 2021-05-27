@@ -20404,7 +20404,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 6575891413262923461}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.5
+  m_Radius: 1
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
@@ -20600,7 +20600,7 @@ MonoBehaviour:
   melee:
     meleeDamageMin: 30
     meleeDamageMax: 50
-    meleeRange: 5
+    meleeRange: 4
     meleeCooldown: 2
     canMelee: 1
   ranged:
@@ -20664,9 +20664,14 @@ MonoBehaviour:
     canSelect: 1
     unitRenderer: {fileID: 2545468617021115914}
     unitMat: {fileID: 0}
+    isSelected: 0
   rangedCooldown: 0
   infection: {fileID: 11400000, guid: 6499d90d213f8aa4db7fae68321bec63, type: 2}
   infectionAmount: 10
+  destructibleSearchRange: 20
+  destructibleLayerMask:
+    serializedVersion: 2
+    m_Bits: 131072
   slamFX: {fileID: 2113607686542878931}
 --- !u!114 &-5155921364892832840
 MonoBehaviour:
