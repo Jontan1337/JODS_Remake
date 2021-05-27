@@ -1530,6 +1530,9 @@ MonoBehaviour:
     meleeRange: 3
     meleeCooldown: 5
     canMelee: 1
+    statusEffectToApply: {fileID: 11400000, guid: 6499d90d213f8aa4db7fae68321bec63,
+      type: 2}
+    amount: 5
   ranged:
     rangedDamage: 15
     minRange: 3
@@ -1543,6 +1546,9 @@ MonoBehaviour:
     standStill: 1
     directRangedAttack: 0
     canRanged: 0
+    statusEffectToApply: {fileID: 11400000, guid: 6499d90d213f8aa4db7fae68321bec63,
+      type: 2}
+    amount: 10
   special:
     specialCooldown: 2
     specialDamage: 0
@@ -1551,6 +1557,9 @@ MonoBehaviour:
     lookAtTarget: 1
     availableFromStart: 1
     canSpecial: 0
+    statusEffectToApply: {fileID: 11400000, guid: 273915536578c494c9ac3f927f859cee,
+      type: 2}
+    amount: 0
   movementSpeed: 1.5
   chaseTime: 20
   stoppedMoving: 0
@@ -1592,9 +1601,8 @@ MonoBehaviour:
     canSelect: 1
     unitRenderer: {fileID: 1899878319825792800}
     unitMat: {fileID: 0}
+    isSelected: 0
   rangedCooldown: 0
-  infection: {fileID: 11400000, guid: 6499d90d213f8aa4db7fae68321bec63, type: 2}
-  infectionAmount: 15
 --- !u!114 &-9046396808196331535
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1624,7 +1632,7 @@ GameObject:
   - component: {fileID: 7272920497539771206}
   - component: {fileID: 7272920497539771207}
   m_Layer: 11
-  m_Name: Zombie Spit
+  m_Name: Spit Drool
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6445,7 +6453,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: c2b678722469e14488aede692dd7f58b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -6543,7 +6551,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: c2b678722469e14488aede692dd7f58b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -37,14 +37,14 @@ public class ZombieSpitter : UnitBase, IZombie, IControllable
 
     public bool Infect()
     {
-        if (melee.statusEffectToApply == null)
+        if (melee.statusEffectToApply == null || ranged.statusEffectToApply == null)
         {
-            Debug.LogError(name + " had no infection debuff assigned and could not infect the target");
+            Debug.LogError(name + " has no infection debuff! Assign the 'Infection' as the 'Status Effect To Apply' on the UnitSO");
             return false;
         }
-        if (melee.amount == 0)
+        if (melee.amount == 0 || ranged.amount == 0)
         {
-            Debug.LogError(name + " had no infection amount and could not infect the target");
+            Debug.LogError(name + " has no infection amount!");
             return false;
         }
         return true;

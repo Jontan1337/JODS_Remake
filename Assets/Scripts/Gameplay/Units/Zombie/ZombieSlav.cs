@@ -38,12 +38,12 @@ public class ZombieSlav : UnitBase, IZombie, IControllable
     {
         if (melee.statusEffectToApply == null)
         {
-            Debug.LogError(name + " had no infection debuff assigned and could not infect the target");
+            Debug.LogError(name + " has no infection debuff! Assign the 'Infection' as the 'Status Effect To Apply' on the UnitSO");
             return false;
         }
         if (melee.amount == 0)
         {
-            Debug.LogError(name + " had no infection amount and could not infect the target");
+            Debug.LogError(name + " has no infection amount!");
             return false;
         }
         return true;

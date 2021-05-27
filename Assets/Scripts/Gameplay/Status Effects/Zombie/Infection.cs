@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Infection : StatusEffect
 {
-    [Range(1, 3)] public int infectionLevel = 0;
+    [Range(0, 3)] public int infectionLevel = 0;
     [Range(0, 100)] public float infectionRate = 0;
 
     public Infection(StatusEffectSO effect, GameObject obj) : base(effect, obj)
@@ -21,12 +21,13 @@ public class Infection : StatusEffect
         infectionRate = Mathf.Clamp(infectionRate += newAmount, 0, 100);
 
         Debug.Log("My infection rate is: " + infectionRate);
-        Debug.Log("My infection level is: " + infectionLevel);
 
         if (infectionRate >= 100)
         {
             IncreaseInfectionLevel();
         }
+
+        Debug.Log("My infection level is: " + infectionLevel);
     }
 
     public override void End()

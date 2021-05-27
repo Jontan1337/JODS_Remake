@@ -166,6 +166,16 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     [SerializeField]protected bool rangedCooldown = false; // Same witht these
     protected bool specialCooldown = false;
 
+    public bool MeleeCooldown
+    {
+        get { return meleeCooldown; }
+
+        set
+        {
+            meleeCooldown = value;
+            melee.canMelee = !value;
+        }
+    }
     public bool RangedCooldown 
     {
         get { return rangedCooldown; }
@@ -174,6 +184,16 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         { 
             rangedCooldown = value;
             ranged.canRanged = !value;
+        }
+    }
+    public bool SpecialCooldown
+    {
+        get { return specialCooldown; }
+
+        set
+        {
+            specialCooldown = value;
+            special.canSpecial = !value;
         }
     }
 
@@ -225,7 +245,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
             if (value == attackSpecial) return;
             attackSpecial = value;
             animator.SetBool("Special", attackSpecial);
-            special.canSpecial = false;
         }
     }
     public int Health
@@ -435,17 +454,20 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
 
     #region Movement
 
-    private void StopMovement()
+    protected void StopMovement()
     {
         navAgent.speed = 0;
         stoppedMoving = true;
         navAgent.isStopped = true;
         navAgent.ResetPath();
     }
-    private void ResumeMovement()
+    protected void ResumeMovement()
     {
-        navAgent.speed = movementSpeed;
-        stoppedMoving = false;
+        if (stoppedMoving)
+        {
+            navAgent.speed = movementSpeed;
+            stoppedMoving = false;
+        }
     }
 
     private IEnumerator MovementAnimationCoroutine()
@@ -495,7 +517,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
 
     public virtual void AcquireTarget(Transform newTarget, bool alerted = false, bool closerThanCurrent = false, bool liveEntity = false)
     {
-        print("ass : " + liveEntity);
         targetIsLiveEntity = liveEntity;
 
         if (!closerThanCurrent)
@@ -541,7 +562,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         print($"{name} : Mission failed, we'll get em next time");
     }
 
-    private bool HasTarget()
+    protected bool HasTarget()
     {
         hasTarget = (currentTarget != null);
         return hasTarget;
@@ -603,6 +624,13 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
                         }
                     }
                 }
+
+                else
+                {
+                    bool nextToTarget = NextToTarget();
+                    if (nextToTarget) StopMovement();
+                    else if (!nextToTarget) ResumeMovement();
+                }
             }
             else
             {
@@ -658,7 +686,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         return false;
     }
 
-    private bool InViewAngle(Transform target)
+    protected bool InViewAngle(Transform target)
     {
         Vector3 pos = new Vector3(transform.position.x, transform.position.y + eyeHeight, transform.position.z);
         Vector3 targetPos = new Vector3(target.position.x, transform.position.y + 1.5f, target.position.z);
@@ -673,7 +701,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         return angle <= viewAngle;
     }
 
-    private bool LookingAtTarget()
+    protected bool LookingAtTarget()
     {
         if (!HasTarget()) return false;
 
@@ -690,7 +718,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         return angle <= 10;
     }
 
-    private bool CloserThanTarget(Transform compareTarget)
+    protected bool CloserThanTarget(Transform compareTarget)
     {
         if (!HasTarget()) return true;
         if (compareTarget == null) return false;
@@ -700,6 +728,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
 
         return currentTargetDistance > newTargetDistance;
     }
+
+    protected bool NextToTarget() => Vector3.Distance(transform.position, currentTarget.position) <= navAgent.radius + 0.4f;
 
     #endregion
 
@@ -740,13 +770,11 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     {
         if (meleeCooldown) yield break; //if an instance is already running, exit this one.
 
-        melee.canMelee = false;
-        meleeCooldown = true;
+        MeleeCooldown = true;
 
         yield return new WaitForSeconds(melee.meleeCooldown);
 
-        melee.canMelee = true;
-        meleeCooldown = false;
+        MeleeCooldown = false;
     }
     protected IEnumerator RangedCooldownCoroutine()
     {
@@ -762,13 +790,11 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     {
         if (specialCooldown) yield break; //if an instance is already running, exit this one.
 
-        specialCooldown = true;
-        special.canSpecial = false;
+        SpecialCooldown = true;
 
         yield return new WaitForSeconds(special.specialCooldown);
 
-        special.canSpecial = true;
-        specialCooldown = false;
+        SpecialCooldown = false;
     }
     #endregion
 
@@ -796,7 +822,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     public virtual void MeleeAttack() 
     {
         AttackMelee = false;
-        if (stoppedMoving) ResumeMovement();
+        ResumeMovement();
 
         //This will check one last time if the survivor is within melee range. 
         //Because the survivor might have moved while a melee animation was happening.
@@ -824,7 +850,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
             $" Does it ignore UnitProjectile?");
     }
     protected bool CanRangedAttack => WithinRangedDistance() && ranged.canRanged;
-    private bool WithinRangedDistance()
+    protected bool WithinRangedDistance()
     {
         if (!HasTarget()) return false;
         float distance = Vector3.Distance(currentTarget.position, transform.position);
@@ -890,13 +916,12 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
             AttackSpecial = true;
             if (special.lookAtTarget) LookAtTarget();
             if (special.standStill) StopMovement();
-            print(name + ": IMMA CHARGIN' MA LAZOR");
         }
         else Debug.LogWarning($"{name} can't see it's target. Is it's ignoreOnLayer mask set properly?" +
             $" Does it ignore UnitProjectile?");
     }
     protected bool CanSpecialAttack => WithinSpecialDistance() && special.canSpecial;
-    private bool WithinSpecialDistance()
+    protected bool WithinSpecialDistance()
     {
         if (!HasTarget()) return false;
         float distance = Vector3.Distance(currentTarget.position, transform.position);
@@ -905,6 +930,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     //This is the actual special, which is usually called from an animation event.
     public virtual void SpecialAttack()
     {
+        ResumeMovement();
+
         if (special.statusEffectToApply) ApplyStatusEffect(special.statusEffectToApply, currentTarget, special.amount);
 
         AttackSpecial = false;
@@ -944,6 +971,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
             animator.SetTrigger("Die");
 
             GetComponent<BoxCollider>().enabled = false;
+            navAgent.enabled = false;
 
             //Invoke this method after 5 seconds.
             StartCoroutine(PostDeath());
@@ -1135,17 +1163,17 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
             Gizmos.color = Color.blue;
             Gizmos.DrawCube(new Vector3(transform.position.x, transform.position.y + 3, transform.position.z), new Vector3(0.25f, 1, 0.25f));
         }
-        if (attackRange)
+        if (attackRange || attackSpecial)
         {
             Gizmos.color = Color.cyan;
             Gizmos.DrawCube(new Vector3(transform.position.x, transform.position.y + 5, transform.position.z), new Vector3(0.25f, 1, 0.25f));
         }
-        if (ranged.canRanged)
+        if (ranged.canRanged || special.canSpecial)
         {
             Gizmos.color = Color.magenta;
             Gizmos.DrawCube(new Vector3(transform.position.x, transform.position.y + 6, transform.position.z), new Vector3(0.25f, 1, 0.25f));
         }
-        if (rangedCooldown)
+        if (rangedCooldown || specialCooldown)
         {
             Gizmos.color = Color.black;
             Gizmos.DrawCube(new Vector3(transform.position.x, transform.position.y + 7, transform.position.z), new Vector3(0.25f, 1, 0.25f));

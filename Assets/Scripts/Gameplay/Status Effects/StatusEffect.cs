@@ -4,6 +4,7 @@ using UnityEngine;
 
 public abstract class StatusEffect
 {
+    public bool activeUntilRemoved;
     public float duration;
     protected int effectStacks;
     public StatusEffectSO effect { get; }
@@ -12,6 +13,7 @@ public abstract class StatusEffect
 
     public StatusEffect(StatusEffectSO effect, GameObject obj)
     {
+        this.activeUntilRemoved = effect.activeUntilRemoved;
         this.effect = effect;
         this.obj = obj;
     }
@@ -19,15 +21,18 @@ public abstract class StatusEffect
     //This function is called every second
     public virtual void Tick()
     {
-        //Decrease the duration by 1 (every second)
-        duration -= 1;
-
-        //If duration has reached 0
-        if (duration <= 0)
+        if (!activeUntilRemoved)
         {
-            isFinished = true;
+            //Decrease the duration by 1 (every second)
+            duration -= 1;
 
-            End(); //Do something when the effect ends, like reset movement speed
+            //If duration has reached 0
+            if (duration <= 0)
+            {
+                isFinished = true;
+
+                End(); //Do something when the effect ends, like reset movement speed
+            }
         }
     }
 

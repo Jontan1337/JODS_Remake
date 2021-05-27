@@ -15,9 +15,14 @@ public class ZombieTentacle : UnitBase, IZombie, IControllable
             return;
         }
 
-        if (CanSpecialAttack)
+        //Tentacle Zombie will always try and do the special attack if it is available.
+        //If the special failed, it will go on cooldown and it can begin using melee attacks
+        if (special.canSpecial)
         {
-            TrySpecialAttack();
+            if (CanSpecialAttack)
+            {
+                TrySpecialAttack();
+            }
         }
         else if (CanMeleeAttack)
         {
@@ -27,9 +32,19 @@ public class ZombieTentacle : UnitBase, IZombie, IControllable
 
     public override void SpecialAttack()
     {
-        Debug.Log("Gotcha bitch!");
+        AttackSpecial = false;
+        StartCoroutine(SpecialCooldownCoroutine());
 
         //Try to capture a player, making them unable to move or use weapons.
+        if (!WithinSpecialDistance())
+        {
+            LoseGrappledTarget();
+            return;
+        }
+        //If successful ------
+
+        Debug.Log("Gotcha bitch!");
+
 
         if (special.statusEffectToApply == null)
         {
@@ -38,9 +53,28 @@ public class ZombieTentacle : UnitBase, IZombie, IControllable
         }
         currentTarget.GetComponent<StatusEffectManager>()?.ApplyStatusEffect(special.statusEffectToApply.ApplyEffect(currentTarget.gameObject));
 
-        //If successful ------
         CaughtSurvivor = true;
         animator.SetBool("Grapple", true);
+
+        StartCoroutine(GrabEnumerator());
+    }
+
+    private IEnumerator GrabEnumerator()
+    {
+        while (HasTarget())
+        {
+            if (!WithinSpecialDistance()) break;
+
+            yield return new WaitForSeconds(0.5f);
+        }
+
+        LoseGrappledTarget();
+    }
+
+    private void LoseGrappledTarget()
+    {
+        animator.SetBool("Grapple", false);
+        ResumeMovement();
     }
 
     public override void OnSelect()
@@ -63,12 +97,12 @@ public class ZombieTentacle : UnitBase, IZombie, IControllable
     {
         if (melee.statusEffectToApply == null)
         {
-            Debug.LogError(name + " had no infection debuff assigned and could not infect the target");
+            Debug.LogError(name + " has no infection debuff! Assign the 'Infection' as the 'Status Effect To Apply' on the UnitSO");
             return false;
         }
         if (melee.amount == 0)
         {
-            Debug.LogError(name + " had no infection amount and could not infect the target");
+            Debug.LogError(name + " has no infection amount!");
             return false;
         }
         return true;
