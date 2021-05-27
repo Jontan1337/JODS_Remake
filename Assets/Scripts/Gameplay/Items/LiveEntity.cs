@@ -56,7 +56,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 
     public int Health { get => health; private set => health = value; }
     public int MaxHealth { get => maxHealth; private set => maxHealth = value; }
-    public bool IsDead { get => isDead; private set => isDead = value; }
+    
     public Teams Team { get; private set; }
 
     private void OnValidate()
@@ -316,8 +316,9 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
         }
     }
 
-    int IDamagable.GetHealth() => health;
+    public int GetHealth() => health;
 
-    bool IDamagable.IsDead() => isDead;
+    public bool IsDead() => isDead;
+
 	#endregion
 }
