@@ -10,6 +10,7 @@ public abstract class StatusEffect
     public StatusEffectSO effect { get; }
     protected readonly GameObject obj;
     public bool isFinished;
+    private bool isApplied = false;
 
     public StatusEffect(StatusEffectSO effect, GameObject obj)
     {
@@ -39,6 +40,11 @@ public abstract class StatusEffect
     //This function is called when the status effect is applied 
     public virtual void Activate(int? amount)
     {
+        if (!isApplied)
+        {
+            OnEffectApplied();
+            isApplied = true;
+        }
         if (effect.doEffectOnHit)
         {
             ApplyEffect(amount);
@@ -57,6 +63,7 @@ public abstract class StatusEffect
         }
     }
 
-    public virtual void ApplyEffect(int? amount) { } //This will apply the actual effect.
+    public abstract void OnEffectApplied();
+    public abstract void ApplyEffect(int? amount);//This will apply the actual effect.
     public abstract void End(); //This function is called when the effect ends, either by duration or stopped by some other means.
 }

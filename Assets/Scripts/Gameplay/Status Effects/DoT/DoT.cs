@@ -22,6 +22,11 @@ public class DoT : StatusEffect
         
     }
 
+    public override void OnEffectApplied()
+    {
+        
+    }
+
     public override void Tick()
     {
         base.Tick();

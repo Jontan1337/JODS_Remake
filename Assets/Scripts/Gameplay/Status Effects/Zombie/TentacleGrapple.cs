@@ -32,4 +32,8 @@ public class TentacleGrapple : StatusEffect
         //Do Damage
         idmg.Svr_Damage(grapple.damagePerTick);
     }
+    public override void OnEffectApplied()
+    {
+
+    }
 }
