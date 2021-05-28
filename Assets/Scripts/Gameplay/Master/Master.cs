@@ -563,10 +563,11 @@ public class Master : NetworkBehaviour
     {
         if (selectedUnit)
         {
+            NavMeshAgent nav = selectedUnit.GetComponent<NavMeshAgent>();
             return Vector3.Distance(
-                selectedUnit.gameObject.transform.position,
-                selectedUnit.GetComponent<NavMeshAgent>().destination
-                ) < 2;
+                nav.transform.position,
+                nav.destination
+                ) < nav.stoppingDistance;
         }
         else return false;
     }
@@ -837,6 +838,13 @@ public class Master : NetworkBehaviour
 
         if (didHit)
         {
+            print(hit.transform.name);
+            if (hit.transform.TryGetComponent(out LiveEntity destructible))
+            {
+                print("wall");
+                selectedUnit.AcquireTarget(hit.transform, true, true, true);
+            }
+
             //Command my selected unit to move to the location
             selectedUnit.MoveToLocation(hit.point);
 

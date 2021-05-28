@@ -43,6 +43,9 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         public float meleeCooldown = 0;
         [Space]
         public bool canMelee = true;
+        [Space]
+        public StatusEffectSO statusEffectToApply = null;
+        public int amount = 0;
     }
     [Space]
     public Melee melee;
@@ -64,6 +67,9 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         public bool directRangedAttack = false;
         [Space]
         public bool canRanged = false;
+        [Space]
+        public StatusEffectSO statusEffectToApply = null;
+        public int amount = 0;
     }
     public Ranged ranged;
 
@@ -79,6 +85,9 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         public bool availableFromStart = true;
         [Space]
         public bool canSpecial = false;
+        [Space]
+        public StatusEffectSO statusEffectToApply = null;
+        public int amount = 0;
     }
     public Special special;
 
@@ -104,6 +113,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     public NavMeshAgent navAgent;
     [SerializeField] private bool hasTarget = false;
     [SerializeField] private bool permanentTarget = true;
+    protected bool targetIsLiveEntity = false;
 
     [Header("References")]
     public Animator animator;
@@ -156,6 +166,16 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     [SerializeField]protected bool rangedCooldown = false; // Same witht these
     protected bool specialCooldown = false;
 
+    public bool MeleeCooldown
+    {
+        get { return meleeCooldown; }
+
+        set
+        {
+            meleeCooldown = value;
+            melee.canMelee = !value;
+        }
+    }
     public bool RangedCooldown 
     {
         get { return rangedCooldown; }
@@ -164,6 +184,16 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         { 
             rangedCooldown = value;
             ranged.canRanged = !value;
+        }
+    }
+    public bool SpecialCooldown
+    {
+        get { return specialCooldown; }
+
+        set
+        {
+            specialCooldown = value;
+            special.canSpecial = !value;
         }
     }
 
@@ -215,7 +245,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
             if (value == attackSpecial) return;
             attackSpecial = value;
             animator.SetBool("Special", attackSpecial);
-            special.canSpecial = false;
         }
     }
     public int Health
@@ -278,6 +307,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         melee.meleeDamageMax = unitSO.melee.meleeDamageMax;
         melee.meleeRange = unitSO.melee.meleeRange;
         melee.meleeCooldown = unitSO.melee.meleeCooldown;
+        melee.statusEffectToApply = unitSO.melee.statusEffectToApply;
+        melee.amount = unitSO.melee.amount;
 
         //Ranged
         ranged.rangedDamage = unitSO.ranged.rangedDamage;
@@ -290,6 +321,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         ranged.standStill = unitSO.ranged.standStill;
         ranged.directRangedAttack = unitSO.ranged.directRangedAttack;
         ranged.preferredRange = unitSO.ranged.preferredRange;
+        ranged.statusEffectToApply = unitSO.ranged.statusEffectToApply;
+        ranged.amount = unitSO.ranged.amount;
 
         //Special
         special.specialCooldown = unitSO.special.specialCooldown;
@@ -298,6 +331,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         special.standStill = unitSO.special.standStill;
         special.lookAtTarget = unitSO.special.lookAtTarget;
         special.availableFromStart = unitSO.special.availableFromStart;
+        special.statusEffectToApply = unitSO.special.statusEffectToApply;
+        special.amount = unitSO.special.amount;
 
         //Movement
         movementSpeed = unitSO.movementSpeed;
@@ -365,7 +400,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         navAgent = GetComponent<NavMeshAgent>();
         navAgent.speed = movementSpeed;
         navAgent.acceleration = 60;
-        navAgent.stoppingDistance = Mathf.Clamp(melee.meleeRange - 1, 1f, 20f);
+        navAgent.stoppingDistance = Mathf.Clamp(melee.meleeRange - 0.5f, 1f, 20f);
         navAgent.avoidancePriority = Random.Range(1, 100);
 
         //Animations -----------------------
@@ -419,17 +454,20 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
 
     #region Movement
 
-    private void StopMovement()
+    protected void StopMovement()
     {
         navAgent.speed = 0;
         stoppedMoving = true;
         navAgent.isStopped = true;
         navAgent.ResetPath();
     }
-    private void ResumeMovement()
+    protected void ResumeMovement()
     {
-        navAgent.speed = movementSpeed;
-        stoppedMoving = false;
+        if (stoppedMoving)
+        {
+            navAgent.speed = movementSpeed;
+            stoppedMoving = false;
+        }
     }
 
     private IEnumerator MovementAnimationCoroutine()
@@ -471,14 +509,16 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
                 if (canSee && inViewAngle || Vector3.Distance(transform.position, col.transform.position) <= 10)
                 {
                     //I can see the player, go go go!
-                    AcquireTarget(col.transform, false);
+                    AcquireTarget(col.transform, false, default);
                 }
             }
         }
     }
 
-    public void AcquireTarget(Transform newTarget, bool alerted, bool closerThanCurrent = false)
+    public virtual void AcquireTarget(Transform newTarget, bool alerted = false, bool closerThanCurrent = false, bool liveEntity = false)
     {
+        targetIsLiveEntity = liveEntity;
+
         if (!closerThanCurrent)
         {
             if (HasTarget())
@@ -495,8 +535,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         {
             Alert();
         }
-
-        print($"{name} : Target acquired");
     }
 
     private void LoseTarget()
@@ -522,7 +560,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         print($"{name} : Mission failed, we'll get em next time");
     }
 
-    private bool HasTarget()
+    protected bool HasTarget()
     {
         hasTarget = (currentTarget != null);
         return hasTarget;
@@ -561,7 +599,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
             if (!hasTarget) LoseTarget();
 
             //Can I see the player?
-            if (CanSee(currentTarget) || permanentTarget) //Permanent targets dont need to be in view
+            if (CanSee(currentTarget) || permanentTarget) //Permanent targets don't need to be in view
             {
                 chaseTime = unitSO.chaseTime;
                 navAgent.SetDestination(currentTarget.position);
@@ -583,6 +621,12 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
                             LookAtTarget(); // only rotate towards the target if the target is not within a 10 degree angle
                         }
                     }
+                }
+
+                else
+                {
+                    if (NextToTarget()) StopMovement();
+                    //else if (!nextToTarget) ResumeMovement();
                 }
             }
             else
@@ -607,7 +651,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         foreach (Collider col in adjacentUnits)
         {
             if (col.gameObject == gameObject) continue;
-            col.gameObject.GetComponent<UnitBase>().AcquireTarget(currentTarget, true);
+            col.gameObject.GetComponent<UnitBase>().AcquireTarget(currentTarget, true, default);
         }
     }
 
@@ -639,7 +683,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         return false;
     }
 
-    private bool InViewAngle(Transform target)
+    protected bool InViewAngle(Transform target)
     {
         Vector3 pos = new Vector3(transform.position.x, transform.position.y + eyeHeight, transform.position.z);
         Vector3 targetPos = new Vector3(target.position.x, transform.position.y + 1.5f, target.position.z);
@@ -654,7 +698,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         return angle <= viewAngle;
     }
 
-    private bool LookingAtTarget()
+    protected bool LookingAtTarget()
     {
         if (!HasTarget()) return false;
 
@@ -671,7 +715,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         return angle <= 10;
     }
 
-    private bool CloserThanTarget(Transform compareTarget)
+    protected bool CloserThanTarget(Transform compareTarget)
     {
         if (!HasTarget()) return true;
         if (compareTarget == null) return false;
@@ -681,6 +725,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
 
         return currentTargetDistance > newTargetDistance;
     }
+
+    protected bool NextToTarget() => Vector3.Distance(transform.position, currentTarget.position) <= Mathf.Clamp(navAgent.radius + 0.4f,melee.meleeRange - 0.1f,100);
 
     #endregion
 
@@ -698,7 +744,17 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         {
             yield return new WaitForSeconds(0.1f);
 
-            if (!hasTarget) LoseTarget();
+            if (!HasTarget())
+            {
+                LoseTarget();
+                yield return null;
+            }
+
+            if (currentTarget.GetComponent<IDamagable>().IsDead())
+            {
+                LoseTarget();
+                yield return null;
+            }
 
             Attack();
         }
@@ -711,13 +767,11 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     {
         if (meleeCooldown) yield break; //if an instance is already running, exit this one.
 
-        melee.canMelee = false;
-        meleeCooldown = true;
+        MeleeCooldown = true;
 
         yield return new WaitForSeconds(melee.meleeCooldown);
 
-        melee.canMelee = true;
-        meleeCooldown = false;
+        MeleeCooldown = false;
     }
     protected IEnumerator RangedCooldownCoroutine()
     {
@@ -733,13 +787,11 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     {
         if (specialCooldown) yield break; //if an instance is already running, exit this one.
 
-        specialCooldown = true;
-        special.canSpecial = false;
+        SpecialCooldown = true;
 
         yield return new WaitForSeconds(special.specialCooldown);
 
-        special.canSpecial = true;
-        specialCooldown = false;
+        SpecialCooldown = false;
     }
     #endregion
 
@@ -767,7 +819,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     public virtual void MeleeAttack() 
     {
         AttackMelee = false;
-        if (stoppedMoving) ResumeMovement();
+        ResumeMovement();
 
         //This will check one last time if the survivor is within melee range. 
         //Because the survivor might have moved while a melee animation was happening.
@@ -777,6 +829,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         //Apply the proper damage number
         int damage = Random.Range(melee.meleeDamageMin, melee.meleeDamageMax + 1); //why the fok is max exclusive??? stoopid unity 
 
+        if (melee.statusEffectToApply) ApplyStatusEffect(melee.statusEffectToApply, currentTarget, melee.amount);
         StartCoroutine(MeleeCooldownCoroutine());
         Damage(damage);
     }
@@ -794,7 +847,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
             $" Does it ignore UnitProjectile?");
     }
     protected bool CanRangedAttack => WithinRangedDistance() && ranged.canRanged;
-    private bool WithinRangedDistance()
+    protected bool WithinRangedDistance()
     {
         if (!HasTarget()) return false;
         float distance = Vector3.Distance(currentTarget.position, transform.position);
@@ -805,6 +858,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         AttackRange = false;
 
         if (ranged.standStill) ResumeMovement();
+
+        if (ranged.statusEffectToApply) ApplyStatusEffect(ranged.statusEffectToApply, currentTarget, ranged.amount);
 
         //Apply the proper damage number
         Damage(ranged.rangedDamage);
@@ -834,7 +889,10 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
 
         projectile.transform.SetParent(null);
 
-        projectile.GetComponent<UnitProjectile>().damage = ranged.rangedDamage;
+        UnitProjectile uProjectile = projectile.GetComponent<UnitProjectile>();
+        uProjectile.damage = ranged.rangedDamage;
+        uProjectile.statusEffectToApply = ranged.statusEffectToApply;
+        uProjectile.amount = ranged.amount;
 
         AttackRange = false; //Disables this bool, allowing the unit to do another ranged attack.
         StartCoroutine(RangedCooldownCoroutine()); //Start cooldown
@@ -855,13 +913,12 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
             AttackSpecial = true;
             if (special.lookAtTarget) LookAtTarget();
             if (special.standStill) StopMovement();
-            print(name + ": IMMA CHARGIN' MA LAZOR");
         }
         else Debug.LogWarning($"{name} can't see it's target. Is it's ignoreOnLayer mask set properly?" +
             $" Does it ignore UnitProjectile?");
     }
     protected bool CanSpecialAttack => WithinSpecialDistance() && special.canSpecial;
-    private bool WithinSpecialDistance()
+    protected bool WithinSpecialDistance()
     {
         if (!HasTarget()) return false;
         float distance = Vector3.Distance(currentTarget.position, transform.position);
@@ -870,11 +927,24 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     //This is the actual special, which is usually called from an animation event.
     public virtual void SpecialAttack()
     {
+        ResumeMovement();
+
+        if (special.statusEffectToApply) ApplyStatusEffect(special.statusEffectToApply, currentTarget, special.amount);
+
         AttackSpecial = false;
         StartCoroutine(SpecialCooldownCoroutine()); 
     }
 
     #endregion
+
+    protected void ApplyStatusEffect(StatusEffectSO effect, Transform target, int? amount = null)
+    {
+        if (effect == null || target == null)
+        {
+            return;
+        }
+        target.GetComponent<StatusEffectManager>()?.ApplyStatusEffect(effect.ApplyEffect(target.gameObject), amount);
+    }
 
     #endregion
 
@@ -882,7 +952,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
 
     public bool IsMaxHealth => health == maxHealth;
 
-    public void Die()
+    public virtual void Die()
     {
         if (!isDead)
         {
@@ -898,6 +968,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
             animator.SetTrigger("Die");
 
             GetComponent<BoxCollider>().enabled = false;
+            navAgent.enabled = false;
 
             //Invoke this method after 5 seconds.
             StartCoroutine(PostDeath());
@@ -1089,17 +1160,17 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
             Gizmos.color = Color.blue;
             Gizmos.DrawCube(new Vector3(transform.position.x, transform.position.y + 3, transform.position.z), new Vector3(0.25f, 1, 0.25f));
         }
-        if (attackRange)
+        if (attackRange || attackSpecial)
         {
             Gizmos.color = Color.cyan;
             Gizmos.DrawCube(new Vector3(transform.position.x, transform.position.y + 5, transform.position.z), new Vector3(0.25f, 1, 0.25f));
         }
-        if (ranged.canRanged)
+        if (ranged.canRanged || special.canSpecial)
         {
             Gizmos.color = Color.magenta;
             Gizmos.DrawCube(new Vector3(transform.position.x, transform.position.y + 6, transform.position.z), new Vector3(0.25f, 1, 0.25f));
         }
-        if (rangedCooldown)
+        if (rangedCooldown || specialCooldown)
         {
             Gizmos.color = Color.black;
             Gizmos.DrawCube(new Vector3(transform.position.x, transform.position.y + 7, transform.position.z), new Vector3(0.25f, 1, 0.25f));
@@ -1114,7 +1185,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     public void Svr_Damage(int damage, Transform target = null)
     {
         if (isDead) return;
-        print(target);
         if (CloserThanTarget(target))
         {
             Debug.Log("I got shot by someone closer than my target");

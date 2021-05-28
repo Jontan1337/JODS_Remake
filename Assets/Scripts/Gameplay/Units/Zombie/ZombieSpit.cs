@@ -9,8 +9,6 @@ public class ZombieSpit : UnitProjectile
     [SerializeField] private ParticleSystem spitParticles = null;
     [SerializeField] private ParticleSystem trailParticles = null;
     [SerializeField] private ParticleSystem[] hitParticles = null;
-    [Space]
-    [SerializeField] private StatusEffectSO spitStatusEffect = null;
 
     public override void OnTriggerEnter(Collider other)
     {
@@ -20,7 +18,7 @@ public class ZombieSpit : UnitProjectile
 
             Damage(other.gameObject); //Damage the object hit
 
-            other.GetComponent<StatusEffectManager>()?.ApplyStatusEffect(spitStatusEffect.ApplyEffect(other.gameObject)); //apply DOT effect
+            other.GetComponent<StatusEffectManager>()?.ApplyStatusEffect(statusEffectToApply.ApplyEffect(other.gameObject), amount); //apply DOT effect
 
             SpitEffects(); //Apply visual effects
 

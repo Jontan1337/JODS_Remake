@@ -29,7 +29,6 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
     [SerializeField] private bool removeDebris = false;
     [SerializeField] private GameObject singleBrokenObject = null;
     [SerializeField] private SFXPlayer wallDestruction = null;
-    [SerializeField] private GameObject wallIcon = null;
     [SerializeField] private bool destroySelf = false;
 
     [Header("Other entity settings")]
@@ -57,7 +56,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 
     public int Health { get => health; private set => health = value; }
     public int MaxHealth { get => maxHealth; private set => maxHealth = value; }
-    public bool IsDead { get => isDead; private set => isDead = value; }
+    
     public Teams Team { get; private set; }
 
     private void OnValidate()
@@ -105,12 +104,8 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
     /// Transform is the source of the "explosion".
     /// </summary>
     /// <param name="sourceOfExplosion"></param>
-    public void DestroyWall(Transform sourceOfExplosion)
+    public void DestroyWall(Transform sourceOfExplosion = null)
     {
-        if (wallIcon)
-        {
-            wallIcon.SetActive(false);
-        }
         // Get the BoxCollider of the parent that is used
         // to damage the object and then disable the collider
         // before adding explosionforce to the pieces.
@@ -158,7 +153,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
         {
             StartCoroutine(DissolvePiece(piece));
         }
-        if (destroySelf) Destroy(gameObject,6f);
+        if (destroySelf) Destroy(gameObject,10f);
     }
     private IEnumerator DissolvePiece(GameObject piece)
     {
@@ -169,8 +164,9 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
         piece.GetComponent<Timer>()?.StartTimer(true, 5f);
     }
 
-    private void DestroyEntity()
+    public void DestroyEntity(Transform sourceOfExplosion = null)
     {
+        isDead = true;
         // Prevent this entity from running code with bool
         // since Destroy(gameObject) takes some time
         // and will cause a repeating chain reaction with other explosives.
@@ -224,7 +220,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
                 // Temporary position to look at the middle of the figure
                 Vector3 tempPosMid = new Vector3(targetCollider.transform.position.x, targetCollider.transform.position.y + targetCollider.transform.localScale.y / 2, targetCollider.transform.position.z);
                 // Did the raycast hit something and is it not Untagged
-                tempCheckIsHit = Physics.Raycast(fromPosMid, tempPosMid - fromPosMid, out hit, explosionRadius) && hit.collider.tag != "Untagged";
+                tempCheckIsHit = Physics.Raycast(fromPosMid, tempPosMid - fromPosMid, out hit, explosionRadius);
 
                 // -- TOP --
                 // If the first raycast doesn't hit, check if the next does 
@@ -234,7 +230,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
                     // if an object is in the way in the middle
                     Vector3 tempPosTop = new Vector3(tempPosMid.x, targetCollider.transform.position.y + targetCollider.transform.localScale.y - 0.01f, tempPosMid.z);
                     // Did the raycast hit something and is it not Untagged
-                    tempCheckIsHit = Physics.Raycast(fromPosTop, tempPosTop - fromPosTop, out hit, explosionRadius) && hit.collider.tag != "Untagged";
+                    tempCheckIsHit = Physics.Raycast(fromPosTop, tempPosTop - fromPosTop, out hit, explosionRadius);
                 }
 
                 // -- BOTTOM --
@@ -245,7 +241,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
                     // if an object is in the way at the top
                     Vector3 tempPosBottom = new Vector3(tempPosMid.x, targetCollider.transform.position.y, tempPosMid.z);
                     // Did the raycast hit something and is it not Untagged
-                    tempCheckIsHit = Physics.Raycast(fromPosBottom, tempPosBottom - fromPosBottom, out hit, explosionRadius) && hit.collider.tag != "Untagged";
+                    tempCheckIsHit = Physics.Raycast(fromPosBottom, tempPosBottom - fromPosBottom, out hit, explosionRadius);
                 }
                 #endregion
 
@@ -278,6 +274,10 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
                 // If the breakable object contains one broken object
                 Instantiate(singleBrokenObject, transform.position, transform.rotation);
             }
+            else
+            {
+                DestroyWall(sourceOfExplosion);
+            }
         }
         // Is the entity a single destructable object or an explosive
         if (singleDestructable || entityType == EntityType.explosive)
@@ -296,7 +296,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
     public void Explode(Transform explosionSource)
     {
         if (entityType != EntityType.nonexplosive) return;
-        DestroyWall(explosionSource);
+        DestroyWall();
     }
 
     [Server]
@@ -316,14 +316,9 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
         }
     }
 
-	int IDamagable.GetHealth()
-	{
-		throw new System.NotImplementedException();
-	}
+    public int GetHealth() => health;
 
-	bool IDamagable.IsDead()
-	{
-		throw new System.NotImplementedException();
-	}
+    public bool IsDead() => isDead;
+
 	#endregion
 }

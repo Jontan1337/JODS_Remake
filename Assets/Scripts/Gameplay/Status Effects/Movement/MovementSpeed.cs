@@ -13,10 +13,13 @@ public class MovementSpeed : StatusEffect
         movementSpeed = (MovementSpeedSO) effect;
         defaultSpeed = sClass.speed;
     }
-
-    public override void ApplyEffect(int? amount)
+    public override void OnEffectApplied()
     {
         sClass.speed += defaultSpeed * movementSpeed.speedModifier;
+    }
+    public override void ApplyEffect(int? amount)
+    {
+
     }
 
     public override void End()

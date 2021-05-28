@@ -5,28 +5,19 @@ using UnityEngine.AI;
 
 public class ZombieStronk : UnitBase, IZombie, IControllable
 {
-    [SerializeField]
-    private InfectionSO infection;
-    public InfectionSO Infection { get => infection; set => infection = value; }
-    [SerializeField]
-    private int infectionAmount = 15;
-    public int InfectionAmount { get => infectionAmount; set => infectionAmount = value; }
-
     [Header("Stronk")]
     [SerializeField] private float destructibleSearchRange = 20f;
     [SerializeField] private LayerMask destructibleLayerMask = 1 << 17;
     [Space]
     [SerializeField] private ParticleSystem slamFX;
     
-
-
-    public override void Start()
-    {
-        base.Start();
-    }
-
     public override void Attack()
     {
+        if (!Infect())
+        {
+            return;
+        }
+
         if (CanMeleeAttack)
         {
             TryMeleeAttack();
@@ -35,11 +26,19 @@ public class ZombieStronk : UnitBase, IZombie, IControllable
 
     public override void MeleeAttack()
     {
-        base.MeleeAttack();
+        if (targetIsLiveEntity) SpecialAttack();
 
+        base.MeleeAttack();
+    }
+
+    public override void SpecialAttack()
+    {
+        print("sepck");
         if (!WithinMeleeRange() || !CanSee(currentTarget)) return;
 
-        Infect(currentTarget);
+        currentTarget.GetComponent<LiveEntity>().DestroyEntity(transform);
+
+        base.SpecialAttack();
     }
 
     private IEnumerator SearchForDestructibleCo;
@@ -51,11 +50,19 @@ public class ZombieStronk : UnitBase, IZombie, IControllable
             destructiblesInRange = Physics.OverlapSphere(transform.position, destructibleSearchRange, destructibleLayerMask);
             foreach (Collider destructible in destructiblesInRange)
             {
-                destructible.GetComponent<Outline>().ShowOutline(0.5f, 2f);
+                destructible.GetComponent<Outline>().ShowOutline(0.5f,
+                    destructible.transform == currentTarget ? 8 : 2f);
             }
 
             yield return new WaitForSeconds(0.5f);
         }
+    }
+
+    public override void AcquireTarget(Transform newTarget, bool alerted, bool closerThanCurrent = false, bool liveEntity = false)
+    {
+        print("o shit boi a wall");
+
+        base.AcquireTarget(newTarget, alerted, closerThanCurrent, liveEntity);
     }
 
     public override void OnSelect()
@@ -75,14 +82,19 @@ public class ZombieStronk : UnitBase, IZombie, IControllable
         throw new System.NotImplementedException();
     }
 
-    public void Infect(Transform target)
+    public bool Infect()
     {
-        if (infection == null)
+        if (melee.statusEffectToApply == null)
         {
-            Debug.LogError(name + " had no infection debuff assigned and could not infect the target");
-            return;
+            Debug.LogError(name + " has no infection debuff! Assign the 'Infection' as the 'Status Effect To Apply' on the UnitSO");
+            return false;
         }
-        target.GetComponent<StatusEffectManager>()?.ApplyStatusEffect(infection.ApplyEffect(target.gameObject), infectionAmount);
+        if (melee.amount == 0)
+        {
+            Debug.LogError(name + " has no infection amount!");
+            return false;
+        }
+        return true;
     }
 
     #endregion

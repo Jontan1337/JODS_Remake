@@ -1197,7 +1197,7 @@ GameObject:
   - component: {fileID: 919132149096579319}
   - component: {fileID: 919132149096579320}
   - component: {fileID: 919132149096579321}
-  m_Layer: 0
+  m_Layer: 17
   m_Name: Destructible_Barricade1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1250,9 +1250,9 @@ MonoBehaviour:
   explosionEffect: {fileID: 0}
   criticalEffect: {fileID: 0}
   criticalHealth: 20
-  explosionRadius: 4.5
-  explosionDamage: 30
-  explosionForce: 10
+  explosionRadius: 50
+  explosionDamage: 50
+  explosionForce: 50
   upwardExplosionForce: 1
   criticalEffectDamage: 3
   criticalDamageInterval: 0.8
@@ -1274,7 +1274,6 @@ MonoBehaviour:
   removeDebris: 1
   singleBrokenObject: {fileID: 0}
   wallDestruction: {fileID: 0}
-  wallIcon: {fileID: 0}
   destroySelf: 1
   isBurning: 0
   destroyed: 0
@@ -1292,7 +1291,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 4, y: 4, z: 0.6}
+  m_Size: {x: 4, y: 5, z: 0.7}
   m_Center: {x: 0, y: 2, z: 0}
 --- !u!82 &4860590498663322179
 AudioSource:
@@ -1504,7 +1503,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   outlineMode: 0
-  outlineColor: {r: 0, g: 1, b: 0.06871343, a: 1}
+  outlineColor: {r: 1, g: 0, b: 0, a: 1}
   outlineWidth: 0
   precomputeOutline: 0
   bakeKeys: []

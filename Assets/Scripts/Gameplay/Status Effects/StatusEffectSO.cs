@@ -5,6 +5,7 @@ using UnityEngine;
 public abstract class StatusEffectSO : ScriptableObject
 {
     [Header("Timed Settings")]
+    public bool activeUntilRemoved;
     public float duration;
     public bool canDurationStack;
     public bool canEffectStack;

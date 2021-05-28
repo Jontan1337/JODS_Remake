@@ -6,6 +6,8 @@ using Mirror;
 public abstract class UnitProjectile : NetworkBehaviour
 {
     public int damage = 0;
+    public StatusEffectSO statusEffectToApply;
+    public int amount;
     [Header("Projectile Stats")]
     [SerializeField] protected int lifetime = 5;
     [SerializeField] private bool destroyAfterLiftime = false;
@@ -49,6 +51,7 @@ public abstract class UnitProjectile : NetworkBehaviour
     public virtual void OnTriggerEnter(Collider other)
     {
         Damage(other.gameObject);
+        
 
         if (!piercing && !hasHit)
         {

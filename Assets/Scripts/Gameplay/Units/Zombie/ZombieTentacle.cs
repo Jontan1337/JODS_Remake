@@ -5,21 +5,24 @@ using UnityEngine.AI;
 
 public class ZombieTentacle : UnitBase, IZombie, IControllable
 {
-    [SerializeField]
-    private InfectionSO infection;
-    public InfectionSO Infection { get => infection; set => infection = value; }
-    [SerializeField]
-    private int infectionAmount = 15;
-    public int InfectionAmount { get => infectionAmount; set => infectionAmount = value; }
-
     [Header("Tentacle")]
     [SerializeField] private bool CaughtSurvivor = false;
-    //private player playerInGrasp; //Ya know, make this when players are made
+
     public override void Attack()
     {
-        if (CanSpecialAttack)
+        if (!Infect())
         {
-            TrySpecialAttack();
+            return;
+        }
+
+        //Tentacle Zombie will always try and do the special attack if it is available.
+        //If the special failed, it will go on cooldown and it can begin using melee attacks
+        if (special.canSpecial)
+        {
+            if (CanSpecialAttack)
+            {
+                TrySpecialAttack();
+            }
         }
         else if (CanMeleeAttack)
         {
@@ -27,42 +30,61 @@ public class ZombieTentacle : UnitBase, IZombie, IControllable
         }
     }
 
-    public override void MeleeAttack()
-    {
-        base.MeleeAttack();
-
-        if (!WithinMeleeRange() || !CanSee(currentTarget)) return;
-
-        Infect(currentTarget);
-    }
-
     public override void SpecialAttack()
     {
-        Debug.Log("Gotcha bitch!");
+        AttackSpecial = false;
+        StartCoroutine(SpecialCooldownCoroutine());
 
         //Try to capture a player, making them unable to move or use weapons.
-
+        if (!WithinSpecialDistance())
+        {
+            LoseGrappledTarget();
+            return;
+        }
         //If successful ------
+
+        if (special.statusEffectToApply == null)
+        {
+            Debug.LogError(name + " had no grapple debuff assigned and could not grapple the target");
+            return;
+        }
+        currentTarget.GetComponent<StatusEffectManager>()?.ApplyStatusEffect(special.statusEffectToApply.ApplyEffect(currentTarget.gameObject));
+
         CaughtSurvivor = true;
         animator.SetBool("Grapple", true);
 
-        //Call DamageOverTime
-        StartCoroutine(DamageOverTime());
+        StartCoroutine(GrabEnumerator());
     }
 
-    private IEnumerator DamageOverTime()
+    private IEnumerator GrabEnumerator()
     {
-        while (true)
+        while (HasTarget())
         {
-            yield return new WaitForSeconds(1);
+            if (!WithinSpecialDistance()) break;
 
-            //Check if unit still has a player to damage (maybe the player died while in its grasp)
-            //If so, leave the special attack, and continue searching for other survivors.
-            if (!CaughtSurvivor) yield break;
+            yield return new WaitForSeconds(0.5f);
+        }
 
-            //Do some damage yo
-            Damage(special.specialDamage);
-            print("oof");
+        LoseGrappledTarget();
+    }
+
+    public override void Die()
+    {
+        LoseGrappledTarget();
+        base.Die();
+    }
+
+    private void LoseGrappledTarget()
+    {
+        animator.SetBool("Grapple", false);
+        ResumeMovement();
+
+        if (CaughtSurvivor)
+        {
+            if (currentTarget)
+            {
+                currentTarget.GetComponent<StatusEffectManager>().RemoveStatusEffect(special.statusEffectToApply);
+            }
         }
     }
 
@@ -82,14 +104,19 @@ public class ZombieTentacle : UnitBase, IZombie, IControllable
         throw new System.NotImplementedException();
     }
 
-    public void Infect(Transform target)
+    public bool Infect()
     {
-        if (infection == null)
+        if (melee.statusEffectToApply == null)
         {
-            Debug.LogError(name + " had no infection debuff assigned and could not infect the target");
-            return;
+            Debug.LogError(name + " has no infection debuff! Assign the 'Infection' as the 'Status Effect To Apply' on the UnitSO");
+            return false;
         }
-        target.GetComponent<StatusEffectManager>()?.ApplyStatusEffect(infection.ApplyEffect(target.gameObject), infectionAmount);
+        if (melee.amount == 0)
+        {
+            Debug.LogError(name + " has no infection amount!");
+            return false;
+        }
+        return true;
     }
     #endregion
 }

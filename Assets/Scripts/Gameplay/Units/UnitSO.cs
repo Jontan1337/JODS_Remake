@@ -38,6 +38,9 @@ public class UnitSO : ScriptableObject
         public int meleeDamageMax = 5;
         public float meleeRange = 2.5f;
         public float meleeCooldown = 0.5f;
+        [Space]
+        public StatusEffectSO statusEffectToApply = null;
+        public int amount = 0;
     }
     [Space]
     public Melee melee;
@@ -57,6 +60,9 @@ public class UnitSO : ScriptableObject
         public bool standStill = true;
         [Space]
         public bool directRangedAttack = false; //Non-projectile attack. Not implemented yet
+        [Space]
+        public StatusEffectSO statusEffectToApply = null;
+        public int amount = 0;
     }
     public Ranged ranged;
 
@@ -70,6 +76,9 @@ public class UnitSO : ScriptableObject
         public bool standStill = true;
         public bool lookAtTarget = true;
         public bool availableFromStart = true;
+        [Space]
+        public StatusEffectSO statusEffectToApply = null;
+        public int amount = 0;
     }
     public Special special;
 

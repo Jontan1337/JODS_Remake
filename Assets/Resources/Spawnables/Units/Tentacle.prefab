@@ -424,6 +424,7 @@ GameObject:
   - component: {fileID: 6006189444927030729}
   - component: {fileID: 7122508720021460077}
   - component: {fileID: 6403173154031129435}
+  - component: {fileID: 3853630380662590646}
   m_Layer: 9
   m_Name: Tentacle
   m_TagString: Untagged
@@ -671,9 +672,12 @@ MonoBehaviour:
   melee:
     meleeDamageMin: 2
     meleeDamageMax: 5
-    meleeRange: 2
+    meleeRange: 1.25
     meleeCooldown: 2
     canMelee: 1
+    statusEffectToApply: {fileID: 11400000, guid: 6499d90d213f8aa4db7fae68321bec63,
+      type: 2}
+    amount: 10
   ranged:
     rangedDamage: 20
     minRange: 2
@@ -686,14 +690,19 @@ MonoBehaviour:
     standStill: 1
     directRangedAttack: 0
     canRanged: 0
+    statusEffectToApply: {fileID: 0}
+    amount: 0
   special:
     specialCooldown: 5
     specialDamage: 2
-    specialRange: 2.5
-    standStill: 1
+    specialRange: 1.25
+    standStill: 0
     lookAtTarget: 1
     availableFromStart: 1
     canSpecial: 0
+    statusEffectToApply: {fileID: 11400000, guid: 7fbfc15321455b749ad2b9ef5ee7b3c4,
+      type: 2}
+    amount: 0
   movementSpeed: 1.5
   chaseTime: 10
   stoppedMoving: 0
@@ -702,7 +711,7 @@ MonoBehaviour:
   viewAngle: 90
   ignoreOnRaycast:
     serializedVersion: 2
-    m_Bits: 3584
+    m_Bits: 4197892
   survivorLayer:
     serializedVersion: 2
     m_Bits: 8192
@@ -735,9 +744,8 @@ MonoBehaviour:
     canSelect: 1
     unitRenderer: {fileID: 9218997157679224902}
     unitMat: {fileID: 0}
+    isSelected: 0
   rangedCooldown: 0
-  infection: {fileID: 11400000, guid: 6499d90d213f8aa4db7fae68321bec63, type: 2}
-  infectionAmount: 15
   CaughtSurvivor: 0
 --- !u!114 &6403173154031129435
 MonoBehaviour:
@@ -756,6 +764,19 @@ MonoBehaviour:
   tickRate: 0.01
   timerEnabled: 0
   timerProgress: 0
+--- !u!114 &3853630380662590646
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 567846408501026953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1a9bf8fefe2c8540ba3be293fa289ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  statusEffects: []
 --- !u!1 &1085108298706432787
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,15 +4,5 @@ using UnityEngine;
 
 public interface IZombie
 {
-    int InfectionAmount
-    {
-        get;set;
-    }
-
-    InfectionSO Infection
-    {
-        get;set;
-    }
-
-    void Infect(Transform target);
+    bool Infect();
 }
