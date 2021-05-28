@@ -104,7 +104,7 @@ public class Equipment : NetworkBehaviour, IInitializable<PlayerSetup>
     {
         if (!isServer)
         {
-            onClientItemPickedUp += Rpc_OnItemPickedUp;
+            onClientItemPickedUp += OnItemPickedUp;
         }
         if (isServer)
         {
@@ -331,8 +331,8 @@ public class Equipment : NetworkBehaviour, IInitializable<PlayerSetup>
     {
         StartCoroutine(MoveToHands(newItem));
     }
-    [ClientRpc]
-    private void Rpc_OnItemPickedUp(GameObject newItem)
+
+    private void OnItemPickedUp(GameObject newItem)
     {
         StartCoroutine(MoveToHands(newItem));
     }
