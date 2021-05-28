@@ -46,23 +46,25 @@ public class PlaceItem : NetworkBehaviour, IEquippable, IBindable, IInteractable
 
 	public IEnumerator PlaceHolderActive()
 	{
-		RaycastHit hit;
 		while (placeholderActive)
 		{
-			Physics.Raycast(look.playerCamera.transform.position, look.playerCamera.transform.forward, out hit, 5f, ~ignoreLayer);
+			Physics.Raycast(look.playerCamera.transform.position, look.playerCamera.transform.forward, out RaycastHit hit, 5f, ~ignoreLayer);
 
-
-			placeHolder.transform.eulerAngles = new Vector3(0, transform.rotation.y, transform.rotation.z);
-			placeHolder.transform.position = new Vector3(hit.point.x,  PlaceOnTop(hit), hit.point.z);
-			placeHolder.SetActive(hit.transform);
+			if (hit.transform)
+			{
+				placeHolder.transform.eulerAngles = new Vector3(0, transform.rotation.y, transform.rotation.z);
+				placeHolder.transform.position = new Vector3(hit.point.x, PlaceOnTop(hit), hit.point.z);
+				placeHolder.SetActive(hit.transform);
+				print(hit.transform.name);
+			}
 			yield return null;
 		}
 	}
 
+	// SOMEHOW PLACE OBJECT ON TOP OF HIT
 	float PlaceOnTop(RaycastHit hit)
 	{
-		//return hit.transform.localScale.y / 2 + transform.localScale.y / 2;
-		return 0.01f;
+		return hit.transform.position.y * 2 + 0.01f;
 	}
 
 	public void Place(GameObject thing)
