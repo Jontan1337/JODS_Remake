@@ -678,19 +678,22 @@ MonoBehaviour:
   fireRate: 240
   rotateSpeed: 2
   searchInterval: 0.5
-  damage: 1
-  duration: 20000
-  health: 200000
+  damage: 10
+  duration: 20
+  health: 200
   target: {fileID: 0}
   swivel: {fileID: 1483150756538309283}
   pivot: {fileID: 591017393817333658}
   barrel: {fileID: 949804608177450984}
-  ignoreLayer:
+  unitLayer:
     serializedVersion: 2
     m_Bits: 512
-  ignoreLayerLOS:
+  LOSLayer:
     serializedVersion: 2
     m_Bits: 513
+  defaultLayer:
+    serializedVersion: 2
+    m_Bits: 1
 --- !u!114 &-5203044163589500449
 MonoBehaviour:
   m_ObjectHideFlags: 0

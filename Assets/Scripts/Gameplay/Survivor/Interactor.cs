@@ -21,6 +21,20 @@ public class Interactor : NetworkBehaviour
 
     private RaycastHit rayHit;
     private IInteractable currentInteractable;
+    private Coroutine COCreateOutlines;
+
+    public Transform PlayerCamera
+    {
+        get => playerCamera;
+        private set
+        {
+            playerCamera = value;
+            if (COCreateOutlines == null)
+            {
+                COCreateOutlines = StartCoroutine(CreateOutlines());
+            }
+        }
+    }
 
     private void Awake()
     {
@@ -31,7 +45,6 @@ public class Interactor : NetworkBehaviour
     public override void OnStartAuthority()
     {
         JODSInput.Controls.Survivor.Interact.performed += ctx => Interact();
-        StartCoroutine(CreateOutlines());
     }
 
     public override void OnStopAuthority()
@@ -58,16 +71,16 @@ public class Interactor : NetworkBehaviour
     {
         while (true)
         {
-            print(playerCamera);
-            if (!playerCamera) yield return null;
-
-            boxHit = Physics.BoxCastAll(new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z) + transform.forward * interactionRange,
+            boxHit = Physics.BoxCastAll(new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z) + transform.forward,
                 new Vector3(0.45f, 0.45f, interactionRange / 2),
                 transform.forward, playerCamera.rotation, interactionRange, ~layerMask);
 
-            if (rayHit.collider.TryGetComponent(out Outline outline))
+            if (rayHit.collider)
             {
-                outline.ShowOutline(0.1f, 10f);
+                if (rayHit.collider.TryGetComponent(out Outline outline))
+                {
+                    outline.ShowOutline(0.1f, 10f);
+                }
             }
 
             foreach (var item in boxHit)
@@ -126,7 +139,7 @@ public class Interactor : NetworkBehaviour
             switch (itemName.itemName)
             {
                 case ItemNames.Camera:
-                    playerCamera = item.transform;
+                    PlayerCamera = item.transform;
                     break;
                 default:
                     break;
