@@ -43,9 +43,6 @@ public class ZombieTentacle : UnitBase, IZombie, IControllable
         }
         //If successful ------
 
-        Debug.Log("Gotcha bitch!");
-
-
         if (special.statusEffectToApply == null)
         {
             Debug.LogError(name + " had no grapple debuff assigned and could not grapple the target");
@@ -71,10 +68,24 @@ public class ZombieTentacle : UnitBase, IZombie, IControllable
         LoseGrappledTarget();
     }
 
+    public override void Die()
+    {
+        LoseGrappledTarget();
+        base.Die();
+    }
+
     private void LoseGrappledTarget()
     {
         animator.SetBool("Grapple", false);
         ResumeMovement();
+
+        if (CaughtSurvivor)
+        {
+            if (currentTarget)
+            {
+                currentTarget.GetComponent<StatusEffectManager>().RemoveStatusEffect(special.statusEffectToApply);
+            }
+        }
     }
 
     public override void OnSelect()

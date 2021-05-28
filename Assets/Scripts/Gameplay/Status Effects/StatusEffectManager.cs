@@ -6,6 +6,7 @@ using UnityEngine;
 public class StatusEffectManager : MonoBehaviour
 {
     private Dictionary<StatusEffectSO, StatusEffect> currentEffects = new Dictionary<StatusEffectSO, StatusEffect>();
+    public List<string> statusEffects = new List<string>();
 
     private Coroutine effectEnumerator;
     bool isActive;
@@ -13,6 +14,19 @@ public class StatusEffectManager : MonoBehaviour
     private void Start()
     {
         isActive = false;
+    }
+
+    public void RemoveStatusEffect(StatusEffectSO effect)
+    {
+        if (currentEffects.ContainsKey(effect))
+        {
+            Debug.Log(effect.name + " removed");
+            currentEffects.Remove(effect);
+        }
+        if (statusEffects.Contains(effect.name))
+        {
+            statusEffects.Remove(effect.name);
+        }
     }
 
     private IEnumerator StatusEffectEnumerator()
@@ -32,6 +46,7 @@ public class StatusEffectManager : MonoBehaviour
                 {
                     //Remove the effect from the list of current active effects
                     currentEffects.Remove(effect.effect);
+                    statusEffects.Remove(effect.effect.name);
                 }
             }
             if (currentEffects.Count == 0)
@@ -54,7 +69,8 @@ public class StatusEffectManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("New Status Effect : " + newEffect.effect.ToString());
+            Debug.Log("New Status Effect : " + newEffect.effect.name);
+            statusEffects.Add(newEffect.effect.name);
 
             //Add the effect to the dictionary
             currentEffects.Add(newEffect.effect, newEffect);

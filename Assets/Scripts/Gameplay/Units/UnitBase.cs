@@ -535,8 +535,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         {
             Alert();
         }
-
-        print($"{name} : Target acquired");
     }
 
     private void LoseTarget()
@@ -954,7 +952,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
 
     public bool IsMaxHealth => health == maxHealth;
 
-    public void Die()
+    public virtual void Die()
     {
         if (!isDead)
         {
@@ -1187,7 +1185,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     public void Svr_Damage(int damage, Transform target = null)
     {
         if (isDead) return;
-        print(target);
         if (CloserThanTarget(target))
         {
             Debug.Log("I got shot by someone closer than my target");
