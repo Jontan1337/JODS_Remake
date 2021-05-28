@@ -6,12 +6,13 @@ using System.Collections;
 
 public class LobbyPlayer : NetworkBehaviour
 {
+    public bool isMe;
+    [Space]
     [SyncVar] public bool isMaster;
     [SyncVar] public bool wantsToBeMaster;
     [SyncVar] public bool isHost = false;
-    [SyncVar] public string playerName;
+    [SyncVar(hook = nameof(ChangeName))] public string playerName;
     [SyncVar] public bool gameOn;
-    [SyncVar] public bool isMe;
     [SyncVar] public bool setupInGameScene;
 
     [Header("Data")]
@@ -73,6 +74,7 @@ public class LobbyPlayer : NetworkBehaviour
                 playerName = userName;
             }
             Cmd_ChangeName(playerName);
+
             PlayerPrefs.SetString("PlayerName", playerName);
             PlayerPrefs.SetInt("Character", 1);
             PlayerPrefs.SetInt("Survivor", 0);
@@ -154,22 +156,23 @@ public class LobbyPlayer : NetworkBehaviour
     }
 
     #region ChangeName
-    [Command]
-    public void Cmd_ChangeName(string newName)
-    {
-        Svr_ChangeName(newName);
-    }
-    [Server] 
-    private void Svr_ChangeName(string newName)
+
+    public void ChangeName(string oldName, string newName)
     {
         gameObject.GetComponent<LobbyPlayer>().playerName = newName;
         gameObject.name = newName;
     }
+    [Command]
+    public void Cmd_ChangeName(string newName)
+    {
+        Rpc_ChangeName(newName);
+    }
 
     [ClientRpc]
-    private void Rpc_ChangeName(GameObject player, string newName)
+    private void Rpc_ChangeName(string newName)
     {
-        player.name = newName;
+        gameObject.GetComponent<LobbyPlayer>().playerName = newName;
+        gameObject.name = newName;
     }
     #endregion
 

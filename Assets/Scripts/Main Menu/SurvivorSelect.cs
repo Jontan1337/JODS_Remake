@@ -18,20 +18,21 @@ public class SurvivorSelect : NetworkBehaviour
     }
     private void Select(bool value)
     {
+        Debug.Log("Select: " + value);
         selected = value;
         selectedVisual.SetActive(value);
     }
-    [Server]
-    public void Svr_Select(int index)
+    [ClientRpc]
+    public void Rpc_SelectSurvivor(int index)
     {
         if (selected)
         {
             if (index != playerIndex) return;
         }
+        print("Svr_Select: " + selected);
 
         playerIndex = index;
-        bool value = !selected;
-        selected = value;
-        selectedVisual.SetActive(value);
+        Select(!selected);
     }
+
 }

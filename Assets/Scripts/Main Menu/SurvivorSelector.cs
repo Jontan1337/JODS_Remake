@@ -11,9 +11,18 @@ public class SurvivorSelector : NetworkBehaviour
     [SerializeField] private bool canSelect = false;
     private SurvivorSelectHighlight highlight;
 
-    private void Start()
+    //private void Start()
+    //{
+    //    if (!hasAuthority) return;
+
+    //    highlight = SurvivorSelectHighlight.instance;
+
+    //    CanSelect = true;
+    //}
+    public override void OnStartAuthority()
     {
-        if (!hasAuthority) return;
+        base.OnStartAuthority();
+
         highlight = SurvivorSelectHighlight.instance;
 
         CanSelect = true;
@@ -22,7 +31,8 @@ public class SurvivorSelector : NetworkBehaviour
     public bool CanSelect
     {
         get { return canSelect; }
-        set {
+        set
+        {
             canSelect = value;
             if (value == true)
             {
@@ -67,16 +77,6 @@ public class SurvivorSelector : NetworkBehaviour
     }
     private void SelectSurvivor(InputAction.CallbackContext context)
     {
-        print(isClient);
-        print(isServer);
-        print(hasAuthority);
-        Cmd_SelectSurvivor();
-    }
-
-    [Command]
-    private void Cmd_SelectSurvivor()
-    {
-
         if (!canSelect) return;
 
         RaycastHit hit;
@@ -85,10 +85,18 @@ public class SurvivorSelector : NetworkBehaviour
         if (Physics.Raycast(ray, out hit))
         {
             if (hit.collider.gameObject.TryGetComponent(out SurvivorSelect select))
-            {
-                select.Svr_Select(1);
+            { 
+                Cmd_SelectSurvivor(select.gameObject);
             }
+
         }
+    }
+
+    [Command]
+    private void Cmd_SelectSurvivor(GameObject select)
+    {
+        print("Cmd_SelectSurvivor");
+                select.GetComponent<SurvivorSelect>().Rpc_SelectSurvivor(1);
     }
 
 }
