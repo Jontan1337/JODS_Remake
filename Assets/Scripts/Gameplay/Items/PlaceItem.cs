@@ -61,7 +61,8 @@ public class PlaceItem : NetworkBehaviour, IEquippable, IBindable, IInteractable
 
 	float PlaceOnTop(RaycastHit hit)
 	{
-		return hit.transform.localScale.y / 2 + transform.localScale.y / 2;
+		//return hit.transform.localScale.y / 2 + transform.localScale.y / 2;
+		return 0.01f;
 	}
 
 	public void Place(GameObject thing)
@@ -69,7 +70,6 @@ public class PlaceItem : NetworkBehaviour, IEquippable, IBindable, IInteractable
 		RaycastHit hit;
 		if (Physics.Raycast(look.playerCamera.transform.position, look.playerCamera.transform.forward, out hit, 5f, ~ignoreLayer))
 		{
-			print(hit.transform.name);
 			transform.position = placeHolder.transform.position;
 			transform.rotation = placeHolder.transform.rotation;
 			transform.parent = null;
