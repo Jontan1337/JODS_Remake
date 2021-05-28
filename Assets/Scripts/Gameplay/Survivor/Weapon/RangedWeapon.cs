@@ -83,7 +83,8 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
 
     private int fireModeIndex = 0;
 
-    public bool IsInteractable {
+    public bool IsInteractable
+    {
         get => isInteractable;
         set => isInteractable = value;
     }
@@ -98,7 +99,8 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
         fireRate = Mathf.Clamp(fireRate, 0.01f, float.MaxValue);
         fireInterval = 60 / fireRate;
         fireModeIndex = 0;
-        foreach (int modeIndex in fireModes) {
+        foreach (int modeIndex in fireModes)
+        {
             if ((int)fireMode == modeIndex) break;
             fireModeIndex++;
         }
@@ -120,14 +122,31 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     }
     public void UnBind()
     {
+        if (hasAuthority)
+        {
+            OnStopShoot(default);
+        }
+
         JODSInput.Controls.Survivor.LMB.performed -= OnShoot;
         JODSInput.Controls.Survivor.LMB.canceled -= OnStopShoot;
         JODSInput.Controls.Survivor.Reload.performed -= OnReload;
         JODSInput.Controls.Survivor.Changefiremode.performed -= OnChangeFireMode;
     }
 
-    private void OnShoot(InputAction.CallbackContext context) => Cmd_Shoot();
-    private void OnStopShoot(InputAction.CallbackContext context) => Cmd_StopShoot();
+    private void OnShoot(InputAction.CallbackContext context)
+    {
+        JODSInput.Controls.Survivor.Drop.Disable();
+        JODSInput.Controls.Survivor.Interact.Disable();
+
+        Cmd_Shoot();
+    }
+    private void OnStopShoot(InputAction.CallbackContext context)
+    {
+        JODSInput.Controls.Survivor.Drop.Enable();
+        JODSInput.Controls.Survivor.Interact.Enable();
+
+        Cmd_StopShoot();
+    }
     private void OnReload(InputAction.CallbackContext context) => Cmd_Reload();
     private void OnChangeFireMode(InputAction.CallbackContext context) => Cmd_ChangeFireMode();
 
@@ -138,7 +157,7 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     private void Cmd_Shoot()
     {
         if (!canShoot) return;
-        
+
         switch (fireMode)
         {
             case FireModes.Single:
@@ -241,7 +260,7 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
             rayHit.collider.GetComponent<IDamagable>()?.Svr_Damage(damage);
         }
 
-        
+
         currentAmmunition -= bulletsPerShot;
     }
 
@@ -267,7 +286,7 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     private void Cmd_ChangeFireMode()
     {
         Cmd_StopShoot();
-        if (fireModeIndex == fireModes.Length-1)
+        if (fireModeIndex == fireModes.Length - 1)
         {
             fireModeIndex = 0;
             fireMode = fireModes[fireModeIndex];
