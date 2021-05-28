@@ -66,14 +66,18 @@ public class Lobby : NetworkManager
         LobbyPanel.SetActive(false);
         MainMenuPanel.SetActive(true);
     }
-
+    //Match list join
     public void MMJoinMatch(Uri uri)
     {
         LobbyPanel.SetActive(true);
         MMPanel.SetActive(false);
         MainMenuPanel.SetActive(false);
         singleton.StartClient(uri);
+
+        EnterLobby();
     }
+
+    //Manual IP join
     public void MMJoinMatch()
     {
         string ipAddress = ipAddressInputField.text;
@@ -82,6 +86,8 @@ public class Lobby : NetworkManager
         MainMenuPanel.SetActive(false);
         UriBuilder uriBuilder = new UriBuilder("tcp4", ipAddress);
         singleton.StartClient(uriBuilder.Uri);
+
+        EnterLobby();
     }
 
     public void MMCreateMatch()
@@ -90,22 +96,13 @@ public class Lobby : NetworkManager
 
         MatchListing.AdvertiseServer();
 
-
-        //GameObject newLobbySync = Instantiate(GOLobbySync);
-        //newLobbySync.GetComponent<LobbySync>().lobbySeats = playerSeats;
-        //NetworkServer.Spawn(newLobbySync);
-
-        //string matchName = "Default Match";
-        //if (!string.IsNullOrEmpty(matchNameInputField.text))
-        //{
-        //    matchName = matchNameInputField.text;
-        //}
-
-        //LobbyPanel.SetActive(true);
-        //MMPanel.SetActive(false);
-        //MainMenuPanel.SetActive(false);
+        EnterLobby();
     }
 
+    private void EnterLobby()
+    {
+        MenuCamera.instance.ChangePosition("Lobby");
+    }
 
     public override void OnServerConnect(NetworkConnection conn)
     {

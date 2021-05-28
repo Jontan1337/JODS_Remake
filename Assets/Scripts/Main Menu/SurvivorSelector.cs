@@ -7,20 +7,13 @@ using UnityEngine.InputSystem;
 
 public class SurvivorSelector : NetworkBehaviour
 {
-    #region Singleton
-    public static SurvivorSelector instance;
-
-    private void Awake()
-    {
-        instance = this;
-    }
-    #endregion
 
     [SerializeField] private bool canSelect = false;
     private SurvivorSelectHighlight highlight;
 
     private void Start()
     {
+        if (!hasAuthority) return;
         highlight = SurvivorSelectHighlight.instance;
 
         CanSelect = true;
@@ -74,12 +67,16 @@ public class SurvivorSelector : NetworkBehaviour
     }
     private void SelectSurvivor(InputAction.CallbackContext context)
     {
+        print(isClient);
+        print(isServer);
+        print(hasAuthority);
         Cmd_SelectSurvivor();
     }
 
     [Command]
     private void Cmd_SelectSurvivor()
     {
+
         if (!canSelect) return;
 
         RaycastHit hit;

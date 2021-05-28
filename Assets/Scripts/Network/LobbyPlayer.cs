@@ -52,6 +52,7 @@ public class LobbyPlayer : NetworkBehaviour
 
     private void Start()
     {
+
         // Is this the Host
         if (isLocalPlayer && isServer)
         {
@@ -71,52 +72,13 @@ public class LobbyPlayer : NetworkBehaviour
             {
                 playerName = userName;
             }
-            Cmd_ChangeName(gameObject, playerName);
+            Cmd_ChangeName(playerName);
             PlayerPrefs.SetString("PlayerName", playerName);
             PlayerPrefs.SetInt("Character", 1);
             PlayerPrefs.SetInt("Survivor", 0);
             PlayerPrefs.SetInt("Master", 0);
         }
     }
-
-    //private void Update()
-    //{
-    //    if (!isLocalPlayer) return;
-
-    //    if (lobbyCamera)
-    //    {
-    //        if (Input.GetButtonDown("Fire1"))
-    //        {
-    //            Vector3 mousePos = Input.mousePosition;
-    //            Ray ray = _lobbyCam.ScreenPointToRay(mousePos);
-    //            if (Physics.Raycast(ray, out RaycastHit mouseHit, Mathf.Infinity))
-    //            {
-    //                if (mouseHit.collider.gameObject.GetComponentInParent<LobbyCharacters>())
-    //                {
-    //                    int mouseHitGameObjectID = mouseHit.collider.gameObject.GetComponentInParent<LobbyCharacters>().lobbyCharID;
-    //                    Cmd_CheckHit(mouseHitGameObjectID);
-    //                }
-    //            }
-    //        }
-    //    }
-
-    //    //if (!gameOn)
-    //    //{
-    //    //    if (masterToggle != null)
-    //    //    {
-    //    //        //THIS NEEDS FIXING
-    //    //        //RIGHT NOW IT ADDS A NEW ONE EACH FRAME
-    //    //        //NOT THE BEST?
-
-    //    //        // RE: HELLO, NO I ALSO DONT THINK IT THE BEST.
-
-    //    //        // RE RE: JA DAV, I FIXED THE TING.
-
-    //    //        masterToggle.onValueChanged.RemoveAllListeners();
-    //    //        masterToggle.onValueChanged.AddListener(delegate { Cmd_ChangePreference(masterToggle.isOn); });
-    //    //    }
-    //    //}
-    //}
 
     [Command]
     public void Cmd_SetNewObject()
@@ -131,31 +93,6 @@ public class LobbyPlayer : NetworkBehaviour
         }
     }
 
-    public override void OnStartAuthority()
-    {
-        base.OnStartAuthority();
-
-        if (!hasAuthority) return;
-
-        StartCoroutine(FindComponents());
-    }
-
-    private IEnumerator FindComponents()
-    {
-        yield return new WaitForSeconds(0.2f);
-
-        Debug.LogError("'Find Compontents' enumerator needs to be reworked.");
-
-        /*
-        GameObject.Find("Master Toggle").GetComponent<Button>().onClick.AddListener(delegate () { Cmd_TogglePreference(gameObject); });
-
-        survivorDropdown = GameObject.Find("Survivor Dropdown").GetComponent<Dropdown>();
-        survivorDropdown.onValueChanged.AddListener(delegate { ChangeSurvivor(survivorDropdown.value); });
-
-        masterDropdown = GameObject.Find("Master Dropdown").GetComponent<Dropdown>();
-        masterDropdown.onValueChanged.AddListener(delegate { ChangeMaster(masterDropdown.value); });
-        */
-    }
     [Server]
     public void Svr_PlayerChangeCharacter(GameObject player, int characterIndex)
     {
@@ -218,11 +155,17 @@ public class LobbyPlayer : NetworkBehaviour
 
     #region ChangeName
     [Command]
-    public void Cmd_ChangeName(GameObject player, string newName)
+    public void Cmd_ChangeName(string newName)
     {
-        player.GetComponent<LobbyPlayer>().playerName = newName;
-        Rpc_ChangeName(player, player.GetComponent<LobbyPlayer>().playerName);
+        Svr_ChangeName(newName);
     }
+    [Server] 
+    private void Svr_ChangeName(string newName)
+    {
+        gameObject.GetComponent<LobbyPlayer>().playerName = newName;
+        gameObject.name = newName;
+    }
+
     [ClientRpc]
     private void Rpc_ChangeName(GameObject player, string newName)
     {
