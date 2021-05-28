@@ -41,12 +41,8 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	private LayerMask unitLayer;
 	[SerializeField]
 	private LayerMask LOSLayer;
-	[SerializeField]
-	private LayerMask defaultLayer;
 
-	private Collider[] enemiesInRange;
 	private List<Collider> enemiesInSight = new List<Collider>();
-	private bool isSearching = false;
 	private bool isDead;
 
 
@@ -70,7 +66,6 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	IEnumerator SearchingCo;
 	IEnumerator Searching()
 	{
-		print("Searching...");
 		while (true)
 		{
 			FindTarget();
@@ -114,7 +109,6 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		}
 	}
 
-	// 
 	IEnumerator Duration()
 	{
 		while (duration > 0)
@@ -131,11 +125,11 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	#region Methods
 	void Shoot()
 	{
-		Ray(out bool didHit, out RaycastHit hit, out bool lineOfSightCheck);
+		Ray(out Transform didHit, out bool lineOfSightCheck);
 
 		Debug.DrawRay(barrel.position, barrel.forward * 10, Color.red, 0.1f);
 
-		hit.transform.GetComponent<IDamagable>()?.Svr_Damage(damage, transform);
+		didHit.GetComponent<IDamagable>()?.Svr_Damage(damage, transform);
 		if (target.GetComponent<IDamagable>().IsDead())
 		{
 			LostTarget();
@@ -144,19 +138,16 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	void FindTarget()
 	{
 		enemiesInSight.Clear();
-		enemiesInRange = Physics.OverlapSphere(transform.position, range, unitLayer);
-		print(enemiesInRange.Length);
-		RaycastHit hit;
+		Collider[] enemiesInRange = Physics.OverlapSphere(transform.position, range, unitLayer);
 		foreach (Collider item in enemiesInRange)
 		{
 			Debug.DrawLine(swivel.transform.position, (item.transform.position + item.GetComponent<BoxCollider>().center), Color.blue, 0.2f);
-			Physics.Raycast(swivel.transform.position, ((item.transform.position + item.GetComponent<BoxCollider>().center) - transform.position), out hit, LOSLayer);
+			Physics.Raycast(swivel.transform.position, ((item.transform.position + item.GetComponent<BoxCollider>().center) - transform.position), out RaycastHit hit, LOSLayer);
 			if (hit.transform.root == item.transform || hit.transform.IsChildOf(item.transform))
 			{
 				enemiesInSight.Add(item);
 			}
 		}
-		print(enemiesInSight.Count);
 		if (GetClosestEnemyCollider(enemiesInSight))
 		{
 			NewTarget(GetClosestEnemyCollider(enemiesInSight).transform);
@@ -178,6 +169,23 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		StartCoroutine(RotateYCo);
 		StartCoroutine(ShootIntervalCo);
 	}
+	Collider GetClosestEnemyCollider(List<Collider> enemyColliders)
+	{
+		float currentClosestDitance = 99999f;
+		Collider currentClosestEnemy = null;
+
+		foreach (Collider enemy in enemyColliders)
+		{
+			float distance = Vector3.Distance(transform.position, enemy.transform.position);
+
+			if (distance < currentClosestDitance)
+			{
+				currentClosestDitance = distance;
+				currentClosestEnemy = enemy;
+			}
+		}
+		return currentClosestEnemy;
+	}
 
 	void LostTarget()
 	{
@@ -196,33 +204,16 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		SearchingCo = Searching();
 		StartCoroutine(SearchingCo);
 
-		//TO DO - TING DER SKER NÅR MAN STARTER MED AT SØGE
+		//TO DO - WHATEVER HAPPENS WHEN TURRET STARTS SEARCHING
 	}
 
-	Collider GetClosestEnemyCollider(List<Collider> enemyColliders)
-	{
-		float bestDistance = 99999.0f;
-		Collider bestCollider = null;
-
-		foreach (Collider enemy in enemyColliders)
-		{
-			float distance = Vector3.Distance(transform.position, enemy.transform.position);
-
-			if (distance < bestDistance)
-			{
-				bestDistance = distance;
-				bestCollider = enemy;
-			}
-		}
-		return bestCollider;
-	}
 
 	bool CanShoot()
 	{
-		Ray(out bool didHit, out RaycastHit hit, out bool lineOfSightCheck);
+		Ray(out Transform didHit, out bool lineOfSightCheck);
 		if (didHit)
 		{
-			if (hit.transform.TryGetComponent(out IDamagable a))
+			if (didHit.TryGetComponent(out IDamagable a))
 			{
 				return true;
 			}
@@ -234,23 +225,20 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		return false;
 	}
 
-	void Ray(out bool didHit, out RaycastHit hit, out bool lineOfSightCheck)
+	void Ray(out Transform didHit, out bool lineOfSightCheck)
 	{
-		RaycastHit hitLOS;
-
-		//SOMEHOW ONLY LOOK AT TARGET, THROUGH OTHER OBJECTS ON SAME LAYER
-
-		Physics.Raycast(transform.position, ((target.position + target.GetComponent<BoxCollider>().center) - transform.position), out hitLOS, LOSLayer);
+		Physics.Raycast(transform.position, ((target.position + target.GetComponent<BoxCollider>().center) - transform.position), out RaycastHit hitLOS, LOSLayer);
 		lineOfSightCheck = hitLOS.transform == target;
 
-
-		Physics.Raycast(pivot.position, pivot.forward, out hit, range, LOSLayer);
+		Physics.Raycast(pivot.position, pivot.forward, out RaycastHit hit, range, LOSLayer);
 		didHit = hit.transform;
 	}
 
 	void Die()
 	{
 		StopAllCoroutines();
+
+		// TO DO - WHATEVER HAPPENS WHEN TURRET DIES
 		Destroy(gameObject);
 	}
 
