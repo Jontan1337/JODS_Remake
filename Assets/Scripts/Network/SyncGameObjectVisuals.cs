@@ -36,41 +36,87 @@ public class SyncGameObjectVisuals : NetworkBehaviour
     #region NetworkBehaviour Callbacks
     public override void OnStartServer()
     {
-        NetworkTest.RelayOnServerAddPlayer += Svr_UpdateVars;
+        //NetworkTest.RelayOnServerAddPlayer += Svr_UpdateVars;
     }
 
     public override void OnStopServer()
     {
-        NetworkTest.RelayOnServerAddPlayer -= Svr_UpdateVars;
+        //NetworkTest.RelayOnServerAddPlayer -= Svr_UpdateVars;
     }
     #endregion
 
     #region Serialization
 
-    public override bool OnSerialize(NetworkWriter writer, bool initialState)
-    {
-        if (!initialState)
-        {
-            writer.WriteTransform(transform.parent);
-            writer.WriteVector3(transform.position);
-            writer.WriteQuaternion(transform.rotation);
-            return true;
-        }
-        return false;
-    }
+    //public override bool OnSerialize(NetworkWriter writer, bool initialState)
+    //{
+    //    try
+    //    {
+    //        if (!initialState)
+    //        {
+    //            writer.WriteTransform(transform.parent);
+    //            writer.WriteVector3(transform.position);
+    //            writer.WriteQuaternion(transform.rotation);
+    //        }
+    //        else
+    //        {
+    //            writer.WriteTransform(parentData);
+    //            writer.WriteBoolean(syncParent);
+    //            writer.WriteVector3(positionData);
+    //            writer.WriteBoolean(syncPosition);
+    //            writer.WriteQuaternion(rotationData);
+    //            writer.WriteBoolean(syncRotation);
+    //        }
+    //        return true;
+    //    }
+    //    catch (Exception e)
+    //    {
+    //        Debug.LogError($"Error: {e.Message}", this);
+    //        return false;
+    //    }
+    //}
 
-    public override void OnDeserialize(NetworkReader reader, bool initialState)
-    {
-        if (!initialState)
-        {
-            parentData = reader.ReadTransform();
-            transform.parent = parentData;
-            positionData = reader.ReadVector3();
-            transform.position = positionData;
-            rotationData = reader.ReadQuaternion();
-            transform.rotation = rotationData;
-        }
-    }
+    //public override void OnDeserialize(NetworkReader reader, bool initialState)
+    //{
+    //    if (!initialState)
+    //    {
+    //        parentData = reader.ReadTransform();
+    //        transform.parent = parentData;
+    //        positionData = reader.ReadVector3();
+    //        transform.position = positionData;
+    //        rotationData = reader.ReadQuaternion();
+    //        transform.rotation = rotationData;
+    //    }
+    //    try
+    //    {
+    //        if (!initialState)
+    //        {
+    //            parentData = reader.ReadTransform();
+    //            transform.parent = parentData;
+    //            positionData = reader.ReadVector3();
+    //            transform.position = positionData;
+    //            rotationData = reader.ReadQuaternion();
+    //            transform.rotation = rotationData;
+    //        }
+    //        else
+    //        {
+    //            parentData = reader.ReadTransform();
+    //            transform.parent = parentData;
+    //            syncParent = reader.ReadBoolean();
+
+    //            positionData = reader.ReadVector3();
+    //            transform.position = positionData;
+    //            syncPosition = reader.ReadBoolean();
+
+    //            rotationData = reader.ReadQuaternion();
+    //            transform.rotation = rotationData;
+    //            syncRotation = reader.ReadBoolean();
+    //        }
+    //    }
+    //    catch (Exception e)
+    //    {
+    //        Debug.LogError($"Error: {e.Message}", this);
+    //    }
+    //}
 
     #endregion
 
