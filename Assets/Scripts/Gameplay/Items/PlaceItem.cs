@@ -14,6 +14,8 @@ public class PlaceItem : NetworkBehaviour, IEquippable, IBindable, IInteractable
 	private GameObject placeHolder;
 	[SerializeField]
 	private LayerMask ignoreLayer;
+	[SerializeField]
+	private float maxPlaceRange = 3;
 
 	private LookController look;
 	private AuthorityController authController;
@@ -38,46 +40,83 @@ public class PlaceItem : NetworkBehaviour, IEquippable, IBindable, IInteractable
 	// Called when item is picked up and ready to be placed
 	private void Equipped()
 	{
-		print(placeHolder);
 		placeHolder.SetActive(true);
 		look = GetComponentInParent<LookController>();
-		StartCoroutine(PlaceHolderActive());
+		PlaceHolderActiveCo = PlaceHolderActive();
+		StartCoroutine(PlaceHolderActiveCo);
 	}
 
+	IEnumerator PlaceHolderActiveCo;
 	public IEnumerator PlaceHolderActive()
 	{
-		while (placeholderActive)
+		while (true)
 		{
-			Physics.Raycast(look.playerCamera.transform.position, look.playerCamera.transform.forward, out RaycastHit hit, 5f, ~ignoreLayer);
-
-			if (hit.transform)
+			Physics.Raycast(look.playerCamera.transform.position, look.playerCamera.transform.forward, out RaycastHit hit, maxPlaceRange, ~ignoreLayer);
+			placeHolder.transform.eulerAngles = new Vector3(0, transform.rotation.y, 0);
+			if (!hit.transform)
 			{
-				placeHolder.transform.eulerAngles = new Vector3(0, transform.rotation.y, transform.rotation.z);
-				placeHolder.transform.position = new Vector3(hit.point.x, PlaceOnTop(hit), hit.point.z);
-				placeHolder.SetActive(hit.transform);
-				print(hit.transform.name);
+				placeHolder.transform.position = look.playerCamera.transform.position + look.playerCamera.transform.forward * maxPlaceRange;
 			}
+			else
+			{
+				placeHolder.transform.position = PlaceholderPos(hit);
+			}
+			Physics.Raycast(placeHolder.transform.position, -Vector3.up, out RaycastHit hitDown, maxPlaceRange, ~ignoreLayer);
+			placeHolder.transform.position = PlaceholderPos(hitDown);
 			yield return null;
 		}
 	}
 
-	// SOMEHOW PLACE OBJECT ON TOP OF HIT
-	float PlaceOnTop(RaycastHit hit)
+	Vector3 PlaceholderPos(RaycastHit hit)
 	{
-		return hit.transform.position.y * 2 + 0.01f;
+		return new Vector3(hit.point.x, hit.point.y + 0.01f, hit.point.z);
 	}
 
-	public void Place(GameObject thing)
-	{
-		RaycastHit hit;
-		if (Physics.Raycast(look.playerCamera.transform.position, look.playerCamera.transform.forward, out hit, 5f, ~ignoreLayer))
+
+	public void Place()
+	{		
+		if (!placeHolder.GetComponent<ItemPlaceholder>().obstructed)
 		{
 			transform.position = placeHolder.transform.position;
 			transform.rotation = placeHolder.transform.rotation;
 			transform.parent = null;
-			placeholderActive = false;
+			StopCoroutine(PlaceHolderActiveCo);
+			OnPlaced?.Invoke();
 			Destroy(placeHolder);
 
+		}
+	}
+
+	public void Bind()
+	{
+		JODSInput.Controls.Survivor.LMB.performed += OnPlace;
+	}
+	public void UnBind()
+	{
+		JODSInput.Controls.Survivor.LMB.performed -= OnPlace;
+	}
+
+	private void OnPlace(InputAction.CallbackContext context) => Place();
+
+	[Server]
+	public void Svr_Interact(GameObject interacter)
+	{
+		if (!IsInteractable) return;
+
+		// Equipment should be on a child object of the player.
+		Equipment equipment = interacter.GetComponentInChildren<Equipment>();
+
+		if (equipment != null)
+		{
+			authController.Svr_GiveAuthority(interacter.GetComponent<NetworkIdentity>().connectionToClient);
+			equipment?.Svr_Equip(gameObject, EquipmentType);
+			Equipped();
+			IsInteractable = false;
+		}
+		else
+		{
+			// This should not be possible, but just to be absolutely sure.
+			Debug.LogWarning($"{interacter} does not have an Equipment component", this);
 		}
 	}
 
@@ -103,39 +142,6 @@ public class PlaceItem : NetworkBehaviour, IEquippable, IBindable, IInteractable
 			placeHolderChildObject.AddComponent<MeshRenderer>().sharedMaterials = childRenderes[i].sharedMaterials;
 			placeHolderChildObject.transform.position = childFilters[i].transform.position;
 			placeHolderChildObject.name = childRenderes[i].name + "_Mesh";
-		}
-	}
-
-	public void Bind()
-	{
-		JODSInput.Controls.Survivor.LMB.performed += OnPlace;
-	}
-	public void UnBind()
-	{
-		JODSInput.Controls.Survivor.LMB.performed -= OnPlace;
-	}
-
-	private void OnPlace(InputAction.CallbackContext context) => Place(gameObject);
-
-	[Server]
-	public void Svr_Interact(GameObject interacter)
-	{
-		if (!IsInteractable) return;
-
-		// Equipment should be on a child object of the player.
-		Equipment equipment = interacter.GetComponentInChildren<Equipment>();
-
-		if (equipment != null)
-		{
-			authController.Svr_GiveAuthority(interacter.GetComponent<NetworkIdentity>().connectionToClient);
-			equipment?.Svr_Equip(gameObject, EquipmentType);
-			Equipped();
-			IsInteractable = false;
-		}
-		else
-		{
-			// This should not be possible, but just to be absolutely sure.
-			Debug.LogWarning($"{interacter} does not have an Equipment component", this);
 		}
 	}
 }

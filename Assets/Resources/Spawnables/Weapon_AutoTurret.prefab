@@ -691,9 +691,6 @@ MonoBehaviour:
   LOSLayer:
     serializedVersion: 2
     m_Bits: 513
-  defaultLayer:
-    serializedVersion: 2
-    m_Bits: 1
 --- !u!114 &-5203044163589500449
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -710,11 +707,24 @@ MonoBehaviour:
   syncInterval: 0.1
   OnPlaced:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2636529883639160189}
+        m_TargetAssemblyTypeName: AutoTurret, Assembly-CSharp
+        m_MethodName: OnPlaced
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   placeHolder: {fileID: 6360617099066798673}
   ignoreLayer:
     serializedVersion: 2
     m_Bits: 4095798
+  maxPlaceRange: 3
   placeholderActive: 1
 --- !u!114 &5673176028421838261
 MonoBehaviour:

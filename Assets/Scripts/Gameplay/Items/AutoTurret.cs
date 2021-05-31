@@ -45,13 +45,6 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	private List<Collider> enemiesInSight = new List<Collider>();
 	private bool isDead;
 
-
-	private void Start()
-	{
-		StartSearching();
-		StartCoroutine(Duration());
-	}
-
 	#region Coroutines
 	IEnumerator ShootIntervalCo;
 	IEnumerator ShootInterval()
@@ -143,9 +136,13 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		{
 			Debug.DrawLine(swivel.transform.position, (item.transform.position + item.GetComponent<BoxCollider>().center), Color.blue, 0.2f);
 			Physics.Raycast(swivel.transform.position, ((item.transform.position + item.GetComponent<BoxCollider>().center) - transform.position), out RaycastHit hit, LOSLayer);
-			if (hit.transform.root == item.transform || hit.transform.IsChildOf(item.transform))
+			if (hit.transform)
 			{
-				enemiesInSight.Add(item);
+				if (hit.transform.root == item.transform)
+				{
+					enemiesInSight.Add(item);
+				}
+
 			}
 		}
 		if (GetClosestEnemyCollider(enemiesInSight))
@@ -242,6 +239,12 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		Destroy(gameObject);
 	}
 
+	public void OnPlaced()
+	{
+		StartSearching();
+		StartCoroutine(Duration());
+	}
+
 	private void OnDrawGizmos()
 	{
 		if (target)
@@ -250,6 +253,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 			Gizmos.DrawSphere(new Vector3(target.position.x, target.position.y + 4, target.position.z), 1);
 		}
 	}
+
 
 	#endregion
 
