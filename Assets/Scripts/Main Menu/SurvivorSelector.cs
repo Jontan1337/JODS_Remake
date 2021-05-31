@@ -78,6 +78,7 @@ public class SurvivorSelector : NetworkBehaviour
     private void SelectSurvivor(InputAction.CallbackContext context)
     {
         if (!canSelect) return;
+        bool hasSelected = GetComponent<LobbyPlayer>().hasSelectedACharacter;
 
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -86,17 +87,30 @@ public class SurvivorSelector : NetworkBehaviour
         {
             if (hit.collider.gameObject.TryGetComponent(out SurvivorSelect select))
             { 
-                Cmd_SelectSurvivor(select.gameObject);
+                Cmd_SelectSurvivor(select.gameObject, netId, hasSelected);
             }
 
         }
     }
 
     [Command]
-    private void Cmd_SelectSurvivor(GameObject select)
+    private void Cmd_SelectSurvivor(GameObject select, uint id, bool hasSelected)
     {
-        print("Cmd_SelectSurvivor");
-                select.GetComponent<SurvivorSelect>().Rpc_SelectSurvivor(1);
+        select.GetComponent<SurvivorSelect>().Rpc_SelectSurvivor((int)id, hasSelected);
+    }
+
+    public void ChangeCharacter(string characterName)
+    {
+        if (!hasAuthority) return;
+
+        Cmd_ChangeCharacter(characterName);
+        PlayerPrefs.SetString("Survivor", characterName);
+    }
+
+    [Command]
+    private void Cmd_ChangeCharacter(string characterName)
+    {
+        GetComponent<LobbyCharacters>().Rpc_ChangeCharacter(characterName);
     }
 
 }

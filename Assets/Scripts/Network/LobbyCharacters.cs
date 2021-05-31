@@ -1,15 +1,23 @@
 ﻿using UnityEngine;
 using Mirror;
+using System.Collections.Generic;
 
 public class LobbyCharacters : NetworkBehaviour
 {
+    [Header("Player Info")]
     [SyncVar] public int lobbyCharID;
+    [Header("References")]
     public LobbyPlayer player;
     public GameObject smoke;
     public new GameObject light;
     public GameObject nameTag;
-    public GameObject[] characters;
-    [SyncVar] public int chosenCharacterIndex = 0;
+    [Space]
+    [SerializeField] private SkinnedMeshRenderer characterRenderer = null;
+
+    [Header("Playable Characters Lists")]
+    public List<SurvivorSO> survivorSOList = new List<SurvivorSO>();
+    [Space]
+    public List<MasterSO> masterSOList = new List<MasterSO>();
 
     // Register when the lobby character is assigned to a parent player.
     public override void OnStartAuthority()
@@ -17,40 +25,30 @@ public class LobbyCharacters : NetworkBehaviour
         if (!isLocalPlayer) return;
         light.GetComponent<Light>().enabled = true;
     }
-
-    [Server]
-    public void Svr_ChangeCharacter(int index)
-    {
-        chosenCharacterIndex = index;
-        Rpc_Deactivate();
-        Rpc_Activate(chosenCharacterIndex);
-    }
-
     [Server]
     public void Svr_GetCharacter()
     {
-        Rpc_Deactivate();
-        Rpc_Activate(chosenCharacterIndex);
+        if (player.hasSelectedACharacter)
+        {
+            Rpc_ChangeCharacter(player.survivorSO.name);
+        }
     }
 
-    //public void GetChoice()
-    //{
-    //    Cmd_GetChoice();
-    //}
-    //[Command]
-    //private void Cmd_GetChoice()
-    //{
-    //    print(player.wantsToBeMaster);
-    //    if (player.wantsToBeMaster)
-    //    {
-    //        Rpc_GetChoice();
-    //    }
-    //}
-    //[ClientRpc]
-    //private void Rpc_GetChoice()
-    //{
-    //    smoke.GetComponent<ParticleSystem>().Play();
-    //}
+    [ClientRpc]
+    public void Rpc_ChangeCharacter(string survivorName)
+    {
+        print("Rpc_ChangeCharacter :" + survivorName);
+        foreach(SurvivorSO survivor in survivorSOList)
+        {
+            if (survivor.name == survivorName)
+            {
+                characterRenderer.material = survivor.survivorMaterial;
+                characterRenderer.sharedMesh = survivor.survivorMesh;
+                break;
+            }
+        }
+    }
+
     [Server]
     public void Svr_GetChoice()
     {
@@ -80,19 +78,5 @@ public class LobbyCharacters : NetworkBehaviour
     private void Rpc_GetNameTag(GameObject sharedDataName)
     {
         nameTag.GetComponent<TextMesh>().text = sharedDataName.GetComponent<LobbyPlayer>().playerName;
-    }
-
-    [ClientRpc]
-    public void Rpc_Activate(int index)
-    {
-        characters[index].SetActive(true);
-    }
-    [ClientRpc]
-    public void Rpc_Deactivate()
-    {
-        for (int i = 0; i < characters.Length; i++)
-        {
-            characters[i].SetActive(false);
-        }
     }
 }

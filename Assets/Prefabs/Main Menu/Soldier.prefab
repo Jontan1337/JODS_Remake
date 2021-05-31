@@ -168,7 +168,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 2, y: 3, z: 2}
+  m_Size: {x: 2, y: 3, z: 1}
   m_Center: {x: 0, y: 1.5, z: 0}
 --- !u!114 &2732755357831092619
 MonoBehaviour:
@@ -182,7 +182,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 073b61c9adbbd5d48a807d9a6f69c0d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  survivor: {fileID: 0}
   selected: 0
+  playerIndex: 0
   selectedVisual: {fileID: 2732755357963529013}
 --- !u!1 &2732755357963529013
 GameObject:
@@ -199,7 +203,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2732755357963529012
 Transform:
   m_ObjectHideFlags: 0
@@ -348,11 +352,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 419030, guid: e7aa3eba36ce5d04c84a01925e585932, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.49598
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 419030, guid: e7aa3eba36ce5d04c84a01925e585932, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.48568588
+      value: 0.4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e7aa3eba36ce5d04c84a01925e585932, type: 3}

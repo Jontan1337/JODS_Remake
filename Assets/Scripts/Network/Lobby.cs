@@ -160,7 +160,6 @@ public class Lobby : NetworkManager
     {
         base.OnServerReady(conn);
 
-
         // If server is in gameplay scene
         // then spawn a player spawner for each player.
         if (SceneManager.GetActiveScene().path != gameplayScene) return;
@@ -171,21 +170,6 @@ public class Lobby : NetworkManager
         {
             NetworkServer.Destroy(oldPlayerObject);
         }
-
-        //if (playersReady == roomPlayers.Count)
-        //{
-        //    GameObject GOMatchManager = Instantiate(MatchManager);
-        //    NetworkServer.Spawn(GOMatchManager);
-        //    StartCoroutine(GOMatchManager.GetComponent<MatchManager>().Svr_StartInitialization());
-        //}
-    }
-
-    public override void OnServerSceneChanged(string sceneName)
-    {
-        base.OnServerSceneChanged(sceneName);
-
-        print("OnServerSceneChanged");
-        
     }
 
     public override void OnServerError(NetworkConnection conn, int errorCode)
@@ -272,13 +256,6 @@ public class Lobby : NetworkManager
 
     void SwitchScene()
     {
-        foreach (var p in Instance.roomPlayers)
-        {
-            if (p != null)
-            {
-                p.GetComponent<LobbyPlayer>().ChangePrefab();
-            }
-        }
         ServerChangeScene(gameplayScene);
     }
 
