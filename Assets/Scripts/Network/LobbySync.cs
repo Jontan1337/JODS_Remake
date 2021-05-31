@@ -6,13 +6,13 @@ using Mirror;
 
 public class LobbySync : NetworkBehaviour
 {
+    [Header("Session Info")]
     private List<GameObject> PlayerLabels = new List<GameObject>();
     public LobbySeat[] lobbySeats = null;
     public GameObject[] playersInLobby = null;
     public LobbyAudio sound = null;
 
-    public Transform matchList;
-    public GameObject matchListItem;
+
 
     #region Singleton
     private static LobbySync lobbySync;
@@ -35,53 +35,6 @@ public class LobbySync : NetworkBehaviour
     {
         DontDestroyOnLoad(this);
     }
-
-    //public void PlayerChangeCharacter(GameObject player, int characterIndex)
-    //{
-    //    if (!hasAuthority) return;
-    //    LobbyPlayer currentPlayer = player.GetComponent<LobbyPlayer>();
-
-    //    goPlayersInLobby[currentPlayer.playerID].GetComponent<LobbyCharacters>().Cmd_ChangeCharacter(characterIndex);
-    //}
-
-
-    #region Playerlabels list (NOT USED)
-    [ClientRpc]
-    private void Rpc_SyncLabels(GameObject listItem, string playerName)
-    {
-        listItem.GetComponentInChildren<Text>().text = playerName;
-        listItem.transform.SetParent(matchList);
-    }
-    [Server]
-    private void Svr_SyncLabels()
-    {
-        for (int i = 0; i < PlayerLabels.Count; i++)
-        {
-            Rpc_SyncLabels(PlayerLabels[i].gameObject, Lobby.Instance.roomPlayers[i].playerName);
-        }
-    }
-    private IEnumerator CoSyncNames()
-    {
-        yield return new WaitForSeconds(0.3f);
-
-        Svr_SyncLabels();
-    }
-
-    [Server]
-    public void Svr_AddPlayerLabel(int playerID)
-    {
-        LobbyPlayer newLobbyPlayer = Lobby.Instance.roomPlayers[playerID];
-        newLobbyPlayer.playerID = playerID;
-        GameObject newListMatchItem = Instantiate(matchListItem, matchList);
-        newListMatchItem.GetComponentInChildren<Text>().text = newLobbyPlayer.playerName;
-        PlayerLabels.Add(newListMatchItem);
-        NetworkServer.Spawn(newListMatchItem);
-        newLobbyPlayer._nameLabel = newListMatchItem;
-        newLobbyPlayer._nameLabelMasterColor = newListMatchItem.GetComponentInChildren<Image>();
-
-        StartCoroutine(CoSyncNames());
-    }
-    #endregion
 
 
     [Server]
@@ -152,7 +105,7 @@ public class LobbySync : NetworkBehaviour
     {
         // Wait for a small amount of time because the network is delayed or something?
         yield return new WaitForSeconds(0.2f);
-
+        
         tempLobbyCharacter.Svr_GetCharacter();
         tempLobbyCharacter.Svr_GetChoice();
         tempLobbyCharacter.Svr_GetNameTag();

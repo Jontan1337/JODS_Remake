@@ -14,13 +14,16 @@ public class LobbyPlayer : NetworkBehaviour
     [SyncVar(hook = nameof(ChangeName))] public string playerName;
     [SyncVar] public bool gameOn;
     [SyncVar] public bool setupInGameScene;
-
+    [Header("Character")]
+    public SurvivorSO survivorSO = null;
+    [SyncVar] public bool hasSelectedACharacter;
+    [Space]
+    public Color playerColor = Color.red;
     [Header("Data")]
     [SyncVar] public int playerID;
     public int playerIndexOnServer;
     [Header("References")]
     public Toggle masterToggle;
-    public Dropdown survivorDropdown;
     public GameObject _nameLabel;
     public Image _nameLabelMasterColor;
     public GameObject lobbyCharacter;
@@ -53,9 +56,8 @@ public class LobbyPlayer : NetworkBehaviour
 
     private void Start()
     {
-
         // Is this the Host
-        if (isLocalPlayer && isServer)
+        if (isServer && isLocalPlayer)
         {
             isHost = true;
         }
@@ -76,9 +78,6 @@ public class LobbyPlayer : NetworkBehaviour
             Cmd_ChangeName(playerName);
 
             PlayerPrefs.SetString("PlayerName", playerName);
-            PlayerPrefs.SetInt("Character", 1);
-            PlayerPrefs.SetInt("Survivor", 0);
-            PlayerPrefs.SetInt("Master", 0);
         }
     }
 
@@ -96,12 +95,13 @@ public class LobbyPlayer : NetworkBehaviour
     }
 
     [Server]
-    public void Svr_PlayerChangeCharacter(GameObject player, int characterIndex)
+    public void Svr_PlayerChangeCharacter(GameObject player, string survivorName)
     {
         LobbyPlayer currentPlayer = player.GetComponent<LobbyPlayer>();
 
-        LobbySync.Instance.playersInLobby[currentPlayer.playerID].GetComponent<LobbyCharacters>().Svr_ChangeCharacter(characterIndex);
+        LobbySync.Instance.playersInLobby[currentPlayer.playerID].GetComponent<LobbyCharacters>().Rpc_ChangeCharacter(survivorName);
     }
+
     [Command]
     public void Cmd_ChangePreference(bool wantToBe)
     {
@@ -176,69 +176,13 @@ public class LobbyPlayer : NetworkBehaviour
     }
     #endregion
 
-    // Change character
-    public void ChangePrefab()
+    #region Character
+
+    public void SetSurvivorSO(SurvivorSO so)
     {
-        // Master - 0
-        // Survivor - 1
-        if (isHost)
-        {
-            //If host, call others and tell them to change prefab
-            CallOthers();
-        }
-        if (hasAuthority)
-        {
-            gameOn = true;
-            if (isMaster)
-            {
-                PlayerPrefs.SetInt("Character", 0);
-            }
-            else
-            {
-                PlayerPrefs.SetInt("Character", 1);
-            }
-        }
-    }
-    void CallOthers()
-    {
-        GameObject[] others = GameObject.FindGameObjectsWithTag("LobbyPlayer");
-        foreach (GameObject o in others)
-        {
-            if (!o.GetComponent<LobbyPlayer>().isHost)
-            {
-                //Debug.Log("Found : " + o.name);
-                CmdCallOthers(o);
-            }
-        }
+        survivorSO = so;
+        hasSelectedACharacter = so != null;
     }
 
-    #region ChangeSurvivor
-    void ChangeSurvivor(int num)
-    {
-        PlayerPrefs.SetInt("Survivor", num);
-        Cmd_ChangeSurvivor(gameObject, num);
-        LobbySync.Instance.sound.PlaySound("Change");
-    }
-    [Command]
-    void Cmd_ChangeSurvivor(GameObject player, int num)
-    {
-        Svr_PlayerChangeCharacter(player, num);
-    }
     #endregion
-
-    void ChangeMaster(int num)
-    {
-        PlayerPrefs.SetInt("Master", num);
-    }
-
-    [Command]
-    void CmdCallOthers(GameObject other)
-    {
-        RpcCallOthers(other);
-    }
-    [ClientRpc]
-    void RpcCallOthers(GameObject other)
-    {
-        other.GetComponent<LobbyPlayer>().ChangePrefab();
-    }
 }

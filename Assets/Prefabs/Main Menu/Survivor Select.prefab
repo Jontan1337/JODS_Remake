@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 8189614656846784911}
   - component: {fileID: 8189614656846784904}
   m_Layer: 0
-  m_Name: Soldier
+  m_Name: Survivor Select
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -169,7 +169,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 2, y: 3, z: 2}
+  m_Size: {x: 2, y: 3, z: 1}
   m_Center: {x: 0, y: 1.5, z: 0}
 --- !u!114 &8189614656846784904
 MonoBehaviour:
@@ -183,7 +183,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 073b61c9adbbd5d48a807d9a6f69c0d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  survivor: {fileID: 0}
   selected: 0
+  playerIndex: 0
   selectedVisual: {fileID: 8189614656705796918}
 --- !u!1 &8189614657460066588
 GameObject:

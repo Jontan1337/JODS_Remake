@@ -4,94 +4,41 @@ using Mirror;
 
 public class PlayerSpawner : NetworkBehaviour
 {
-    public GameObject[] survivorPrefab;
-    public GameObject[] masterPrefab;
-    public int characterNum;
-    public int survivorNum;
-    public int masterNum;
-    private GameObject[] spawns;
-    private int spawn;
-    public GameObject cam;
+    [SerializeField] private GameObject masterPrefab;
+    [SerializeField] private GameObject survivorPrefab;
+
     private bool spawned;
+    private bool isMaster = false;
 
     public override void OnStartAuthority()
     {
         // Check if this is currently the server and if the object is is not the same as the host.
         if (!hasAuthority) return;
 
-        //spawns = GameObject.FindGameObjectsWithTag("PlayerSpawn");
-        spawns = new GameObject[0];
-        if (spawns.Length != 0 && !spawned)
+        if (!spawned)
         {
             spawned = true;
-            characterNum = PlayerPrefs.GetInt("Character");
-            spawn = Random.Range(0, spawns.Length);
+            isMaster = PlayerPrefs.GetInt("IsMaster") == 1;
 
-            print($"Survivor Int: {PlayerPrefs.GetInt("Survivor")}");
-            print($"Master Int: {PlayerPrefs.GetInt("Master")}");
-            // Survivor - 1
-            if (characterNum == 1)
-            {
-                // Soldier - 0
-                // Taekwondo - 1
-                // Engineer - 2
+            string _class = isMaster ? PlayerPrefs.GetString("Master") : PlayerPrefs.GetString("Survivor");
 
-                survivorNum = PlayerPrefs.GetInt("Survivor");
-                Cmd_ReplacePlayer(gameObject, survivorNum, true, spawns, spawn);
-                return;
-            }
-
-            // Master - 0
-            if (characterNum == 0)
-            {
-                // Zombie - 0
-                masterNum = PlayerPrefs.GetInt("Master");
-                Cmd_ReplacePlayer(gameObject, masterNum, false, spawns, spawn);
-                return;
-            }
-        }
-        if (spawns.Length == 0 && !spawned)
-        {
-            spawned = true;
-            survivorNum = PlayerPrefs.GetInt("Survivor");
-            Cmd_ReplacePlayer(gameObject, survivorNum, true, null, 0);
-            return;
+            Cmd_ReplacePlayer(gameObject, isMaster, _class);
         }
     }
 
     [Command]
-    void Cmd_ReplacePlayer(GameObject playerOwner, int num, bool survivor, GameObject[] spawnPoints, int spawnNum)
+    void Cmd_ReplacePlayer(GameObject playerOwner, bool _isMaster, string _class)
     {
-        GameObject go = null;
-        if (survivor)
-        {
-            if (spawnPoints != null)
-            {
-                go = Instantiate(survivorPrefab[num], spawnPoints[spawnNum].transform.position, spawnPoints[spawnNum].transform.rotation);
-            }
-            else
-            {
-                go = Instantiate(survivorPrefab[num], transform.position, transform.rotation);
-            }
-        }
-        else
-        {
-            go = Instantiate(masterPrefab[num], transform.position, transform.rotation);
-        }
+        GameObject go = Instantiate(_isMaster ? masterPrefab : survivorPrefab, transform.position, transform.rotation);
+
+        //TODO :
+        //Get a reference to the list of survivors and masters, so that we can fetch the SO for the master/survivor.
+        //Then assign the SO to the new GO
 
         print($"New Player: {go.name} For {playerOwner.name}");
 
         NetworkServer.ReplacePlayerForConnection(connectionToClient, go);
 
         NetworkServer.Destroy(gameObject);
-
-        //if (NetworkServer.ReplacePlayerForConnection(connectionToClient, go))
-        //{
-        //    if (spawnPoints.Length != 0)
-        //    {
-        //        Destroy(spawnPoints[spawnNum]);
-        //    }
-        //    NetworkServer.Destroy(gameObject);
-        //}
     }
 }
