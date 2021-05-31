@@ -30,6 +30,7 @@ public class Equipment : NetworkBehaviour, IInitializable<PlayerSetup>
     private GameObject equipmentSlotUIPrefab;
 
     private int equipmentSlotsCount = 0;
+    private Coroutine COMoveToHands;
 
     private const string slotsUIParentName = "CanvasInGame/Hotbar";
 
@@ -124,6 +125,10 @@ public class Equipment : NetworkBehaviour, IInitializable<PlayerSetup>
             // OnStartServer gets called before Start when equipment object
             // is not set as child to player yet.
             initializer.onSpawnItem += GetReferences;
+            initializer.onDestroyPlayer += Cmd_DropAllItems;
+        }
+        if (isServer)
+        {
         }
 
         IsInitialized = true;
@@ -329,12 +334,20 @@ public class Equipment : NetworkBehaviour, IInitializable<PlayerSetup>
     [Server]
     private void Svr_OnItemPickedUp(GameObject newItem)
     {
-        StartCoroutine(MoveToHands(newItem));
+        COMoveToHands = StartCoroutine(MoveToHands(newItem));
     }
-
     private void OnItemPickedUp(GameObject newItem)
     {
-        StartCoroutine(MoveToHands(newItem));
+        COMoveToHands = StartCoroutine(MoveToHands(newItem));
+    }
+    [Server]
+    private void Svr_OnItemDropped(GameObject newItem)
+    {
+        StopCoroutine(COMoveToHands);
+    }
+    private void OnItemDropped(GameObject newItem)
+    {
+        StopCoroutine(COMoveToHands);
     }
 
     [Server]
@@ -428,6 +441,7 @@ public class Equipment : NetworkBehaviour, IInitializable<PlayerSetup>
     private void OnDropItem(InputAction.CallbackContext context)
     {
         Cmd_DropItem(EquippedItem);
+        OnItemDropped(null);
     }
     [Command]
     private void Cmd_DropItem(GameObject item)
@@ -446,11 +460,30 @@ public class Equipment : NetworkBehaviour, IInitializable<PlayerSetup>
             }
             item.GetComponent<IInteractable>().IsInteractable = true;
             item.transform.parent = null;
-
+            Svr_OnItemDropped(null);
             if (item == SelectedEquipmentSlot.EquipmentItem)
             {
                 SelectedEquipmentSlot.Svr_RemoveItem();
             }
+        }
+    }
+    [Command]
+    private void Cmd_DropAllItems()
+    {
+        print("Svr_DropAllItems");
+        foreach (EquipmentSlot item in equipmentSlots)
+        {
+            if (item.EquipmentItem == null) continue;
+
+            Svr_ShowItem(item.EquipmentItem);
+            if (item.EquipmentItem.TryGetComponent(out PhysicsToggler pt))
+            {
+                pt.Svr_EnableItemPhysics();
+            }
+            item.EquipmentItem.GetComponent<IInteractable>().IsInteractable = true;
+            item.EquipmentItem.transform.parent = null;
+            Svr_OnItemDropped(null);
+            item.Svr_RemoveItem();
         }
     }
 

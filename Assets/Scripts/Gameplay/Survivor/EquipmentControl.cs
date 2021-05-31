@@ -52,13 +52,11 @@ public class EquipmentControl : NetworkBehaviour
     [TargetRpc]
     private void Rpc_Bind(NetworkConnection target, GameObject item)
     {
-        print("Bind");
         item.GetComponent<IBindable>().Bind();
     }
     [TargetRpc]
     private void Rpc_UnBind(NetworkConnection target, GameObject item)
     {
-        print("UnBind");
         item.GetComponent<IBindable>().UnBind();
     }
 }

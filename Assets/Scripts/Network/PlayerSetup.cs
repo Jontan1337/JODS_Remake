@@ -29,6 +29,7 @@ public class PlayerSetup : NetworkBehaviour
     public List<DynamicItem> dynamicItems;
 
     public Action<GameObject> onSpawnItem;
+    public Action onDestroyPlayer;
 
     [Space]
     [Space]
@@ -63,17 +64,16 @@ public class PlayerSetup : NetworkBehaviour
 
     public override void OnStartServer()
     {
-        if (isServer)
-        {
-            NetworkTest.RelayOnServerAddPlayer += Svr_UpdateVars;
-        }
+        NetworkTest.RelayOnServerAddPlayer += Svr_UpdateVars;
     }
     public override void OnStopServer()
     {
-        if (isServer)
-        {
-            NetworkTest.RelayOnServerAddPlayer -= Svr_UpdateVars;
-        }
+        NetworkTest.RelayOnServerAddPlayer -= Svr_UpdateVars;
+    }
+    public override void OnStopClient()
+    {
+        // Mirror wtf why no callback for when about to destroy object the fuk??
+        //onDestroyPlayer?.Invoke();
     }
 
     private void Start()

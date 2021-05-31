@@ -109,14 +109,9 @@ public class Interactor : NetworkBehaviour
     {
         if (rayHit.collider)
         {
-            foreach (var item in boxHit)
-            {
-                UnityEngine.Debug.Log(item.collider.name);
-            }
             // Check if the interacted object is networked.
             if (!rayHit.collider.GetComponent<NetworkIdentity>()) return;
 
-            UnityEngine.Debug.Log($"Client: interact with {rayHit.collider}", this);
             Cmd_Interact(rayHit.collider.gameObject);
         }
     }
@@ -126,7 +121,6 @@ public class Interactor : NetworkBehaviour
     {
         if (targetObject)
         {
-            UnityEngine.Debug.Log($"Server: interact with {targetObject}", this);
             targetObject.TryGetComponent(out IInteractable interactable);
             interactable?.Svr_Interact(gameObject);
         }
