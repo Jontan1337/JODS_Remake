@@ -24,11 +24,17 @@ public class LookController : NetworkBehaviour
     {
         transform.root.GetComponent<PlayerSetup>().onSpawnItem += GetCamera;
         Cursor.lockState = CursorLockMode.Locked;
+    }
+    public override void OnStartClient()
+    {
         JODSInput.Controls.Survivor.Camera.performed += Look;
     }
     public override void OnStopAuthority()
     {
         transform.root.GetComponent<PlayerSetup>().onSpawnItem -= GetCamera;
+    }
+    public override void OnStopClient()
+    {
         JODSInput.Controls.Survivor.Camera.performed -= Look;
     }
     #endregion
