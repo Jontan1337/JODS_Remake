@@ -145,7 +145,10 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
         JODSInput.Controls.Survivor.Drop.Enable();
         JODSInput.Controls.Survivor.Interact.Enable();
 
-        Cmd_StopShoot();
+        if (hasAuthority)
+        {
+            Cmd_StopShoot();
+        }
     }
     private void OnReload(InputAction.CallbackContext context) => Cmd_Reload();
     private void OnChangeFireMode(InputAction.CallbackContext context) => Cmd_ChangeFireMode();

@@ -27,7 +27,10 @@ public class LookController : NetworkBehaviour
     }
     public override void OnStartClient()
     {
-        JODSInput.Controls.Survivor.Camera.performed += Look;
+        if (hasAuthority)
+        {
+            JODSInput.Controls.Survivor.Camera.performed += Look;
+        }
     }
     public override void OnStopAuthority()
     {
@@ -35,7 +38,10 @@ public class LookController : NetworkBehaviour
     }
     public override void OnStopClient()
     {
-        JODSInput.Controls.Survivor.Camera.performed -= Look;
+        if (hasAuthority)
+        {
+            JODSInput.Controls.Survivor.Camera.performed -= Look;
+        }
     }
     #endregion
 
