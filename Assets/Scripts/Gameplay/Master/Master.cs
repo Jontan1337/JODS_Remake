@@ -160,9 +160,6 @@ public class Master : NetworkBehaviour
 
             SetUnitDestinationMarker(false);
 
-            //Make Unit Buttons
-            InitializeUnitButtons();
-
             //-----------------------
 
             ActivateUpgradeDecisions(false);

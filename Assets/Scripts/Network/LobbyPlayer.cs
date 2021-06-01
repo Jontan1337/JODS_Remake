@@ -111,6 +111,8 @@ public class LobbyPlayer : NetworkBehaviour
     public void Cmd_ChangePreference()
     {
         wantsToBeMaster = !wantsToBeMaster;
+        PlayerPrefs.SetInt("IsMaster", wantsToBeMaster ? 1 : 0);
+        Debug.LogWarning("Cmd_ChangePreference needs to change");
         lobbyCharacters.Svr_GetChoice(wantsToBeMaster);
     }
     [ClientRpc]
@@ -187,11 +189,13 @@ public class LobbyPlayer : NetworkBehaviour
     private void GetMasterToggle()
     {
         GameObject.Find("Master Toggle").GetComponent<Button>().onClick.AddListener(TogglePreference);
+        Debug.LogWarning("GetMasterToggle needs to die");
     }
 
     public void TogglePreference()
     {
-        print("Toggle");
+        PlayerPrefs.SetString("Master", "Zombie Master");
+        Debug.LogWarning("TogglePreference needs to be reworked");
         Cmd_ChangePreference();
     }
 
