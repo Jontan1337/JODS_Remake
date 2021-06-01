@@ -23,13 +23,10 @@ public class LobbyPlayer : NetworkBehaviour
     [SyncVar] public int playerID;
     public int playerIndexOnServer;
     [Header("References")]
-    public Toggle masterToggle;
-    public GameObject _nameLabel;
-    public Image _nameLabelMasterColor;
-    public GameObject lobbyCharacter;
     public GameObject lobbyCamera;
     public Camera _lobbyCam;
     public LobbySeat playerSeat;
+    private LobbyCharacters lobbyCharacters;
 
     private bool launcherLogin = false;
     private string userName = null;
@@ -56,6 +53,8 @@ public class LobbyPlayer : NetworkBehaviour
 
     private void Start()
     {
+            lobbyCharacters = GetComponent<LobbyCharacters>();
+
         // Is this the Host
         if (isServer && isLocalPlayer)
         {
@@ -65,6 +64,7 @@ public class LobbyPlayer : NetworkBehaviour
         // Is this me
         if (isLocalPlayer)
         {
+
             isMe = true;
             // Is the player logged in via the launcher
             if (!launcherLogin)
@@ -80,6 +80,9 @@ public class LobbyPlayer : NetworkBehaviour
             PlayerPrefs.SetString("PlayerName", playerName);
 
             SurvivorSelection.instance.LoadSelection();
+
+            GetMasterToggle();
+
         }
     }
 
@@ -105,15 +108,10 @@ public class LobbyPlayer : NetworkBehaviour
     }
 
     [Command]
-    public void Cmd_ChangePreference(bool wantToBe)
+    public void Cmd_ChangePreference()
     {
-        wantsToBeMaster = wantToBe;
-
-        if (_nameLabelMasterColor)
-        {
-            _nameLabelMasterColor.enabled = wantsToBeMaster;
-            Rpc_ChangePreference(_nameLabel.gameObject, wantsToBeMaster);
-        }
+        wantsToBeMaster = !wantsToBeMaster;
+        lobbyCharacters.Svr_GetChoice(wantsToBeMaster);
     }
     [ClientRpc]
     public void Rpc_ChangePreference(GameObject playerLabel, bool wantsToBe)
@@ -184,6 +182,17 @@ public class LobbyPlayer : NetworkBehaviour
     {
         survivorSO = so;
         hasSelectedACharacter = so != null;
+    }
+
+    private void GetMasterToggle()
+    {
+        GameObject.Find("Master Toggle").GetComponent<Button>().onClick.AddListener(TogglePreference);
+    }
+
+    public void TogglePreference()
+    {
+        print("Toggle");
+        Cmd_ChangePreference();
     }
 
     #endregion

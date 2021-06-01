@@ -144,10 +144,6 @@ MonoBehaviour:
   playerColor: {r: 1, g: 0, b: 0, a: 1}
   playerID: 0
   playerIndexOnServer: 0
-  masterToggle: {fileID: 0}
-  _nameLabel: {fileID: 0}
-  _nameLabelMasterColor: {fileID: 0}
-  lobbyCharacter: {fileID: 479011750820927720}
   lobbyCamera: {fileID: 0}
   _lobbyCam: {fileID: 0}
   playerSeat: {fileID: 0}
@@ -171,11 +167,6 @@ MonoBehaviour:
   light: {fileID: 7036281528284490026}
   nameTag: {fileID: 7797823669808190293}
   characterRenderer: {fileID: 2883081086282330492}
-  survivorSOList:
-  - {fileID: 11400000, guid: 6e02f3f114526574798927bb6afebdfd, type: 2}
-  - {fileID: 11400000, guid: 01e3a2fd5de2ca54093550f70bd3b953, type: 2}
-  - {fileID: 11400000, guid: 1217c7de04298614a84ebffa22d3814c, type: 2}
-  masterSOList: []
 --- !u!114 &7094402608037262178
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -971,7 +962,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 1, b: 1, a: 1}
+      maxColor: {r: 1, g: 0, b: 0, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -5317,8 +5308,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 10301, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

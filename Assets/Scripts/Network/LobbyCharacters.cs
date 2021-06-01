@@ -14,11 +14,14 @@ public class LobbyCharacters : NetworkBehaviour
     [Space]
     [SerializeField] private SkinnedMeshRenderer characterRenderer = null;
 
+    private ParticleSystem charSmoke;
+
     private List<SurvivorSO> survivorSOList = new List<SurvivorSO>();
 
     private void Start()
     {
         survivorSOList = PlayableCharactersManager.instance.survivorSOList;
+        charSmoke = smoke.GetComponent<ParticleSystem>();
     }
 
     // Register when the lobby character is assigned to a parent player.
@@ -52,14 +55,13 @@ public class LobbyCharacters : NetworkBehaviour
     }
 
     [Server]
-    public void Svr_GetChoice()
+    public void Svr_GetChoice(bool want = false)
     {
-        Rpc_ToggleChoice(player.wantsToBeMaster);
+        Rpc_ToggleChoice(want ? want : player.wantsToBeMaster);
     }
     [ClientRpc]
     public void Rpc_ToggleChoice(bool playSmoke)
     {
-        ParticleSystem charSmoke = smoke.GetComponent<ParticleSystem>();
         if (playSmoke)
         {
             charSmoke.Play();

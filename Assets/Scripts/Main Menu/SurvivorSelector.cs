@@ -11,14 +11,6 @@ public class SurvivorSelector : NetworkBehaviour
     [SerializeField] private bool canSelect = false;
     private SurvivorSelectHighlight highlight;
 
-    //private void Start()
-    //{
-    //    if (!hasAuthority) return;
-
-    //    highlight = SurvivorSelectHighlight.instance;
-
-    //    CanSelect = true;
-    //}
     public override void OnStartAuthority()
     {
         base.OnStartAuthority();
@@ -89,7 +81,6 @@ public class SurvivorSelector : NetworkBehaviour
             { 
                 Cmd_SelectSurvivor(select.gameObject, netId, hasSelected);
             }
-
         }
     }
 
@@ -113,4 +104,8 @@ public class SurvivorSelector : NetworkBehaviour
         GetComponent<LobbyCharacters>().Rpc_ChangeCharacter(characterName);
     }
 
+    private void OnDestroy()
+    {
+        JODSInput.Controls.MainMenu.LMB.performed -= SelectSurvivor;
+    }
 }
