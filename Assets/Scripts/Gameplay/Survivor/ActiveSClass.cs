@@ -78,7 +78,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
         abilityIsReady = true;
     }
 
-    public void SurvivorSetup(SurvivorSO survivorSO)
+    public void SetSurvivorClass(SurvivorSO survivorSO)
     {
         this.survivorSO = survivorSO;
     }
