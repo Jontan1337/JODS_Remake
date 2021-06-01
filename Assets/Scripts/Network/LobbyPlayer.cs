@@ -78,6 +78,8 @@ public class LobbyPlayer : NetworkBehaviour
             Cmd_ChangeName(playerName);
 
             PlayerPrefs.SetString("PlayerName", playerName);
+
+            SurvivorSelection.instance.LoadSelection();
         }
     }
 

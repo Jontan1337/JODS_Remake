@@ -147,10 +147,13 @@ public class Lobby : NetworkManager
     // Called on server when anyone disconnects.
     public override void OnServerDisconnect(NetworkConnection conn)
     {
+        SurvivorSelection.instance.Svr_OnPlayerDisconnect(conn.identity.netId);
+
         Instance.roomPlayers.Remove(conn.identity.GetComponent<LobbyPlayer>());
         NetworkServer.DestroyPlayerForConnection(conn);
         //LobbySync.Instance.Svr_RemovePlayerLabel(Instance.roomPlayers.Count-1);
         //LobbySync.Instance.Svr_RemovePlayer(Instance.roomPlayers.Count-1);
+
 
 
         base.OnServerDisconnect(conn);
