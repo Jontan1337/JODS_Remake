@@ -18,7 +18,7 @@ public class SoldierClass : SurvivorClass
 
     public override void ActiveAbility()
     {
-		CmdRocketLaunch();
+		//CmdRocketLaunch();
 	}
 
 
