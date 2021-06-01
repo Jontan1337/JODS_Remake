@@ -31,7 +31,6 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 
     private void Start()
     {
-        sController = GetComponent<SurvivorController>();
         //JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => sClass.ActiveAbility();
         JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => Ability();
 
@@ -64,7 +63,9 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 
     public void SetSurvivorClass(SurvivorSO survivorSO)
     {
+        print(survivorSO);
         this.survivorSO = survivorSO;
+        SelectedClass();
         if (survivorSO.abilityObject)
         {
             sClass.abilityObject = survivorSO.abilityObject;
@@ -77,8 +78,9 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
         movementSpeed = survivorSO.movementSpeed;
         abilityCooldown = survivorSO.abilityCooldown;
         abilityCooldownCount = abilityCooldown;
+
+        sController = GetComponent<SurvivorController>();
         sController.speed *= movementSpeed;
-        SelectedClass();
     }
 
     void SelectedClass()
