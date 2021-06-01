@@ -38,7 +38,7 @@ public class TaekwondoClass : SurvivorClass
 
     private IEnumerator FlyingKick()
     {
-        unitsHit = new List<Collider>();
+        unitsHit.Clear();
         flying = true;
         sController.enabled = false;
         lController.DisableLook();
