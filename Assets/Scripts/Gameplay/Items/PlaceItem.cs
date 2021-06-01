@@ -52,7 +52,7 @@ public class PlaceItem : NetworkBehaviour, IEquippable, IBindable, IInteractable
 		while (true)
 		{
 			Physics.Raycast(look.playerCamera.transform.position, look.playerCamera.transform.forward, out RaycastHit hit, maxPlaceRange, ~ignoreLayer);
-			//placeHolder.transform.localEulerAngles = new Vector3(0, 0, 0);
+			placeHolder.transform.eulerAngles = new Vector3(0, transform.rotation.eulerAngles.y, 0);
 			if (!hit.transform)
 			{
 				placeHolder.transform.position = look.playerCamera.transform.position + look.playerCamera.transform.forward * maxPlaceRange;
@@ -82,6 +82,9 @@ public class PlaceItem : NetworkBehaviour, IEquippable, IBindable, IInteractable
 			transform.parent = null;
 			StopCoroutine(PlaceHolderActiveCo);
 			OnPlaced?.Invoke();
+			//TEMP FIX
+			authController.Svr_RemoveAuthority();
+			UnBind();
 			Destroy(placeHolder);
 
 		}

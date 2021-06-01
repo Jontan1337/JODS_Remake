@@ -29,7 +29,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 
     //public GameObject starterWeapon;
 
-    private void Awake()
+    private void Start()
     {
         sController = GetComponent<SurvivorController>();
         //JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => sClass.ActiveAbility();
@@ -40,15 +40,15 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
         {
             sClass.abilityObject = survivorSO.abilityObject;
         }
-        armor                = survivorSO.armor;
-        health               = survivorSO.health;
-        accuracy             = survivorSO.accuracy;
-        reloadSpeed          = survivorSO.reloadSpeed;
-        ammoCapacity         = survivorSO.ammoCapacity;
-        movementSpeed        = survivorSO.movementSpeed;
-        abilityCooldown      = survivorSO.abilityCooldown;
-        abilityCooldownCount = abilityCooldown;
-        sController.speed   *= movementSpeed;
+        //armor                = survivorSO.armor;
+        //health               = survivorSO.health;
+        //accuracy             = survivorSO.accuracy;
+        //reloadSpeed          = survivorSO.reloadSpeed;
+        //ammoCapacity         = survivorSO.ammoCapacity;
+        //movementSpeed        = survivorSO.movementSpeed;
+        //abilityCooldown      = survivorSO.abilityCooldown;
+        //abilityCooldownCount = abilityCooldown;
+        //sController.speed   *= movementSpeed;
 
         //starterWeapon     = soldier.starterWeapon;
     }
@@ -81,6 +81,15 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
     public void SetSurvivorClass(SurvivorSO survivorSO)
     {
         this.survivorSO = survivorSO;
+        armor = survivorSO.armor;
+        health = survivorSO.health;
+        accuracy = survivorSO.accuracy;
+        reloadSpeed = survivorSO.reloadSpeed;
+        ammoCapacity = survivorSO.ammoCapacity;
+        movementSpeed = survivorSO.movementSpeed;
+        abilityCooldown = survivorSO.abilityCooldown;
+        abilityCooldownCount = abilityCooldown;
+        sController.speed *= movementSpeed;
     }
 
     void SelectedClass()
