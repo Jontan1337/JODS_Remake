@@ -31,13 +31,14 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 
     private void Start()
     {
-        //JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => sClass.ActiveAbility();
-        JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => Ability();
+		SetSurvivorClass(survivorSO);
+		JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => Ability();
 
     }
 
     void Ability()
     {
+        
         if (abilityIsReady)
         {
             sClass.ActiveAbility();
@@ -65,7 +66,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
     {
         print(survivorSO);
         this.survivorSO = survivorSO;
-        SelectedClass();
+        sClass = SelectedClass();
         if (survivorSO.abilityObject)
         {
             sClass.abilityObject = survivorSO.abilityObject;
@@ -83,13 +84,13 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
         sController.speed *= movementSpeed;
     }
 
-    void SelectedClass()
+    SurvivorClass SelectedClass()
     {
         System.Type selectedClass = System.Type.GetType(survivorSO.classScript.name + ",Assembly-CSharp");
-        sClass = (SurvivorClass)gameObject.AddComponent(selectedClass);
 
         survivorRenderer.material = survivorSO.survivorMaterial;
         survivorRenderer.sharedMesh = survivorSO.survivorMesh;
+        return sClass = (SurvivorClass)gameObject.AddComponent(selectedClass);
     }
     public Teams Team => Teams.Player;
     [Server]

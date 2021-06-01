@@ -17,7 +17,7 @@ public class TaekwondoClass : SurvivorClass
     public int flyingDistance = 100;
     bool flying = false;
 
-    public List<Collider> unitsHit;
+    public List<Collider> unitsHit = new List<Collider>();
 
 
     private void Start()
