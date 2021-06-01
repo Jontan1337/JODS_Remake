@@ -34,23 +34,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
         sController = GetComponent<SurvivorController>();
         //JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => sClass.ActiveAbility();
         JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => Ability();
-        SetSurvivorClass(survivorSO);
-        SelectedClass();
-        if (survivorSO.abilityObject)
-        {
-            sClass.abilityObject = survivorSO.abilityObject;
-        }
-        //armor                = survivorSO.armor;
-        //health               = survivorSO.health;
-        //accuracy             = survivorSO.accuracy;
-        //reloadSpeed          = survivorSO.reloadSpeed;
-        //ammoCapacity         = survivorSO.ammoCapacity;
-        //movementSpeed        = survivorSO.movementSpeed;
-        //abilityCooldown      = survivorSO.abilityCooldown;
-        //abilityCooldownCount = abilityCooldown;
-        //sController.speed   *= movementSpeed;
 
-        //starterWeapon     = soldier.starterWeapon;
     }
 
     void Ability()
@@ -81,6 +65,10 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
     public void SetSurvivorClass(SurvivorSO survivorSO)
     {
         this.survivorSO = survivorSO;
+        if (survivorSO.abilityObject)
+        {
+            sClass.abilityObject = survivorSO.abilityObject;
+        }
         armor = survivorSO.armor;
         health = survivorSO.health;
         accuracy = survivorSO.accuracy;
@@ -90,6 +78,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
         abilityCooldown = survivorSO.abilityCooldown;
         abilityCooldownCount = abilityCooldown;
         sController.speed *= movementSpeed;
+        SelectedClass();
     }
 
     void SelectedClass()
