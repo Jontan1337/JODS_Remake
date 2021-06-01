@@ -23,25 +23,25 @@ public class LookController : NetworkBehaviour
     public override void OnStartAuthority()
     {
         transform.root.GetComponent<PlayerSetup>().onSpawnItem += GetCamera;
-        Cursor.lockState = CursorLockMode.Locked;
-    }
-    public override void OnStartClient()
-    {
         if (hasAuthority)
         {
             JODSInput.Controls.Survivor.Camera.performed += Look;
         }
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+    public override void OnStartClient()
+    {
     }
     public override void OnStopAuthority()
     {
         transform.root.GetComponent<PlayerSetup>().onSpawnItem -= GetCamera;
-    }
-    public override void OnStopClient()
-    {
         if (hasAuthority)
         {
             JODSInput.Controls.Survivor.Camera.performed -= Look;
         }
+    }
+    public override void OnStopClient()
+    {
     }
     #endregion
 
