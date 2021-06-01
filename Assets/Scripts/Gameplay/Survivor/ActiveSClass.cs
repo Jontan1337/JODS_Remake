@@ -34,7 +34,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
         sController = GetComponent<SurvivorController>();
         //JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => sClass.ActiveAbility();
         JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => Ability();
-        SurvivorSetup(survivorSO);
+        SetSurvivorClass(survivorSO);
         SelectedClass();
         if (survivorSO.abilityObject)
         {
