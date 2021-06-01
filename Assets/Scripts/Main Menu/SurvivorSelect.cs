@@ -8,18 +8,19 @@ public class SurvivorSelect : NetworkBehaviour
     public SurvivorSO survivor;
     [Space]
     [SyncVar (hook = nameof(ShowVisuals)), SerializeField] private bool selected;
-    [SyncVar, SerializeField] private int playerIndex;
+    [SyncVar] public int playerIndex;
     [Header("Visual")]
     [SerializeField] private GameObject selectedVisual;
 
-    private void Select(bool value)
+    public void Select(bool value, bool removeSO = true)
     {
         selected = value;
         ShowVisuals(false , value);
 
         if (value == false)
         {
-            RemovePlayerSurvivorSO(playerIndex);
+            if (removeSO) RemovePlayerSurvivorSO(playerIndex);
+
             playerIndex = 0;
         }
     }
@@ -66,7 +67,7 @@ public class SurvivorSelect : NetworkBehaviour
 
     private void RemovePlayerSurvivorSO(int index)
     {
-        NetworkIdentity.spawned[(uint)index].GetComponent<LobbyPlayer>()?.SetSurvivorSO(null);
+        NetworkIdentity.spawned[(uint)index]?.GetComponent<LobbyPlayer>()?.SetSurvivorSO(null);
     }
 
     private void ShowVisuals(bool oldVal, bool newVal)

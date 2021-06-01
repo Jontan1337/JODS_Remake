@@ -14,10 +14,12 @@ public class LobbyCharacters : NetworkBehaviour
     [Space]
     [SerializeField] private SkinnedMeshRenderer characterRenderer = null;
 
-    [Header("Playable Characters Lists")]
-    public List<SurvivorSO> survivorSOList = new List<SurvivorSO>();
-    [Space]
-    public List<MasterSO> masterSOList = new List<MasterSO>();
+    private List<SurvivorSO> survivorSOList = new List<SurvivorSO>();
+
+    private void Start()
+    {
+        survivorSOList = PlayableCharactersManager.instance.survivorSOList;
+    }
 
     // Register when the lobby character is assigned to a parent player.
     public override void OnStartAuthority()
