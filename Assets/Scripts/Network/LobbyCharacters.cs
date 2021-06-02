@@ -75,12 +75,12 @@ public class LobbyCharacters : NetworkBehaviour
     [Server]
     public void Svr_GetNameTag()
     {
-        nameTag.GetComponent<TextMesh>().text = player.playerName;
+        nameTag.GetComponent<TextMesh>().text = player.PlayerName;
         Rpc_GetNameTag(player.gameObject);
     }
     [ClientRpc]
     private void Rpc_GetNameTag(GameObject sharedDataName)
     {
-        nameTag.GetComponent<TextMesh>().text = sharedDataName.GetComponent<LobbyPlayer>().playerName;
+        nameTag.GetComponent<TextMesh>().text = sharedDataName.GetComponent<LobbyPlayer>().PlayerName;
     }
 }

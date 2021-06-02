@@ -11,7 +11,11 @@ public class LobbyPlayer : NetworkBehaviour
     [SyncVar] public bool isMaster;
     [SyncVar] public bool wantsToBeMaster;
     [SyncVar] public bool isHost = false;
-    [SyncVar(hook = nameof(ChangeName))] public string playerName;
+
+    [SyncVar(hook = nameof(ChangeName))] private string playerName;
+    public string PlayerName => playerName;
+
+
     [SyncVar] public bool gameOn;
     [SyncVar] public bool setupInGameScene;
     [Header("Character")]
@@ -51,9 +55,10 @@ public class LobbyPlayer : NetworkBehaviour
         #endregion
     }
 
-    private void Start()
+
+    public override void OnStartClient()
     {
-            lobbyCharacters = GetComponent<LobbyCharacters>();
+        lobbyCharacters = GetComponent<LobbyCharacters>();
 
         // Is this the Host
         if (isServer && isLocalPlayer)
@@ -61,23 +66,25 @@ public class LobbyPlayer : NetworkBehaviour
             isHost = true;
         }
 
+        if (!hasAuthority) return;
+
         // Is this me
         if (isLocalPlayer)
         {
-
             isMe = true;
             // Is the player logged in via the launcher
+            string newName;
+
             if (!launcherLogin)
             {
-                playerName = "Player_" + UnityEngine.Random.Range(1, 1000).ToString();
+                newName = "Player_" + UnityEngine.Random.Range(1, 1000).ToString();
             }
             else
             {
-                playerName = userName;
+                newName = userName;
             }
-            Cmd_ChangeName(playerName);
 
-            PlayerPrefs.SetString("PlayerName", playerName);
+            Cmd_ChangeName(newName);
 
             SurvivorSelection.instance.LoadSelection();
 
@@ -110,26 +117,11 @@ public class LobbyPlayer : NetworkBehaviour
     [Command]
     public void Cmd_ChangePreference()
     {
-        wantsToBeMaster = !wantsToBeMaster;
-        PlayerPrefs.SetInt("IsMaster", wantsToBeMaster ? 1 : 0);
         Debug.LogWarning("Cmd_ChangePreference needs to change");
+
         lobbyCharacters.Svr_GetChoice(wantsToBeMaster);
     }
-    [ClientRpc]
-    public void Rpc_ChangePreference(GameObject playerLabel, bool wantsToBe)
-    {
-        if (playerLabel)
-            playerLabel.GetComponentInChildren<Image>().enabled = wantsToBe;
-    }
 
-    [Server]
-    private void Svr_RequestMasterToggle(GameObject player, GameObject character)
-    {
-        if (CompareCharacterComponent(player, character))
-        {
-            Cmd_TogglePreference(character);
-        }
-    }
     /// <summary>
     /// Returns true if both gameobjects have the same LobbyPlayer data.
     /// </summary>
@@ -145,37 +137,25 @@ public class LobbyPlayer : NetworkBehaviour
         return tempPlayer == tempOther;
     }
     [Command]
-    private void Cmd_TogglePreference(GameObject lobbyChar)
-    {
-        wantsToBeMaster = !wantsToBeMaster;
-        LobbySync.Instance.Svr_PlayerSmoke(lobbyChar.gameObject);
-    }
-    [Command]
-    private void Cmd_CheckHit(int characterID)
-    {
-        GameObject tempCharacter = LobbySync.Instance.playersInLobby[characterID];
-        Svr_RequestMasterToggle(gameObject, tempCharacter);
-    }
 
     #region ChangeName
 
-    public void ChangeName(string oldName, string newName)
+
+    public void ChangeName(string old,string newName)
     {
-        gameObject.GetComponent<LobbyPlayer>().playerName = newName;
+        if (!isServer)
+        {
+            playerName = newName;
+        }
         gameObject.name = newName;
     }
     [Command]
     public void Cmd_ChangeName(string newName)
     {
-        Rpc_ChangeName(newName);
+        playerName = newName;
+        ChangeName("",newName);
     }
 
-    [ClientRpc]
-    private void Rpc_ChangeName(string newName)
-    {
-        gameObject.GetComponent<LobbyPlayer>().playerName = newName;
-        gameObject.name = newName;
-    }
     #endregion
 
     #region Character
@@ -196,6 +176,12 @@ public class LobbyPlayer : NetworkBehaviour
     {
         PlayerPrefs.SetString("Master", "Zombie Master");
         Debug.LogWarning("TogglePreference needs to be reworked");
+
+        wantsToBeMaster = !wantsToBeMaster;
+
+        PlayerPrefs.SetInt("IsMaster", wantsToBeMaster ? 1 : 0);
+        print(name + " wants to be master: " + wantsToBeMaster);
+
         Cmd_ChangePreference();
     }
 

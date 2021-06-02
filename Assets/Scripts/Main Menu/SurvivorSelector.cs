@@ -45,24 +45,28 @@ public class SurvivorSelector : NetworkBehaviour
         while (canSelect)
         {
             if (highlight == null) highlight = SurvivorSelectHighlight.instance;
-
-            RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            if (Physics.Raycast(ray, out hit))
+            if (Camera.main)
             {
-                if (hit.collider.gameObject.TryGetComponent(out SurvivorSelect select))
+
+
+                RaycastHit hit;
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+                if (Physics.Raycast(ray, out hit))
                 {
-                    highlight.Highlight(select.survivor);
+                    if (hit.collider.gameObject.TryGetComponent(out SurvivorSelect select))
+                    {
+                        highlight.Highlight(select.survivor);
+                    }
+                    else
+                    {
+                        highlight.Highlight(null);
+                    }
                 }
                 else
                 {
                     highlight.Highlight(null);
                 }
-            }
-            else
-            {
-                highlight.Highlight(null);
             }
             yield return new WaitForSeconds(0.1f);
         }

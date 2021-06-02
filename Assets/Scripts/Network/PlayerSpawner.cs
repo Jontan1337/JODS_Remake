@@ -8,38 +8,26 @@ public class PlayerSpawner : NetworkBehaviour
     [SerializeField] private GameObject masterPrefab;
     [SerializeField] private GameObject survivorPrefab;
 
-    private bool spawned;
-    private bool isMaster = false;
+    [SerializeField] private List<SurvivorSO> survivorSOList = new List<SurvivorSO>();
+    [SerializeField] private List<MasterSO> masterSOList = new List<MasterSO>();
 
-    private List<SurvivorSO> survivorSOList = new List<SurvivorSO>();
-    private List<MasterSO> masterSOList = new List<MasterSO>();
-
-    private void Start()
+    public override void OnStartServer()
     {
         survivorSOList = PlayableCharactersManager.instance.survivorSOList;
         masterSOList = PlayableCharactersManager.instance.masterSOList;
+
+        Lobby.OnServerReadied += SpawnPlayer;
     }
 
-    public override void OnStartAuthority()
+    [ServerCallback]
+    public void OnDestroy() => Lobby.OnServerReadied -= SpawnPlayer;
+
+    [Server]
+    public void SpawnPlayer(NetworkConnection conn, string _class, bool _isMaster)
     {
-        // Check if this is currently the server and if the object is is not the same as the host.
-        if (!hasAuthority) return;
+        GameObject oldPlayerInstance = conn.identity.gameObject;
 
-        if (!spawned)
-        {
-            spawned = true;
-            isMaster = PlayerPrefs.GetInt("IsMaster") == 1;
-
-            string _class = isMaster ? PlayerPrefs.GetString("Master") : PlayerPrefs.GetString("Survivor");
-
-            Cmd_ReplacePlayer(gameObject, isMaster, _class);
-        }
-    }
-
-    [Command]
-    void Cmd_ReplacePlayer(GameObject playerOwner, bool _isMaster, string _class)
-    {
-        GameObject go = Instantiate(_isMaster ? masterPrefab : survivorPrefab, transform.position, transform.rotation);
+        GameObject newPlayerInstance = Instantiate(_isMaster ? masterPrefab : survivorPrefab, transform.position, transform.rotation);
 
         if (_isMaster)
         {
@@ -47,7 +35,7 @@ public class PlayerSpawner : NetworkBehaviour
             {
                 if (master.name == _class)
                 {
-                    go.GetComponent<Master>().SetMasterClass(master);
+                    newPlayerInstance.GetComponent<Master>().SetMasterClass(master);
                     break;
                 }
             }
@@ -58,20 +46,16 @@ public class PlayerSpawner : NetworkBehaviour
             {
                 if (survivor.name == _class)
                 {
-                    go.GetComponent<ActiveSClass>().SetSurvivorClass(survivor);
+                    print("thats a bingo!");
+                    newPlayerInstance.GetComponent<ActiveSClass>().SetSurvivorClass(survivor);
                     break;
                 }
             }
         }
 
-        //TODO :
-        //Get a reference to the list of survivors and masters, so that we can fetch the SO for the master/survivor.
-        //Then assign the SO to the new GO
-
-        print($"New Player: {go.name} For {playerOwner.name}");
-
-        NetworkServer.ReplacePlayerForConnection(connectionToClient, go);
-
-        NetworkServer.Destroy(gameObject);
+        if (NetworkServer.ReplacePlayerForConnection(conn, newPlayerInstance))
+        {
+            NetworkServer.Destroy(oldPlayerInstance);
+        }
     }
 }

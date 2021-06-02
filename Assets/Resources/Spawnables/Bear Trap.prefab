@@ -16,9 +16,7 @@ GameObject:
   - component: {fileID: 7698377363068380804}
   - component: {fileID: 6023377877880931324}
   - component: {fileID: 463068383929845988}
-  - component: {fileID: 5644249344043406263}
   - component: {fileID: -3118859483579346572}
-  - component: {fileID: -184576996581035174}
   m_Layer: 0
   m_Name: Bear Trap
   m_TagString: Untagged
@@ -55,10 +53,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6b4dd7d612023e4cb267d4821362144, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  open: {fileID: 6023377877881029956}
-  closed: {fileID: 6023377877881029958}
-  durability: 20
-  damage: 50
 --- !u!65 &7794826148000260845
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -236,28 +230,6 @@ MonoBehaviour:
   stopsMovement: 0
   isInstant: 0
   itemPrefab: {fileID: 0}
---- !u!114 &5644249344043406263
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6023377877881029952}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c2b63691d462d343b8855e682cd264e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pickUp: 0
-  weaponPrefab: {fileID: 0}
-  name: Bear Trap
-  sightsPointRef: {fileID: 0}
-  muzzleFlash: {fileID: 0}
-  crossHair: {fileID: 0}
-  smoke: {fileID: 0}
-  weaponType: 5
-  rightHandTarget: {fileID: 0}
-  leftHandTarget: {fileID: 0}
 --- !u!114 &-3118859483579346572
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -274,20 +246,6 @@ MonoBehaviour:
   serverOnly: 0
   m_AssetId: 
   hasSpawned: 0
---- !u!114 &-184576996581035174
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6023377877881029952}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c40737fa7b3dcfb438cc7ddd070ec534, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mesh: []
-  model: {fileID: 8177084707418687211, guid: a72136d156a909045b4cbad312afdca1, type: 3}
 --- !u!1 &6023377877881029954
 GameObject:
   m_ObjectHideFlags: 0
@@ -347,7 +305,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 0c0ebdf145d83e04784dd22d8ed6f0e4, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -428,7 +386,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 0c0ebdf145d83e04784dd22d8ed6f0e4, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -509,7 +467,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 0c0ebdf145d83e04784dd22d8ed6f0e4, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
