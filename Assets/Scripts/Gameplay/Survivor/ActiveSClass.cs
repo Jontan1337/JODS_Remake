@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ActiveSClass : NetworkBehaviour, IDamagable
 {
-	public SurvivorClass sClass;
+	private SurvivorClass sClass;
 	private SurvivorController sController;
 	private Object classScript;
 
@@ -44,7 +44,6 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 		{
 			if (!sClass.abilityIsToggled)
 			{
-				print(sClass.abilityActivatedSuccesfully);
 				sClass.ActiveAbility();
 				if (sClass.abilityActivatedSuccesfully)
 				{
@@ -62,7 +61,6 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 
 	IEnumerator ToggleAbility()
 	{
-		print(sClass.abilityActivatedSuccesfully);
 		while (!sClass.abilityActivatedSuccesfully)
 		{
 			yield return null;
