@@ -118,6 +118,7 @@ public class LobbyPlayer : NetworkBehaviour
     public void Cmd_ChangePreference()
     {
         Debug.LogWarning("Cmd_ChangePreference needs to change");
+        Debug.LogWarning("Master Smoke does not work for clients? It still sets their preference, but no smoke.");
 
         lobbyCharacters.Svr_GetChoice(wantsToBeMaster);
     }
