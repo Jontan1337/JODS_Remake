@@ -19,7 +19,7 @@ public class PlaceItem : NetworkBehaviour, IEquippable, IBindable, IInteractable
 
 	private LookController look;
 	private AuthorityController authController;
-	public bool isInteractable = true;
+	private bool isInteractable = true;
 	public bool placeholderActive = true;
 
 
@@ -77,11 +77,12 @@ public class PlaceItem : NetworkBehaviour, IEquippable, IBindable, IInteractable
 	{		
 		if (!placeHolder.GetComponent<ItemPlaceholder>().obstructed)
 		{
+			OnPlaced?.Invoke();
+
 			transform.position = placeHolder.transform.position;
 			transform.rotation = placeHolder.transform.rotation;
 			transform.parent = null;
 			StopCoroutine(PlaceHolderActiveCo);
-			OnPlaced?.Invoke();
 			//TEMP FIX
 			authController.Svr_RemoveAuthority();
 			UnBind();

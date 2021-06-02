@@ -54,21 +54,12 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 			else
 			{
 				sClass.ActiveAbility();
-				StartCoroutine(ToggleAbility());
+				abilityIsReady = false;
 			}
 		}
 	}
 
-	IEnumerator ToggleAbility()
-	{
-		while (!sClass.abilityActivatedSuccesfully)
-		{
-			yield return null;
-		}
-		StartCoroutine(AbilityCooldown());
-	}
-
-	IEnumerator AbilityCooldown()
+	public IEnumerator AbilityCooldown()
 	{
 		abilityIsReady = false;
 		while (abilityCooldownCount > 0)

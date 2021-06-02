@@ -245,7 +245,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	{
 		StartSearching();
 		StartCoroutine(Duration());
-		GetComponentInParent<SurvivorClass>().abilityActivatedSuccesfully = true;
+		StartCoroutine(GetComponentInParent<ActiveSClass>().AbilityCooldown());
 	}
 
 	private void OnDrawGizmos()

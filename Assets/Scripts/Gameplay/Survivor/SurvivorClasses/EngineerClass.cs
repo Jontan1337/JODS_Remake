@@ -19,7 +19,7 @@ public class EngineerClass : SurvivorClass
 
     private void EquipTurret()
 	{
-        GameObject turret = Instantiate(abilityObject);
+        GameObject turret = Instantiate(abilityObject, transform.position, transform.rotation);
         NetworkServer.Spawn(turret);
         GetComponentInChildren<Equipment>()?.Svr_Equip(turret, EquipmentType.None);
         turret.GetComponent<PlaceItem>().Equipped();
