@@ -5,7 +5,7 @@ using UnityEngine;
 
 public static class CustomReadWrite
 {
-    public static void WriteEquipment(this NetworkWriter writer, Equipment value)
+    public static void WriteEquipment(this NetworkWriter writer, PlayerEquipment value)
     {
         ILogger logger = LogFactory.GetLogger<NetworkWriter>();
         if (value == null)
@@ -24,7 +24,7 @@ public static class CustomReadWrite
             writer.WriteNetworkIdentity(null);
         }
     }
-    public static Equipment ReadEquipment(this NetworkReader reader)
+    public static PlayerEquipment ReadEquipment(this NetworkReader reader)
     {
         ILogger logger = LogFactory.GetLogger<NetworkReader>();
         NetworkIdentity identity = reader.ReadNetworkIdentity();
@@ -33,7 +33,7 @@ public static class CustomReadWrite
         {
             return null;
         }
-        return identity.GetComponent<Equipment>();
+        return identity.GetComponent<PlayerEquipment>();
     }
 
     public static void WriteEquipmentSlot(this NetworkWriter writer, EquipmentSlot value)

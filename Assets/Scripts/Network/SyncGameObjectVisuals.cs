@@ -5,15 +5,15 @@ using System;
 
 public class SyncGameObjectVisuals : NetworkBehaviour
 {
-    [SerializeField, SyncVar(hook = nameof(UpdateParent))]
+    [SerializeField, SyncVar]
     private Transform parentData;
     [SerializeField]
     private bool syncParent = false;
-    [SerializeField, SyncVar(hook = nameof(UpdatePosition))]
+    [SerializeField, SyncVar]
     private Vector3 positionData;
     [SerializeField]
     private bool syncPosition = false;
-    [SerializeField, SyncVar(hook = nameof(UpdateRotation))]
+    [SerializeField, SyncVar]
     private Quaternion rotationData;
     [SerializeField]
     private bool syncRotation = false;
@@ -49,6 +49,53 @@ public class SyncGameObjectVisuals : NetworkBehaviour
         if (syncPosition) positionData = transform.position;
         if (syncRotation) rotationData = transform.rotation;
     }
+
+    public override bool OnSerialize(NetworkWriter writer, bool initialState)
+    {
+        if (!initialState)
+        {
+            writer.WriteTransform(parentData);
+            writer.WriteVector3(positionData);
+            writer.WriteQuaternion(rotationData);
+        }
+        else
+        {
+            writer.WriteTransform(parentData);
+            writer.WriteBoolean(syncParent);
+            writer.WriteVector3(positionData);
+            writer.WriteBoolean(syncPosition);
+            writer.WriteQuaternion(rotationData);
+            writer.WriteBoolean(syncRotation);
+        }
+        return true;
+    }
+    public override void OnDeserialize(NetworkReader reader, bool initialState)
+    {
+        if (!initialState)
+        {
+            parentData = reader.ReadTransform();
+            transform.parent = parentData;
+            positionData = reader.ReadVector3();
+            transform.position = positionData;
+            rotationData = reader.ReadQuaternion();
+            transform.rotation = rotationData;
+        }
+        else
+        {
+            parentData = reader.ReadTransform();
+            transform.parent = parentData;
+            syncParent = reader.ReadBoolean();
+
+            positionData = reader.ReadVector3();
+            transform.position = positionData;
+            syncPosition = reader.ReadBoolean();
+
+            rotationData = reader.ReadQuaternion();
+            transform.rotation = rotationData;
+            syncRotation = reader.ReadBoolean();
+        }
+    }
+
     [TargetRpc]
     private void Rpc_UpdateParent(NetworkConnection target, Transform newParentData)
     {
@@ -75,6 +122,8 @@ public class SyncGameObjectVisuals : NetworkBehaviour
 
     private void UpdateParent(Transform oldParentData, Transform newParentData)
     {
+        if (oldParentData == newParentData) return;
+
         transform.parent = newParentData;
     }
     private void UpdatePosition(Vector3 oldPositionData, Vector3 newPositionData)

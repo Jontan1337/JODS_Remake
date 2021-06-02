@@ -20,8 +20,8 @@ GameObject:
   - component: {fileID: 8677567993216096717}
   - component: {fileID: 8677567993216096706}
   - component: {fileID: 8296172669356463415}
-  - component: {fileID: 1049104673864197965}
-  m_Layer: 0
+  - component: {fileID: 2721683097890432565}
+  m_Layer: 14
   m_Name: AK-47
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1488,7 +1488,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
---- !u!114 &1049104673864197965
+--- !u!114 &2721683097890432565
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1517,7 +1517,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8677567994327279421}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: bulletOrigin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1555,6 +1555,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: MuzzleFlash
+      objectReference: {fileID: 0}
+    - target: {fileID: 6816969815331322273, guid: 8d15c98a7ed32a3449f4464fbf71ebf8,
+        type: 3}
+      propertyPath: m_Layer
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 6816969815331322754, guid: 8d15c98a7ed32a3449f4464fbf71ebf8,
         type: 3}

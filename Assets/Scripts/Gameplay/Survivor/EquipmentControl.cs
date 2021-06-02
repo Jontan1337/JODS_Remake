@@ -3,7 +3,7 @@ using Mirror;
 
 public class EquipmentControl : NetworkBehaviour
 {
-    private Equipment equipment;
+    private PlayerEquipment equipment;
 
     public override void OnStopServer()
     {
@@ -36,7 +36,7 @@ public class EquipmentControl : NetworkBehaviour
     [Command]
     private void Cmd_SetEquipment(GameObject item)
     {
-        equipment = item.GetComponent<Equipment>();
+        equipment = item.GetComponent<PlayerEquipment>();
         equipment.onServerEquippedItemChange += Svr_ChangeControlBind;
     }
 

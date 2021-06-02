@@ -1183,8 +1183,14 @@ MonoBehaviour:
     position: {x: 0, y: 1.9, z: 0}
     activeType: 2
     children:
-    - listItemName: Camera
+    - listItemName: WorldCamera
       prefab: {fileID: 6222407410909346251, guid: beeedc4be235b6744aca80b4be429040,
+        type: 3}
+      position: {x: 0, y: 0.1, z: 0}
+      activeType: 0
+      children: []
+    - listItemName: FPCamera
+      prefab: {fileID: 6222407410909346251, guid: bb62f975117e6a14ebf47d5560b4d30e,
         type: 3}
       position: {x: 0, y: 0.1, z: 0}
       activeType: 0
@@ -1192,7 +1198,7 @@ MonoBehaviour:
     - listItemName: PlayerHands
       prefab: {fileID: 7469820133590246594, guid: c35b413099755c84488f6bd89608381b,
         type: 3}
-      position: {x: 0.25, y: 0.1, z: 0.7}
+      position: {x: 0.25, y: 0.05, z: 0.7}
       activeType: 2
       children: []
   - listItemName: Equipment

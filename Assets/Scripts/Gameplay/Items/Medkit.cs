@@ -49,7 +49,7 @@ public class Medkit : NetworkBehaviour, IInteractable, IEquippable, IBindable
         Debug.Log($"{interacter} interacted with {gameObject}");
 
         // Equipment should be on a child object of the player.
-        Equipment equipment = interacter.GetComponentInChildren<Equipment>();
+        PlayerEquipment equipment = interacter.GetComponentInChildren<PlayerEquipment>();
 
         if (equipment != null)
         {

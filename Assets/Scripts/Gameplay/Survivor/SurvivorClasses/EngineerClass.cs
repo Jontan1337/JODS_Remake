@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EngineerClass : SurvivorClass
 {
-    Equipment equipment;
+    PlayerEquipment equipment;
 
     public override void ActiveAbility()
     {

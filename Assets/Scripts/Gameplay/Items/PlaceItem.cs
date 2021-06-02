@@ -107,7 +107,7 @@ public class PlaceItem : NetworkBehaviour, IEquippable, IBindable, IInteractable
 		if (!IsInteractable) return;
 
 		// Equipment should be on a child object of the player.
-		Equipment equipment = interacter.GetComponentInChildren<Equipment>();
+		PlayerEquipment equipment = interacter.GetComponentInChildren<PlayerEquipment>();
 
 		if (equipment != null)
 		{

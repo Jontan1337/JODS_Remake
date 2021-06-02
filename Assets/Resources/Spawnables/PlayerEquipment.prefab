@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8190740497831448999}
   - component: {fileID: 4830001897981205643}
   m_Layer: 13
-  m_Name: Equipment
+  m_Name: PlayerEquipment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -59,12 +59,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 5545151553288273671}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1869d8be4de7c2c42924329f28bd45ed, type: 3}
+  m_Script: {fileID: 11500000, guid: dd04c8a572e12ec4e9a15ca44c82bf40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  equipmentSlotsTypes: 00000000000000000100000002000000
+  equipmentSlotsTypes: 
   playerHands: {fileID: 0}
   equippedItem: {fileID: 0}
   selectedEquipmentSlot: {fileID: 0}
@@ -89,7 +89,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  parent: {fileID: 0}
+  parentData: {fileID: 0}
   syncParent: 1
   positionData: {x: 0, y: 0, z: 0}
   syncPosition: 1

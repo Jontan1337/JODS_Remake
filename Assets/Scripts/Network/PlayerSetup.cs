@@ -233,8 +233,8 @@ public class PlayerSetup : NetworkBehaviour
     {
         GameObject GOItem = Instantiate(item.prefab);
         NetworkServer.Spawn(GOItem, connectionToClient);
-        GOItem.transform.SetParent(parent);
         GOItem.transform.localPosition = item.position;
+        GOItem.transform.SetParent(parent, false);
         dynamicallySpawnedItems.Add(GOItem);
         return GOItem;
     }

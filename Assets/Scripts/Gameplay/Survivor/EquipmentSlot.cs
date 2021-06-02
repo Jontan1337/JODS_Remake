@@ -35,7 +35,7 @@ public class EquipmentSlot : NetworkBehaviour
     [SerializeField]
     private Image slotImage;
 
-    private Equipment playerEquipment;
+    private PlayerEquipment playerEquipment;
 
     public GameObject UISlot
     {
@@ -95,7 +95,7 @@ public class EquipmentSlot : NetworkBehaviour
     }
     public override void OnStartAuthority()
     {
-        playerEquipment = GetComponentInParent<Equipment>();
+        playerEquipment = GetComponentInParent<PlayerEquipment>();
     }
 
     // ---- ON STOP ----

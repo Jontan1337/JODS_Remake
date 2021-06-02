@@ -48,10 +48,29 @@ public class NetworkTest : NetworkManager
         }
     }
 
+    public GameObject dummyPlayer;
     // This is only called on the server.
     public override void OnServerDisconnect(NetworkConnection conn)
     {
-        base.OnServerDisconnect(conn);
+        HashSet<NetworkIdentity> copyOfClientOwnedObject = conn.clientOwnedObjects;
+
+        //GameObject dummy = Instantiate(dummyPlayer);
+        //NetworkServer.ReplacePlayerForConnection(conn, dummy);
+
+        conn.identity.gameObject.GetComponentInChildren<PlayerEquipment>().Svr_DropAllItems();
+
+        //foreach (NetworkIdentity identity in copyOfClientOwnedObject)
+        //{
+        //    if (identity != conn.identity)
+        //    {
+        //        //identity.RemoveClientAuthority();
+        //        if (identity.TryGetComponent(out PlayerEquipment equipment))
+        //        {
+        //            equipment.Svr_DropAllItems();
+        //        }
+        //    }
+        //}
         playerIds.Remove(conn);
+        base.OnServerDisconnect(conn);
     }
 }

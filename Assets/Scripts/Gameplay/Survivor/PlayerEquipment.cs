@@ -5,7 +5,7 @@ using Mirror;
 using System;
 using UnityEngine.InputSystem;
 
-public class Equipment : NetworkBehaviour, IInitializable<PlayerSetup>
+public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
 {
     [Tooltip("A list of the equipment types, the player should have.")]
     public List<EquipmentType> equipmentSlotsTypes = new List<EquipmentType>();
@@ -125,7 +125,6 @@ public class Equipment : NetworkBehaviour, IInitializable<PlayerSetup>
             // OnStartServer gets called before Start when equipment object
             // is not set as child to player yet.
             initializer.onSpawnItem += GetReferences;
-            initializer.onDestroyPlayer += Cmd_DropAllItems;
         }
         if (isServer)
         {
@@ -467,8 +466,8 @@ public class Equipment : NetworkBehaviour, IInitializable<PlayerSetup>
             }
         }
     }
-    [Command]
-    private void Cmd_DropAllItems()
+    [Server]
+    public void Svr_DropAllItems()
     {
         print("Svr_DropAllItems");
         foreach (EquipmentSlot item in equipmentSlots)
