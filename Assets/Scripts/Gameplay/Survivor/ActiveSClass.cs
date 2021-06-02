@@ -5,102 +5,132 @@ using UnityEngine;
 
 public class ActiveSClass : NetworkBehaviour, IDamagable
 {
-    private SurvivorClass sClass;
-    private SurvivorController sController;
-    private Object classScript;
+	public SurvivorClass sClass;
+	private SurvivorController sController;
+	private Object classScript;
 
-    [SerializeField] private SurvivorSO survivorSO;
-    [SerializeField] private SkinnedMeshRenderer survivorRenderer;
-    [Space]
-    [Header("Stats")]
-    [SerializeField] private int health = 100;
-    [SerializeField] private int armor = 0;
-    [SerializeField] private float abilityCooldown = 0;
-    [SerializeField] private float abilityCooldownCount = 0;
-    [SerializeField] private float movementSpeed = 0;
+	[SerializeField] private SurvivorSO survivorSO;
+	[SerializeField] private SkinnedMeshRenderer survivorRenderer;
+	[Space]
+	[Header("Stats")]
+	[SerializeField] private int health = 100;
+	[SerializeField] private int armor = 0;
+	[SerializeField] private float abilityCooldown = 0;
+	[SerializeField] private float abilityCooldownCount = 0;
+	[SerializeField] private float movementSpeed = 0;
 
-    [Space]
-    [Header("Weapon Stats")]
-    [SerializeField] private float reloadSpeed = 0;
-    [SerializeField] private float accuracy = 0;
-    [SerializeField] private float ammoCapacity = 0;
+	[Space]
+	[Header("Weapon Stats")]
+	[SerializeField] private float reloadSpeed = 0;
+	[SerializeField] private float accuracy = 0;
+	[SerializeField] private float ammoCapacity = 0;
 
-    private bool abilityIsReady = true;
+	private bool abilityIsReady = true;
+	private bool isDead;
 
-    //public GameObject starterWeapon;
+	//public GameObject starterWeapon;
 
-    private void Start()
-    {
+	private void Start()
+	{
 		SetSurvivorClass(survivorSO);
-		JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => Ability();
+		JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => Cmd_Ability();
 
-    }
+	}
 
-    void Ability()
-    {
-        
-        if (abilityIsReady)
-        {
-            sClass.ActiveAbility();
-            if (sClass.abilityActivatedSuccesfully)
-            {
-                StartCoroutine(AbilityCooldown());
-                sClass.abilityActivatedSuccesfully = false;
-            }
-        }
-    }
+	[Command]
+	void Cmd_Ability()
+	{
+		if (abilityIsReady)
+		{
+			if (!sClass.abilityIsToggled)
+			{
+				print(sClass.abilityActivatedSuccesfully);
+				sClass.ActiveAbility();
+				if (sClass.abilityActivatedSuccesfully)
+				{
+					StartCoroutine(AbilityCooldown());
+					sClass.abilityActivatedSuccesfully = false;
+				}
+			}
+			else
+			{
+				sClass.ActiveAbility();
+				StartCoroutine(ToggleAbility());
+			}
+		}
+	}
 
-    IEnumerator AbilityCooldown()
-    {
-        abilityIsReady = false;
-        while (abilityCooldownCount > 0)
-        {
-            abilityCooldownCount -= 1;
-            yield return new WaitForSeconds(1);
-        }
-        abilityCooldownCount = abilityCooldown;
-        abilityIsReady = true;
-    }
+	IEnumerator ToggleAbility()
+	{
+		print(sClass.abilityActivatedSuccesfully);
+		while (!sClass.abilityActivatedSuccesfully)
+		{
+			yield return null;
+		}
+		StartCoroutine(AbilityCooldown());
+	}
 
-    public void SetSurvivorClass(SurvivorSO survivorSO)
-    {
-        print(survivorSO);
-        this.survivorSO = survivorSO;
-        sClass = SelectedClass();
-        if (survivorSO.abilityObject)
-        {
-            sClass.abilityObject = survivorSO.abilityObject;
-        }
-        armor = survivorSO.armor;
-        health = survivorSO.health;
-        accuracy = survivorSO.accuracy;
-        reloadSpeed = survivorSO.reloadSpeed;
-        ammoCapacity = survivorSO.ammoCapacity;
-        movementSpeed = survivorSO.movementSpeed;
-        abilityCooldown = survivorSO.abilityCooldown;
-        abilityCooldownCount = abilityCooldown;
+	IEnumerator AbilityCooldown()
+	{
+		abilityIsReady = false;
+		while (abilityCooldownCount > 0)
+		{
+			abilityCooldownCount -= 1;
+			yield return new WaitForSeconds(1);
+		}
+		abilityCooldownCount = abilityCooldown;
+		abilityIsReady = true;
+	}
 
-        sController = GetComponent<SurvivorController>();
-        sController.speed *= movementSpeed;
-    }
+	public void SetSurvivorClass(SurvivorSO survivorSO)
+	{
+		print(survivorSO);
+		this.survivorSO = survivorSO;
+		sClass = SelectedClass();
+		if (survivorSO.abilityObject)
+		{
+			sClass.abilityObject = survivorSO.abilityObject;
+		}
+		armor = survivorSO.armor;
+		health = survivorSO.health;
+		accuracy = survivorSO.accuracy;
+		reloadSpeed = survivorSO.reloadSpeed;
+		ammoCapacity = survivorSO.ammoCapacity;
+		movementSpeed = survivorSO.movementSpeed;
+		abilityCooldown = survivorSO.abilityCooldown;
+		abilityCooldownCount = abilityCooldown;
 
-    SurvivorClass SelectedClass()
-    {
-        System.Type selectedClass = System.Type.GetType(survivorSO.classScript.name + ",Assembly-CSharp");
+		sController = GetComponent<SurvivorController>();
+		sController.speed *= movementSpeed;
+	}
 
-        survivorRenderer.material = survivorSO.survivorMaterial;
-        survivorRenderer.sharedMesh = survivorSO.survivorMesh;
-        return sClass = (SurvivorClass)gameObject.AddComponent(selectedClass);
-    }
-    public Teams Team => Teams.Player;
-    [Server]
-    public void Svr_Damage(int damage, Transform target = null)
-    {
-        if (armor > 0) armor -= damage;
-        else health -= damage;
-    }
+	SurvivorClass SelectedClass()
+	{
+		System.Type selectedClass = System.Type.GetType(survivorSO.classScript.name + ",Assembly-CSharp");
 
-    public int GetHealth() => health;
+		survivorRenderer.material = survivorSO.survivorMaterial;
+		survivorRenderer.sharedMesh = survivorSO.survivorMesh;
+		return sClass = (SurvivorClass)gameObject.AddComponent(selectedClass);
+	}
+	public Teams Team => Teams.Player;
+	[Server]
+	public void Svr_Damage(int damage, Transform target = null)
+	{
+		if (armor > 0) armor -= damage;
+		else health -= damage;
+		if (health <= 0)
+		{
+			isDead = true;
+			Die();
+		}
+	}
 
-    public bool IsDead() => false;
+	void Die()
+	{
+		NetworkServer.Destroy(gameObject);
+	}
+
+	public int GetHealth() => health;
+
+	public bool IsDead() => isDead;
 }

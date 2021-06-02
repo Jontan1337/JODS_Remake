@@ -1,21 +1,28 @@
 ﻿using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
 public class EngineerClass : SurvivorClass
 {
-    Equipment equipment;
+
+    private void Start()
+	{
+        abilityIsToggled = true;
+	}
 
     public override void ActiveAbility()
     {
-        if (true)
-        {
+        EquipTurret();
+    }
 
-        }
-        //place.Place(abilityObject, gameObject);
-
-        //equipment.Svr_Equip(abilityObject, EquipmentType.Special);
-        abilityActivatedSuccesfully = true;
+    private void EquipTurret()
+	{
+        GameObject turret = Instantiate(abilityObject);
+        NetworkServer.Spawn(turret);
+        GetComponentInChildren<Equipment>()?.Svr_Equip(turret, EquipmentType.None);
+        turret.GetComponent<PlaceItem>().Equipped();
     }
 
 }

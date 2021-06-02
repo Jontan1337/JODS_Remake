@@ -19,7 +19,7 @@ public class PlaceItem : NetworkBehaviour, IEquippable, IBindable, IInteractable
 
 	private LookController look;
 	private AuthorityController authController;
-	private bool isInteractable = true;
+	public bool isInteractable = true;
 	public bool placeholderActive = true;
 
 
@@ -38,7 +38,7 @@ public class PlaceItem : NetworkBehaviour, IEquippable, IBindable, IInteractable
 	}
 
 	// Called when item is picked up and ready to be placed
-	private void Equipped()
+	public void Equipped()
 	{
 		placeHolder.SetActive(true);
 		look = GetComponentInParent<LookController>();
