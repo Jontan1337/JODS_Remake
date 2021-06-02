@@ -26,6 +26,7 @@ public class SurvivorController : NetworkBehaviour
 
     private void Start()
     {
+        cc = GetComponent<CharacterController>();
     }
 
     #region NetworkBehaviour Callbacks
@@ -35,7 +36,6 @@ public class SurvivorController : NetworkBehaviour
         JODSInput.Controls.Survivor.Jump.performed += Jump;
         JODSInput.Controls.Survivor.Sprint.performed += OnSprintPerformed;
         JODSInput.Controls.Survivor.Sprint.canceled += OnSprintCanceled;
-        cc = GetComponent<CharacterController>();
     }
     public override void OnStopAuthority()
     {

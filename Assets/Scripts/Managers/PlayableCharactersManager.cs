@@ -9,6 +9,10 @@ public class PlayableCharactersManager : MonoBehaviour
     public static PlayableCharactersManager instance;
     private void Awake()
     {
+        if (instance)
+        {
+            Destroy(gameObject);
+        }
         instance = this;
     }
 

@@ -31,7 +31,7 @@ public class SurvivorSelection : MonoBehaviour
     {
         int value = MasterSelection.instance.GetMaster;
 
-        Debug.Log("Loading selection with index " + value);
+        //Debug.Log("Loading selection with index " + value);
 
         bool selectionLoaded = false;
         foreach (var survivor in survivors)

@@ -78,7 +78,6 @@ GameObject:
   - component: {fileID: 2413561827737693198}
   - component: {fileID: 6777083496315181739}
   - component: {fileID: 7094402608037262178}
-  - component: {fileID: 4150680331209168573}
   - component: {fileID: 3760920419664618721}
   m_Layer: 0
   m_Name: LobbyPlayer
@@ -136,10 +135,9 @@ MonoBehaviour:
   isMaster: 0
   wantsToBeMaster: 0
   isHost: 0
-  playerName: 
   gameOn: 0
   setupInGameScene: 0
-  survivorSO: {fileID: 0}
+  survivorSO: {fileID: 11400000, guid: 01e3a2fd5de2ca54093550f70bd3b953, type: 2}
   hasSelectedACharacter: 0
   playerColor: {r: 1, g: 0, b: 0, a: 1}
   playerID: 0
@@ -181,25 +179,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
---- !u!114 &4150680331209168573
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 940809259388660248}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 734b48bea0b204338958ee3d885e11f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  clientAuthority: 0
-  localPositionSensitivity: 0.01
-  localRotationSensitivity: 0.01
-  localScaleSensitivity: 0.01
-  target: {fileID: 7995327613675098686}
 --- !u!114 &3760920419664618721
 MonoBehaviour:
   m_ObjectHideFlags: 0

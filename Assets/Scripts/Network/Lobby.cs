@@ -25,9 +25,6 @@ public class Lobby : NetworkManager
     public GameObject lobbyPlayer;
     public GameObject GOLobbySync;
     public GameObject listMatch;
-    public GameObject survivorPrefab;
-    public GameObject masterPrefab;
-    public GameObject lobbyCharacters;
 
     [Header("Room Data")]
     public List<LobbyPlayer> roomPlayers = new List<LobbyPlayer>();
@@ -43,6 +40,7 @@ public class Lobby : NetworkManager
     public static Lobby Instance;
     #endregion
 
+    #region Match Making
     private void OnEnable()
     {
         if (isInitialized) return;
@@ -98,12 +96,12 @@ public class Lobby : NetworkManager
 
         EnterLobby();
     }
-
+    #endregion
     private void EnterLobby()
     {
         MenuCamera.instance.ChangePosition("Lobby");
     }
-
+       
     public override void OnServerConnect(NetworkConnection conn)
     {
         // Is the current active scene the same as the gameplay scene.
@@ -134,7 +132,7 @@ public class Lobby : NetworkManager
         if (SceneManager.GetActiveScene().path == gameplayScene) return;
 
         base.OnServerAddPlayer(conn);
-        print("OnServerAddPlayer");
+
         GameObject newLobbyPlayerInstance = conn.identity.gameObject;
 
         roomPlayers.Add(newLobbyPlayerInstance.GetComponent<LobbyPlayer>());
@@ -159,19 +157,12 @@ public class Lobby : NetworkManager
         base.OnServerDisconnect(conn);
     }
 
-    public override void OnServerReady(NetworkConnection conn)
+    public override void OnServerSceneChanged(string sceneName)
     {
-        base.OnServerReady(conn);
-
-        // If server is in gameplay scene
-        // then spawn a player spawner for each player.
-        if (SceneManager.GetActiveScene().path != gameplayScene) return;
-
-        GameObject oldPlayerObject = conn.identity.gameObject;
-        var gamePlayerInstance = Instantiate(playerSpawner);
-        if (NetworkServer.ReplacePlayerForConnection(conn, gamePlayerInstance))
+        if (SceneManager.GetActiveScene().path == gameplayScene)
         {
-            NetworkServer.Destroy(oldPlayerObject);
+            GameObject playerSpawnerInstance = Instantiate(playerSpawner);
+            NetworkServer.Spawn(playerSpawnerInstance);
         }
     }
 
@@ -277,4 +268,27 @@ public class Lobby : NetworkManager
     //    quickJoin = true;
     //    MatchList();
     //}
+
+    #region New
+
+    public static event Action<NetworkConnection, string, bool> OnServerReadied;
+
+    public override void OnServerReady(NetworkConnection conn)
+    {
+        base.OnServerReady(conn);
+
+        LobbyPlayer player = null;
+
+        if (conn.identity)
+        {
+            if (conn.identity.gameObject.TryGetComponent(out LobbyPlayer _player))
+            {
+                player = _player;
+            }
+        }
+
+        OnServerReadied?.Invoke(conn,player.survivorSO.name,player.isMaster);
+    }
+
+    #endregion
 }

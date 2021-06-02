@@ -47,8 +47,8 @@ public class LobbySync : NetworkBehaviour
         }
         #endregion
 
-        print($"playerID: {playerID}");
-        print($"roomSlots Count: {Lobby.Instance.roomPlayers.Count}");
+        //print($"playerID: {playerID}");
+        //print($"roomSlots Count: {Lobby.Instance.roomPlayers.Count}");
         // If player doesn't have a character already
         // then setup a new character for that player.
         if (playersInLobby[playerID] == null)

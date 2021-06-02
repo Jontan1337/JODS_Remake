@@ -1,5 +1,6 @@
 ﻿using Mirror;
 using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,6 +25,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	[SerializeField]
 	private int health = 200;
 
+	public Action onActivatedSuccesfully;
 
 
 	[Header("References")]
@@ -243,6 +245,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	{
 		StartSearching();
 		StartCoroutine(Duration());
+		StartCoroutine(GetComponentInParent<ActiveSClass>().AbilityCooldown());
 	}
 
 	private void OnDrawGizmos()

@@ -12,12 +12,10 @@ public class JODSInput : MonoBehaviour
     private void OnEnable()
     {
         Controls.Enable();
-        print("Enable");
     }
 
     private void OnDisable()
     {
         Controls.Disable();
-        print("Disable");
     }
 }

@@ -38,7 +38,7 @@ public class PlaceItem : NetworkBehaviour, IEquippable, IBindable, IInteractable
 	}
 
 	// Called when item is picked up and ready to be placed
-	private void Equipped()
+	public void Equipped()
 	{
 		placeHolder.SetActive(true);
 		look = GetComponentInParent<LookController>();
@@ -77,11 +77,12 @@ public class PlaceItem : NetworkBehaviour, IEquippable, IBindable, IInteractable
 	{		
 		if (!placeHolder.GetComponent<ItemPlaceholder>().obstructed)
 		{
+			OnPlaced?.Invoke();
+
 			transform.position = placeHolder.transform.position;
 			transform.rotation = placeHolder.transform.rotation;
 			transform.parent = null;
 			StopCoroutine(PlaceHolderActiveCo);
-			OnPlaced?.Invoke();
 			//TEMP FIX
 			authController.Svr_RemoveAuthority();
 			UnBind();
