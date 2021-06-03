@@ -123,22 +123,6 @@ public class LobbyPlayer : NetworkBehaviour
         lobbyCharacters.Svr_GetChoice(wantsToBeMaster);
     }
 
-    /// <summary>
-    /// Returns true if both gameobjects have the same LobbyPlayer data.
-    /// </summary>
-    /// <param name="player"></param>
-    /// <param name="otherGameObject"></param>
-    [Server]
-    private bool CompareCharacterComponent(GameObject player, GameObject otherGameObject)
-    {
-        // Check if the LobbyPlayer component on the hit object
-        // is the same as the own player's LobbyPlayer component.
-        LobbyPlayer tempPlayer = player.GetComponent<LobbyPlayer>();
-        LobbyPlayer tempOther = otherGameObject.GetComponentInParent<LobbyPlayer>();
-        return tempPlayer == tempOther;
-    }
-
-
     #region ChangeName
 
     

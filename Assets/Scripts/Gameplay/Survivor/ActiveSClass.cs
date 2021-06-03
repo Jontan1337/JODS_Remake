@@ -72,7 +72,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 
 	public void SetSurvivorClass(SurvivorSO survivorSO)
 	{
-        this.survivorSO = survivorSO;
+		this.survivorSO = survivorSO;
 
 		sClass = SelectedClass();
 
@@ -100,8 +100,8 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	SurvivorClass SelectedClass()
 	{
 		GameObject selectedClass = Instantiate(survivorSO.classScript);
+		selectedClass.transform.SetParent(gameObject.transform);
 		NetworkServer.Spawn(selectedClass);
-		selectedClass.transform.parent = gameObject.transform;
 
 		return selectedClass.GetComponent<SurvivorClass>();
 	}

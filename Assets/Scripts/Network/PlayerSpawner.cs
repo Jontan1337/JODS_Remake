@@ -29,32 +29,30 @@ public class PlayerSpawner : NetworkBehaviour
 
         GameObject newPlayerInstance = Instantiate(_isMaster ? masterPrefab : survivorPrefab, transform.position, transform.rotation);
 
-        if (_isMaster)
-        {
-            foreach (MasterSO master in masterSOList)
-            {
-                if (master.name == _class)
-                {
-                    newPlayerInstance.GetComponent<Master>().SetMasterClass(master);
-                    break;
-                }
-            }
-        }
-        else if (!_isMaster)
-        {
-            foreach (SurvivorSO survivor in survivorSOList)
-            {
-                if (survivor.name == _class)
-                {
-                    print("thats a bingo!");
-                    newPlayerInstance.GetComponent<ActiveSClass>().SetSurvivorClass(survivor);
-                    break;
-                }
-            }
-        }
-
         if (NetworkServer.ReplacePlayerForConnection(conn, newPlayerInstance))
         {
+            if (_isMaster)
+            {
+                foreach (MasterSO master in masterSOList)
+                {
+                    if (master.name == _class)
+                    {
+                        newPlayerInstance.GetComponent<Master>().SetMasterClass(master);
+                        break;
+                    }
+                }
+            }
+            else if (!_isMaster)
+            {
+                foreach (SurvivorSO survivor in survivorSOList)
+                {
+                    if (survivor.name == _class)
+                    {
+                        newPlayerInstance.GetComponent<ActiveSClass>().SetSurvivorClass(survivor);
+                        break;
+                    }
+                }
+            }
             NetworkServer.Destroy(oldPlayerInstance);
         }
     }
