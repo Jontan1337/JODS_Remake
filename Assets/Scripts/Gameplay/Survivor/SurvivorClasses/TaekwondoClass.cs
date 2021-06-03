@@ -22,9 +22,9 @@ public class TaekwondoClass : SurvivorClass
 
     private void Start()
     {
-        cController = GetComponent<CharacterController>();
-        sController = GetComponent<SurvivorController>();
-        lController = GetComponent<LookController>();
+        cController = GetComponentInParent<CharacterController>();
+        sController = GetComponentInParent<SurvivorController>();
+        lController = GetComponentInParent<LookController>();
 
     }
     public override void ActiveAbility()

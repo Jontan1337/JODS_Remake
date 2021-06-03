@@ -18,7 +18,7 @@ public class SurvivorSO : ScriptableObject
     public float ammoCapacity;
 
     [Header("Class specific")]
-    public Object classScript;
+    public GameObject classScript;
     public GameObject starterWeapon;
     public GameObject abilityObject;
     public Mesh survivorMesh;

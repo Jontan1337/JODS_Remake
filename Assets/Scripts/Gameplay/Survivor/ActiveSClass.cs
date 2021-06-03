@@ -87,6 +87,9 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 		ammoCapacity = survivorSO.ammoCapacity;
 		movementSpeed = survivorSO.movementSpeed;
 		abilityCooldown = survivorSO.abilityCooldown;
+		survivorRenderer.material = survivorSO.survivorMaterial;
+		survivorRenderer.sharedMesh = survivorSO.survivorMesh;
+
 		abilityCooldownCount = abilityCooldown;
 
 		sController = GetComponent<SurvivorController>();
@@ -95,11 +98,15 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 
 	SurvivorClass SelectedClass()
 	{
-		System.Type selectedClass = System.Type.GetType(survivorSO.classScript.name + ",Assembly-CSharp");
 
-		survivorRenderer.material = survivorSO.survivorMaterial;
-		survivorRenderer.sharedMesh = survivorSO.survivorMesh;
-		return sClass = (SurvivorClass)gameObject.AddComponent(selectedClass);
+
+		GameObject selectedClass = Instantiate(survivorSO.classScript);
+		NetworkServer.Spawn(selectedClass);
+		selectedClass.transform.parent = gameObject.transform;
+
+
+		return selectedClass.GetComponent<SurvivorClass>();
+
 	}
 	public Teams Team => Teams.Player;
 	[Server]
