@@ -7,7 +7,6 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 {
 	private SurvivorClass sClass;
 	private SurvivorController sController;
-	private Object classScript;
 
 	[SerializeField] private SurvivorSO survivorSO;
 	[SerializeField] private SkinnedMeshRenderer survivorRenderer;
@@ -28,11 +27,11 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	private bool abilityIsReady = true;
 	private bool isDead;
 
-	//public GameObject starterWeapon;
-
+	public bool test;
 	private void Start()
 	{
-		SetSurvivorClass(survivorSO);
+		if (test) SetSurvivorClass(survivorSO);
+
 		JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => Cmd_Ability();
 
 	}
@@ -48,7 +47,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 				if (sClass.abilityActivatedSuccesfully)
 				{
 					StartCoroutine(AbilityCooldown());
-					sClass.abilityActivatedSuccesfully = false;
+                    sClass.abilityActivatedSuccesfully = false;
 				}
 			}
 			else
@@ -73,13 +72,15 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 
 	public void SetSurvivorClass(SurvivorSO survivorSO)
 	{
-		print(survivorSO);
-		this.survivorSO = survivorSO;
+        this.survivorSO = survivorSO;
+
 		sClass = SelectedClass();
+
 		if (survivorSO.abilityObject)
 		{
 			sClass.abilityObject = survivorSO.abilityObject;
 		}
+
 		armor = survivorSO.armor;
 		health = survivorSO.health;
 		accuracy = survivorSO.accuracy;
@@ -98,15 +99,11 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 
 	SurvivorClass SelectedClass()
 	{
-
-
 		GameObject selectedClass = Instantiate(survivorSO.classScript);
 		NetworkServer.Spawn(selectedClass);
 		selectedClass.transform.parent = gameObject.transform;
 
-
 		return selectedClass.GetComponent<SurvivorClass>();
-
 	}
 	public Teams Team => Teams.Player;
 	[Server]

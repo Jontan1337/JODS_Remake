@@ -137,11 +137,11 @@ public class LobbyPlayer : NetworkBehaviour
         LobbyPlayer tempOther = otherGameObject.GetComponentInParent<LobbyPlayer>();
         return tempPlayer == tempOther;
     }
-    [Command]
+
 
     #region ChangeName
 
-
+    
     public void ChangeName(string old,string newName)
     {
         if (!isServer)
@@ -150,6 +150,7 @@ public class LobbyPlayer : NetworkBehaviour
         }
         gameObject.name = newName;
     }
+
     [Command]
     public void Cmd_ChangeName(string newName)
     {
