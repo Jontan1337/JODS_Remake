@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ActiveSClass : NetworkBehaviour, IDamagable
 {
-	private SurvivorClass sClass;
+	[SyncVar(hook = nameof(SetSurvivorClassSettings))] public SurvivorClass sClass;
 	private SurvivorController sController;
 
 	[SerializeField] private SurvivorSO survivorSO;
@@ -70,15 +70,36 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 		abilityIsReady = true;
 	}
 
+	[ClientRpc]
+	public void Rpc_SetSurvivorClass(string _class)
+    {
+		List<SurvivorSO> survivorSOList = PlayableCharactersManager.instance.survivorSOList;
+
+	    foreach (SurvivorSO survivor in survivorSOList)
+        {
+            if (survivor.name == _class)
+            {
+				SetSurvivorClass(survivor);
+                break;
+            }
+        }
+	}
+
 	public void SetSurvivorClass(SurvivorSO survivorSO)
 	{
 		this.survivorSO = survivorSO;
 
-		sClass = SelectedClass();
+        if (hasAuthority)
+        {
+			Cmd_SpawnClass();
+        }
+	}
 
+	private void SetSurvivorClassSettings(SurvivorClass oldValue, SurvivorClass newValue)
+    {
 		if (survivorSO.abilityObject)
 		{
-			sClass.abilityObject = survivorSO.abilityObject;
+			newValue.abilityObject = survivorSO.abilityObject;
 		}
 
 		armor = survivorSO.armor;
@@ -97,14 +118,17 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 		sController.speed *= movementSpeed;
 	}
 
-	SurvivorClass SelectedClass()
+	[Command]
+	private void Cmd_SpawnClass()
 	{
 		GameObject selectedClass = Instantiate(survivorSO.classScript);
 		selectedClass.transform.SetParent(gameObject.transform);
+
 		NetworkServer.Spawn(selectedClass);
 
-		return selectedClass.GetComponent<SurvivorClass>();
+		sClass = selectedClass.GetComponent<SurvivorClass>();
 	}
+
 	public Teams Team => Teams.Player;
 	[Server]
 	public void Svr_Damage(int damage, Transform target = null)

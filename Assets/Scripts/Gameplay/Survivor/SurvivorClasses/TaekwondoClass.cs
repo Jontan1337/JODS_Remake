@@ -22,11 +22,19 @@ public class TaekwondoClass : SurvivorClass
 
     private void Start()
     {
-        cController = GetComponentInParent<CharacterController>();
-        sController = GetComponentInParent<SurvivorController>();
-        lController = GetComponentInParent<LookController>();
 
     }
+
+    public override void OnStartClient()
+    {
+        if (hasAuthority || isServer)
+        {
+            cController = GetComponentInParent<CharacterController>();
+            sController = GetComponentInParent<SurvivorController>();
+            lController = GetComponentInParent<LookController>();
+        }
+    }
+
     public override void ActiveAbility()
     {
         if (CanFlyKick())
@@ -73,6 +81,8 @@ public class TaekwondoClass : SurvivorClass
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
+        if (!isServer) return;
+
         if (hit.gameObject.layer == 9 && flying)
         {
             print(hit.gameObject.name);
