@@ -6,15 +6,44 @@ using System;
 
 public abstract class SurvivorClass : NetworkBehaviour
 {
-    public Action OnAbilityActivated;
     public bool abilityActivatedSuccesfully = false;
     public bool abilityIsToggled = false;
 
     public GameObject abilityObject;
-    public virtual void ActiveAbility()
+
+
+    public override bool OnSerialize(NetworkWriter writer, bool initialState)
     {
-        // Override in class script.
+        if (!initialState)
+        {
+            writer.WriteBoolean(abilityActivatedSuccesfully);
+            writer.WriteBoolean(abilityIsToggled);
+            return true;
+        }
+        else
+        {
+            writer.WriteBoolean(abilityActivatedSuccesfully);
+            writer.WriteBoolean(abilityIsToggled);
+            writer.WriteGameObject(abilityObject);
+            return true;
+        }
     }
+    public override void OnDeserialize(NetworkReader reader, bool initialState)
+    {
+        if (!initialState)
+        {
+            abilityActivatedSuccesfully = reader.ReadBoolean();
+            abilityIsToggled = reader.ReadBoolean();
+        }
+        else
+        {
+            abilityActivatedSuccesfully = reader.ReadBoolean();
+            abilityIsToggled = reader.ReadBoolean();
+            abilityObject = reader.ReadGameObject();
+        }
+    }
+
+    public abstract void ActiveAbility();
 }
 
 

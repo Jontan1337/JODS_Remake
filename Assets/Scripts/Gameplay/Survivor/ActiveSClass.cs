@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class ActiveSClass : NetworkBehaviour, IDamagable
 {
-	private SurvivorClass sClass;
+	//[SyncVar(hook = nameof(SetSurvivorClassSettings))] public SurvivorClass sClass;
+	public SurvivorClass sClass;
 	private SurvivorController sController;
-	private Object classScript;
 
 	[SerializeField] private SurvivorSO survivorSO;
 	[SerializeField] private SkinnedMeshRenderer survivorRenderer;
@@ -28,11 +28,11 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	private bool abilityIsReady = true;
 	private bool isDead;
 
-	//public GameObject starterWeapon;
-
+	public bool test;
 	private void Start()
 	{
-		SetSurvivorClass(survivorSO);
+		if (test) SetSurvivorClass(survivorSO);
+
 		JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => Cmd_Ability();
 
 	}
@@ -48,7 +48,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 				if (sClass.abilityActivatedSuccesfully)
 				{
 					StartCoroutine(AbilityCooldown());
-					sClass.abilityActivatedSuccesfully = false;
+                    sClass.abilityActivatedSuccesfully = false;
 				}
 			}
 			else
@@ -71,15 +71,39 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 		abilityIsReady = true;
 	}
 
+	[ClientRpc]
+	public void Rpc_SetSurvivorClass(string _class)
+    {
+		List<SurvivorSO> survivorSOList = PlayableCharactersManager.instance.survivorSOList;
+		print("Rpc_SetSurvivorClass");
+	    foreach (SurvivorSO survivor in survivorSOList)
+        {
+            if (survivor.name == _class)
+            {
+				print(survivor.name);
+				SetSurvivorClass(survivor);
+                break;
+            }
+        }
+	}
+
 	public void SetSurvivorClass(SurvivorSO survivorSO)
 	{
-		print(survivorSO);
 		this.survivorSO = survivorSO;
-		sClass = SelectedClass();
+
+        if (hasAuthority)
+        {
+			Cmd_SpawnClass();
+        }
+	}
+
+	private void SetSurvivorClassSettings(SurvivorClass oldValue, SurvivorClass newValue)
+    {
 		if (survivorSO.abilityObject)
 		{
-			sClass.abilityObject = survivorSO.abilityObject;
+			newValue.abilityObject = survivorSO.abilityObject;
 		}
+
 		armor = survivorSO.armor;
 		health = survivorSO.health;
 		accuracy = survivorSO.accuracy;
@@ -87,20 +111,31 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 		ammoCapacity = survivorSO.ammoCapacity;
 		movementSpeed = survivorSO.movementSpeed;
 		abilityCooldown = survivorSO.abilityCooldown;
+		survivorRenderer.material = survivorSO.survivorMaterial;
+		survivorRenderer.sharedMesh = survivorSO.survivorMesh;
+
 		abilityCooldownCount = abilityCooldown;
 
 		sController = GetComponent<SurvivorController>();
 		sController.speed *= movementSpeed;
 	}
 
-	SurvivorClass SelectedClass()
+	[Command]
+	private void Cmd_SpawnClass()
 	{
-		System.Type selectedClass = System.Type.GetType(survivorSO.classScript.name + ",Assembly-CSharp");
+		GameObject selectedClass = Instantiate(survivorSO.classScript);
+		selectedClass.transform.SetParent(gameObject.transform);
 
-		survivorRenderer.material = survivorSO.survivorMaterial;
-		survivorRenderer.sharedMesh = survivorSO.survivorMesh;
-		return sClass = (SurvivorClass)gameObject.AddComponent(selectedClass);
+		NetworkServer.Spawn(selectedClass);
+
+		Rpc_SpawnClass(selectedClass);
 	}
+	[ClientRpc]
+	private void Rpc_SpawnClass(GameObject selectedClass)
+    {
+		sClass = selectedClass.GetComponent<SurvivorClass>();
+	}
+
 	public Teams Team => Teams.Player;
 	[Server]
 	public void Svr_Damage(int damage, Transform target = null)

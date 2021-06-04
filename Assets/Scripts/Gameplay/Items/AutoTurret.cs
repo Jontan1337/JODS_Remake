@@ -8,14 +8,13 @@ using UnityEngine;
 
 public class AutoTurret : NetworkBehaviour, IDamagable
 {
-
 	[Header("Stats")]
 	[SerializeField]
 	private float range = 30;
 	[SerializeField]
-	private float fireRate = 240f;
+	private float fireRate = 50f;
 	[SerializeField]
-	private float rotateSpeed = 1f;
+	private float rotateSpeed = 0.2f;
 	[SerializeField]
 	private float searchInterval = 1f;
 	[SerializeField]
@@ -24,8 +23,6 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	private int duration = 20;
 	[SerializeField]
 	private int health = 200;
-
-	public Action onActivatedSuccesfully;
 
 
 	[Header("References")]
@@ -37,6 +34,10 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	private Transform pivot = null;
 	[SerializeField]
 	private Transform barrel = null;
+	[SerializeField]
+	private ParticleSystem muzzleFlash = null;
+	[SerializeField]
+	private ParticleSystem bulletShell = null;
 
 	[Space]
 	[SerializeField]
@@ -115,6 +116,21 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		Die();
 	}
 
+	bool barrelAnimation = false;
+	IEnumerator BarrelCo;
+	IEnumerator BarrelAnimation()
+    {
+		barrelAnimation = true;
+		Vector3 ogPosition = new Vector3(0, barrel.transform.localPosition.y, 0.3f);
+		barrel.transform.localPosition = new Vector3(0, barrel.transform.localPosition.y, 0.2f);
+		while (barrel.transform.localPosition != ogPosition)
+        {
+			yield return new WaitForSeconds(0.01f);
+			barrel.transform.localPosition = new Vector3(0, barrel.transform.localPosition.y, barrel.transform.localPosition.z + 0.005f);
+
+		}
+    }
+
 	#endregion
 
 	#region Methods
@@ -123,6 +139,15 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		Ray(out Transform didHit, out bool lineOfSightCheck);
 
 		Debug.DrawRay(barrel.position, barrel.forward * 10, Color.red, 0.1f);
+
+		BarrelCo = BarrelAnimation();
+		if (barrelAnimation)
+        {
+			StopCoroutine(BarrelCo);
+        }
+	 	StartCoroutine(BarrelAnimation());
+		muzzleFlash.Emit(50);
+		bulletShell.Emit(1);
 
 		didHit.GetComponent<IDamagable>()?.Svr_Damage(damage, transform);
 		if (target.GetComponent<IDamagable>().IsDead())
@@ -237,8 +262,10 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	{
 		StopAllCoroutines();
 
+		ObjectPool.Instance.SpawnFromPool("Turret Smoke", transform.position, Quaternion.identity);
+
 		// TO DO - WHATEVER HAPPENS WHEN TURRET DIES
-		Destroy(gameObject);
+		Destroy(gameObject, 0.2f);
 	}
 
 	public void OnPlaced()

@@ -42,7 +42,6 @@ public class LobbyCharacters : NetworkBehaviour
     [ClientRpc]
     public void Rpc_ChangeCharacter(string survivorName)
     {
-        print("Rpc_ChangeCharacter :" + survivorName);
         foreach(SurvivorSO survivor in survivorSOList)
         {
             if (survivor.name == survivorName)

@@ -1183,7 +1183,6 @@ GameObject:
   - component: {fileID: 3352125035130834597}
   - component: {fileID: 3352125035130834596}
   - component: {fileID: -8647418929103966898}
-  - component: {fileID: 2021729853}
   m_Layer: 0
   m_Name: NetworkTest
   m_TagString: Untagged
@@ -1243,6 +1242,7 @@ MonoBehaviour:
   - {fileID: 7469820133590246594, guid: c35b413099755c84488f6bd89608381b, type: 3}
   hostOnly: 0
   canvas: {fileID: 463778348}
+  dummyPlayer: {fileID: 0}
 --- !u!114 &-8647418929103966898
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1261,15 +1261,3 @@ MonoBehaviour:
   serverMaxReceivesPerTick: 10000
   clientMaxMessageSize: 16384
   clientMaxReceivesPerTick: 1000
---- !u!114 &2021729853
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3352125035130834599}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f03706cb8bdb6a34e9cd8ab5faaefb58, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

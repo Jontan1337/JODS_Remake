@@ -2,36 +2,79 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
 public class TaekwondoClass : SurvivorClass
 {
-    Coroutine flyingKick;
     CharacterController cController;
     SurvivorController sController;
     LookController lController;
 
-    public float flyingKickStart = 0;
-    public float flyingKickEnd = 100;
-    public float flightSpeed = 1.5f;
-    public int flyingKickDamage = 100;
-    public int flyingDistance = 100;
-    bool flying = false;
+    [SyncVar] public float flyingKickStart = 0;
+    [SyncVar] public float flyingKickEnd = 100;
+    [SyncVar] public float flyingKickSpeed = 1.5f;
+    [SyncVar] public int flyingKickDamage = 100;
+    [SyncVar] public int flyingKickDistance = 100;
+    [SyncVar] bool flyingKick = false;
 
     public List<Collider> unitsHit = new List<Collider>();
 
+    #region Serialization
 
-    private void Start()
+    public override bool OnSerialize(NetworkWriter writer, bool initialState)
     {
-        cController = GetComponent<CharacterController>();
-        sController = GetComponent<SurvivorController>();
-        lController = GetComponent<LookController>();
+        if (!initialState)
+        {
+            writer.WriteBoolean(flyingKick);
+            return true;
+        }
+        else
+        {
+            writer.WriteSingle(flyingKickStart);
+            writer.WriteSingle(flyingKickEnd);
+            writer.WriteSingle(flyingKickSpeed);
 
+            writer.WriteInt32(flyingKickDamage);
+            writer.WriteInt32(flyingKickDistance);
+
+            writer.WriteBoolean(flyingKick);
+            return true;
+        }
     }
+    public override void OnDeserialize(NetworkReader reader, bool initialState)
+    {
+        if (!initialState)
+        {
+            flyingKick = reader.ReadBoolean();
+        }
+        else
+        {
+            flyingKickStart = reader.ReadSingle();
+            flyingKickEnd = reader.ReadSingle();
+            flyingKickSpeed = reader.ReadSingle();
+
+            flyingKickDamage = reader.ReadInt32();
+            flyingKickDistance = reader.ReadInt32();
+
+            flyingKick = reader.ReadBoolean();
+        }
+    }
+    #endregion
+    public override void OnStartClient()
+    {
+        if (hasAuthority || isServer)
+        {
+            cController = GetComponentInParent<CharacterController>();
+            sController = GetComponentInParent<SurvivorController>();
+            lController = GetComponentInParent<LookController>();
+        }
+    }
+
     public override void ActiveAbility()
     {
         if (CanFlyKick())
         {
-            flyingKick = StartCoroutine(FlyingKick());
+            StartCoroutine(FlyingKick());
             abilityActivatedSuccesfully = true;
         }
     }
@@ -39,22 +82,22 @@ public class TaekwondoClass : SurvivorClass
     private IEnumerator FlyingKick()
     {
         unitsHit.Clear();
-        flying = true;
+        flyingKick = true;
         sController.enabled = false;
         lController.DisableLook();
         while (flyingKickStart < flyingKickEnd)
         {
             flyingKickStart += 1;
-            cController.Move(transform.forward * flyingDistance * Time.deltaTime);
+            cController.Move(transform.forward * flyingKickDistance * Time.deltaTime);
 
-            yield return new WaitForSeconds(1 / flightSpeed / flyingKickEnd);
+            yield return new WaitForSeconds(1 / flyingKickSpeed / flyingKickEnd);
         };
 
         lController.EnableLook();
         sController.enabled = true;
 
         flyingKickStart = 0;
-        flying = false;
+        flyingKick = false;
 
         foreach (Collider item in unitsHit)
         {
@@ -73,14 +116,16 @@ public class TaekwondoClass : SurvivorClass
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        if (hit.gameObject.layer == 9 && flying)
+        if (!isServer) return;
+
+        if (hit.gameObject.layer == 9 && flyingKick)
         {
             print(hit.gameObject.name);
             unitsHit.Add(hit.collider);
             Physics.IgnoreCollision(hit.collider, cController);
             hit.gameObject.GetComponent<IDamagable>()?.Svr_Damage(flyingKickDamage);
         }
-        else if (hit.gameObject.layer == 0 && flying)
+        else if (hit.gameObject.layer == 0 && flyingKick)
         {
             flyingKickStart = flyingKickEnd;
         }
