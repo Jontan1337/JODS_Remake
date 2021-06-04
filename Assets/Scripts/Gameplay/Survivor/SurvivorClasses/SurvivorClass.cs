@@ -11,6 +11,7 @@ public abstract class SurvivorClass : NetworkBehaviour
 
     public GameObject abilityObject;
 
+
     public override bool OnSerialize(NetworkWriter writer, bool initialState)
     {
         if (!initialState)

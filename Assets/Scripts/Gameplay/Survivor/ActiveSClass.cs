@@ -5,7 +5,8 @@ using UnityEngine;
 
 public class ActiveSClass : NetworkBehaviour, IDamagable
 {
-	[SyncVar(hook = nameof(SetSurvivorClassSettings))] public SurvivorClass sClass;
+	//[SyncVar(hook = nameof(SetSurvivorClassSettings))] public SurvivorClass sClass;
+	public SurvivorClass sClass;
 	private SurvivorController sController;
 
 	[SerializeField] private SurvivorSO survivorSO;
@@ -74,11 +75,12 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	public void Rpc_SetSurvivorClass(string _class)
     {
 		List<SurvivorSO> survivorSOList = PlayableCharactersManager.instance.survivorSOList;
-
+		print("Rpc_SetSurvivorClass");
 	    foreach (SurvivorSO survivor in survivorSOList)
         {
             if (survivor.name == _class)
             {
+				print(survivor.name);
 				SetSurvivorClass(survivor);
                 break;
             }
@@ -126,6 +128,11 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 
 		NetworkServer.Spawn(selectedClass);
 
+		Rpc_SpawnClass(selectedClass);
+	}
+	[ClientRpc]
+	private void Rpc_SpawnClass(GameObject selectedClass)
+    {
 		sClass = selectedClass.GetComponent<SurvivorClass>();
 	}
 
