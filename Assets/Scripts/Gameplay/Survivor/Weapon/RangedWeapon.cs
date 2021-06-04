@@ -4,15 +4,10 @@ using UnityEngine.InputSystem;
 using System.Collections;
 using System;
 
-[RequireComponent(typeof(PhysicsToggler), typeof(Rigidbody), typeof(BoxCollider)),
- RequireComponent(typeof(AuthorityController))]
-public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBindable
+
+public class RangedWeapon : EquipmentItem
 {
     [Header("Settings")]
-    [SerializeField]
-    private string weaponName = "Weapon name";
-    [SerializeField]
-    private EquipmentType equipmentType = EquipmentType.Weapon;
     [SerializeField]
     private LayerMask ignoreLayer;
 
@@ -59,8 +54,6 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     private GameObject muzzleFlash = null;
     [SerializeField]
     private SFXPlayer sfxPlayer = null;
-    [SerializeField]
-    private AuthorityController authController = null;
 
     [Header("Audio Settings")]
     [SerializeField]
@@ -70,10 +63,6 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     [SerializeField, Range(0f, 1f)]
     private float volume = 1f;
 
-    [Space]
-    [SerializeField, SyncVar]
-    private bool isInteractable = true;
-
     private Coroutine COShootLoop;
     private Coroutine COStopShootLoop;
 
@@ -82,17 +71,6 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
     private bool canShoot = true;
 
     private int fireModeIndex = 0;
-
-    public bool IsInteractable
-    {
-        get => isInteractable;
-        set => isInteractable = value;
-    }
-
-    public string ObjectName => gameObject.name;
-    public string Name => weaponName;
-    public GameObject Item => gameObject;
-    public EquipmentType EquipmentType => equipmentType;
 
     private void OnValidate()
     {
@@ -113,34 +91,33 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
         }
     }
 
-    public void Bind()
+    public override void Bind()
     {
-        JODSInput.Controls.Survivor.LMB.performed += OnShoot;
-        JODSInput.Controls.Survivor.LMB.canceled += OnStopShoot;
+        base.Bind();
         JODSInput.Controls.Survivor.Reload.performed += OnReload;
         JODSInput.Controls.Survivor.Changefiremode.performed += OnChangeFireMode;
     }
-    public void UnBind()
+    public override void Unbind()
     {
         if (hasAuthority)
         {
-            OnStopShoot(default);
+            OnLMBCanceled(default);
         }
 
-        JODSInput.Controls.Survivor.LMB.performed -= OnShoot;
-        JODSInput.Controls.Survivor.LMB.canceled -= OnStopShoot;
+        base.Unbind();
         JODSInput.Controls.Survivor.Reload.performed -= OnReload;
         JODSInput.Controls.Survivor.Changefiremode.performed -= OnChangeFireMode;
     }
 
-    private void OnShoot(InputAction.CallbackContext context)
+    protected override void OnLMBPerformed(InputAction.CallbackContext obj)
     {
         JODSInput.Controls.Survivor.Drop.Disable();
         JODSInput.Controls.Survivor.Interact.Disable();
 
         Cmd_Shoot();
     }
-    private void OnStopShoot(InputAction.CallbackContext context)
+
+    protected override void OnLMBCanceled(InputAction.CallbackContext obj)
     {
         JODSInput.Controls.Survivor.Drop.Enable();
         JODSInput.Controls.Survivor.Interact.Enable();
@@ -150,9 +127,14 @@ public class RangedWeapon : NetworkBehaviour, IInteractable, IEquippable, IBinda
             Cmd_StopShoot();
         }
     }
+
+    protected override void OnDropPerformed(InputAction.CallbackContext obj)
+    {
+        base.OnDropPerformed(obj);
+        Cmd_ShowItem();
+    }
     private void OnReload(InputAction.CallbackContext context) => Cmd_Reload();
     private void OnChangeFireMode(InputAction.CallbackContext context) => Cmd_ChangeFireMode();
-
 
     #region Server
 

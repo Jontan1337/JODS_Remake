@@ -57,6 +57,6 @@ public class EquipmentControl : NetworkBehaviour
     [TargetRpc]
     private void Rpc_UnBind(NetworkConnection target, GameObject item)
     {
-        item.GetComponent<IBindable>().UnBind();
+        item.GetComponent<IBindable>().Unbind();
     }
 }

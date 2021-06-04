@@ -36,7 +36,7 @@ public class Medkit : NetworkBehaviour, IInteractable, IEquippable, IBindable
         JODSInput.Controls.Survivor.LMB.performed += OnHeal;
     }
 
-    public void UnBind()
+    public void Unbind()
     {
         JODSInput.Controls.Survivor.LMB.performed -= OnHeal;
     }

@@ -14,8 +14,10 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
 
     [SerializeField, SyncVar]
     private GameObject equippedItem;
+    private EquipmentItem equipmentItem;
     [SerializeField, SyncVar]
     private EquipmentSlot selectedEquipmentSlot;
+    // Maybe change to SyncList?
     [SerializeField]
     private List<EquipmentSlot> equipmentSlots = new List<EquipmentSlot>();
 
@@ -31,6 +33,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
 
     private int equipmentSlotsCount = 0;
     private Coroutine COMoveToHands;
+    private PlayerSetup playerSetup;
 
     private const string slotsUIParentName = "CanvasInGame/Hotbar";
 
@@ -62,9 +65,34 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
             equippedItem = value;
             if (equippedItem)
             {
-                Svr_ShowItem(equippedItem);
+                EquipmentItem = equippedItem.GetComponent<EquipmentItem>();
+                EquipmentItem.Svr_ShowItem();
+            }
+            else
+            {
+                EquipmentItem = null;
             }
             Svr_InvokeEquippedItemChange(oldEquippedItem, equippedItem);
+        }
+    }
+    public EquipmentItem EquipmentItem
+    {
+        get => equipmentItem;
+        set
+        {
+            if (!isServer) return;
+
+            EquipmentItem oldEquipmentItem = equipmentItem;
+            if (oldEquipmentItem)
+            {
+                //oldEquipmentItem.onServerDropItem -= Rpc_OnItemDropped;
+            }
+            equipmentItem = value;
+            //Svr_InvokeEquippedItemChange(oldEquipmentItem.gameObject, equipmentItem.gameObject);
+            if (equipmentItem)
+            {
+                //equipmentItem.onServerDropItem += Rpc_OnItemDropped;
+            }
         }
     }
 
@@ -81,7 +109,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
                 selectedEquipmentSlot.onServerItemChange -= (GameObject oldItem, GameObject newItem) => Svr_SelectedSlotItemChange(newItem);
                 if (EquippedItem)
                 {
-                    Svr_HideItem(EquippedItem);
+                    equipmentItem.Svr_Unequip(connectionToClient);
                 }
             }
             // Listen if the new selected slot's item changes.
@@ -103,13 +131,13 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
 
     private void Awake()
     {
-        if (!isServer)
-        {
-            onClientItemPickedUp += OnItemPickedUp;
-        }
         if (isServer)
         {
             onServerItemPickedUp += Svr_OnItemPickedUp;
+        }
+        else
+        {
+            onClientItemPickedUp += OnItemPickedUp;
         }
     }
 
@@ -117,6 +145,11 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     {
         if (IsInitialized) return;
 
+        playerSetup = initializer;
+        if (isServer)
+        {
+            equipmentSlotsTypes = playerSetup.equipmentSlotsTypes;
+        }
         if (hasAuthority)
         {
             Cmd_EquipmentSlotsSetup();
@@ -125,9 +158,6 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
             // OnStartServer gets called before Start when equipment object
             // is not set as child to player yet.
             initializer.onSpawnItem += GetReferences;
-        }
-        if (isServer)
-        {
         }
 
         IsInitialized = true;
@@ -144,7 +174,6 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
             if (transform.parent.name.Contains("Survivor"))
             {
                 equipmentSlotsUIParent = transform.parent.Find(slotsUIParentName);
-                equipmentSlotsTypes = transform.root.GetComponent<PlayerSetup>().equipmentSlotsTypes;
             }
         }
     }
@@ -170,7 +199,6 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
 
     public override void OnStartAuthority()
     {
-        JODSInput.Controls.Survivor.Drop.performed += OnDropItem;
         JODSInput.Controls.Survivor.Hotbarselecting.performed += number => Cmd_SelectSlot(Mathf.RoundToInt(number.ReadValue<float>()) - 1);
         
     }
@@ -186,7 +214,6 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     public override void OnStopAuthority()
     {
         transform.root.GetComponent<PlayerSetup>().onSpawnItem -= GetReferences;
-        JODSInput.Controls.Survivor.Drop.performed -= OnDropItem;
         JODSInput.Controls.Survivor.Hotbarselecting.performed -= number => Cmd_SelectSlot(Mathf.RoundToInt(number.ReadValue<float>()) - 1);
     }
     #endregion
@@ -253,11 +280,12 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
             Svr_SelectSlotOfType(equipmentType);
         }
 
-        // If selected equipment bar is empty, equip item in that bar,
-        // else look for an available bar.
+        // If selected equipment hotbar slot is empty, equip item in that hotbar slot,
+        // else look for an available hotbar slot.
         if (SelectedEquipmentSlot.EquipmentType == equipmentType)
         {
-            Svr_DropItem(SelectedEquipmentSlot.EquipmentItem);
+            // Weapon doesn't move to hands properly.. what???
+            Svr_ReplaceItem(SelectedEquipmentSlot.EquipmentItem);
             SelectedEquipmentSlot.Svr_EquipItem(equipment, equipmentType);
         }
 
@@ -269,7 +297,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
             {
                 if (EquippedItem)
                 {
-                    Svr_HideItem(EquippedItem);
+                    equipmentItem.Svr_Unequip(connectionToClient);
                 }
                 EquippedItem = equipment;
             }
@@ -344,7 +372,12 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     {
         StopCoroutine(COMoveToHands);
     }
-    private void OnItemDropped(GameObject newItem)
+    [ClientRpc]
+    private void Rpc_OnItemDropped(GameObject item)
+    {
+        StopCoroutine(COMoveToHands);
+    }
+    private void OnItemDropped(GameObject item)
     {
         StopCoroutine(COMoveToHands);
     }
@@ -377,10 +410,6 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     [Server]
     private void Svr_PlaceItemInHands()
     {
-        if (EquippedItem.TryGetComponent(out PhysicsToggler pt))
-        {
-            pt.Svr_DisableItemPhysics();
-        }
         EquippedItem.transform.parent = playerHands;
     }
 
@@ -404,62 +433,26 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
         }
     }
 
-    [Command]
-    private void Cmd_ShowItem(GameObject item)
-    {
-        Svr_ShowItem(item);
-    }
-    [Command]
-    private void Cmd_HideItem(GameObject item)
-    {
-        Svr_HideItem(item);
-    }
-    [Server]
-    private void Svr_ShowItem(GameObject item)
-    {
-        item.GetComponent<Renderer>().enabled = true;
-        Rpc_ShowItem(item);
-    }
-    [Server]
-    private void Svr_HideItem(GameObject item)
-    {
-        item.GetComponent<Renderer>().enabled = false;
-        Rpc_HideItem(item);
-    }
-    [ClientRpc]
-    private void Rpc_ShowItem(GameObject item)
-    {
-        item.GetComponent<Renderer>().enabled = true;
-    }
-    [ClientRpc]
-    private void Rpc_HideItem(GameObject item)
-    {
-        item.GetComponent<Renderer>().enabled = false;
-    }
+    
 
     private void OnDropItem(InputAction.CallbackContext context)
     {
-        Cmd_DropItem(EquippedItem);
+        Cmd_ReplaceItem(EquippedItem);
         OnItemDropped(null);
     }
     [Command]
-    private void Cmd_DropItem(GameObject item)
+    private void Cmd_ReplaceItem(GameObject item)
     {
-        Svr_DropItem(item);
+        Svr_ReplaceItem(item);
     }
     [Server]
-    private void Svr_DropItem(GameObject item)
+    private void Svr_ReplaceItem(GameObject item)
     {
         if (item)
         {
-            Svr_ShowItem(item);
-            if (item.TryGetComponent(out PhysicsToggler pt))
-            {
-                pt.Svr_EnableItemPhysics();
-            }
-            item.GetComponent<IInteractable>().IsInteractable = true;
-            item.transform.parent = null;
             Svr_OnItemDropped(null);
+            EquipmentItem.Svr_Drop();
+            EquipmentItem = null;
             if (item == SelectedEquipmentSlot.EquipmentItem)
             {
                 SelectedEquipmentSlot.Svr_RemoveItem();
@@ -474,12 +467,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
         {
             if (item.EquipmentItem == null) continue;
 
-            Svr_ShowItem(item.EquipmentItem);
-            if (item.EquipmentItem.TryGetComponent(out PhysicsToggler pt))
-            {
-                pt.Svr_EnableItemPhysics();
-            }
-            item.EquipmentItem.GetComponent<IInteractable>().IsInteractable = true;
+            item.EquipmentItem.GetComponent<EquipmentItem>().Svr_ShowItem();
             item.EquipmentItem.transform.parent = null;
             Svr_OnItemDropped(null);
             item.Svr_RemoveItem();

@@ -85,7 +85,7 @@ public class PlaceItem : NetworkBehaviour, IEquippable, IBindable, IInteractable
 			StopCoroutine(PlaceHolderActiveCo);
 			//TEMP FIX
 			authController.Svr_RemoveAuthority();
-			UnBind();
+			Unbind();
 			Destroy(placeHolder);
 
 		}
@@ -95,7 +95,7 @@ public class PlaceItem : NetworkBehaviour, IEquippable, IBindable, IInteractable
 	{
 		JODSInput.Controls.Survivor.LMB.performed += OnPlace;
 	}
-	public void UnBind()
+	public void Unbind()
 	{
 		JODSInput.Controls.Survivor.LMB.performed -= OnPlace;
 	}

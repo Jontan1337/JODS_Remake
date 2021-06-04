@@ -71,7 +71,7 @@ public class MeleeWeapon : NetworkBehaviour, IInteractable, IEquippable, IBindab
         //JODSInput.Controls.Survivor.Reload.performed += OnReload;
         //JODSInput.Controls.Survivor.Changefiremode.performed += OnChangeFireMode;
     }
-    public void UnBind()
+    public void Unbind()
     {
         JODSInput.Controls.Survivor.LMB.performed -= OnAttack;
         //JODSInput.Controls.Survivor.LMB.canceled -= OnStopShoot;

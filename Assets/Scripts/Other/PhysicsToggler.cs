@@ -72,14 +72,12 @@ public class PhysicsToggler : NetworkBehaviour
     [ClientRpc]
     private void Rpc_EnableItemPhysics()
     {
-        _rigidbody.isKinematic = false;
-        _collider.enabled = true;
+        EnableItemPhysics();
     }
     [ClientRpc]
     private void Rpc_DisableItemPhysics()
     {
-        _rigidbody.isKinematic = true;
-        _collider.enabled = false;
+        DisableItemPhysics();
     }
 
     private void ToggleItemPhysics(bool oldValue, bool newValue)
