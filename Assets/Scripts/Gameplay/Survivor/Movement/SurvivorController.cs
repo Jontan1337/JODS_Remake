@@ -6,23 +6,24 @@ using UnityEngine.InputSystem;
 
 public class SurvivorController : NetworkBehaviour
 {
+    float targetY;
+    Vector3 moveDirection = Vector3.zero;
+
+    private float horizontal;
+    private float vertical;
+    private float groundDistance = 0.2f;
+    private bool isJumping;
+
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private LayerMask groundMask;
+    
     CharacterController cc;
     public float speed;
     public float sprintSpeedMultiplier;
     public float jumpSpeed;
     public float gravity;
     public bool isSprinting;
-    float targetY;
-    Vector3 moveDirection = Vector3.zero;
-
-    private float horizontal;
-    private float vertical;
-
-    [SerializeField] private Transform groundCheck;
-    [SerializeField] private LayerMask groundMask;
-    private float groundDistance = 0.2f;
     public bool isGrounded;
-    bool isJumping;
 
     private void Start()
     {
@@ -57,6 +58,7 @@ public class SurvivorController : NetworkBehaviour
             moveDirection = transform.TransformDirection(new Vector3(horizontal, 0.00f, vertical)) * speed;
             if (isJumping)
             {
+
                 moveDirection.y = jumpSpeed;
                 isJumping = false;
             }
@@ -87,6 +89,7 @@ public class SurvivorController : NetworkBehaviour
 
     private void OnSprintPerformed(InputAction.CallbackContext context)
     {
+
         isSprinting = true;
         speed *= sprintSpeedMultiplier;
     }
