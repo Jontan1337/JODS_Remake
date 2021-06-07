@@ -24,12 +24,12 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     [SerializeField] private UnitSO unitSO;
 
     [Header("Stats")]
-    [SerializeField] private int health = 100; //Upgradeable
+    [SyncVar, SerializeField] private int health = 100; //Upgradeable
     [SyncVar] public bool isDead = false;
     private int maxHealth = 0;
     private float upgradeMultiplier = 0f;
     private int refundAmount = 0;
-    [SerializeField] private int unitLevel = 1;
+    [SyncVar, SerializeField] private int unitLevel = 1;
     [Space]
     [SerializeField] private bool isMelee;
     [SerializeField] private bool isRanged;
@@ -474,10 +474,10 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     {
         while (!isDead)
         {
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.25f);
 
             //Set Walk Animation, if walking
-            Walking = navAgent.velocity.magnitude > 0.2f;
+            Walking = navAgent.velocity.magnitude > 0.1f;
         }
     }
 
@@ -577,13 +577,14 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         //Stop searching for more survivors
         if (searching) { StopCoroutine(CoSearch); searching = false; }
 
-        HasTarget();
+        if (HasTarget()) 
+        {
+            chaseTime = unitSO.chaseTime;
+            navAgent.SetDestination(currentTarget.position);
 
-        chaseTime = unitSO.chaseTime;
-        navAgent.SetDestination(currentTarget.position);
-
-        if (!chasing) { CoChase = StartCoroutine(ChaseCoroutine()); chasing = true; }
-        if (!attacking) { CoAttack = StartCoroutine(AttackCoroutine()); attacking = true; }
+            if (!chasing) { CoChase = StartCoroutine(ChaseCoroutine()); chasing = true; }
+            if (!attacking) { CoAttack = StartCoroutine(AttackCoroutine()); attacking = true; }
+        }
     }
 
     #endregion
@@ -626,7 +627,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
                 else
                 {
                     if (NextToTarget()) StopMovement();
-                    //else if (!nextToTarget) ResumeMovement();
+                    else if (!NextToTarget()) ResumeMovement();
                 }
             }
             else
@@ -952,6 +953,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
 
     public bool IsMaxHealth => health == maxHealth;
 
+    [ClientRpc]
     public virtual void Die()
     {
         if (!isDead)
