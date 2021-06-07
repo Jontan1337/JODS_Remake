@@ -111,14 +111,33 @@ public class Master : NetworkBehaviour
     private AudioSource spawnSmokeAudio;
     private AudioSource globalAudio;
 
+    [Header("Network")]
+    [SerializeField] private GameObject[] disableForOthers;
+
     #endregion
 
-    #region Start / Awake
+    #region Start / Awake / Setup
 
     private void Start()
     {
+        if (!hasAuthority)
+        {
+            foreach(GameObject _gameObject in disableForOthers)
+            {
+                _gameObject.SetActive(false);
+            }
+        }
+    }
+
+    public override void OnStartAuthority()
+    {
         //Add (MASTER to end of name)
         name += $" ({masterSO.masterName})";
+        print("OnStartAuthority");
+
+
+        SetMasterUnits();
+        InitializeUnitButtons();
 
         //Do basic startup for master, if player has authority (If the player is the master)
         if (hasAuthority)
@@ -182,11 +201,6 @@ public class Master : NetworkBehaviour
             mClass = (MasterClass)gameObject.AddComponent(masterType);
             mClass.UseSpecial();
         }
-    }
-
-    private void Awake()
-    {
-
     }
 
     private void OnEnable()
@@ -283,8 +297,6 @@ public class Master : NetworkBehaviour
     public void SetMasterClass(MasterSO mClass)
     {
         masterSO = mClass;
-        SetMasterUnits();
-        InitializeUnitButtons();
     }
 
     #region Normal Mouse
@@ -405,6 +417,7 @@ public class Master : NetworkBehaviour
 
     private void InitializeUnitButtons()
     {
+        print("InitializeUnitButtons");
         for (int i = 0; i < unitList.Count; i++)
         {
             //Check if the index has a unit assigned, if not continue to next index.
@@ -580,6 +593,7 @@ public class Master : NetworkBehaviour
 
     private void SetMasterUnits()
     {
+        print("SetMasterUnits");
         //This will assign all the units that the master class has, to the master. (Essentially this remakes the list)
         if (UnitInitialization() || unitList.Count == 0) SetMasterUnitsInEditor(); //Only if the current list is wrong though, which this bool method will check
 
