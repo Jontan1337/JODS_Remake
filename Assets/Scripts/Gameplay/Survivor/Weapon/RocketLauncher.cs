@@ -28,7 +28,7 @@ public class RocketLauncher : NetworkBehaviour, IBindable, IEquippable
         JODSInput.Controls.Survivor.LMB.performed += OnShoot;
     }
 
-    public void UnBind()
+    public void Unbind()
     {
         JODSInput.Controls.Survivor.LMB.performed -= OnShoot;
     }
