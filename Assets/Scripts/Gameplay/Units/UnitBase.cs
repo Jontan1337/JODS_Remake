@@ -953,6 +953,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
 
     public bool IsMaxHealth => health == maxHealth;
 
+    [ClientRpc]
     public virtual void Die()
     {
         if (!isDead)

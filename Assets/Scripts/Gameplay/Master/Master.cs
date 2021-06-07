@@ -54,7 +54,7 @@ public class Master : NetworkBehaviour
 
     [Header("Spawning")]
     [SerializeField] private LayerMask playerLayer = 1 << 15;
-    [SerializeField] private int spawnCheckRadius = 20;
+    [SerializeField] private int spawnCheckRadius = 200;
     [SerializeField] private int minimumSpawnRadius = 5;
 
     [System.Serializable]
@@ -682,7 +682,7 @@ public class Master : NetworkBehaviour
             }
             else
             {
-                SetSpawnText(UI.spawnText.text = "Cannot spawn unit here");
+                SetSpawnText("Cannot spawn unit here");
             }
         }
     }
@@ -938,6 +938,10 @@ public class Master : NetworkBehaviour
                     //If it does hit the survivor, then first check if it is within the survivor's view angle.
                     dir = pos - pPos;
                     float angle = Vector3.Angle(dir, survivor.transform.forward);
+
+                    //Debugs
+                    Debug.DrawRay(survivor.transform.position, dir, angle > 60 ? Color.green : Color.red, 2f);
+
                     //Is it inside the view angle of the survivor
                     if (angle < 60)
                     {
