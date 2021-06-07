@@ -13,7 +13,8 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     public Transform playerHands;
 
     [SerializeField, SyncVar]
-    private GameObject equippedItem;
+    private GameObject itemInHands;
+    [SerializeField]
     private EquipmentItem equipmentItem;
     [SerializeField, SyncVar]
     private EquipmentSlot selectedEquipmentSlot;
@@ -46,33 +47,33 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
 
     #region ClientOnly Fields
 
-    private Action<GameObject> onClientItemPickedUp;
+    private Action<GameObject> onClientItemPickedUp; // Not used remove perhaps?
 
     #endregion
 
-    public GameObject EquippedItem
+    public GameObject ItemInHands
     {
-        get => equippedItem;
+        get => itemInHands;
         private set
         {
             if (!isServer) return;
 
             GameObject oldEquippedItem = null;
-            if (equippedItem)
+            if (itemInHands)
             {
-                oldEquippedItem = equippedItem;
+                oldEquippedItem = itemInHands;
             }
-            equippedItem = value;
-            if (equippedItem)
+            itemInHands = value;
+            if (itemInHands)
             {
-                EquipmentItem = equippedItem.GetComponent<EquipmentItem>();
-                EquipmentItem.Svr_ShowItem();
+                EquipmentItem = itemInHands.GetComponent<EquipmentItem>();
             }
             else
             {
                 EquipmentItem = null;
             }
-            Svr_InvokeEquippedItemChange(oldEquippedItem, equippedItem);
+            // Tell EquipmentControl to unbind old item and bind new item.
+            Svr_InvokeEquippedItemChange(oldEquippedItem, itemInHands);
         }
     }
     public EquipmentItem EquipmentItem
@@ -85,13 +86,14 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
             EquipmentItem oldEquipmentItem = equipmentItem;
             if (oldEquipmentItem)
             {
-                //oldEquipmentItem.onServerDropItem -= Rpc_OnItemDropped;
+                oldEquipmentItem.onServerDropItem -= Svr_OnItemDropped;
+                oldEquipmentItem.Svr_Unequip();
             }
             equipmentItem = value;
-            //Svr_InvokeEquippedItemChange(oldEquipmentItem.gameObject, equipmentItem.gameObject);
             if (equipmentItem)
             {
-                //equipmentItem.onServerDropItem += Rpc_OnItemDropped;
+                equipmentItem.Svr_Equip();
+                equipmentItem.onServerDropItem += Svr_OnItemDropped;
             }
         }
     }
@@ -107,16 +109,12 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
             if (selectedEquipmentSlot)
             {
                 selectedEquipmentSlot.onServerItemChange -= (GameObject oldItem, GameObject newItem) => Svr_SelectedSlotItemChange(newItem);
-                if (EquippedItem)
-                {
-                    equipmentItem.Svr_Unequip(connectionToClient);
-                }
             }
             // Listen if the new selected slot's item changes.
             value.onServerItemChange += (GameObject oldItem, GameObject newItem) => Svr_SelectedSlotItemChange(newItem);
 
             selectedEquipmentSlot = value;
-            EquippedItem = selectedEquipmentSlot.EquipmentItem;
+            //ItemInHands = selectedEquipmentSlot.EquipmentItem; Causes weird command when no authority. No understand hlep. but work no problem.
         }
     }
     public List<EquipmentSlot> EquipmentSlots
@@ -129,31 +127,20 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     }
     public bool IsInitialized { get; private set; }
 
-    private void Awake()
-    {
-        if (isServer)
-        {
-            onServerItemPickedUp += Svr_OnItemPickedUp;
-        }
-        else
-        {
-            onClientItemPickedUp += OnItemPickedUp;
-        }
-    }
-
     public void Init(PlayerSetup initializer)
     {
         if (IsInitialized) return;
 
         playerSetup = initializer;
+
+        equipmentSlotsTypes = playerSetup.equipmentSlotsTypes;
         if (isServer)
         {
-            equipmentSlotsTypes = playerSetup.equipmentSlotsTypes;
+            onServerItemPickedUp += Svr_OnItemPickedUp;
         }
         if (hasAuthority)
         {
             Cmd_EquipmentSlotsSetup();
-
             // This is run in Start instead of OnStartServer because
             // OnStartServer gets called before Start when equipment object
             // is not set as child to player yet.
@@ -223,7 +210,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     {
         if (!initialState)
         {
-            writer.WriteGameObject(equippedItem);
+            writer.WriteGameObject(itemInHands);
             writer.WriteEquipmentSlot(selectedEquipmentSlot);
             return true;
         }
@@ -235,7 +222,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     {
         if (!initialState)
         {
-            equippedItem = reader.ReadGameObject();
+            itemInHands = reader.ReadGameObject();
             selectedEquipmentSlot = reader.ReadEquipmentSlot();
         }
     }
@@ -248,8 +235,8 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
         if (SelectedEquipmentSlot)
             Rpc_UpdateSelectedSlot(conn, SelectedEquipmentSlot);
 
-        if (EquippedItem)
-            Rpc_UpdateEquippedItem(conn, EquippedItem);
+        if (ItemInHands)
+            Rpc_UpdateEquippedItem(conn, ItemInHands);
 
         if (playerHands)
             Rpc_UpdatePlayerHands(conn, playerHands);
@@ -263,7 +250,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     [TargetRpc]
     private void Rpc_UpdateEquippedItem(NetworkConnection target, GameObject value)
     {
-        EquippedItem = value;
+        ItemInHands = value;
     }
     [TargetRpc]
     private void Rpc_UpdatePlayerHands(NetworkConnection target, Transform value)
@@ -275,18 +262,20 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     [Server]
     public void Svr_Equip(GameObject equipment, EquipmentType equipmentType)
     {
+        // If selected equipment hotbar slot is empty, equip item in that hotbar slot,
+        // else look for an available hotbar slot.
         if (SelectedEquipmentSlot.EquipmentType != equipmentType || SelectedEquipmentSlot.EquipmentItem != null)
         {
             Svr_SelectSlotOfType(equipmentType);
         }
 
-        // If selected equipment hotbar slot is empty, equip item in that hotbar slot,
-        // else look for an available hotbar slot.
         if (SelectedEquipmentSlot.EquipmentType == equipmentType)
         {
-            // Weapon doesn't move to hands properly.. what???
-            Svr_ReplaceItem(SelectedEquipmentSlot.EquipmentItem);
-            SelectedEquipmentSlot.Svr_EquipItem(equipment, equipmentType);
+            if (SelectedEquipmentSlot.EquipmentItem)
+            {
+                Svr_RemoveItem(SelectedEquipmentSlot.EquipmentItem);
+            }
+            Svr_EquipItem(equipment);
         }
 
         // EquipmentType none is meant for equipment
@@ -295,16 +284,15 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
         {
             if (equipment.TryGetComponent(out IEquippable equippable))
             {
-                if (EquippedItem)
+                if (ItemInHands)
                 {
-                    equipmentItem.Svr_Unequip(connectionToClient);
+                    equipmentItem.Svr_Unequip();
                 }
-                EquippedItem = equipment;
+                ItemInHands = equipment;
             }
         }
-        Svr_PlaceItemInHands();
-        Svr_InvokeItemPickedUp(EquippedItem);
-        Rpc_InvokeItemPickedUp(EquippedItem);
+        Svr_InvokeItemPickedUp(ItemInHands);
+        //Rpc_InvokeItemPickedUp(EquippedItem);
     }
 
     [Server]
@@ -347,45 +335,56 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     {
         onServerEquippedItemChange?.Invoke(oldItem, newItem);
     }
+
     [Server]
     private void Svr_InvokeItemPickedUp(GameObject newItem)
     {
         onServerItemPickedUp?.Invoke(newItem);
     }
-    [ClientRpc]
-    private void Rpc_InvokeItemPickedUp(GameObject newItem)
-    {
-        onClientItemPickedUp?.Invoke(newItem);
-    }
-
     [Server]
     private void Svr_OnItemPickedUp(GameObject newItem)
     {
-        COMoveToHands = StartCoroutine(MoveToHands(newItem));
+        print("Svr_OnItemPickedUp");
+        OnItemPickedUp(newItem);
+        Rpc_OnItemPickedUp(newItem);
+    }
+    [ClientRpc]
+    private void Rpc_OnItemPickedUp(GameObject newItem)
+    {
+        if (isServer) return;
+        OnItemPickedUp(newItem);
     }
     private void OnItemPickedUp(GameObject newItem)
     {
         COMoveToHands = StartCoroutine(MoveToHands(newItem));
     }
+
     [Server]
-    private void Svr_OnItemDropped(GameObject newItem)
+    private void Svr_OnItemDropped(GameObject item)
     {
-        StopCoroutine(COMoveToHands);
+        OnItemDropped(item);
+        Rpc_OnItemDropped(item);
+        Svr_ClearHotbarSlot();
     }
     [ClientRpc]
     private void Rpc_OnItemDropped(GameObject item)
     {
-        StopCoroutine(COMoveToHands);
+        if (isServer) return;
+        OnItemDropped(item);
     }
     private void OnItemDropped(GameObject item)
     {
-        StopCoroutine(COMoveToHands);
+        if (COMoveToHands != null)
+        {
+            StopCoroutine(COMoveToHands);
+            COMoveToHands = null;
+        }
     }
 
     [Server]
     private void Svr_SelectedSlotItemChange(GameObject newItem)
     {
-        EquippedItem = newItem;
+        ItemInHands = newItem;
     }
 
     [Command]
@@ -405,12 +404,6 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
                 SelectedEquipmentSlot.Rpc_Select(connectionToClient);
             }
         }
-    }
-
-    [Server]
-    private void Svr_PlaceItemInHands()
-    {
-        EquippedItem.transform.parent = playerHands;
     }
 
     private IEnumerator MoveToHands(GameObject newItem)
@@ -433,29 +426,29 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
         }
     }
 
-    
-
-    private void OnDropItem(InputAction.CallbackContext context)
+    [Server]
+    private void Svr_EquipItem(GameObject item)
     {
-        Cmd_ReplaceItem(EquippedItem);
-        OnItemDropped(null);
+        if (item.TryGetComponent(out EquipmentItem equipmentItem))
+        {
+            equipmentItem.Svr_Pickup(playerHands, connectionToClient);
+        }
+        SelectedEquipmentSlot.Svr_EquipItem(item, EquipmentType.None);
     }
     [Command]
-    private void Cmd_ReplaceItem(GameObject item)
+    private void Cmd_RemoveItem(GameObject item)
     {
-        Svr_ReplaceItem(item);
+        Svr_RemoveItem(item);
     }
     [Server]
-    private void Svr_ReplaceItem(GameObject item)
+    private void Svr_RemoveItem(GameObject item)
     {
         if (item)
         {
-            Svr_OnItemDropped(null);
             EquipmentItem.Svr_Drop();
             EquipmentItem = null;
             if (item == SelectedEquipmentSlot.EquipmentItem)
             {
-                SelectedEquipmentSlot.Svr_RemoveItem();
             }
         }
     }
@@ -467,15 +460,27 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
         {
             if (item.EquipmentItem == null) continue;
 
-            item.EquipmentItem.GetComponent<EquipmentItem>().Svr_ShowItem();
+            item.EquipmentItem.GetComponent<EquipmentItem>().Svr_Drop();
             item.EquipmentItem.transform.parent = null;
-            Svr_OnItemDropped(null);
+            Svr_OnItemDropped(item.EquipmentItem);
             item.Svr_RemoveItem();
         }
     }
 
+    [Server]
+    private void Svr_ClearHotbarSlot()
+    {
+        SelectedEquipmentSlot.Svr_RemoveItem();
+    }
+
     [Command]
     private void Cmd_EquipmentSlotsSetup()
+    {
+        Svr_EquipmentSlotsSetup();
+    }
+
+    [Server]
+    private void Svr_EquipmentSlotsSetup()
     {
         foreach (EquipmentType type in equipmentSlotsTypes)
         {

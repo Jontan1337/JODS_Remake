@@ -150,12 +150,12 @@ public class EquipmentSlot : NetworkBehaviour
     [Server]
     public bool Svr_EquipItem(GameObject equipment, EquipmentType equipmentType)
     {
-        if (equipmentType == EquipmentType)
+        //if (equipmentType == EquipmentType)
         {
             EquipmentItem = equipment;
             return true;
         }
-        return false;
+        //return false;
     }
 
     [Server]

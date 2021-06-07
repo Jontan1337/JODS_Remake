@@ -21,7 +21,7 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
     [SerializeField]
     protected AuthorityController authController = null;
 
-    public Action<EquipmentItem> onServerDropItem;
+    public Action<GameObject> onServerDropItem;
 
     public bool IsInteractable { get => isInteractable; set => isInteractable = value; }
     public string ObjectName => gameObject.name;
@@ -29,6 +29,7 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
     public GameObject Item => gameObject;
     public EquipmentType EquipmentType => equipmentType;
 
+    [Server]
     public virtual void Svr_Interact(GameObject interacter)
     {
         if (!IsInteractable) return;
@@ -38,7 +39,6 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 
         if (equipment != null)
         {
-            authController.Svr_GiveAuthority(interacter.GetComponent<NetworkIdentity>().connectionToClient);
             equipment?.Svr_Equip(gameObject, equipmentType);
             IsInteractable = false;
         }
@@ -63,7 +63,7 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
         JODSInput.Controls.Survivor.LMB.canceled -= OnLMBCanceled;
         JODSInput.Controls.Survivor.RMB.performed -= OnRMBPerformed;
         JODSInput.Controls.Survivor.RMB.canceled -= OnRMBCanceled;
-        JODSInput.Controls.Survivor.Reload.performed -= OnDropPerformed;
+        JODSInput.Controls.Survivor.Drop.performed -= OnDropPerformed;
     }
     [TargetRpc]
     protected void Rpc_Bind(NetworkConnection target)
@@ -101,14 +101,15 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
         Cmd_Drop();
     }
 
-    [Command]
-    private void Cmd_Pickup(Transform newParent)
-    {
-        Svr_Pickup(newParent);
-    }
+    //[Command] Perhaps remove since unused.
+    //private void Cmd_Pickup(Transform newParent, NetworkConnection conn)
+    //{
+    //    Svr_Pickup(newParent, conn);
+    //}
     [Server]
-    public void Svr_Pickup(Transform newParent)
+    public void Svr_Pickup(Transform newParent, NetworkConnection conn)
     {
+        authController.Svr_GiveAuthority(conn);
         Svr_DisablePhysics();
         transform.parent = newParent;
         IsInteractable = false;
@@ -130,16 +131,15 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
     }
 
     [Server]
-    public virtual void Svr_Equip(NetworkConnection conn)
+    public virtual void Svr_Equip()
     {
         Svr_ShowItem();
-        Rpc_Bind(conn);
+        Svr_DisablePhysics();
     }
     [Server]
-    public virtual void Svr_Unequip(NetworkConnection conn)
+    public virtual void Svr_Unequip()
     {
         Svr_HideItem();
-        Rpc_Unbind(conn);
     }
 
     #region Toggle Physics
@@ -174,12 +174,12 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
     [Command]
     protected virtual void Cmd_InvokeOnDrop()
     {
-        onServerDropItem?.Invoke(this);
+        onServerDropItem?.Invoke(gameObject);
     }
     [Server]
     protected virtual void Svr_InvokeOnDrop()
     {
-        onServerDropItem?.Invoke(this);
+        onServerDropItem?.Invoke(gameObject);
     }
 
     #region Toggle Show Hide

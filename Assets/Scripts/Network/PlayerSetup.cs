@@ -122,6 +122,7 @@ public class PlayerSetup : NetworkBehaviour
         if (isServer)
         {
             Svr_SpawnItems();
+            InitSpawnedItems();
         }
         yield return new WaitForSeconds(0.1f);
         if (hasAuthority)
@@ -131,11 +132,7 @@ public class PlayerSetup : NetworkBehaviour
             foreach (GameObject g in prefabDisableIfPlayer) { g.SetActive(false); }
             foreach (GameObject g in prefabEnableIfPlayer) { g.SetActive(true); }
 
-            foreach (GameObject dynamicItem in dynamicallySpawnedItems)
-            {
-                dynamicItem.TryGetComponent(out IInitializable<PlayerSetup> initializable);
-                initializable?.Init(this);
-            }
+            InitSpawnedItems();
 
             foreach (GameObject dynamicItem in dynamicallySpawnedItems)
             {
@@ -163,6 +160,15 @@ public class PlayerSetup : NetworkBehaviour
             foreach (GameObject g in enableIfNotPlayer) { g.SetActive(true); }
             foreach (GameObject g in prefabDisableIfNotPlayer) { g.SetActive(false); }
             foreach (GameObject g in prefabEnableIfNotPlayer) { g.SetActive(true); }
+        }
+    }
+
+    private void InitSpawnedItems()
+    {
+        foreach (GameObject dynamicItem in dynamicallySpawnedItems)
+        {
+            dynamicItem.TryGetComponent(out IInitializable<PlayerSetup> initializable);
+            initializable?.Init(this);
         }
     }
 
