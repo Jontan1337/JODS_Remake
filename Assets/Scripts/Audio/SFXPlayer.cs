@@ -12,15 +12,15 @@ public class SFXPlayer : MonoBehaviour
     [SerializeField, Range(0f, 2f)]
     private float minPitch = 0.95f;
     [SerializeField]
-    private bool randomPitch;
+    private bool randomPitch = false;
     [SerializeField]
-    private bool looping;
+    private bool looping = false;
     [SerializeField]
-    private bool playOnce;
+    private bool playOnce = false;
     [SerializeField]
-    private bool playOnAwake;
+    private bool playOnAwake = false;
     [SerializeField]
-    private bool playAmountOfTimes;
+    private bool playAmountOfTimes = false;
     [SerializeField]
     private int amountOfPlays = 2;
 

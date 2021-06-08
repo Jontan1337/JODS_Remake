@@ -15,11 +15,11 @@ public class SurvivorSelectHighlight : MonoBehaviour
     #endregion
 
     [Header("UI")]
-    [SerializeField] private Text survivorNameText;
-    [SerializeField] private Text survivorDescriptionText;
-    [SerializeField] private Text survivorSpecialText;
-    [SerializeField] private GameObject descriptionGroup;
-    [SerializeField] private GameObject specialGroup;
+    [SerializeField] private Text survivorNameText = null;
+    [SerializeField] private Text survivorDescriptionText = null;
+    [SerializeField] private Text survivorSpecialText = null;
+    [SerializeField] private GameObject descriptionGroup = null;
+    [SerializeField] private GameObject specialGroup = null;
     private void Start()
     {
         ActivateUI(false);

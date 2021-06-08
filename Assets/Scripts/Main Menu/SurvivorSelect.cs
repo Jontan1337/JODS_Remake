@@ -10,7 +10,7 @@ public class SurvivorSelect : NetworkBehaviour
     [SyncVar (hook = nameof(ShowVisuals)), SerializeField] private bool selected;
     [SyncVar] public int playerIndex;
     [Header("Visual")]
-    [SerializeField] private GameObject selectedVisual;
+    [SerializeField] private GameObject selectedVisual = null;
 
     public void Select(bool value, bool removeSO = true)
     {
