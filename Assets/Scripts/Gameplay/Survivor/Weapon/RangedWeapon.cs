@@ -128,11 +128,6 @@ public class RangedWeapon : EquipmentItem
         }
     }
 
-    protected override void OnDropPerformed(InputAction.CallbackContext obj)
-    {
-        base.OnDropPerformed(obj);
-        Cmd_ShowItem();
-    }
     private void OnReload(InputAction.CallbackContext context) => Cmd_Reload();
     private void OnChangeFireMode(InputAction.CallbackContext context) => Cmd_ChangeFireMode();
 
@@ -281,27 +276,6 @@ public class RangedWeapon : EquipmentItem
             fireMode = fireModes[++fireModeIndex];
         }
         Rpc_ChangeFireModeSFX();
-    }
-
-    [Server]
-    public void Svr_Interact(GameObject interacter)
-    {
-        if (!IsInteractable) return;
-
-        // Equipment should be on a child object of the player.
-        PlayerEquipment equipment = interacter.GetComponentInChildren<PlayerEquipment>();
-
-        if (equipment != null)
-        {
-            authController.Svr_GiveAuthority(interacter.GetComponent<NetworkIdentity>().connectionToClient);
-            equipment?.Svr_Equip(gameObject, equipmentType);
-            IsInteractable = false;
-        }
-        else
-        {
-            // This should not be possible, but just to be absolutely sure.
-            Debug.LogWarning($"{interacter} does not have an Equipment component", this);
-        }
     }
 
     #endregion
