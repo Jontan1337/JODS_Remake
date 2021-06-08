@@ -112,7 +112,7 @@ public class Master : NetworkBehaviour
     private AudioSource globalAudio;
 
     [Header("Network")]
-    [SerializeField] private GameObject[] disableForOthers;
+    [SerializeField] private GameObject[] disableForOthers = null;
 
     #endregion
 

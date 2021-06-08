@@ -11,7 +11,7 @@ enum TimerType
 public abstract class Timer : MonoBehaviour
 {
     [Header("Timer Settings")]
-    [SerializeField] private TimerType timerType;
+    [SerializeField] private TimerType timerType = TimerType.tickContinuously;
     [Space]
     [SerializeField] private float stopTime = 5f;
     private readonly float startTime = 0f;

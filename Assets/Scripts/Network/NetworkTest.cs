@@ -10,7 +10,7 @@ public class NetworkTest : NetworkManager
     [SerializeField]
     private bool hostOnly = false;
     [SerializeField]
-    private GameObject canvas;
+    private GameObject canvas = null;
 
     public List<NetworkConnection> playerIds = new List<NetworkConnection>();
     public static Action<NetworkConnection> RelayOnServerAddPlayer;

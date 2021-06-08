@@ -13,8 +13,8 @@ public class Master_TopdownController : MonoBehaviour
     [SerializeField] private int amountOfFloors = 0;
 
     [Header("UI")]
-    [SerializeField] private Transform floorUIContainer;
-    [SerializeField] private GameObject floorIndicatorPrefab;
+    [SerializeField] private Transform floorUIContainer = null;
+    [SerializeField] private GameObject floorIndicatorPrefab = null;
     private List<FloorIndicator> floorIndicators = new List<FloorIndicator>();
 
     private float horizontal; // These variables are used to move the player. 

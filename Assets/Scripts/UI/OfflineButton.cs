@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class OfflineButton : MonoBehaviour
 {
-    [SerializeField] private string sceneToLoadName;
+    [SerializeField] private string sceneToLoadName = null;
 
     public void OnButtonClick()
     {

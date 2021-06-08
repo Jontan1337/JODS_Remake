@@ -11,7 +11,7 @@ public enum BodyPart
 }
 public class UnitBodyPart : MonoBehaviour, IDamagable
 {
-    private float[] multiplierArray = new float[]
+    private readonly float[] multiplierArray = new float[]
     {
         1f,  // Torso
         2f,  // Head
@@ -22,7 +22,7 @@ public class UnitBodyPart : MonoBehaviour, IDamagable
     private float multiplier = 0;
 
     [SerializeField]
-    private BodyPart bodyPart;
+    private BodyPart bodyPart = BodyPart.Torso;
 
     private UnitBase unitBase;
 

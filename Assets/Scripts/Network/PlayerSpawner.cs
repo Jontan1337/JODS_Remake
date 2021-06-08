@@ -5,8 +5,8 @@ using System.Collections.Generic;
 
 public class PlayerSpawner : NetworkBehaviour
 {
-    [SerializeField] private GameObject masterPrefab;
-    [SerializeField] private GameObject survivorPrefab;
+    [SerializeField] private GameObject masterPrefab = null;
+    [SerializeField] private GameObject survivorPrefab = null;
 
     [SerializeField] private List<SurvivorSO> survivorSOList = new List<SurvivorSO>();
     [SerializeField] private List<MasterSO> masterSOList = new List<MasterSO>();
