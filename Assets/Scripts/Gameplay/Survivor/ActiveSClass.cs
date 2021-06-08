@@ -90,7 +90,6 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	public void SetSurvivorClass(SurvivorSO survivorSO)
 	{
 		this.survivorSO = survivorSO;
-
         if (hasAuthority)
         {
 			Cmd_SpawnClass();

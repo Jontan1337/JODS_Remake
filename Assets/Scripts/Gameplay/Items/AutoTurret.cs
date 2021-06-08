@@ -9,41 +9,26 @@ using UnityEngine;
 public class AutoTurret : NetworkBehaviour, IDamagable
 {
 	[Header("Stats")]
-	[SerializeField]
-	private float range = 30;
-	[SerializeField]
-	private float fireRate = 50f;
-	[SerializeField]
-	private float rotateSpeed = 0.2f;
-	[SerializeField]
-	private float searchInterval = 1f;
-	[SerializeField]
-	private int damage = 20;
-	[SerializeField]
-	private int duration = 20;
-	[SerializeField]
-	private int health = 200;
+	[SerializeField] private float range = 30;
+	[SerializeField] private float fireRate = 50f;
+	[SerializeField] private float rotateSpeed = 0.2f;
+	[SerializeField] private float searchInterval = 1f;
+	[SerializeField] private int damage = 20;
+	[SerializeField] private int duration = 20;
+	[SerializeField] private int health = 200;
 
 
 	[Header("References")]
-	[SerializeField]
-	private Transform target = null;
-	[SerializeField]
-	private Transform swivel = null;
-	[SerializeField]
-	private Transform pivot = null;
-	[SerializeField]
-	private Transform barrel = null;
-	[SerializeField]
-	private ParticleSystem muzzleFlash = null;
-	[SerializeField]
-	private ParticleSystem bulletShell = null;
+	[SerializeField] private Transform target = null;
+	[SerializeField] private Transform swivel = null;
+	[SerializeField] private Transform pivot = null;
+	[SerializeField] private Transform barrel = null;
+	[SerializeField] private ParticleSystem muzzleFlash = null;
+	[SerializeField] private ParticleSystem bulletShell = null;
 
 	[Space]
-	[SerializeField]
-	private LayerMask unitLayer;
-	[SerializeField]
-	private LayerMask LOSLayer;
+	[SerializeField] private LayerMask unitLayer;
+	[SerializeField] private LayerMask LOSLayer;
 
 	private List<Collider> enemiesInSight = new List<Collider>();
 	private bool isDead;

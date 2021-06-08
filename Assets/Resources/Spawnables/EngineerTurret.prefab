@@ -10268,7 +10268,7 @@ GameObject:
   - component: {fileID: 1496572156297394400}
   - component: {fileID: 6207738026347524226}
   m_Layer: 20
-  m_Name: Weapon_AutoTurret
+  m_Name: EngineerTurret
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10386,6 +10386,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  itemName: Item name
+  equipmentType: 0
+  isInteractable: 1
+  authController: {fileID: 0}
   OnPlaced:
     m_PersistentCalls:
       m_Calls:
@@ -10404,7 +10408,7 @@ MonoBehaviour:
   placeHolder: {fileID: 6360617099066798673}
   ignoreLayer:
     serializedVersion: 2
-    m_Bits: 4095798
+    m_Bits: 5406518
   maxPlaceRange: 3
   placeholderActive: 1
 --- !u!114 &5673176028421838261
