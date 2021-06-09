@@ -1414,8 +1414,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  weaponName: Weapon name
+  itemName: Item name
   equipmentType: 1
+  isInteractable: 1
+  authController: {fileID: 8296172669356463415}
+  objectVisuals: {fileID: 2721683097890432565}
   ignoreLayer:
     serializedVersion: 2
     m_Bits: 0
@@ -1438,11 +1441,9 @@ MonoBehaviour:
   bulletRayOrigin: {fileID: 8677567994327279421}
   muzzleFlash: {fileID: 1986087315752043727}
   sfxPlayer: {fileID: 8677567993216096715}
-  authController: {fileID: 8296172669356463415}
   shootSound: {fileID: 8300000, guid: b569bb42ec9c2cd4b886a69e7a3e1b57, type: 3}
   emptySound: {fileID: 8300000, guid: 6e8772b49f34d402a90016ed445d8a2f, type: 3}
   volume: 1
-  isInteractable: 1
 --- !u!114 &8677567993216096717
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1502,12 +1503,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  isVisible: 1
   parentData: {fileID: 0}
-  syncParent: 1
   positionData: {x: 0, y: 0, z: 0}
-  syncPosition: 1
   rotationData: {x: 0, y: 0, z: 0, w: 0}
+  syncParent: 1
+  syncPosition: 1
   syncRotation: 1
+  syncVisibility: 1
+  objectRenderer: {fileID: 1401130791084012640}
 --- !u!1 &8677567994327279420
 GameObject:
   m_ObjectHideFlags: 0

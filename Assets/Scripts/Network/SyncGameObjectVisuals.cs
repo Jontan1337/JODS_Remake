@@ -5,18 +5,17 @@ using System;
 
 public class SyncGameObjectVisuals : NetworkBehaviour
 {
-    [SerializeField, SyncVar]
-    private Transform parentData;
-    [SerializeField]
-    private bool syncParent = false;
-    [SerializeField, SyncVar]
-    private Vector3 positionData;
-    [SerializeField]
-    private bool syncPosition = false;
-    [SerializeField, SyncVar]
-    private Quaternion rotationData;
-    [SerializeField]
-    private bool syncRotation = false;
+    //[SyncVar] public bool isVisible = true;
+    [SerializeField, SyncVar] private Transform parentData;
+    [SerializeField, SyncVar] private Vector3 positionData;
+    [SerializeField, SyncVar] private Quaternion rotationData;
+    [SerializeField] private bool syncParent = false;
+    [SerializeField] private bool syncPosition = false;
+    [SerializeField] private bool syncRotation = false;
+    [SerializeField] private bool syncVisibility = false;
+    [SerializeField] private Renderer objectRenderer;
+
+
 
     private void OnTransformParentChanged()
     {
@@ -38,9 +37,14 @@ public class SyncGameObjectVisuals : NetworkBehaviour
     [Server]
     private void Svr_UpdateVars(NetworkConnection conn)
     {
-        Rpc_UpdateParent(conn, transform.parent);
-        Rpc_UpdatePosition(conn, transform.position);
-        Rpc_UpdateRotation(conn, transform.rotation);
+        if (syncParent)
+            Rpc_UpdateParent(conn, transform.parent);
+        if (syncPosition)
+            Rpc_UpdatePosition(conn, transform.position);
+        if (syncRotation)
+            Rpc_UpdateRotation(conn, transform.rotation);
+        if (syncVisibility)
+            Rpc_UpdateVisibility(conn, objectRenderer.enabled);
     }
 
     private void Initialize()
@@ -50,6 +54,7 @@ public class SyncGameObjectVisuals : NetworkBehaviour
         if (syncRotation) rotationData = transform.rotation;
     }
 
+    #region Serialization
     public override bool OnSerialize(NetworkWriter writer, bool initialState)
     {
         if (!initialState)
@@ -95,6 +100,7 @@ public class SyncGameObjectVisuals : NetworkBehaviour
             syncRotation = reader.ReadBoolean();
         }
     }
+    #endregion
 
     [TargetRpc]
     private void Rpc_UpdateParent(NetworkConnection target, Transform newParentData)
@@ -104,20 +110,17 @@ public class SyncGameObjectVisuals : NetworkBehaviour
     [TargetRpc]
     private void Rpc_UpdatePosition(NetworkConnection target, Vector3 newPositionData)
     {
-        if (name.Contains("PlayerHands"))
-        {
-            Debug.Log(newPositionData, this);
-        }
         transform.position = newPositionData;
-        if (name.Contains("PlayerHands"))
-        {
-            Debug.Log(transform.localPosition, this);
-        }
     }
     [TargetRpc]
     private void Rpc_UpdateRotation(NetworkConnection target, Quaternion newRotationData)
     {
         transform.rotation = newRotationData;
+    }
+    [TargetRpc]
+    private void Rpc_UpdateVisibility(NetworkConnection target, bool isVisible)
+    {
+        objectRenderer.enabled = isVisible;
     }
 
     private void UpdateParent(Transform oldParentData, Transform newParentData)

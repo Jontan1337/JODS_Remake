@@ -518,9 +518,6 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
         {
             EquipmentItem.Svr_Drop();
             EquipmentItem = null;
-            if (item == SelectedEquipmentSlot.EquipmentItem)
-            {
-            }
         }
     }
     [Server]
@@ -532,7 +529,6 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
             if (item.EquipmentItem == null) continue;
 
             item.EquipmentItem.GetComponent<EquipmentItem>().Svr_Drop();
-            item.EquipmentItem.transform.parent = null;
             Svr_OnItemDropped(item.EquipmentItem);
             item.Svr_RemoveItem();
         }

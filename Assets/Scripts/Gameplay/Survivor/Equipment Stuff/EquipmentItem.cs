@@ -20,6 +20,8 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
     protected bool isInteractable = true;
     [SerializeField]
     protected AuthorityController authController = null;
+    [SerializeField]
+    protected SyncGameObjectVisuals objectVisuals = null;
 
     public Action<GameObject> onServerDropItem;
 
