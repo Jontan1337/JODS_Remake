@@ -21,49 +21,53 @@ public class PlaceItem : EquipmentItem
 	public bool placeholderActive = true;
 
 
-	private void Start()
-	{
-		authController = GetComponent<AuthorityController>();
-	}
-
 	// Called when item is picked up and ready to be placed
 	public void Equipped()
 	{
 		placeHolder.SetActive(true);
-		Invoke(nameof(Delay), 0.2f);
+		//look = transform.root.GetComponent<LookController>();
+		look = GetComponentInParent<LookController>();
+		print(look.transform.name);
 		PlaceHolderActiveCo = PlaceHolderActive();
 		StartCoroutine(PlaceHolderActiveCo);
 	}
 
 
-	private void Delay()
-	{
-		look = GetComponentInParent<LookController>();
-	}
-
 	IEnumerator PlaceHolderActiveCo;
+
 	public IEnumerator PlaceHolderActive()
 	{
 		while (true)
 		{
+			// Rotates the placeholder to always stand upright
+			placeHolder.transform.eulerAngles = new Vector3(0, transform.rotation.eulerAngles.y, 0);
+
+			// If anything is within 3 meters in front of the player, 
+			// the placeholder will be positioned at the object
+			// otherwise the placeholder will be placed on the ground, 3 meters in front of the player
 			if (Physics.Raycast(look.playerCamera.transform.position, look.playerCamera.transform.forward, out RaycastHit hit, maxPlaceRange, ~ignoreLayer))
 			{
-
-				print("test");
-				placeHolder.transform.eulerAngles = new Vector3(0, transform.rotation.eulerAngles.y, 0);
-				if (!hit.transform)
-				{
-					placeHolder.transform.position = look.playerCamera.transform.position + look.playerCamera.transform.forward * maxPlaceRange;
-				}
-				else
-				{
-					placeHolder.transform.position = PlaceholderPos(hit);
-				}
-				Physics.Raycast(placeHolder.transform.position, -Vector3.up, out RaycastHit hitDown, maxPlaceRange, ~ignoreLayer);
-				placeHolder.transform.position = PlaceholderPos(hitDown);
-				yield return null;
+				placeHolder.transform.position = PlaceholderPos(hit);
+			}
+			else
+			{
+				placeHolder.transform.position = look.playerCamera.transform.position + look.playerCamera.transform.forward * maxPlaceRange;
 			}
 
+
+			if (Physics.Raycast(placeHolder.transform.position, -Vector3.up, out RaycastHit hitDown, maxPlaceRange, ~ignoreLayer))
+			{
+
+				placeHolder.transform.position = PlaceholderPos(hitDown);
+			}
+			else
+			{
+				placeHolder.gameObject.SetActive(false);
+			}
+
+			// TO DO - DEACTIVATE GAMEOBJECT WHEN LOOKING UP??
+
+			yield return null;
 		}
 	}
 

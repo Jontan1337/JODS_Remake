@@ -125,7 +125,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 		GameObject selectedClass = Instantiate(survivorSO.classScript);
 		selectedClass.transform.SetParent(gameObject.transform);
 
-		NetworkServer.Spawn(selectedClass);
+		NetworkServer.Spawn(selectedClass, gameObject);
 
 		Rpc_SpawnClass(selectedClass);
 	}
