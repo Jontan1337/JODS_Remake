@@ -22,6 +22,10 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     [SerializeField]
     private List<EquipmentSlot> equipmentSlots = new List<EquipmentSlot>();
 
+    [Header("Player Preferences")]
+    [SerializeField]
+    private ItemPickupBehaviour itemPickupBehaviour = ItemPickupBehaviour.EquipAny;
+
     [Header("Equipment slot setup settings")]
     [SerializeField, Tooltip("The parent transform, where the equipment slots should be instantiated.")]
     private Transform equipmentSlotsParent;
@@ -108,13 +112,13 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
             // Stop listening if the old selected slot's item changes.
             if (selectedEquipmentSlot)
             {
-                selectedEquipmentSlot.onServerItemChange -= (GameObject oldItem, GameObject newItem) => Svr_SelectedSlotItemChange(newItem);
+                selectedEquipmentSlot.onServerItemChange -= Svr_SelectedSlotItemChange;
             }
             // Listen if the new selected slot's item changes.
-            value.onServerItemChange += (GameObject oldItem, GameObject newItem) => Svr_SelectedSlotItemChange(newItem);
+            value.onServerItemChange += Svr_SelectedSlotItemChange;
 
             selectedEquipmentSlot = value;
-            //ItemInHands = selectedEquipmentSlot.EquipmentItem; Causes weird command when no authority. No understand hlep. but work no problem.
+            ItemInHands = selectedEquipmentSlot.EquipmentItem; // NO: Causes weird command when no authority. No understand hlep. but work no problem.
         }
     }
     public List<EquipmentSlot> EquipmentSlots
@@ -187,7 +191,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     public override void OnStartAuthority()
     {
         JODSInput.Controls.Survivor.Hotbarselecting.performed += number => Cmd_SelectSlot(Mathf.RoundToInt(number.ReadValue<float>()) - 1);
-        
+
     }
     public override void OnStartClient()
     {
@@ -266,8 +270,32 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
         // else look for an available hotbar slot.
         if (SelectedEquipmentSlot.EquipmentType != equipmentType || SelectedEquipmentSlot.EquipmentItem != null)
         {
-            Svr_SelectSlotOfType(equipmentType);
+            EquipmentSlot newSelectedSlot = Svr_GetSlot(equipmentType);
+            if (newSelectedSlot != null)
+            {
+                // If newSelectedSlot is not null, then select it.
+                // If newSelectedSlot is null, then use the one that's already selected.
+                switch (itemPickupBehaviour)
+                {
+                    case ItemPickupBehaviour.EquipAny:
+                        Svr_SelectSlot(equipmentSlots.IndexOf(newSelectedSlot));
+                        break;
+                    case ItemPickupBehaviour.EquipWeapon:
+                        if (equipmentType == EquipmentType.Weapon)
+                        {
+                            Svr_SelectSlot(equipmentSlots.IndexOf(newSelectedSlot));
+                        }
+                        break;
+                    case ItemPickupBehaviour.EquipNone:
+                        Svr_ReplaceSlotItem(newSelectedSlot, equipment);
+                        MoveToHands(equipment);
+                        return;
+                    default:
+                        break;
+                }
+            }
         }
+
 
         if (SelectedEquipmentSlot.EquipmentType == equipmentType)
         {
@@ -296,17 +324,32 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     }
 
     [Server]
-    private void Svr_SelectSlotOfType(EquipmentType equipmentType)
+    private EquipmentSlot Svr_GetSlot(EquipmentType equipmentType)
     {
-        Svr_SelectSlot(equipmentSlots.IndexOf(Svr_GetAvailableSlot(equipmentType)));
+        // Try to get empty slot of same type.
+        EquipmentSlot tempAvailableSlot = Svr_GetAvailableSlot(equipmentType);
+        if (tempAvailableSlot != null)
+        {
+            return tempAvailableSlot;
+            //Svr_SelectSlot(equipmentSlots.IndexOf(tempAvailableSlot));
+        }
+        // If no empty slot of same type was found.
+        // Try to get first slot of same type.
         if (selectedEquipmentSlot.EquipmentType != equipmentType)
         {
-            Svr_SelectSlot(equipmentSlots.IndexOf(Svr_GetFirstSlotOfType(equipmentType)));
+            EquipmentSlot tempSlotOfType = Svr_GetFirstSlotOfType(equipmentType);
+            if (tempSlotOfType != null)
+            {
+                return tempSlotOfType;
+                //Svr_SelectSlot(equipmentSlots.IndexOf(tempSlotOfType));
+            }
         }
+        return null;
     }
 
     // Finds and returns the first bar that has no equipment.
     // If none are available, it returns the currently selected bar.
+    // Returns null if no matching and empty slot is available.
     [Server]
     private EquipmentSlot Svr_GetAvailableSlot(EquipmentType equipmentType)
     {
@@ -316,8 +359,10 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
             if (currentSlot.EquipmentItem == null && currentSlot.EquipmentType == equipmentType)
                 return currentSlot;
         }
-        return SelectedEquipmentSlot;
+        return null;
     }
+    // Returns the first slot of the same type even if that slot already has an item.
+    // Returns null if no matching slot type was found.
     [Server]
     private EquipmentSlot Svr_GetFirstSlotOfType(EquipmentType equipmentType)
     {
@@ -327,7 +372,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
             if (currentSlot.EquipmentType == equipmentType)
                 return currentSlot;
         }
-        return SelectedEquipmentSlot;
+        return null;
     }
 
     [Server]
@@ -356,7 +401,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     }
     private void OnItemPickedUp(GameObject newItem)
     {
-        COMoveToHands = StartCoroutine(MoveToHands(newItem));
+        COMoveToHands = StartCoroutine(SmoothMoveToHands(newItem));
     }
 
     [Server]
@@ -382,7 +427,28 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     }
 
     [Server]
-    private void Svr_SelectedSlotItemChange(GameObject newItem)
+    private void Svr_ReplaceSlotItem(EquipmentSlot equipmentSlot, GameObject newItem)
+    {
+        // Check if selected equipmentslot already has an item.
+        if (equipmentSlot.EquipmentItem)
+        {
+            equipmentSlot.EquipmentItem.TryGetComponent(out EquipmentItem equipmentSlotsEquipmentItem);
+            // Drop the previous item.
+            equipmentSlotsEquipmentItem.Svr_Drop();
+            // Remove the item in the equipmentslot.
+            equipmentSlot.Svr_RemoveItem();
+        }
+        // Equip the new item in the equipment slot.
+        equipmentSlot.Svr_EquipItem(newItem);
+        newItem.TryGetComponent(out EquipmentItem newEquipmentItem);
+        // Assign the new item to this player and parent to playerhands.
+        newEquipmentItem?.Svr_Pickup(playerHands, connectionToClient);
+        // Hide the new item since we're not using it, only equipping it.
+        newEquipmentItem?.Svr_HideItem();
+    }
+
+    [Server]
+    private void Svr_SelectedSlotItemChange(GameObject oldItem, GameObject newItem)
     {
         ItemInHands = newItem;
     }
@@ -395,7 +461,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     [Server]
     public void Svr_SelectSlot(int slotIndex)
     {
-        if (slotIndex+1 <= equipmentSlotsCount && slotIndex+1 >= 0)
+        if (slotIndex + 1 <= equipmentSlotsCount && slotIndex + 1 >= 0)
         {
             if (equipmentSlots[slotIndex] != null)
             {
@@ -406,7 +472,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
         }
     }
 
-    private IEnumerator MoveToHands(GameObject newItem)
+    private IEnumerator SmoothMoveToHands(GameObject newItem)
     {
         while (!Equals(newItem.transform.position, playerHands.position)
                 && !Equals(newItem.transform.rotation, playerHands.rotation))
@@ -425,6 +491,11 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
             }
         }
     }
+    private void MoveToHands(GameObject newItem)
+    {
+        newItem.transform.position = playerHands.position;
+        newItem.transform.rotation = playerHands.rotation;
+    }
 
     [Server]
     private void Svr_EquipItem(GameObject item)
@@ -433,7 +504,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
         {
             equipmentItem.Svr_Pickup(playerHands, connectionToClient);
         }
-        SelectedEquipmentSlot.Svr_EquipItem(item, EquipmentType.None);
+        SelectedEquipmentSlot.Svr_EquipItem(item);
     }
     [Command]
     private void Cmd_RemoveItem(GameObject item)
