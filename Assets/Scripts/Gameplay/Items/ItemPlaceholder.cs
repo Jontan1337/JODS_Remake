@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class ItemPlaceholder : MonoBehaviour
 {
-    public Material canPlace;
-    public Material cannotPlace;
+    public Material material;
     public MeshRenderer[] renderers;
     public bool obstructed;
     // Start is called before the first frame update
@@ -17,7 +16,7 @@ public class ItemPlaceholder : MonoBehaviour
             var mats = r.materials;
             for (int i = 0; i < mats.Length; i++)
             {
-                mats[i] = canPlace;
+                mats[i] = material;
             }
             r.materials = mats;
         }
@@ -26,23 +25,15 @@ public class ItemPlaceholder : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         obstructed = true;
-        ChangeMaterials(obstructed);
+        ChangeColor(obstructed);
     }
     private void OnTriggerExit(Collider other)
     {
         obstructed = false;
-        ChangeMaterials(obstructed);
+        ChangeColor(obstructed);
     }
-    public void ChangeMaterials(bool obs)
+    public void ChangeColor(bool obs)
     {
-        foreach (MeshRenderer r in renderers)
-        {
-            var mats = r.materials;
-            for (int i = 0; i < mats.Length; i++)
-            {
-                mats[i] = obs ? cannotPlace : canPlace;
-            }
-            r.materials = mats;
-        }
+        material.SetInt("_IsObstructed", obs? 1 : 0);
     }
 }

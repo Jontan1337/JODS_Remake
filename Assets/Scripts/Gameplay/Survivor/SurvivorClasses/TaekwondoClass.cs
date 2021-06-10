@@ -109,6 +109,8 @@ public class TaekwondoClass : SurvivorClass
         unitsHit = null;
     }
 
+    // TO DO - ONLY FLY KICK WHEN SPRINTING FORWARD
+
     private bool CanFlyKick()
     {
         return !sController.isGrounded && sController.isSprinting && sController.IsMoving();

@@ -9,13 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6023377877881067872}
-  - component: {fileID: 6023377877880931326}
   - component: {fileID: 7794826148000260845}
   - component: {fileID: 6023377877880931325}
   - component: {fileID: 859936310558906703}
   - component: {fileID: 7698377363068380804}
   - component: {fileID: 6023377877880931324}
-  - component: {fileID: 463068383929845988}
   - component: {fileID: -3118859483579346572}
   m_Layer: 0
   m_Name: Bear Trap
@@ -41,18 +39,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6023377877880931326
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6023377877881029952}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d6b4dd7d612023e4cb267d4821362144, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!65 &7794826148000260845
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -213,23 +199,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 1
---- !u!114 &463068383929845988
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6023377877881029952}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f07ebbc8b28d79f4db9207a934bd7f63, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  type: 2
-  itemName: Bear trap
-  stopsMovement: 0
-  isInstant: 0
-  itemPrefab: {fileID: 0}
 --- !u!114 &-3118859483579346572
 MonoBehaviour:
   m_ObjectHideFlags: 0

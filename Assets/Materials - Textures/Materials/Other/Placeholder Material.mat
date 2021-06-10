@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-4024805700008181394
+--- !u!114 &-7136442131949022426
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,15 +20,15 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: PlaceholderCannot
-  m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
+  m_Name: Placeholder Material
+  m_Shader: {fileID: -6465566751694194690, guid: c0e7edd7ea2dcdd4697846af6d23caf3,
+    type: 3}
   m_ShaderKeywords: _ALPHAPREMULTIPLY_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
-  stringTagMap:
-    RenderType: Transparent
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
   disabledShaderPasses:
   - SHADOWCASTER
   m_SavedProperties:
@@ -105,8 +105,10 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 0
     m_Colors:
-    - _BaseColor: {r: 1, g: 0, b: 0.008803844, a: 0.46666667}
-    - _Color: {r: 1, g: 0, b: 0.008803844, a: 0.46666667}
+    - _BaseColor: {r: 0, g: 1, b: 0.42371416, a: 0.46666667}
+    - _CanPlaceColor: {r: 0.24448198, g: 0.7735849, b: 0.24448198, a: 0.7058824}
+    - _CannotPlaceColor: {r: 0.8773585, g: 0, b: 0, a: 0.7058824}
+    - _Color: {r: 0, g: 0.95345443, b: 1, a: 0.46666667}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []

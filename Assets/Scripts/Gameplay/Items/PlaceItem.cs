@@ -8,91 +8,88 @@ using UnityEngine.Events;
 public class PlaceItem : EquipmentItem
 {
 
-	[SerializeField]
-	private UnityEvent OnPlaced;
-	[SerializeField]
-	private GameObject placeHolder;
-	[SerializeField]
-	private LayerMask ignoreLayer;
-	[SerializeField]
-	private float maxPlaceRange = 3;
+	[SerializeField] private UnityEvent OnPlaced;
+	[SerializeField] private GameObject placeholder;
+	[SerializeField] private LayerMask ignoreLayer;
+	[SerializeField] private float maxPlaceRange = 3;
 
 	private LookController look;
-	public bool placeholderActive = true;
 
+	private void Start()
+	{
+		equipmentType = EquipmentType.None;
+	}
 
 	// Called when item is picked up and ready to be placed
 	public void Equipped()
 	{
-		placeHolder.SetActive(true);
-		//look = transform.root.GetComponent<LookController>();
+		placeholder.SetActive(true);
 		look = GetComponentInParent<LookController>();
-		print(look.transform.name);
 		PlaceHolderActiveCo = PlaceHolderActive();
 		StartCoroutine(PlaceHolderActiveCo);
 	}
 
-
+	// This coroutine makes the placeholder appear in front of the player
 	IEnumerator PlaceHolderActiveCo;
-
 	public IEnumerator PlaceHolderActive()
 	{
+
 		while (true)
 		{
-			// Rotates the placeholder to always stand upright
-			placeHolder.transform.eulerAngles = new Vector3(0, transform.rotation.eulerAngles.y, 0);
-
-			// If anything is within 3 meters in front of the player, 
-			// the placeholder will be positioned at the object
-			// otherwise the placeholder will be placed on the ground, 3 meters in front of the player
+			// If anything is within 'maxPlaceRange' meters in front of the player, 
+			// the placeholder will be positioned at the object.
+			// Otherwise the placeholder will be placed 'maxPlaceRange' meters in front of the player.
 			if (Physics.Raycast(look.playerCamera.transform.position, look.playerCamera.transform.forward, out RaycastHit hit, maxPlaceRange, ~ignoreLayer))
 			{
-				placeHolder.transform.position = PlaceholderPos(hit);
+				placeholder.transform.position = PlaceholderPos(hit);
 			}
 			else
 			{
-				placeHolder.transform.position = look.playerCamera.transform.position + look.playerCamera.transform.forward * maxPlaceRange;
+				placeholder.transform.position = look.playerCamera.transform.position + look.playerCamera.transform.forward * maxPlaceRange;
 			}
 
-
-			if (Physics.Raycast(placeHolder.transform.position, -Vector3.up, out RaycastHit hitDown, maxPlaceRange, ~ignoreLayer))
+			// Raycast pointing downwards from the placeholder.
+			// If the raycast hits anything the placeholder will be positioned at the object.
+			if (Physics.Raycast(placeholder.transform.position, -Vector3.up, out RaycastHit hitDown, maxPlaceRange, ~ignoreLayer))
 			{
-
-				placeHolder.transform.position = PlaceholderPos(hitDown);
+				placeholder.transform.position = PlaceholderPos(hitDown);
 			}
-			else
-			{
-				placeHolder.gameObject.SetActive(false);
-			}
+			// If downwards facing raycast doesn't hit anything, the placeholder is inactive.
+			placeholder.gameObject.SetActive(hitDown.transform);
 
-			// TO DO - DEACTIVATE GAMEOBJECT WHEN LOOKING UP??
 
+			// Rotates the placeholder to always stand upright
+
+
+			// TO DO PÅ MANDAG
+			// IF 15 DEGREE SLOPE OBSTRUCT
+
+			placeholder.transform.eulerAngles = new Vector3(0, transform.rotation.eulerAngles.y, 0);
+			placeholder.transform.rotation = Quaternion.FromToRotation(placeholder.transform.up, hitDown.normal) * placeholder.transform.rotation;
 			yield return null;
 		}
 	}
 
+	// The y position is raised slightly to avoid the placeholder overlapping with the ground
 	Vector3 PlaceholderPos(RaycastHit hit)
 	{
 		return new Vector3(hit.point.x, hit.point.y + 0.01f, hit.point.z);
 	}
 
 
+	// If the placeholder isn't obstructed, replaces the placeholder with the item, and removes the placeholder.
 	public void Place()
 	{
-		print("placed");
-		if (!placeHolder.GetComponent<ItemPlaceholder>().obstructed)
+		if (!placeholder.GetComponent<ItemPlaceholder>().obstructed)
 		{
 			OnPlaced?.Invoke();
-
-			transform.position = placeHolder.transform.position;
-			transform.rotation = placeHolder.transform.rotation;
+			transform.position = placeholder.transform.position;
+			transform.rotation = placeholder.transform.rotation;
 			transform.parent = null;
 			StopCoroutine(PlaceHolderActiveCo);
-			//TEMP FIX
 			authController.Svr_RemoveAuthority();
 			Unbind();
-			Destroy(placeHolder);
-
+			Destroy(placeholder);
 		}
 	}
 	protected override void OnLMBPerformed(InputAction.CallbackContext obj)
@@ -100,11 +97,11 @@ public class PlaceItem : EquipmentItem
 		Place();
 	}
 
-
 	protected override void OnDropPerformed(InputAction.CallbackContext obj)
 	{
-		NetworkServer.Destroy(gameObject);
-		//Cmd_DestroyGameObject();
+		StopAllCoroutines();
+		Unbind();
+		Cmd_DestroyGameObject();
 	}
 
 	[Command]
@@ -121,6 +118,8 @@ public class PlaceItem : EquipmentItem
 		Equipped();
 	}
 
+
+	// Makes a child object with identical appearance. 
 	[ContextMenu("Create Placeholder")]
 	void CreatePlaceHolder()
 	{
