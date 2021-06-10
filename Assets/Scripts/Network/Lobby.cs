@@ -19,6 +19,7 @@ public class Lobby : NetworkManager
     public GameObject MainMenuPanel;
     public GameObject mainCamera;
     public LobbySeat[] playerSeats;
+    public GameObject loadingScreen;
     [Header("Prefabs")]
     public GameObject playerSpawner;
     public GameObject MatchManager;
@@ -63,6 +64,8 @@ public class Lobby : NetworkManager
         MMPanel.SetActive(false);
         LobbyPanel.SetActive(false);
         MainMenuPanel.SetActive(true);
+        DontDestroyOnLoad(loadingScreen);
+        loadingScreen.SetActive(false);
     }
     //Match list join
     public void MMJoinMatch(Uri uri)
@@ -164,6 +167,20 @@ public class Lobby : NetworkManager
             GameObject playerSpawnerInstance = Instantiate(playerSpawner);
             NetworkServer.Spawn(playerSpawnerInstance);
         }
+    }
+
+    public override void OnClientSceneChanged(NetworkConnection conn)
+    {
+        loadingScreen.SetActive(false);
+
+        base.OnClientSceneChanged(conn);
+    }
+
+    public override void OnServerChangeScene(string newSceneName)
+    {
+        loadingScreen.SetActive(true);
+
+        base.OnServerChangeScene(newSceneName);
     }
 
     public override void OnServerError(NetworkConnection conn, int errorCode)
