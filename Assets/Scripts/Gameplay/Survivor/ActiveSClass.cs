@@ -5,8 +5,7 @@ using UnityEngine;
 
 public class ActiveSClass : NetworkBehaviour, IDamagable
 {
-	//[SyncVar(hook = nameof(SetSurvivorClassSettings))] public SurvivorClass sClass;
-	public SurvivorClass sClass;
+	[SyncVar(hook = nameof(SetSurvivorClassSettings))] public SurvivorClass sClass;
 	private SurvivorController sController;
 
 	[SerializeField] private SurvivorSO survivorSO;
@@ -29,6 +28,37 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	private bool isDead;
 
 	public bool test;
+	/*
+	#region Serialization
+
+	public override bool OnSerialize(NetworkWriter writer, bool initialState)
+	{
+		if (!initialState)
+		{
+			writer.WriteSurvivorClass(sClass);
+			return true;
+		}
+		else
+		{
+			writer.WriteSurvivorClass(sClass);
+			return true;
+		}
+	}
+	public override void OnDeserialize(NetworkReader reader, bool initialState)
+	{
+		if (!initialState)
+		{
+			reader.ReadSurvivorClass();
+		}
+		else
+		{
+			reader.ReadSurvivorClass();
+		}
+	}
+	#endregion
+	*/
+
+
 	private void Start()
 	{
 		if (test) SetSurvivorClass(survivorSO);
@@ -126,14 +156,9 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 		selectedClass.transform.SetParent(gameObject.transform);
 
 		NetworkServer.Spawn(selectedClass, gameObject);
-
-		Rpc_SpawnClass(selectedClass);
-	}
-	[ClientRpc]
-	private void Rpc_SpawnClass(GameObject selectedClass)
-    {
 		sClass = selectedClass.GetComponent<SurvivorClass>();
 	}
+
 
 	public Teams Team => Teams.Player;
 	[Server]

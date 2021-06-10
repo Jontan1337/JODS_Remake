@@ -9,6 +9,32 @@ public class EngineerClass : SurvivorClass
 
     PlayerEquipment playerEquipment;
 
+    #region Serialization
+
+    public override bool OnSerialize(NetworkWriter writer, bool initialState)
+    {
+        if (!initialState)
+        {
+            return true;
+        }
+        else
+        {
+            return true;
+        }
+    }
+    public override void OnDeserialize(NetworkReader reader, bool initialState)
+    {
+        if (!initialState)
+        {
+
+        }
+        else
+        {
+
+        }
+    }
+    #endregion
+
     private void Start()
 	{
         abilityIsToggled = true;

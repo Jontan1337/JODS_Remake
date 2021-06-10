@@ -5,6 +5,32 @@ using UnityEngine;
 
 public class SoldierClass : SurvivorClass
 {
+    #region Serialization
+
+    public override bool OnSerialize(NetworkWriter writer, bool initialState)
+    {
+        if (!initialState)
+        {
+            return true;
+        }
+        else
+        {
+            return true;
+        }
+    }
+    public override void OnDeserialize(NetworkReader reader, bool initialState)
+    {
+        if (!initialState)
+        {
+
+        }
+        else
+        {
+
+        }
+    }
+    #endregion
+
     public override void ActiveAbility()
     {
 		EquipROcketLauncher();
