@@ -64,11 +64,25 @@ public class PlayerSetup : NetworkBehaviour
 
     public override void OnStartServer()
     {
-        NetworkTest.RelayOnServerAddPlayer += Svr_UpdateVars;
+        if (NetworkTest.Instance != null)
+        {
+            NetworkTest.RelayOnServerAddPlayer += Svr_UpdateVars;
+        }
+        else
+        {
+            Lobby.RelayOnServerSynchronize += Svr_UpdateVars;
+        }
     }
     public override void OnStopServer()
     {
-        NetworkTest.RelayOnServerAddPlayer -= Svr_UpdateVars;
+        if (NetworkTest.Instance != null)
+        {
+            NetworkTest.RelayOnServerAddPlayer -= Svr_UpdateVars;
+        }
+        else
+        {
+            Lobby.RelayOnServerSynchronize -= Svr_UpdateVars;
+        }
     }
     public override void OnStopClient()
     {
@@ -217,17 +231,14 @@ public class PlayerSetup : NetworkBehaviour
             case ActiveType.OnlyLocal:
                 disableIfNotPlayer.Add(GOItem);
                 enableIfPlayer.Add(GOItem);
-                //LocalSetup(prefabItem, parentTransform);
                 break;
             case ActiveType.OnlyOthers:
                 disableIfPlayer.Add(GOItem);
                 enableIfNotPlayer.Add(GOItem);
-                //Rpc_ClientSetup(prefabItem, parentTransform);
                 break;
             case ActiveType.All:
                 enableIfPlayer.Add(GOItem);
                 enableIfNotPlayer.Add(GOItem);
-                //Rpc_TargetSetup(connectionToClient, prefabItem, parentTransform);
                 break;
             default:
                 break;
@@ -244,41 +255,6 @@ public class PlayerSetup : NetworkBehaviour
         dynamicallySpawnedItems.Add(GOItem);
         return GOItem;
     }
-
-    //private void LocalSetup(GameObject prefabItem, Transform parentTransform)
-    //{
-    //    GameObject GOItem = Instantiate(prefabItem);
-    //    NetworkServer.Spawn(GOItem, connectionToClient);
-    //    GOItem.transform.SetParent(transform);
-    //    onSpawnItem?.Invoke(GOItem);
-    //}
-    //[ClientRpc]
-    //private void Rpc_ClientSetup(GameObject prefabItem, Transform parentTransform)
-    //{
-    //    GameObject GOItem = Instantiate(prefabItem);
-    //    NetworkServer.Spawn(GOItem, connectionToClient);
-    //    GOItem.transform.SetParent(parentTransform);
-    //    onSpawnItem?.Invoke(GOItem);
-    //}
-    //[TargetRpc]
-    //private void Rpc_TargetSetup(NetworkConnection target, GameObject prefabItem, Transform parentTransform)
-    //{
-    //    GameObject GOItem = Instantiate(prefabItem);
-    //    NetworkServer.Spawn(GOItem, connectionToClient);
-    //    GOItem.transform.SetParent(parentTransform);
-    //    onSpawnItem?.Invoke(GOItem);
-    //}
-
-    //[Server]
-    //private void Svr_SpawnHands()
-    //{
-    //    GameObject GOPlayerHands = Instantiate(playerHands);
-    //    NetworkServer.Spawn(GOPlayerHands, connectionToClient);
-    //    GOPlayerHands.transform.SetParent(playerHandsParent);
-    //    GOPlayerHands.transform.localPosition = new Vector3(0.25f, 0f, 0.6f);
-    //    playerEquipment.playerHands = GOPlayerHands.transform;
-    //}
-
 
     //[Command]
     //public void CmdChangeName(string newName)

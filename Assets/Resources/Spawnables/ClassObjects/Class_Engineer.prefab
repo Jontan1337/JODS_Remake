@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1442985027432273231}
   - component: {fileID: 6874128659228680113}
   - component: {fileID: 8944380063531168799}
-  - component: {fileID: -5308975525557647320}
+  - component: {fileID: 1982977903136718284}
   - component: {fileID: -5603411125010923598}
   m_Layer: 0
   m_Name: Class_Engineer
@@ -68,7 +68,7 @@ MonoBehaviour:
   abilityIsToggled: 0
   abilityObject: {fileID: 7454836186167015561, guid: 0344dc9be255aeb47b8c882205c4c639,
     type: 3}
---- !u!114 &-5308975525557647320
+--- !u!114 &1982977903136718284
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -77,15 +77,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 1442985027432273228}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f74aedd71d9a4f55b3ce499326d45fb, type: 3}
+  m_Script: {fileID: 11500000, guid: f48d9adfb06982e49a79b02c970de21f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  clientAuthority: 0
-  localPositionSensitivity: 0.01
-  localRotationSensitivity: 0.01
-  localScaleSensitivity: 0.01
+  parentData: {fileID: 0}
+  positionData: {x: 0, y: 0, z: 0}
+  rotationData: {x: 0, y: 0, z: 0, w: 0}
+  syncParent: 1
+  syncPosition: 0
+  syncRotation: 0
+  syncVisibility: 0
+  objectRenderer: {fileID: 0}
 --- !u!114 &-5603411125010923598
 MonoBehaviour:
   m_ObjectHideFlags: 0

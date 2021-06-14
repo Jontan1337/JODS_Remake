@@ -55,5 +55,14 @@ public class PlayerSpawner : NetworkBehaviour
             }
             NetworkServer.Destroy(oldPlayerInstance);
         }
+
+        //StartCoroutine(IESpawnPlayer(conn, _class, _isMaster));
+    }
+
+    IEnumerator IESpawnPlayer(NetworkConnection conn, string _class, bool _isMaster)
+    {
+        yield return new WaitForSeconds(0.2f);
+
+        
     }
 }

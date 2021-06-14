@@ -91,7 +91,14 @@ public class EquipmentSlot : NetworkBehaviour
     // ---- ON START ----
     public override void OnStartServer()
     {
-        NetworkTest.RelayOnServerAddPlayer += Svr_UpdateVars;
+        if (NetworkTest.Instance != null)
+        {
+            NetworkTest.RelayOnServerAddPlayer += Svr_UpdateVars;
+        }
+        else
+        {
+            Lobby.RelayOnServerSynchronize += Svr_UpdateVars;
+        }
     }
     public override void OnStartAuthority()
     {
@@ -101,7 +108,14 @@ public class EquipmentSlot : NetworkBehaviour
     // ---- ON STOP ----
     public override void OnStopServer()
     {
-        NetworkTest.RelayOnServerAddPlayer -= Svr_UpdateVars;
+        if (NetworkTest.Instance != null)
+        {
+            NetworkTest.RelayOnServerAddPlayer -= Svr_UpdateVars;
+        }
+        else
+        {
+            Lobby.RelayOnServerSynchronize -= Svr_UpdateVars;
+        }
     }
     #endregion
 

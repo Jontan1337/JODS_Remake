@@ -17,8 +17,25 @@ public class NetworkTest : NetworkManager
 
     NetworkManager manager;
 
+    private static NetworkTest instance;
+
+    public static NetworkTest Instance
+    {
+        get { return instance; }
+        private set { instance = value; }
+    }
+
     public override void Start()
     {
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+
         if (hostOnly)
         {
             singleton.StartHost();

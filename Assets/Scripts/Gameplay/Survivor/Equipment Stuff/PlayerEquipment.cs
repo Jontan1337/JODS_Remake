@@ -185,7 +185,14 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     #region NetworkBehaviour Callbacks
     public override void OnStartServer()
     {
-        NetworkTest.RelayOnServerAddPlayer += Svr_UpdateVars;
+        if (NetworkTest.Instance != null)
+        {
+            NetworkTest.RelayOnServerAddPlayer += Svr_UpdateVars;
+        }
+        else
+        {
+            Lobby.RelayOnServerSynchronize += Svr_UpdateVars;
+        }
     }
 
     public override void OnStartAuthority()
@@ -200,7 +207,14 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
 
     public override void OnStopServer()
     {
-        NetworkTest.RelayOnServerAddPlayer -= Svr_UpdateVars;
+        if (NetworkTest.Instance != null)
+        {
+            NetworkTest.RelayOnServerAddPlayer -= Svr_UpdateVars;
+        }
+        else
+        {
+            Lobby.RelayOnServerSynchronize -= Svr_UpdateVars;
+        }
     }
     public override void OnStopAuthority()
     {

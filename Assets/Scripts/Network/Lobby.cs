@@ -37,6 +37,8 @@ public class Lobby : NetworkManager
 
     private bool isInitialized = false;
 
+    private static Action<NetworkConnection> RelayOnServerPlayerReady;
+
     #region Singleton
     public static Lobby Instance;
     #endregion
@@ -289,10 +291,13 @@ public class Lobby : NetworkManager
     #region New
 
     public static event Action<NetworkConnection, string, bool> OnServerReadied;
+    public static event Action<NetworkConnection> RelayOnServerSynchronize;
 
     public override void OnServerReady(NetworkConnection conn)
     {
         base.OnServerReady(conn);
+
+        if (SceneManager.GetActiveScene().path != gameplayScene) return;
 
         LobbyPlayer player = null;
 
@@ -304,7 +309,18 @@ public class Lobby : NetworkManager
             }
         }
 
-        OnServerReadied?.Invoke(conn,player.survivorSO.name,player.isMaster);
+        StartCoroutine(InvokeOnServerReady(conn, player.survivorSO.name, player.isMaster));
+    }
+
+    private IEnumerator InvokeOnServerReady(NetworkConnection conn, string _class, bool isMaster)
+    {
+        yield return new WaitForSeconds(0.2f);
+        OnServerReadied?.Invoke(conn, _class, isMaster);
+        yield return new WaitForSeconds(0.2f);
+        if (conn.connectionId != 0)
+        {
+            RelayOnServerSynchronize?.Invoke(conn);
+        }
     }
 
     #endregion

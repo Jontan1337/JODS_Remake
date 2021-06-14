@@ -28,37 +28,33 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	private bool isDead;
 
 	public bool test;
-	/*
+	
 	#region Serialization
-
-	public override bool OnSerialize(NetworkWriter writer, bool initialState)
-	{
-		if (!initialState)
-		{
-			writer.WriteSurvivorClass(sClass);
-			return true;
-		}
-		else
-		{
-			writer.WriteSurvivorClass(sClass);
-			return true;
-		}
-	}
-	public override void OnDeserialize(NetworkReader reader, bool initialState)
-	{
-		if (!initialState)
-		{
-			reader.ReadSurvivorClass();
-		}
-		else
-		{
-			reader.ReadSurvivorClass();
-		}
-	}
+	//public override bool OnSerialize(NetworkWriter writer, bool initialState)
+	//{
+	//	if (!initialState)
+	//	{
+	//		writer.WriteSurvivorClass(sClass);
+	//	}
+	//	else
+	//	{
+	//		writer.WriteSurvivorClass(sClass);
+	//	}
+	//	return true;
+	//}
+	//public override void OnDeserialize(NetworkReader reader, bool initialState)
+	//{
+	//	if (!initialState)
+	//	{
+	//		sClass = reader.ReadSurvivorClass();
+	//	}
+	//	else
+	//	{
+	//		sClass = reader.ReadSurvivorClass();
+	//	}
+	//}
 	#endregion
-	*/
-
-
+	
 	private void Start()
 	{
 		if (test) SetSurvivorClass(survivorSO);
@@ -152,12 +148,19 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	[Command]
 	private void Cmd_SpawnClass()
 	{
+		StartCoroutine(Spawnshit());
+	}
+
+	IEnumerator Spawnshit()
+    {
+		yield return new WaitForSeconds(0.2f);
+
 		GameObject selectedClass = Instantiate(survivorSO.classScript);
+		NetworkServer.Spawn(selectedClass, gameObject);
 		selectedClass.transform.SetParent(gameObject.transform);
 
-		NetworkServer.Spawn(selectedClass, gameObject);
 		sClass = selectedClass.GetComponent<SurvivorClass>();
-	}
+    }
 
 
 	public Teams Team => Teams.Player;
