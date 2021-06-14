@@ -12,6 +12,7 @@ public class PlaceItem : EquipmentItem
 	[SerializeField] private GameObject placeholder;
 	[SerializeField] private LayerMask ignoreLayer;
 	[SerializeField] private float maxPlaceRange = 3;
+	[SerializeField, Range(0, 1)] private float maxSlopeAngle = 0.965f;
 
 	private LookController look;
 
@@ -36,6 +37,7 @@ public class PlaceItem : EquipmentItem
 
 		while (true)
 		{
+
 			// If anything is within 'maxPlaceRange' meters in front of the player, 
 			// the placeholder will be positioned at the object.
 			// Otherwise the placeholder will be placed 'maxPlaceRange' meters in front of the player.
@@ -50,22 +52,26 @@ public class PlaceItem : EquipmentItem
 
 			// Raycast pointing downwards from the placeholder.
 			// If the raycast hits anything the placeholder will be positioned at the object.
+			// If downwards facing raycast doesn't hit anything, the placeholder is inactive. Obstructed is set to false, since it doesnt do TriggerExit.
 			if (Physics.Raycast(placeholder.transform.position, -Vector3.up, out RaycastHit hitDown, maxPlaceRange, ~ignoreLayer))
 			{
 				placeholder.transform.position = PlaceholderPos(hitDown);
+
 			}
-			// If downwards facing raycast doesn't hit anything, the placeholder is inactive.
+			else
+			{
+				placeholder.GetComponent<ItemPlaceholder>().Obstructed(false);
+			}
 			placeholder.gameObject.SetActive(hitDown.transform);
 
 
+
 			// Rotates the placeholder to always stand upright
-
-
-			// TO DO PÅ MANDAG
-			// IF 15 DEGREE SLOPE OBSTRUCT
-
 			placeholder.transform.eulerAngles = new Vector3(0, transform.rotation.eulerAngles.y, 0);
-			placeholder.transform.rotation = Quaternion.FromToRotation(placeholder.transform.up, hitDown.normal) * placeholder.transform.rotation;
+			if (hitDown.normal.y > maxSlopeAngle)
+			{
+				placeholder.transform.rotation = Quaternion.FromToRotation(placeholder.transform.up, hitDown.normal) * placeholder.transform.rotation;
+			}
 			yield return null;
 		}
 	}
@@ -80,7 +86,7 @@ public class PlaceItem : EquipmentItem
 	// If the placeholder isn't obstructed, replaces the placeholder with the item, and removes the placeholder.
 	public void Place()
 	{
-		if (!placeholder.GetComponent<ItemPlaceholder>().obstructed)
+		if (!placeholder.GetComponent<ItemPlaceholder>().obstructed && placeholder.activeSelf)
 		{
 			OnPlaced?.Invoke();
 			transform.position = placeholder.transform.position;
