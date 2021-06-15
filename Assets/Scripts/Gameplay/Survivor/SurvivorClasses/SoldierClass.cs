@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class SoldierClass : SurvivorClass
 {
+    PlayerEquipment playerEquipment;
+
     #region Serialization
 
     public override bool OnSerialize(NetworkWriter writer, bool initialState)
@@ -31,18 +33,26 @@ public class SoldierClass : SurvivorClass
     }
     #endregion
 
+    private void Start()
+    {
+        abilityIsToggled = true;
+    }
+
     public override void ActiveAbility()
     {
-		EquipROcketLauncher();
+		EquipRocketLauncher();
 	}
 
-    void EquipROcketLauncher()
+    void EquipRocketLauncher()
 	{
 		GameObject rocketLauncher = Instantiate(abilityObject, transform.position, transform.rotation);
 		NetworkServer.Spawn(rocketLauncher);
-		print(rocketLauncher.transform.name);
-		transform.parent.GetComponentInChildren<PlayerEquipment>()?.Svr_Equip(rocketLauncher, EquipmentType.None);
-	}
+
+        playerEquipment = transform.parent.GetComponentInChildren<PlayerEquipment>();
+
+        playerEquipment?.Svr_Equip(rocketLauncher, EquipmentType.None);
+        rocketLauncher.GetComponent<EquipmentItem>().Svr_Pickup(playerEquipment.playerHands, connectionToClient);
+    }
 
 
 }

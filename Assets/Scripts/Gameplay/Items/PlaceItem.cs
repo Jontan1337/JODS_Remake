@@ -52,11 +52,10 @@ public class PlaceItem : EquipmentItem
 
 			// Raycast pointing downwards from the placeholder.
 			// If the raycast hits anything the placeholder will be positioned at the object.
-			// If downwards facing raycast doesn't hit anything, the placeholder is inactive. Obstructed is set to false, since it doesnt do TriggerExit.
+			// If downwards facing raycast doesn't hit anything, the placeholder is inactive. Obstructed is set to false, since it doesn't do OnTriggerExit.
 			if (Physics.Raycast(placeholder.transform.position, -Vector3.up, out RaycastHit hitDown, maxPlaceRange, ~ignoreLayer))
 			{
 				placeholder.transform.position = PlaceholderPos(hitDown);
-
 			}
 			else
 			{
@@ -66,7 +65,7 @@ public class PlaceItem : EquipmentItem
 
 
 
-			// Rotates the placeholder to always stand upright
+			// Rotates the placeholder to always stand upright, even on slopes.
 			placeholder.transform.eulerAngles = new Vector3(0, transform.rotation.eulerAngles.y, 0);
 			if (hitDown.normal.y > maxSlopeAngle)
 			{

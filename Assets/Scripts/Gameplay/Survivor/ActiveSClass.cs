@@ -28,7 +28,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	private bool isDead;
 
 	public bool test;
-	
+
 	#region Serialization
 	//public override bool OnSerialize(NetworkWriter writer, bool initialState)
 	//{
@@ -54,11 +54,10 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	//	}
 	//}
 	#endregion
-	
+
 	private void Start()
 	{
 		if (test) SetSurvivorClass(survivorSO);
-
 		JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => Cmd_Ability();
 
 	}
@@ -73,8 +72,8 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 				sClass.ActiveAbility();
 				if (sClass.abilityActivatedSuccesfully)
 				{
-					StartCoroutine(AbilityCooldown());
-                    sClass.abilityActivatedSuccesfully = false;
+					StartAbilityCo();
+					sClass.abilityActivatedSuccesfully = false;
 				}
 			}
 			else
@@ -97,33 +96,38 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 		abilityIsReady = true;
 	}
 
+	public void StartAbilityCo()
+	{
+		StartCoroutine(AbilityCooldown());
+	}
+
 	[ClientRpc]
 	public void Rpc_SetSurvivorClass(string _class)
-    {
+	{
 		List<SurvivorSO> survivorSOList = PlayableCharactersManager.instance.survivorSOList;
 		print("Rpc_SetSurvivorClass");
-	    foreach (SurvivorSO survivor in survivorSOList)
-        {
-            if (survivor.name == _class)
-            {
+		foreach (SurvivorSO survivor in survivorSOList)
+		{
+			if (survivor.name == _class)
+			{
 				print(survivor.name);
 				SetSurvivorClass(survivor);
-                break;
-            }
-        }
+				break;
+			}
+		}
 	}
 
 	public void SetSurvivorClass(SurvivorSO survivorSO)
 	{
 		this.survivorSO = survivorSO;
-        if (hasAuthority)
-        {
+		if (hasAuthority)
+		{
 			Cmd_SpawnClass();
-        }
+		}
 	}
 
 	private void SetSurvivorClassSettings(SurvivorClass oldValue, SurvivorClass newValue)
-    {
+	{
 		if (survivorSO.abilityObject)
 		{
 			newValue.abilityObject = survivorSO.abilityObject;
@@ -152,7 +156,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	}
 
 	IEnumerator Spawnshit()
-    {
+	{
 		yield return new WaitForSeconds(0.2f);
 
 		GameObject selectedClass = Instantiate(survivorSO.classScript);
@@ -160,14 +164,18 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 		selectedClass.transform.SetParent(gameObject.transform);
 
 		sClass = selectedClass.GetComponent<SurvivorClass>();
-    }
+	}
 
 
 	public Teams Team => Teams.Player;
 	[Server]
 	public void Svr_Damage(int damage, Transform target = null)
 	{
-		if (armor > 0) armor -= damage;
+		if (armor > 0)
+		{
+			armor -= damage;
+			armor = Mathf.Clamp(armor, 0, 100);
+		}
 		else health -= damage;
 		if (health <= 0)
 		{

@@ -4,23 +4,31 @@ using UnityEngine.AI;
 
 public class SoldierRocket : NetworkBehaviour
 {
-    private void Start()
-    {
-        Destroy(gameObject ,10f);
-    }
-    private void OnCollisionEnter(Collision collision)
+	[SerializeField] private ParticleSystem explosionEffect = null;
+
+	private void Start()
 	{
-        if (!isServer) return;
+		Destroy(gameObject, 10f);
+	}
+	private void OnCollisionEnter(Collision collision)
+	{
+		if (!isServer) return;
 
 		if (collision.gameObject.tag != "Player")
 		{
+			StartExplosionEffect();
 			Svr_Explode();
 		}
 	}
-    [Server]
+	[Server]
 	void Svr_Explode()
 	{
-        //Debug.Log("yeet");
-        GetComponent<IDamagable>()?.Svr_Damage(50);
+		GetComponent<IDamagable>()?.Svr_Damage(50);
+	}
+	private void StartExplosionEffect()
+	{
+		explosionEffect.Play();
+		explosionEffect.gameObject.transform.parent = null;
+		explosionEffect.GetComponent<SFXPlayer>()?.PlaySFX();
 	}
 }

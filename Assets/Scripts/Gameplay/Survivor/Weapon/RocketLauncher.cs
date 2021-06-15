@@ -4,52 +4,42 @@ using UnityEngine;
 using Mirror;
 using UnityEngine.InputSystem;
 
-public class RocketLauncher : NetworkBehaviour, IBindable, IEquippable
+public class RocketLauncher : EquipmentItem
 {
-    private GameObject rocketSpawnPos;
-    public GameObject rocket;
-    private int rocketSpeed = 5000;
-    private AuthorityController authController = null;
-    public string Name => throw new System.NotImplementedException();
-    public string ObjectName => gameObject.name;
-    public GameObject Item => gameObject;
-    public EquipmentType EquipmentType => EquipmentType.None;
+	public GameObject rocket;
+	private int rocketSpeed = 5000;
 
-    private void Start()
-    {
-        authController = GetComponent<AuthorityController>();
-        rocketSpawnPos = new GameObject("rocketSpawnPos");
-        rocketSpawnPos.transform.SetParent(transform);
-        rocketSpawnPos.transform.position = new Vector3(0.5f, 2, 0.5f);
-    }
-
-    public void Bind()
+	[Command]
+	void CmdRocketLaunch()
 	{
-        JODSInput.Controls.Survivor.LMB.performed += OnShoot;
-    }
-
-    public void Unbind()
-    {
-        JODSInput.Controls.Survivor.LMB.performed -= OnShoot;
-    }
-
-    void OnShoot(InputAction.CallbackContext context)
-	{
-        CmdRocketLaunch();
+		GameObject currentRocket = Instantiate(rocket, transform.position, transform.rotation);
+		NetworkServer.Spawn(currentRocket);
+		RpcRocketLaunch(currentRocket);
 	}
 
-    [Command]
-    void CmdRocketLaunch()
-    {
-        GameObject currentRocket = Instantiate(rocket, new Vector3(rocketSpawnPos.transform.position.x, rocketSpawnPos.transform.position.y, rocketSpawnPos.transform.position.z), transform.GetComponent<LookController>().playerCamera.transform.rotation);
-        NetworkServer.Spawn(currentRocket);
-        RpcRocketLaunch(currentRocket);
-    }
+	[ClientRpc]
+	void RpcRocketLaunch(GameObject currentRocket)
+	{
+		Rigidbody rb = currentRocket.GetComponent<Rigidbody>();
+		rb.AddForce(transform.forward * rocketSpeed);
+	}
 
-    [ClientRpc]
-    void RpcRocketLaunch(GameObject currentRocket)
-    {
-        Rigidbody rb = currentRocket.GetComponent<Rigidbody>();
-        rb.AddForce(transform.GetComponent<LookController>().playerCamera.transform.forward * rocketSpeed);
-    }
+	protected override void OnLMBPerformed(InputAction.CallbackContext obj)
+	{
+		CmdRocketLaunch();
+		GetComponentInParent<ActiveSClass>()?.StartAbilityCo();
+		Unbind();
+		Invoke("Cmd_DestroyGameObject", 1f);
+	}
+	protected override void OnDropPerformed(InputAction.CallbackContext obj)
+	{
+		Unbind();
+		Cmd_DestroyGameObject();
+	}
+
+	[Command]
+	private void Cmd_DestroyGameObject()
+	{
+		NetworkServer.Destroy(gameObject);
+	}
 }
