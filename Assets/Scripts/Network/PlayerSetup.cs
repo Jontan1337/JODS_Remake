@@ -162,7 +162,7 @@ public class PlayerSetup : NetworkBehaviour
 
             if (Survivor)
             {
-                gameObject.layer = 15; //Ignore Raycast Layer
+                gameObject.layer = 13; //Ignore Raycast Layer
                 playerNameText.text = playerName;
             }
 
