@@ -1187,10 +1187,13 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     public void Svr_Damage(int damage, Transform target = null)
     {
         if (isDead) return;
-        if (CloserThanTarget(target))
+        if (target != null)
         {
-            Debug.Log("I got shot by someone closer than my target");
-            AcquireTarget(target,false, true);
+            if (CloserThanTarget(target))
+            {
+                Debug.Log("I got shot by someone closer than my target");
+                AcquireTarget(target, false, true);
+            }
         }
 
         health -= damage;

@@ -24,12 +24,16 @@ public class ItemPlaceholder : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        obstructed = true;
-        ChangeColor(obstructed);
+        Obstructed(true);
     }
     private void OnTriggerExit(Collider other)
     {
-        obstructed = false;
+        Obstructed(false);
+    }
+
+    public void Obstructed(bool obstructed)
+	{
+        this.obstructed = obstructed;
         ChangeColor(obstructed);
     }
     public void ChangeColor(bool obs)
