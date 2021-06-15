@@ -44,6 +44,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pools:
+  - tag: Explosion Big
+    prefab:
+    - {fileID: 7159264716783688873, guid: e3f1918a78208254d809e8506d7b2cf6, type: 3}
+    amount: 5
+  - tag: Explosion Medium
+    prefab:
+    - {fileID: 7159264716783688873, guid: b57da175be56b144a951a13a1b2f05e9, type: 3}
+    amount: 5
   - tag: Turret Smoke
     prefab:
     - {fileID: 6798459583282562993, guid: 1fad6ce93e3bcea4ea0cc6a43ba690e1, type: 3}
