@@ -131,77 +131,81 @@ public class Master : NetworkBehaviour
 
     public override void OnStartAuthority()
     {
+        AddBinds();
+
         //Add (MASTER to end of name)
         name += $" ({masterSO.masterName})";
 
         SetMasterUnits();
         InitializeUnitButtons();
 
-        //Do basic startup for master, if player has authority (If the player is the master)
-        if (hasAuthority)
-        {
-            //Setup the different camera modes
-            flying.flyingController = flying.camera.GetComponent<Master_FlyingController>();
-            flying.flyingController.master = this; //Assign the reference.
-            inTopdownView = false; //This bool is simply to stop a raycast from being performed.
-             //The bool will be set to true in this function.
-            SwitchCamera(true);
+        //Setup the different camera modes
+        flying.flyingController = flying.camera.GetComponent<Master_FlyingController>();
+        flying.flyingController.master = this; //Assign the reference.
+        inTopdownView = false; //This bool is simply to stop a raycast from being performed.
+            //The bool will be set to true in this function.
+        SwitchCamera(true);
 
-            //Default starting energy stats
-            stats.currentEnergy = 50;
-            stats.energyRechargeIncrement = 1;
+        //Default starting energy stats
+        stats.currentEnergy = 50;
+        stats.energyRechargeIncrement = 1;
 
-            //Energy UI visuals
-            UI.energyFillImage.color = masterSO.energyColor;
-            UI.energyUseFillImage.color = masterSO.energyUseColor;
+        //Energy UI visuals
+        UI.energyFillImage.color = masterSO.energyColor;
+        UI.energyUseFillImage.color = masterSO.energyUseColor;
 
-            tintLight.color = masterSO.topdownLightColor;
-            UI.screenTint.color = masterSO.screenTintColor;
+        tintLight.color = masterSO.topdownLightColor;
+        UI.screenTint.color = masterSO.screenTintColor;
 
-            //Update the Energy UI
-            UpdateEnergyUI();
-            UpdateEnergyUseUI(0);
+        //Update the Energy UI
+        UpdateEnergyUI();
+        UpdateEnergyUseUI(0);
 
-            //Other master visuals
+        //Other master visuals
 
-            //Change the Flying controller's marker visuals (Mesh and colour)
-            flying.flyingController.ChangeMarker(masterSO.markerMesh, masterSO.markerColor);
-            EnableFlyingMarker(false); //Disable the marker on start. Default view mode is Topdown.
+        //Change the Flying controller's marker visuals (Mesh and colour)
+        flying.flyingController.ChangeMarker(masterSO.markerMesh, masterSO.markerColor);
+        EnableFlyingMarker(false); //Disable the marker on start. Default view mode is Topdown.
 
-            //Change Select's position marker visuals (Mesh and colour)
-            Material markerMat = unitDestinationMarker.GetComponent<MeshRenderer>().sharedMaterial;
-            markerMat.color = masterSO.selectPositionMarkerColor;
-            markerMat.SetColor("_EmissionColor", masterSO.selectPositionMarkerColor);
-            unitDestinationMarker.GetComponent<MeshFilter>().mesh = masterSO.selectPositionMarkerMesh;
-            unitDestinationMarker.transform.SetParent(null);
+        //Change Select's position marker visuals (Mesh and colour)
+        Material markerMat = unitDestinationMarker.GetComponent<MeshRenderer>().sharedMaterial;
+        markerMat.color = masterSO.selectPositionMarkerColor;
+        markerMat.SetColor("_EmissionColor", masterSO.selectPositionMarkerColor);
+        unitDestinationMarker.GetComponent<MeshFilter>().mesh = masterSO.selectPositionMarkerMesh;
+        unitDestinationMarker.transform.SetParent(null);
 
-            SetUnitDestinationMarker(false);
+        SetUnitDestinationMarker(false);
 
-            //-----------------------
+        //-----------------------
 
-            ActivateUpgradeDecisions(false);
+        ActivateUpgradeDecisions(false);
 
-            //Coroutines
+        //Coroutines
 
-            StartCoroutine(EnergyCoroutine());
+        StartCoroutine(EnergyCoroutine());
 
-            StartCoroutine(UpgradeCoroutine(stats.timeUntillNextUpgrade));
+        StartCoroutine(UpgradeCoroutine(stats.timeUntillNextUpgrade));
 
-            //Misc
-            spawnSmokeAudio = spawnSmokeEffect.GetComponent<AudioSource>();
-            spawnSmokeAudio.clip = masterSO.spawnSound;
+        //Misc
+        spawnSmokeAudio = spawnSmokeEffect.GetComponent<AudioSource>();
+        spawnSmokeAudio.clip = masterSO.spawnSound;
 
-            globalAudio = GetComponent<AudioSource>();
-            globalAudio.clip = masterSO.globalSound;
+        globalAudio = GetComponent<AudioSource>();
+        globalAudio.clip = masterSO.globalSound;
 
-            //Attach the master's custom script to the gameobject.
-            System.Type masterType = System.Type.GetType(masterSO.masterClass.name + ",Assembly-CSharp");
-            mClass = (MasterClass)gameObject.AddComponent(masterType);
-            mClass.UseSpecial();
-        }
+        //Attach the master's custom script to the gameobject.
+        System.Type masterType = System.Type.GetType(masterSO.masterClass.name + ",Assembly-CSharp");
+        mClass = (MasterClass)gameObject.AddComponent(masterType);
+        mClass.UseSpecial();
     }
 
-    private void OnEnable()
+    public override void OnStopAuthority()
+    {
+        RemoveBinds();
+    }
+    #region Binds
+
+    private void AddBinds()
     {
         // Left Mouse Input
         JODSInput.Controls.Master.LMB.performed += ctx => LMB();
@@ -228,7 +232,7 @@ public class Master : NetworkBehaviour
         JODSInput.Controls.Master.ChangeCamera.performed += ctx => SwitchCamera(!inTopdownView);
     }
 
-    private void OnDisable()
+    private void RemoveBinds()
     {
         // Left Mouse Input
         JODSInput.Controls.Master.LMB.performed -= ctx => LMB();
@@ -254,6 +258,7 @@ public class Master : NetworkBehaviour
         //Camera Change Input
         JODSInput.Controls.Master.ChangeCamera.performed -= ctx => SwitchCamera(!inTopdownView);
     }
+    #endregion
 
     private void OnValidate()
     {
@@ -926,10 +931,10 @@ public class Master : NetworkBehaviour
             Vector3 pPos = new Vector3(survivor.transform.position.x, pos.y, survivor.transform.position.z);
             Vector3 dir = pPos - pos;
             //Do a raycast, to check if it hits anything on the way to the survivor.
-            if (Physics.Raycast(pos, dir, out RaycastHit newhit, 100f))
+            if (Physics.Raycast(pos, dir, out RaycastHit newhit, spawnCheckRadius))
             {
                 //If it hits something, then check if it is a player or not.
-                if (newhit.collider.CompareTag("Player"))
+                if (newhit.transform == survivor.transform)
                 {
                     //If it does hit the survivor, then first check if it is within the survivor's view angle.
                     dir = pos - pPos;

@@ -447,7 +447,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     private void IncreaseStats()
     {
         float multiplier = 1 + (upgradeMultiplier * (unitLevel - 1));
-        print(multiplier);
+        print("Stats multiplier not implemented (" + multiplier + ")");
     }
 
     #endregion
