@@ -171,9 +171,11 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	[Server]
 	public void Svr_Damage(int damage, Transform target = null)
 	{
+		print(damage);
 		if (armor > 0)
 		{
-			armor -= damage;
+			health -= Mathf.RoundToInt(damage * 0.4f);
+			armor -= Mathf.RoundToInt(damage * 0.6f);
 			armor = Mathf.Clamp(armor, 0, 100);
 		}
 		else health -= damage;

@@ -16,11 +16,6 @@ public class PlaceItem : EquipmentItem
 
 	private LookController look;
 
-	private void Start()
-	{
-		equipmentType = EquipmentType.None;
-	}
-
 	// Called when item is picked up and ready to be placed
 	public void Equipped()
 	{
