@@ -256,7 +256,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
             print($"{name}: lost {value} health. Current health: {health}");
             if (health > 0)
             {
-                Die();
+                Svr_Die();
             }
         }
     }
@@ -751,9 +751,12 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
                 yield return null;
             }
 
-            if (currentTarget.GetComponent<IDamagable>().IsDead())
+            if (currentTarget.TryGetComponent(out IDamagable idmg))
             {
-                LoseTarget();
+                if (idmg.IsDead())
+                {
+                    LoseTarget();
+                }
                 yield return null;
             }
 
@@ -953,28 +956,78 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
 
     public bool IsMaxHealth => health == maxHealth;
 
-    [ClientRpc]
-    public virtual void Die()
+
+    [Server]
+    public virtual void Svr_Die()
     {
         if (!isDead)
         {
             isDead = true; //Bool used to ensure this only happens once
 
-            //Stop all coroutines
-            StopAllCoroutines();
+            Svr_StopNavAgent();
 
-            //Stop NavMesh Movement
-            navAgent.isStopped = true;
+            Svr_SetDeathAnimation();
 
-            //Activate Ragdoll effect, or death animation
-            animator.SetTrigger("Die");
+            Svr_DisableCollider();
 
-            GetComponent<BoxCollider>().enabled = false;
-            navAgent.enabled = false;
-
-            //Invoke this method after 5 seconds.
-            StartCoroutine(PostDeath());
+            Svr_PostDeath();
         }
+    }
+    [Server]
+    private void Svr_StopNavAgent()
+    {
+        //Stop NavMesh Movement
+        navAgent.isStopped = true;
+        navAgent.enabled = false;
+        Rpc_StopNavAgent();
+    }
+    [ClientRpc]
+    private void Rpc_StopNavAgent()
+    {
+        //Stop NavMesh Movement
+        navAgent.isStopped = true;
+        navAgent.enabled = false;
+    }
+    [Server]
+    private void Svr_SetDeathAnimation()
+    {
+        animator.SetTrigger("Die");
+        //Activate Ragdoll effect, or death animation
+        Rpc_SetDeathAnimation();
+    }
+    [ClientRpc]
+    private void Rpc_SetDeathAnimation()
+    {
+        //Activate Ragdoll effect, or death animation
+        animator.SetTrigger("Die");
+    }
+    [Server]
+    private void Svr_DisableCollider()
+    {
+        GetComponent<BoxCollider>().enabled = false;
+        Rpc_DisableCollider();
+    }
+    [ClientRpc]
+    private void Rpc_DisableCollider()
+    {
+        GetComponent<BoxCollider>().enabled = false;
+    }
+    [Server]
+    private void Svr_PostDeath()
+    {            
+        //Stop all coroutines
+        StopAllCoroutines();
+
+        StartCoroutine(PostDeath());
+        Rpc_PostDeath();
+    }
+    [ClientRpc]
+    private void Rpc_PostDeath()
+    {
+        //Stop all coroutines
+        StopAllCoroutines();
+
+        StartCoroutine(PostDeath());
     }
 
     private IEnumerator PostDeath() 
@@ -1200,7 +1253,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
 
         animator.SetTrigger("Hit");
 
-        if (health <= 0) Die();
+        if (health <= 0) Svr_Die();
     }
 
     public int GetHealth()

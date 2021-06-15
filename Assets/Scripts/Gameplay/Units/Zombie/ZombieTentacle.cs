@@ -68,10 +68,10 @@ public class ZombieTentacle : UnitBase, IZombie, IControllable
         LoseGrappledTarget();
     }
 
-    public override void Die()
+    public override void Svr_Die()
     {
         LoseGrappledTarget();
-        base.Die();
+        base.Svr_Die();
     }
 
     private void LoseGrappledTarget()

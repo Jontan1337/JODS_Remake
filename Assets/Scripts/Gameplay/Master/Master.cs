@@ -930,9 +930,12 @@ public class Master : NetworkBehaviour
             //Get the position of the survivor, and get the direction to check for visibility of the survivor.
             Vector3 pPos = new Vector3(survivor.transform.position.x, pos.y, survivor.transform.position.z);
             Vector3 dir = pPos - pos;
+
             //Do a raycast, to check if it hits anything on the way to the survivor.
             if (Physics.Raycast(pos, dir, out RaycastHit newhit, spawnCheckRadius))
             {
+                Debug.DrawRay(survivor.transform.position, survivor.transform.forward * 5, Color.blue,2f);
+
                 //If it hits something, then check if it is a player or not.
                 if (newhit.transform == survivor.transform)
                 {
@@ -941,7 +944,7 @@ public class Master : NetworkBehaviour
                     float angle = Vector3.Angle(dir, survivor.transform.forward);
 
                     //Debugs
-                    Debug.DrawRay(survivor.transform.position, dir, angle > 60 ? Color.green : Color.red, 2f);
+                    Debug.DrawRay(pos, dir, angle > 60 ? Color.green : Color.red, 2f);
 
                     //Is it inside the view angle of the survivor
                     if (angle < 60)
