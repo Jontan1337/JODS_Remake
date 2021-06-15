@@ -19,8 +19,10 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
     [SerializeField, SyncVar] protected bool isInteractable = true;
     [SerializeField] protected AuthorityController authController = null;
     [SerializeField] protected SyncGameObjectVisuals objectVisuals = null;
+    [SerializeField] private Rigidbody rb;
 
     public Action<GameObject> onServerDropItem;
+
 
     public bool IsInteractable { get => isInteractable; set => isInteractable = value; }
     public string ObjectName => gameObject.name;
@@ -128,6 +130,8 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
         Svr_EnablePhysics();
         transform.parent = null;
         IsInteractable = true;
+        Svr_Push(1.5f);
+        Svr_Spin(2);
         authController.Svr_RemoveAuthority();
     }
 
@@ -145,7 +149,29 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
         Svr_HideItem();
     }
 
-    #region Toggle Physics
+    #region Physics
+    [Server]
+    private void Svr_Push(float force)
+    {
+        rb.AddForce(transform.forward * force, ForceMode.Impulse);
+        Rpc_Push(force);
+    }
+    [ClientRpc]
+    private void Rpc_Push(float force)
+    {
+        rb.AddForce(transform.forward * force, ForceMode.Impulse);
+    }
+    [Server]
+    private void Svr_Spin(float force)
+    {
+        rb.AddRelativeTorque(new Vector3(3f, 2f, 1f) * force, ForceMode.Impulse);
+        Rpc_Spin(force);
+    }
+    [ClientRpc]
+    private void Rpc_Spin(float force)
+    {
+        rb.AddRelativeTorque(new Vector3(3f, 2f, 1f) * force, ForceMode.Impulse);
+    }
     [Command]
     public void Cmd_EnablePhysics()
     {

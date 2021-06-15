@@ -91,7 +91,10 @@ public class RangedWeapon : EquipmentItem
         JODSInput.Controls.Survivor.Drop.Disable();
         JODSInput.Controls.Survivor.Interact.Disable();
 
-        Cmd_Shoot();
+        if (hasAuthority)
+        {
+            Cmd_Shoot();
+        }
     }
 
     protected override void OnLMBCanceled(InputAction.CallbackContext obj)

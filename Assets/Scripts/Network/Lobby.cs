@@ -150,8 +150,8 @@ public class Lobby : NetworkManager
     // Called on server when anyone disconnects.
     public override void OnServerDisconnect(NetworkConnection conn)
     {
+        conn.identity.gameObject.GetComponentInChildren<PlayerEquipment>().Svr_DropAllItems();
         SurvivorSelection.instance.Svr_OnPlayerDisconnect(conn.identity.netId);
-
         Instance.roomPlayers.Remove(conn.identity.GetComponent<LobbyPlayer>());
         NetworkServer.DestroyPlayerForConnection(conn);
         //LobbySync.Instance.Svr_RemovePlayerLabel(Instance.roomPlayers.Count-1);
@@ -316,7 +316,7 @@ public class Lobby : NetworkManager
     {
         yield return new WaitForSeconds(0.2f);
         OnServerReadied?.Invoke(conn, _class, isMaster);
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.3f);
         if (conn.connectionId != 0)
         {
             RelayOnServerSynchronize?.Invoke(conn);
