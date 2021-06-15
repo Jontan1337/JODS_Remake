@@ -8,60 +8,37 @@ using System;
 public class RangedWeapon : EquipmentItem
 {
     [Header("Settings")]
-    [SerializeField]
-    private LayerMask ignoreLayer;
+    [SerializeField] private LayerMask ignoreLayer;
 
     [Header("Weapon stats")]
-    [SerializeField]
-    private int damage = 10;
-    [SerializeField]
-    private float range = 1000f;
-    [SerializeField]
-    private FireModes fireMode = FireModes.Single;
-    [SerializeField]
-    private FireModes[] fireModes;
-    [SerializeField]
-    private int burstBulletAmount = 3;
-    [SerializeField]
-    private float fireRate = 600f;
-    [SerializeField]
-    private float fireInterval = 0f;
-    [SerializeField]
-    private float fireCooldownInterval = 0f;
-    [SerializeField]
-    private int bulletsPerShot = 1;
-    [SerializeField, SyncVar]
-    private int currentAmmunition = 10;
-    [SerializeField]
-    private int maxCurrentAmmunition = 10;
-    [SerializeField, SyncVar]
-    private int extraAmmunition = 20;
-    [SerializeField]
-    private int maxExtraAmmunition = 20;
+    [SerializeField] private int damage = 10;
+    [SerializeField] private float range = 1000f;
+    [SerializeField] private FireModes fireMode = FireModes.Single;
+    [SerializeField] private FireModes[] fireModes;
+    [SerializeField] private int burstBulletAmount = 3;
+    [SerializeField] private float fireRate = 600f;
+    [SerializeField] private float fireInterval = 0f;
+    [SerializeField] private float fireCooldownInterval = 0f;
+    [SerializeField] private int bulletsPerShot = 1;
+    [SerializeField, SyncVar] private int currentAmmunition = 10;
+    [SerializeField] private int maxCurrentAmmunition = 10;
+    [SerializeField, SyncVar] private int extraAmmunition = 20;
+    [SerializeField] private int maxExtraAmmunition = 20;
 
     [Header("Game details")]
-    [SerializeField, SyncVar]
-    private string player = "Player name";
+    [SerializeField, SyncVar] private string player = "Player name";
 
     [Header("References")]
-    [SerializeField]
-    private Animator weaponAnimator = null;
-    [SerializeField]
-    private AudioSource audioSource = null;
-    [SerializeField]
-    private Transform bulletRayOrigin = null;
-    [SerializeField]
-    private GameObject muzzleFlash = null;
-    [SerializeField]
-    private SFXPlayer sfxPlayer = null;
+    [SerializeField] private Animator weaponAnimator = null;
+    [SerializeField] private AudioSource audioSource = null;
+    [SerializeField] private Transform bulletRayOrigin = null;
+    [SerializeField] private GameObject muzzleFlash = null;
+    [SerializeField] private SFXPlayer sfxPlayer = null;
 
     [Header("Audio Settings")]
-    [SerializeField]
-    private AudioClip shootSound = null;
-    [SerializeField]
-    private AudioClip emptySound = null;
-    [SerializeField, Range(0f, 1f)]
-    private float volume = 1f;
+    [SerializeField] private AudioClip shootSound = null;
+    [SerializeField] private AudioClip emptySound = null;
+    [SerializeField, Range(0f, 1f)] private float volume = 1f;
 
     private Coroutine COShootLoop;
     private Coroutine COStopShootLoop;

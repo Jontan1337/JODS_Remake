@@ -53,7 +53,7 @@ public class Master : NetworkBehaviour
     [SerializeField] private GameObject unitDestinationMarker = null;
 
     [Header("Spawning")]
-    [SerializeField] private LayerMask playerLayer = 1 << 15;
+    [SerializeField] private LayerMask playerLayer = 1 << 13;
     [SerializeField] private int spawnCheckRadius = 200;
     [SerializeField] private int minimumSpawnRadius = 5;
 

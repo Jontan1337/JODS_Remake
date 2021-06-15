@@ -1,18 +1,26 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class CameraSettings : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private List<Camera> playerCameras;
+    [SerializeField] private UniversalAdditionalCameraData universalCamData;
+    [SerializeField] private bool mainCamera;
+    [SerializeField] private float playerCamFOV = 60f;
+
+    private void OnValidate()
     {
-        
+        SetFOV(playerCamFOV);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SetFOV(float value)
     {
-        
+        //playerCamFOV = value;
+        foreach (Camera camera in playerCameras)
+        {
+            camera.fieldOfView = playerCamFOV;
+        }
     }
 }

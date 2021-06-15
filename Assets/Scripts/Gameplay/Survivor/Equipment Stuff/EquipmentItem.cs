@@ -10,18 +10,15 @@ using System;
 public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippable, IBindable
 {
     [Header("Basic info")]
-    [SerializeField]
-    protected string itemName = "Item name";
-    [SerializeField]
-    protected EquipmentType equipmentType = EquipmentType.None;
+    [SerializeField] protected string itemName = "Item name";
+    [SerializeField] protected EquipmentType equipmentType = EquipmentType.None;
 
     [Header("Other info")]
-    [SerializeField, SyncVar]
-    protected bool isInteractable = true;
-    [SerializeField]
-    protected AuthorityController authController = null;
-    [SerializeField]
-    protected SyncGameObjectVisuals objectVisuals = null;
+    [SerializeField] private int unequippedLayer = 14;
+    [SerializeField] private int equippedLayer = 15;
+    [SerializeField, SyncVar] protected bool isInteractable = true;
+    [SerializeField] protected AuthorityController authController = null;
+    [SerializeField] protected SyncGameObjectVisuals objectVisuals = null;
 
     public Action<GameObject> onServerDropItem;
 
@@ -87,7 +84,7 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
     {
 
     }
-    
+
     protected virtual void OnRMBPerformed(InputAction.CallbackContext obj)
     {
 
@@ -125,22 +122,26 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
     [Server]
     public void Svr_Drop()
     {
+        Rpc_SetLayer(connectionToClient, false);
         Svr_InvokeOnDrop();
         Svr_ShowItem();
         Svr_EnablePhysics();
         transform.parent = null;
         IsInteractable = true;
+        authController.Svr_RemoveAuthority();
     }
 
     [Server]
     public virtual void Svr_Equip()
     {
+        Rpc_SetLayer(connectionToClient, true);
         Svr_ShowItem();
         Svr_DisablePhysics();
     }
     [Server]
     public virtual void Svr_Unequip()
     {
+        Rpc_SetLayer(connectionToClient, false);
         Svr_HideItem();
     }
 
@@ -218,4 +219,17 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
         GetComponent<Renderer>().enabled = false;
     }
     #endregion
+
+    [TargetRpc]
+    private void Rpc_SetLayer(NetworkConnection target, bool isEquipped)
+    {
+        if (isEquipped)
+        {
+            gameObject.layer = equippedLayer;
+        }
+        else
+        {
+            gameObject.layer = unequippedLayer;
+        }
+    }
 }
