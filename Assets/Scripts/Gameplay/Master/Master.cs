@@ -103,6 +103,7 @@ public class Master : NetworkBehaviour
 
     [Header("Other")]
     [SerializeField] private LayerMask ignoreOnRaycast = 1 << 2;
+    [SerializeField] private LayerMask ignoreOnViewCheck = 1 << 9;
     [Space]
     [SerializeField] private Light tintLight = null;
 
@@ -928,11 +929,13 @@ public class Master : NetworkBehaviour
         foreach (Collider survivor in survivorsInRadius)
         {
             //Get the position of the survivor, and get the direction to check for visibility of the survivor.
-            Vector3 pPos = new Vector3(survivor.transform.position.x, pos.y, survivor.transform.position.z);
+            Vector3 pPos = new Vector3(survivor.transform.position.x, survivor.transform.position.y + 1.75f, survivor.transform.position.z);
             Vector3 dir = pPos - pos;
 
+            Debug.DrawLine(pos, pPos, Color.cyan, 20f, false);
+
             //Do a raycast, to check if it hits anything on the way to the survivor.
-            if (Physics.Raycast(pos, dir, out RaycastHit newhit, spawnCheckRadius))
+            if (Physics.Raycast(pos, dir, out RaycastHit newhit, spawnCheckRadius, ~ignoreOnViewCheck))
             {
                 Debug.DrawRay(survivor.transform.position, survivor.transform.forward * 5, Color.blue,2f);
 
@@ -944,7 +947,8 @@ public class Master : NetworkBehaviour
                     float angle = Vector3.Angle(dir, survivor.transform.forward);
 
                     //Debugs
-                    Debug.DrawRay(pos, dir, angle > 60 ? Color.green : Color.red, 2f);
+                    Debug.DrawRay(pos, pPos, angle > 60 ? Color.green : Color.red, 10f, false);
+                    print(angle);
 
                     //Is it inside the view angle of the survivor
                     if (angle < 60)
@@ -956,11 +960,11 @@ public class Master : NetworkBehaviour
                             );
                         return false;
                     }
-                    //Then check if it is within the minimum distance to spawn away from a survivor.
-                    if (Vector3.Distance(pos, newhit.collider.transform.position) <= minimumSpawnRadius)
+                    //Check if it is within the minimum distance to spawn away from a survivor.
+                    if (Vector3.Distance(pos, survivor.transform.position) <= minimumSpawnRadius)
                     {
                         //If it is within the minimum spawn distance, then it cannot spawn a unit.
-                        SetSpawnText( spawn ?
+                        SetSpawnText(spawn ?
                             "Must spawn further away from survivors" :
                             "Cannot refund unit close to survivors"
                             );

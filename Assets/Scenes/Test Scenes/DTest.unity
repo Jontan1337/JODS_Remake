@@ -2011,7 +2011,7 @@ CapsuleCollider:
   m_Radius: 0.5
   m_Height: 2
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!23 &481504288
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2060,7 +2060,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 481504286}
-  m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: -5495902117074765545, guid: c7b8f2d275870694b8beaf344f85cb11, type: 3}
 --- !u!4 &481504290
 Transform:
   m_ObjectHideFlags: 0
@@ -2069,7 +2069,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 481504286}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 3.59, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -9038,6 +9038,26 @@ PrefabInstance:
     - target: {fileID: 538350748458415292, guid: a50ce089f14b44241b73d7315b6cf36e,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 538350748458415293, guid: a50ce089f14b44241b73d7315b6cf36e,
+        type: 3}
+      propertyPath: pools.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 538350748458415293, guid: a50ce089f14b44241b73d7315b6cf36e,
+        type: 3}
+      propertyPath: pools.Array.data[0].prefab.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 538350748458415293, guid: a50ce089f14b44241b73d7315b6cf36e,
+        type: 3}
+      propertyPath: pools.Array.data[0].tag
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 538350748458415293, guid: a50ce089f14b44241b73d7315b6cf36e,
+        type: 3}
+      propertyPath: pools.Array.data[0].amount
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
