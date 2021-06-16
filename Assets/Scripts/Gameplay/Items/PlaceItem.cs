@@ -82,14 +82,15 @@ public class PlaceItem : EquipmentItem
 	{
 		if (!placeholder.GetComponent<ItemPlaceholder>().obstructed && placeholder.activeSelf)
 		{
-			OnPlaced?.Invoke();
 			transform.position = placeholder.transform.position;
 			transform.rotation = placeholder.transform.rotation;
 			transform.parent = null;
+			OnPlaced?.Invoke();
 			StopCoroutine(PlaceHolderActiveCo);
-			authController.Svr_RemoveAuthority();
+			Cmd_InvokeOnDrop();
 			Unbind();
-			Destroy(placeholder);
+			placeholder.SetActive(false);
+			authController.Svr_RemoveAuthority();
 		}
 	}
 	protected override void OnLMBPerformed(InputAction.CallbackContext obj)
@@ -101,7 +102,18 @@ public class PlaceItem : EquipmentItem
 	{
 		StopAllCoroutines();
 		Unbind();
-		Cmd_DestroyGameObject();
+		placeholder.SetActive(false);
+		switch (equipmentType)
+		{
+			case EquipmentType.None:
+				Cmd_DestroyGameObject();
+				break;
+			case EquipmentType.Special:
+				Cmd_Drop();
+				break;
+			default:
+				break;
+		}
 	}
 
 	[Command]
