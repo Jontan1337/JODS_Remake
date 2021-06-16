@@ -633,6 +633,10 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
             else
             {
                 chaseTime -= 0.5f;
+                if (chaseTime > unitSO.chaseTime * 0.75f)
+                {
+                    navAgent.SetDestination(currentTarget.position);
+                }
                 if (chaseTime <= 0)
                 {
                     //If chase time runs out, and it still can't see it's target. Stop chasing and lose the target.
@@ -979,7 +983,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         //Stop NavMesh Movement
         navAgent.isStopped = true;
         navAgent.enabled = false;
-        Rpc_StopNavAgent();
+        //Rpc_StopNavAgent();
     }
     [ClientRpc]
     private void Rpc_StopNavAgent()
