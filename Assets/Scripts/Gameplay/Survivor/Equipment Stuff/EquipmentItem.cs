@@ -20,6 +20,7 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
     [SerializeField] protected AuthorityController authController = null;
     [SerializeField] protected SyncGameObjectVisuals objectVisuals = null;
     [SerializeField] private Rigidbody rb;
+    [SerializeField] private Outline outline;
 
     public Action<GameObject> onServerDropItem;
 
@@ -41,7 +42,6 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
         if (equipment != null)
         {
             equipment?.Svr_Equip(gameObject, equipmentType);
-            IsInteractable = false;
         }
         else
         {
@@ -114,10 +114,11 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
         Svr_DisablePhysics();
         transform.parent = newParent;
         IsInteractable = false;
+        Rpc_ToggleOutline(false);
     }
 
     [Command]
-    private void Cmd_Drop()
+    public void Cmd_Drop()
     {
         Svr_Drop();
     }
@@ -130,6 +131,7 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
         Svr_EnablePhysics();
         transform.parent = null;
         IsInteractable = true;
+        Rpc_ToggleOutline(true);
         Svr_Push(1.5f);
         Svr_Spin(2);
         authController.Svr_RemoveAuthority();
@@ -257,5 +259,11 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
         {
             gameObject.layer = unequippedLayer;
         }
+    }
+
+    [ClientRpc]
+    private void Rpc_ToggleOutline(bool hasOutline)
+    {
+        outline.enabled = hasOutline;
     }
 }
