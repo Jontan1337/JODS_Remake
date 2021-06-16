@@ -67,20 +67,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	{
 		if (abilityIsReady)
 		{
-			if (!sClass.abilityIsToggled)
-			{
-				sClass.ActiveAbility();
-				if (sClass.abilityActivatedSuccesfully)
-				{
-					StartAbilityCo();
-					sClass.abilityActivatedSuccesfully = false;
-				}
-			}
-			else
-			{
-				sClass.ActiveAbility();
-				abilityIsReady = false;
-			}
+			sClass.ActiveAbility();
 		}
 	}
 

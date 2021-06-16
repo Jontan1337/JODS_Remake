@@ -45,7 +45,9 @@ public class SoldierClass : SurvivorClass
 
     void EquipRocketLauncher()
 	{
-		GameObject rocketLauncher = Instantiate(abilityObject, transform.position, transform.rotation);
+        print("Rocket launcher was instantiated. Change to object pool");
+
+        GameObject rocketLauncher = Instantiate(abilityObject, transform.position, transform.rotation);
 		NetworkServer.Spawn(rocketLauncher);
 
         playerEquipment = transform.parent.GetComponentInChildren<PlayerEquipment>();

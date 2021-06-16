@@ -33,6 +33,8 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	private List<Collider> enemiesInSight = new List<Collider>();
 	private bool isDead;
 
+
+
 	#region Coroutines
 	IEnumerator ShootIntervalCo;
 	IEnumerator ShootInterval()
@@ -103,16 +105,15 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 
 	bool barrelAnimation = false;
 	IEnumerator BarrelCo;
-	IEnumerator BarrelAnimation()
+	IEnumerator BarrelAnimation(Transform hit)
     {
 		barrelAnimation = true;
 		Vector3 ogPosition = new Vector3(0, barrel.transform.localPosition.y, 0.3f);
 		barrel.transform.localPosition = new Vector3(0, barrel.transform.localPosition.y, 0.2f);
-		while (barrel.transform.localPosition != ogPosition)
+		while (barrel.transform.localPosition != ogPosition && hit.TryGetComponent(out IDamagable a))
         {
 			yield return new WaitForSeconds(0.01f);
 			barrel.transform.localPosition = new Vector3(0, barrel.transform.localPosition.y, barrel.transform.localPosition.z + 0.005f);
-
 		}
     }
 
@@ -122,15 +123,14 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	void Shoot()
 	{
 		Ray(out Transform didHit, out bool lineOfSightCheck);
-
 		Debug.DrawRay(barrel.position, barrel.forward * 10, Color.red, 0.1f);
 
-		BarrelCo = BarrelAnimation();
+		BarrelCo = BarrelAnimation(didHit);
 		if (barrelAnimation)
         {
 			StopCoroutine(BarrelCo);
         }
-	 	StartCoroutine(BarrelAnimation());
+	 	StartCoroutine(BarrelCo);
 		muzzleFlash.Emit(50);
 		bulletShell.Emit(1);
 
@@ -199,6 +199,8 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	void LostTarget()
 	{
 		target = null;
+		
+		StopCoroutine(BarrelCo);
 		StopCoroutine(RotateYCo);
 		StopCoroutine(RotateXCo);
 		StopCoroutine(ShootIntervalCo);
