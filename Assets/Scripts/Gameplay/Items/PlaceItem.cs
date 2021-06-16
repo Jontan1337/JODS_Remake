@@ -17,7 +17,8 @@ public class PlaceItem : EquipmentItem
 	private LookController look;
 
 	// Called when item is picked up and ready to be placed
-	public void Equipped()
+	[TargetRpc]
+	public void Equipped(NetworkConnection target)
 	{
 		placeholder.SetActive(true);
 		look = GetComponentInParent<LookController>();
@@ -127,7 +128,7 @@ public class PlaceItem : EquipmentItem
 	public override void Svr_Interact(GameObject interacter)
 	{
 		base.Svr_Interact(interacter);
-		Equipped();
+		Equipped(connectionToClient);
 	}
 
 

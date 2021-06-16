@@ -57,7 +57,7 @@ public class EngineerClass : SurvivorClass
 
         playerEquipment?.Svr_Equip(turret, EquipmentType.None);
         turret.GetComponent<EquipmentItem>().Svr_Pickup(playerEquipment.playerHands, connectionToClient);
-		turret.GetComponent<PlaceItem>().Equipped();
+		turret.GetComponent<PlaceItem>().Equipped(connectionToClient);
     }
 
 }
