@@ -983,7 +983,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
         //Stop NavMesh Movement
         navAgent.isStopped = true;
         navAgent.enabled = false;
-        //Rpc_StopNavAgent();
+        Rpc_StopNavAgent();
     }
     [ClientRpc]
     private void Rpc_StopNavAgent()
