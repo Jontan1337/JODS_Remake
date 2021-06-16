@@ -108,7 +108,7 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
     //    Svr_Pickup(newParent, conn);
     //}
     [Server]
-    public void Svr_Pickup(Transform newParent, NetworkConnection conn)
+    public virtual void Svr_Pickup(Transform newParent, NetworkConnection conn)
     {
         authController.Svr_GiveAuthority(conn);
         Svr_DisablePhysics();
@@ -123,7 +123,7 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
         Svr_Drop();
     }
     [Server]
-    public void Svr_Drop()
+    public virtual void Svr_Drop()
     {
         Rpc_SetLayer(connectionToClient, false);
         Svr_InvokeOnDrop();
