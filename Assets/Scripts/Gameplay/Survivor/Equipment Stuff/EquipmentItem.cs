@@ -114,7 +114,10 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
         Svr_DisablePhysics();
         transform.parent = newParent;
         IsInteractable = false;
-        Rpc_ToggleOutline(false);
+        if (outline != null)
+        {
+            Rpc_ToggleOutline(false);
+        }
     }
 
     [Command]
@@ -131,9 +134,15 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
         Svr_EnablePhysics();
         transform.parent = null;
         IsInteractable = true;
-        Rpc_ToggleOutline(true);
-        Svr_Push(1.5f);
-        Svr_Spin(2);
+        if (outline != null)
+        {
+            Rpc_ToggleOutline(true);
+        }
+        if (rb != null)
+        {
+            Svr_Push(1.5f);
+            Svr_Spin(2);
+        }
         authController.Svr_RemoveAuthority();
     }
 
