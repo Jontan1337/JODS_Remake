@@ -27,7 +27,7 @@ public class RocketLauncher : EquipmentItem
 	protected override void OnLMBPerformed(InputAction.CallbackContext obj)
 	{
 		CmdRocketLaunch();
-		GetComponentInParent<ActiveSClass>()?.StartAbilityCo();
+		GetComponentInParent<ActiveSClass>()?.StartAbilityCooldownCo();
 		Unbind();
 		Invoke("Cmd_DestroyGameObject", 1f);
 	}

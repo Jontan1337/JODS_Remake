@@ -33,10 +33,6 @@ public class SoldierClass : SurvivorClass
     }
     #endregion
 
-    private void Start()
-    {
-        abilityIsToggled = true;
-    }
 
     public override void ActiveAbility()
     {

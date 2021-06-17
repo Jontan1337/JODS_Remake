@@ -35,15 +35,12 @@ public class EngineerClass : SurvivorClass
     }
     #endregion
 
-    private void Start()
-	{
-        abilityIsToggled = true;
-	}
 
     public override void ActiveAbility()
     {
         EquipTurret();
     }
+
 
     private void EquipTurret()
 	{
