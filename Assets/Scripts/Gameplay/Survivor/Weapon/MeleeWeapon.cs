@@ -40,6 +40,7 @@ public class MeleeWeapon : EquipmentItem
 
     protected override void OnLMBPerformed(InputAction.CallbackContext context) => Cmd_Attack();
 
+    [Server]
     public override void Svr_Pickup(Transform newParent, NetworkConnection conn)
     {
         base.Svr_Pickup(newParent, conn);
@@ -73,11 +74,15 @@ public class MeleeWeapon : EquipmentItem
     // Called by animation event.
     public void StartAttacking()
     {
+        if (!hasAuthority) return;
+
         Cmd_StartAttacking();
     }
     // Called by animation event.
     public void StopAttacking()
     {
+        if (!hasAuthority) return;
+
         Cmd_StopAttacking();
     }
     [Command]
