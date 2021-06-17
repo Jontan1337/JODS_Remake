@@ -18,14 +18,17 @@ public class LobbyPlayer : NetworkBehaviour
 
     [SyncVar] public bool gameOn;
     [SyncVar] public bool setupInGameScene;
+
     [Header("Character")]
     public SurvivorSO survivorSO = null;
     [SyncVar] public bool hasSelectedACharacter;
     [Space]
     public Color playerColor = Color.red;
+
     [Header("Data")]
     [SyncVar] public int playerID;
     public int playerIndexOnServer;
+
     [Header("References")]
     public GameObject lobbyCamera;
     public Camera _lobbyCam;
@@ -117,6 +120,7 @@ public class LobbyPlayer : NetworkBehaviour
     [Command]
     public void Cmd_ChangePreference()
     {
+        wantsToBeMaster = !wantsToBeMaster;
         Debug.LogWarning("Cmd_ChangePreference needs to change");
         Debug.LogWarning("Master Smoke does not work for clients? It still sets their preference, but no smoke.");
 
@@ -154,20 +158,17 @@ public class LobbyPlayer : NetworkBehaviour
 
     private void GetMasterToggle()
     {
-        GameObject.Find("Master Toggle").GetComponent<Button>().onClick.AddListener(TogglePreference);
-        Debug.LogWarning("GetMasterToggle needs to die");
+        Button toggle = Lobby.Instance.masterToggle;
+        if (toggle == null)
+        {
+            Debug.LogError("MasterToggle was not found. Is the reference set? (On Lobby)");
+            return;
+        }
+        toggle.onClick.AddListener(TogglePreference);
     }
 
     public void TogglePreference()
     {
-        PlayerPrefs.SetString("Master", "Zombie Master");
-        Debug.LogWarning("TogglePreference needs to be reworked");
-
-        wantsToBeMaster = !wantsToBeMaster;
-
-        PlayerPrefs.SetInt("IsMaster", wantsToBeMaster ? 1 : 0);
-        print(name + " wants to be master: " + wantsToBeMaster);
-
         Cmd_ChangePreference();
     }
 

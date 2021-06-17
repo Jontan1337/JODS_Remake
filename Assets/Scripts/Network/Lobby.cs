@@ -20,6 +20,7 @@ public class Lobby : NetworkManager
     public GameObject mainCamera;
     public LobbySeat[] playerSeats;
     public GameObject loadingScreen;
+    public Button masterToggle;
     [Header("Prefabs")]
     public GameObject playerSpawner;
     public GameObject MatchManager;
@@ -258,6 +259,7 @@ public class Lobby : NetworkManager
                 }
             }
         }
+        foreach(var m in masters) { print(m); }
         // PICK RANDOM PLAYER TO BECOME MASTER (FROM THE MASTERS LIST)
         if (masters.Count != 0)
         {
