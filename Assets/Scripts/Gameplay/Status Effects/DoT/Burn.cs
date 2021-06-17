@@ -29,7 +29,7 @@ public class Burn : StatusEffect
     }
     public override void ApplyEffect(int? amount)
     {
-
+        idmg.Svr_Damage(onFire ? burn.onFireDamagePerTick : burn.damagePerTick);
     }
 
     public override void End() 
