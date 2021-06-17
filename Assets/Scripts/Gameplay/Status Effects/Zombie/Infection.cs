@@ -21,14 +21,14 @@ public class Infection : StatusEffect
 
         infectionRate = Mathf.Clamp(infectionRate += newAmount, 0, 100);
 
-        Debug.Log("My infection rate is: " + infectionRate);
+        //Debug.Log("My infection rate is: " + infectionRate);
 
         if (infectionRate >= 100)
         {
             IncreaseInfectionLevel();
         }
 
-        Debug.Log("My infection level is: " + infectionLevel);
+        //Debug.Log("My infection level is: " + infectionLevel);
     }
 
     public override void End()

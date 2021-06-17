@@ -83,7 +83,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 		abilityIsReady = true;
 	}
 
-	public void StartAbilityCo()
+	public void StartAbilityCooldownCo()
 	{
 		StartCoroutine(AbilityCooldown());
 	}
@@ -158,7 +158,6 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	[Server]
 	public void Svr_Damage(int damage, Transform target = null)
 	{
-		print(damage);
 		if (armor > 0)
 		{
 			health -= Mathf.RoundToInt(damage * 0.4f);
@@ -171,6 +170,11 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 			isDead = true;
 			Die();
 		}
+	}
+
+	private void OnControllerColliderHit(ControllerColliderHit hit)
+	{
+		GetComponentInChildren<IHitter>()?.OnHit(hit);
 	}
 
 	void Die()

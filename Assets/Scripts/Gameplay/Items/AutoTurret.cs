@@ -259,7 +259,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	{
 		StartSearching();
 		StartCoroutine(Duration());
-		GetComponentInParent<ActiveSClass>()?.StartAbilityCo();
+		GetComponentInParent<ActiveSClass>()?.StartAbilityCooldownCo();
 	}
 
 	private void OnDrawGizmos()
