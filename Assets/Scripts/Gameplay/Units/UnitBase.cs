@@ -16,7 +16,7 @@ using Mirror;
 [RequireComponent(typeof(NetworkTransform))]
 [RequireComponent(typeof(AudioSource))]
 
-public abstract class UnitBase : NetworkBehaviour, IDamagable
+public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 {
     #region Fields
 
@@ -107,6 +107,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     [SerializeField] private int alertRadius = 0;
     [SerializeField] private bool canAlert = true;
     [SerializeField] private LayerMask alertMask = 1 << 9; //Unit is layer 9. We only want to alert Units
+    [SerializeField] private Color particleColor = Color.red;
 
     [Header("AI")]
     [SerializeField] protected Transform currentTarget = null;
@@ -260,6 +261,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
             }
         }
     }
+    public Color ParticleColor { get => particleColor; }
 
     #endregion
 
