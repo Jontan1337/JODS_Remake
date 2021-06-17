@@ -14,24 +14,24 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	[SerializeField] private float rotateSpeed = 0.2f;
 	[SerializeField] private float searchInterval = 1f;
 	[SerializeField] private int damage = 20;
-	[SerializeField] private int duration = 20;
-	[SerializeField] private int health = 200;
+	[SerializeField, SyncVar] private int duration = 20;
+	[SerializeField, SyncVar] private int health = 200;
 
 
 	[Header("References")]
-	[SerializeField] private Transform target = null;
 	[SerializeField] private Transform swivel = null;
 	[SerializeField] private Transform pivot = null;
 	[SerializeField] private Transform barrel = null;
 	[SerializeField] private ParticleSystem muzzleFlash = null;
 	[SerializeField] private ParticleSystem bulletShell = null;
+	[SerializeField, SyncVar] private Transform target = null;
 
 	[Space]
 	[SerializeField] private LayerMask unitLayer;
 	[SerializeField] private LayerMask LOSLayer;
 
 	private List<Collider> enemiesInSight = new List<Collider>();
-	private bool isDead;
+	[SyncVar] private bool isDead;
 
 
 
@@ -41,7 +41,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	{
 		while (true)
 		{
-			if (CanShoot()) Shoot();
+			if (CanShoot()) Svr_Shoot();
 			yield return new WaitForSeconds(1 / (fireRate / 60));
 		}
 	}
@@ -51,7 +51,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	{
 		while (true)
 		{
-			FindTarget();
+			Svr_FindTarget();
 			yield return new WaitForSeconds(searchInterval);
 		}
 
@@ -100,7 +100,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 
 			yield return new WaitForSeconds(1);
 		}
-		Die();
+		Svr_Die();
 	}
 
 	bool barrelAnimation = false;
@@ -120,7 +120,8 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	#endregion
 
 	#region Methods
-	void Shoot()
+	[Server]
+	void Svr_Shoot()
 	{
 		Ray(out Transform didHit, out bool lineOfSightCheck);
 		Debug.DrawRay(barrel.position, barrel.forward * 10, Color.red, 0.1f);
@@ -137,10 +138,11 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		didHit.GetComponent<IDamagable>()?.Svr_Damage(damage, transform);
 		if (target.GetComponent<IDamagable>().IsDead())
 		{
-			LostTarget();
+			Svr_LostTarget();
 		}
 	}
-	void FindTarget()
+	[Server]
+	void Svr_FindTarget()
 	{
 		enemiesInSight.Clear();
 		Collider[] enemiesInRange = Physics.OverlapSphere(transform.position, range, unitLayer);
@@ -159,11 +161,12 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		}
 		if (GetClosestEnemyCollider(enemiesInSight))
 		{
-			NewTarget(GetClosestEnemyCollider(enemiesInSight).transform);
+			Svr_NewTarget(GetClosestEnemyCollider(enemiesInSight).transform);
 		}
 	}
 
-	void NewTarget(Transform newTarget)
+	[Server]
+	void Svr_NewTarget(Transform newTarget)
 	{
 		target = newTarget;
 
@@ -196,7 +199,8 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		return currentClosestEnemy;
 	}
 
-	void LostTarget()
+	[Server]
+	void Svr_LostTarget()
 	{
 		target = null;
 		
@@ -204,10 +208,11 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		StopCoroutine(RotateYCo);
 		StopCoroutine(RotateXCo);
 		StopCoroutine(ShootIntervalCo);
-		StartSearching();
+		Svr_StartSearching();
 	}
 
-	void StartSearching()
+	[Server]
+	void Svr_StartSearching()
 	{
 		RotatePassiveCo = RotatePassive();
 		StartCoroutine(RotatePassiveCo);
@@ -230,7 +235,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 			}
 			else if (!lineOfSightCheck)
 			{
-				LostTarget();
+				Svr_LostTarget();
 			}
 		}
 		return false;
@@ -245,7 +250,8 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		didHit = hit.transform;
 	}
 
-	void Die()
+	[Server]
+	void Svr_Die()
 	{
 		StopAllCoroutines();
 
@@ -255,9 +261,10 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		Destroy(gameObject, 0.2f);
 	}
 
-	public void OnPlaced()
+	[Server]
+	public void Svr_OnPlaced()
 	{
-		StartSearching();
+		Svr_StartSearching();
 		StartCoroutine(Duration());
 		GetComponentInParent<ActiveSClass>()?.StartAbilityCooldownCo();
 	}
@@ -284,7 +291,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		if (health <= 0)
 		{
 			isDead = true;
-			Die();
+			Svr_Die();
 		}
 	}
 
