@@ -1009,12 +1009,22 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable
     private void Svr_DisableCollider()
     {
         GetComponent<BoxCollider>().enabled = false;
+        Collider[] colliders = GetComponentsInChildren<Collider>();
+        foreach(Collider c in colliders)
+        {
+            c.enabled = false;
+        }
         Rpc_DisableCollider();
     }
     [ClientRpc]
     private void Rpc_DisableCollider()
     {
         GetComponent<BoxCollider>().enabled = false;
+        Collider[] colliders = GetComponentsInChildren<Collider>();
+        foreach (Collider c in colliders)
+        {
+            c.enabled = false;
+        }
     }
     [Server]
     private void Svr_PostDeath()
