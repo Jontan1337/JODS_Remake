@@ -2,14 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum BodyPart
-{
-    Torso,
-    Head,
-    Arm,
-    Leg
-}
-public class UnitBodyPart : MonoBehaviour, IDamagable
+public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable
 {
     private readonly float[] multiplierArray = new float[]
     {
@@ -18,15 +11,26 @@ public class UnitBodyPart : MonoBehaviour, IDamagable
         0.6f,  // Arm
         0.75f   // Leg
     };
-
     private float multiplier = 0;
 
-    [SerializeField]
-    private BodyPart bodyPart = BodyPart.Torso;
 
+    #region Fields
     private UnitBase unitBase;
 
-    public Teams Team => throw new System.NotImplementedException();
+    public BodyParts bodyPart = BodyParts.Torso;
+
+    public bool detachable = false;
+    [Space]
+    public GameObject attachedPart;
+    public GameObject detachedPart;
+    #endregion
+
+
+    public void Detach(DamageTypes damageType)
+    {
+        if (!detachable) return;
+        unitBase.Svr_Dismember(damageType, attachedPart, detachedPart);
+    }
 
     public void Svr_Damage(int damage, Transform target = null)
     {
@@ -35,12 +39,12 @@ public class UnitBodyPart : MonoBehaviour, IDamagable
 
 	int IDamagable.GetHealth()
 	{
-		throw new System.NotImplementedException();
+        return unitBase.GetHealth();
 	}
 
 	bool IDamagable.IsDead()
 	{
-		throw new System.NotImplementedException();
+        return unitBase.IsDead();
 	}
 
 	void Start()
@@ -48,6 +52,15 @@ public class UnitBodyPart : MonoBehaviour, IDamagable
         unitBase = transform.root.GetComponent<UnitBase>();
 
         multiplier = multiplierArray[(int)bodyPart];
+
+        if (detachable)
+        {
+            //Dismemberment default states
+            attachedPart.SetActive(true);
+            detachedPart.GetComponent<Rigidbody>().isKinematic = true;
+            detachedPart.gameObject.SetActive(false);
+        }
     }
+    public Teams Team => throw new System.NotImplementedException();
 
 }

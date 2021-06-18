@@ -147,7 +147,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     public class Selectable
     {
         public bool canSelect = true;
-        public SkinnedMeshRenderer unitRenderer;
+        public SkinnedMeshRenderer[] bodyPartsRenderers;
         public Material unitMat;
         public bool isSelected = false;
     }
@@ -164,7 +164,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     bool attacking = false;
 
     protected bool meleeCooldown = false;
-    [SerializeField]protected bool rangedCooldown = false; // Same witht these
+    protected bool rangedCooldown = false; // Same witht these
     protected bool specialCooldown = false;
 
     public bool MeleeCooldown
@@ -426,22 +426,33 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             else { StartCoroutine(SpecialCooldownCoroutine()); }
         }
 
-        //Material stuff, for highlighting units
+        SetMaterialsAndMeshes();
+       
+        //random unit size, just to make units look less alike
+        transform.localScale = transform.localScale * Random.Range(0.9f, 1.1f);
+    }
+    
+    private void SetMaterialsAndMeshes()
+    {
+        //Random Material to assign
+        Material newMat = unitSO.unitMaterials[Random.Range(0, unitSO.unitMaterials.Length)];
 
-        //This
-        select.unitRenderer.material = new Material(unitSO.unitMaterials.Length == 0 ? //If the unit has different materials to choose from
-            select.unitRenderer.sharedMaterial : //If not, use already assigned material.
-            unitSO.unitMaterials[Random.Range(0, unitSO.unitMaterials.Length)] //Assign a random material.
-            );
-        select.unitMat = select.unitRenderer.sharedMaterial;
+        foreach (SkinnedMeshRenderer unitRenderer in select.bodyPartsRenderers)
+        {
+            unitRenderer.material = new Material(unitSO.unitMaterials.Length == 0 ? //If the unit has different materials to choose from
+                unitRenderer.sharedMaterial : //If not, use already assigned material.
+                newMat //Assign a random material.
+                );
+        }
+
+        select.unitMat = select.bodyPartsRenderers[0].sharedMaterial;
+
 
         if (unitSO.unitMeshes.Length != 0)
         {
-            select.unitRenderer.sharedMesh = unitSO.unitMeshes[Random.Range(0, unitSO.unitMeshes.Length)];
+            Debug.LogWarning("TODO: fix body parts dynamic meshes");
+            select.bodyPartsRenderers[0].sharedMesh = unitSO.unitMeshes[Random.Range(0, unitSO.unitMeshes.Length)];
         }
-
-        //random unit size, just to make units look less alike
-        transform.localScale = transform.localScale * Random.Range(0.9f, 1.1f);
     }
 
     //This is called by the Master, who sets the unit's level, which increases it's stats.
@@ -979,6 +990,64 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             Svr_PostDeath();
         }
     }
+
+    #region Dismemberment
+
+    [Server]
+    public void Svr_Dismember(DamageTypes damageType, GameObject oldPart, GameObject newPart)
+    {
+        newPart.GetComponent<MeshRenderer>().material = new Material(oldPart.GetComponent<SkinnedMeshRenderer>().sharedMaterial);
+
+        if (IsDead()) { 
+            switch (damageType)
+            {
+                case DamageTypes.Blunt:
+
+                    Svr_Dismember_BodyPart(oldPart, newPart);
+
+                    break;
+                case DamageTypes.Slash:
+
+                    Svr_Dismember_BodyPart(oldPart, newPart);
+
+                    break;
+                case DamageTypes.Pierce:
+
+                    Svr_Dismember_BodyPart(oldPart, newPart);
+
+                    break;
+            }
+        }
+    }
+
+    [Server]
+    private void Svr_Dismember_BodyPart(GameObject oldPart, GameObject newPart)
+    {
+        oldPart.SetActive(false);
+
+        Rigidbody newPartRB = newPart.GetComponent<Rigidbody>();
+
+        newPart.gameObject.SetActive(true);
+        newPart.transform.SetParent(null);
+        newPartRB.isKinematic = false;
+
+        Rpc_Dismember_BodyPart(oldPart, newPart);
+    }
+    [ClientRpc]
+    private void Rpc_Dismember_BodyPart(GameObject oldPart, GameObject newPart)
+    {
+        oldPart.SetActive(false);
+
+        Rigidbody newPartRB = newPart.GetComponent<Rigidbody>();
+
+        newPart.gameObject.SetActive(true);
+        newPart.transform.SetParent(null);
+        newPartRB.isKinematic = false;
+    }
+
+    #endregion
+
+    #region Post Death
     [Server]
     private void Svr_StopNavAgent()
     {
@@ -1065,6 +1134,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     {
         NetworkServer.Destroy(gameObject);
     }
+    #endregion
 
     public Teams Team => throw new System.NotImplementedException();
 
