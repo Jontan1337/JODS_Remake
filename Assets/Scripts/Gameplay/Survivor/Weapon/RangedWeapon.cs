@@ -18,7 +18,6 @@ public class RangedWeapon : EquipmentItem
     [SerializeField] private int burstBulletAmount = 3;
     [SerializeField] private float fireRate = 600f;
     [SerializeField] private float fireInterval = 0f;
-    [SerializeField] private float fireCooldownInterval = 0f;
     [SerializeField] private int bulletsPerShot = 1;
     [SerializeField, SyncVar] private int currentAmmunition = 10;
     [SerializeField] private int maxCurrentAmmunition = 10;
@@ -30,7 +29,6 @@ public class RangedWeapon : EquipmentItem
 
     [Header("References")]
     [SerializeField] private Animator weaponAnimator = null;
-    [SerializeField] private AudioSource audioSource = null;
     [SerializeField] private Transform bulletRayOrigin = null;
     [SerializeField] private GameObject muzzleFlash = null;
     [SerializeField] private SFXPlayer sfxPlayer = null;
@@ -51,6 +49,7 @@ public class RangedWeapon : EquipmentItem
 
     private void OnValidate()
     {
+        equipmentType = EquipmentType.Weapon;
         fireRate = Mathf.Clamp(fireRate, 0.01f, float.MaxValue);
         fireInterval = 60 / fireRate;
         fireModeIndex = 0;
@@ -124,6 +123,9 @@ public class RangedWeapon : EquipmentItem
             case FireModes.SemiAuto:
                 ShootSingle();
                 break;
+            case FireModes.Scatter:
+                ScatterShot();
+                break;
             case FireModes.Burst:
                 if (COShootLoop == null)
                 {
@@ -136,6 +138,24 @@ public class RangedWeapon : EquipmentItem
                     COShootLoop = StartCoroutine(IEFullAutoShootLoop());
                 }
                 break;
+        }
+    }
+
+    private void ScatterShot()
+    {
+        int firedRounds = 0;
+        while (currentAmmunition > 0 && firedRounds < bulletsPerShot)
+        {
+            if (canShoot)
+            {
+                Shoot();
+                firedRounds++;
+            }
+            if (currentAmmunition == 0)
+            {
+                Rpc_EmptySFX();
+                return;
+            }
         }
     }
 
@@ -220,8 +240,7 @@ public class RangedWeapon : EquipmentItem
             rayHit.collider.GetComponent<IDamagable>()?.Svr_Damage(damage);
         }
 
-
-        currentAmmunition -= bulletsPerShot;
+        currentAmmunition -= 1;
     }
 
 
@@ -245,6 +264,8 @@ public class RangedWeapon : EquipmentItem
     [Command]
     private void Cmd_ChangeFireMode()
     {
+        if (fireModes.Length <= 1) return;
+
         Cmd_StopShoot();
         if (fireModeIndex == fireModes.Length - 1)
         {

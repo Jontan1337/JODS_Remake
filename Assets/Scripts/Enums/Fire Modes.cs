@@ -2,6 +2,7 @@
 {
     Single,
     SemiAuto,
+    Scatter,
     Burst,
     FullAuto
 }

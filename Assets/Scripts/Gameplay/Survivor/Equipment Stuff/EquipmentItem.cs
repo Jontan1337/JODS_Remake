@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 using System;
 
 [RequireComponent(typeof(PhysicsToggler), typeof(Rigidbody), typeof(BoxCollider)),
- RequireComponent(typeof(AuthorityController))]
+ RequireComponent(typeof(AuthorityController), typeof(SyncGameObjectVisuals), typeof(Outline))]
 public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippable, IBindable
 {
     [Header("Basic info")]
@@ -24,12 +24,23 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 
     public Action<GameObject> onServerDropItem;
 
-
     public bool IsInteractable { get => isInteractable; set => isInteractable = value; }
     public string ObjectName => gameObject.name;
     public string Name => itemName;
     public GameObject Item => gameObject;
     public EquipmentType EquipmentType => equipmentType;
+
+    private void Awake()
+    {
+        if (authController == null)
+            TryGetComponent(out authController);
+        if (objectVisuals == null)
+            TryGetComponent(out objectVisuals);
+        if (rb == null)
+            TryGetComponent(out rb);
+        if (outline == null)
+            TryGetComponent(out outline);
+    }
 
     [Server]
     public virtual void Svr_Interact(GameObject interacter)

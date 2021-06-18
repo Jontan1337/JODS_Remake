@@ -13,12 +13,14 @@ public class MeleeWeapon : EquipmentItem
     [SerializeField] private int damage = 10;
 
     [Header("Game details")]
-    [SerializeField, SyncVar] private string player = "Player name";
-    [SerializeField] private float splatterAmount;
+    [SerializeField] private float splatterAmount = 0f;
+    [SerializeField, Range(0, 0.35f)] private float maxSplatterAmount = 0.35f;
+    [SerializeField, Range(0, 0.35f)] private float splatterAmountOnHit = 0.04f;
+    [SerializeField, Range(0f, 300f)] private float splatterRemoveAmount = 300f;
+    [SerializeField, Range(-0.35f, 0f)] private float splatterRemoveAmountOnSwing = -0.01f;
 
     [Header("References")]
     [SerializeField] private Animator weaponAnimator = null;
-    [SerializeField] private AudioSource audioSource = null;
     [SerializeField] private SFXPlayer sfxPlayer = null;
     [SerializeField] private ParticleSystem hitParticle = null;
     [SerializeField] private Material material = null;
@@ -26,7 +28,6 @@ public class MeleeWeapon : EquipmentItem
     [Header("Audio Settings")]
     [SerializeField] private AudioClip swingSound = null;
     [SerializeField] private AudioClip hitSound = null;
-    [SerializeField, Range(0f, 1f)] private float volume = 1f;
 
     [SyncVar] private bool isAttacking;
 
@@ -40,8 +41,8 @@ public class MeleeWeapon : EquipmentItem
         get => splatterAmount;
         set
         {
-            splatterAmount = value;
-            material.SetFloat(BloodAmount, value);
+            splatterAmount = Mathf.Clamp(value, 0, maxSplatterAmount);
+            material.SetFloat(BloodAmount, splatterAmount);
         }
     }
 
@@ -78,7 +79,7 @@ public class MeleeWeapon : EquipmentItem
             {
                 Rpc_ParticleColor(particleEffect.ParticleColor);
                 Rpc_EmitParticles();
-                Rpc_ApplySplatter(0.05f);
+                Rpc_ApplySplatter(splatterAmountOnHit);
             }
         }
     }
@@ -110,7 +111,7 @@ public class MeleeWeapon : EquipmentItem
     private void Cmd_StartAttacking()
     {
         isAttacking = true;
-        Rpc_ApplySplatter(-0.05f);
+        Rpc_ApplySplatter(splatterRemoveAmountOnSwing);
     }
     [Command]
     private void Cmd_StopAttacking()
@@ -148,7 +149,7 @@ public class MeleeWeapon : EquipmentItem
     {
         while (splatterAmount > 0)
         {
-            SplatterAmount -= Time.deltaTime / 100;
+            SplatterAmount -= Time.deltaTime / splatterRemoveAmount;
             yield return null;
         }
         COSplatterShader = null;
