@@ -53,8 +53,8 @@ public class LookController : NetworkBehaviour
 		{
 			return;
 		}
-		rotX += mouseDelta.x * sensitivity;
-		rotY += mouseDelta.y * sensitivity;
+		rotX += mouseDelta.x * sensitivity * Time.deltaTime;
+		rotY += mouseDelta.y * sensitivity * Time.deltaTime;
 		rotY = Mathf.Clamp(rotY, minRotY, maxRotY);
 		//transform.Rotate(0, rotX, 0);
 		rotateHorizontal.rotation = Quaternion.Euler(0, rotX, 0);

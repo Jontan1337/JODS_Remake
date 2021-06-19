@@ -71,12 +71,11 @@ MonoBehaviour:
     m_Bits: 0
   damage: 30
   range: 1000
-  fireMode: 3
-  fireModes: 010000000300000002000000
+  fireMode: 4
+  fireModes: 010000000300000004000000
   burstBulletAmount: 3
   fireRate: 600
   fireInterval: 0.1
-  fireCooldownInterval: 0
   bulletsPerShot: 1
   currentAmmunition: 30
   maxCurrentAmmunition: 30
@@ -84,7 +83,6 @@ MonoBehaviour:
   maxExtraAmmunition: 60
   player: Player name
   weaponAnimator: {fileID: 0}
-  audioSource: {fileID: 8677567993216096712}
   bulletRayOrigin: {fileID: 8677567994327279421}
   muzzleFlash: {fileID: 1986087315752043727}
   sfxPlayer: {fileID: 8677567993216096715}

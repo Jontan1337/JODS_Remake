@@ -143,17 +143,21 @@ public class RangedWeapon : EquipmentItem
 
     private void ScatterShot()
     {
+        if (!canShoot) return;
+
         int firedRounds = 0;
         while (currentAmmunition > 0 && firedRounds < bulletsPerShot)
         {
-            if (canShoot)
+            Shoot();
+            firedRounds++;
+            if (firedRounds == bulletsPerShot)
             {
-                Shoot();
-                firedRounds++;
-            }
-            if (currentAmmunition == 0)
-            {
-                Rpc_EmptySFX();
+                StartCooldown();
+                if (currentAmmunition == 0)
+                {
+                    Rpc_EmptySFX();
+                    StartCooldown();
+                }
                 return;
             }
         }
@@ -169,6 +173,7 @@ public class RangedWeapon : EquipmentItem
             if (canShoot)
             {
                 Shoot();
+                StartCooldown();
                 firedRounds++;
             }
             yield return null;
@@ -188,6 +193,7 @@ public class RangedWeapon : EquipmentItem
             if (canShoot)
             {
                 Shoot();
+                StartCooldown();
             }
             yield return null;
         }
@@ -203,6 +209,7 @@ public class RangedWeapon : EquipmentItem
             return;
         }
         Shoot();
+        StartCooldown();
     }
 
     [Command]
@@ -218,6 +225,11 @@ public class RangedWeapon : EquipmentItem
         }
     }
 
+
+    private void StartCooldown()
+    {
+        StartCoroutine(IEShootCooldown());
+    }
     // A cooldown to simulate the time it takes
     // for a bullet to get chambered.
     private IEnumerator IEShootCooldown()
@@ -227,11 +239,15 @@ public class RangedWeapon : EquipmentItem
         canShoot = true;
     }
 
+    private void ShotShell()
+    {
+
+    }
 
     // Main shoot method.
     private void Shoot()
     {
-        StartCoroutine(IEShootCooldown());
+
         Rpc_ShootSFX();
         Ray shootRay = new Ray(bulletRayOrigin.position, transform.forward);
         RaycastHit rayHit;
