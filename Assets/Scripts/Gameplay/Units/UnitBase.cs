@@ -1040,7 +1040,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
         Vector3 randomForce = new Vector3(Random.Range(-50, 50), Random.Range(-20, 20), Random.Range(-50, 50));
 
-        newPartRB.AddForce(randomForce);
+        newPartRB.AddForce(randomForce / 2);
+        newPartRB.AddTorque(randomForce);
 
         Rpc_Dismember_BodyPart(oldPart, newPart, randomForce);
     }
@@ -1053,8 +1054,11 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
         newPart.gameObject.SetActive(true);
         newPart.transform.SetParent(null);
+
         newPartRB.isKinematic = false;
-        newPartRB.AddForce(randomForce);
+
+        newPartRB.AddForce(randomForce / 2);
+        newPartRB.AddTorque(randomForce);
 
     }
 
