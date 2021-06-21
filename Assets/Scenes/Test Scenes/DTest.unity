@@ -580,6 +580,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6fbaa8bfb80a6544e9b23ed0e4bbbe16, type: 3}
+--- !u!65 &86670403 stripped
+BoxCollider:
+  m_CorrespondingSourceObject: {fileID: 7670592048999142384, guid: f438cd29d6d19a14598cb02467f7b01a,
+    type: 3}
+  m_PrefabInstance: {fileID: 1640314452}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &89966349
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12476,6 +12482,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 733439422110567963, guid: f438cd29d6d19a14598cb02467f7b01a,
+        type: 3}
+      propertyPath: testCol
+      value: 
+      objectReference: {fileID: 86670403}
+    - target: {fileID: 733439422110567963, guid: f438cd29d6d19a14598cb02467f7b01a,
+        type: 3}
+      propertyPath: col
+      value: 
+      objectReference: {fileID: 86670403}
     - target: {fileID: 4609404701648697094, guid: f438cd29d6d19a14598cb02467f7b01a,
         type: 3}
       propertyPath: outlineWidth
@@ -14213,7 +14229,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: cb01340e70aed9c46bfa967e316d1c34, type: 2}
+  - {fileID: 2100000, guid: f9983776f11df3248bcaa1ded25a64d1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -14779,23 +14795,29 @@ PrefabInstance:
     - target: {fileID: 538350748458415293, guid: a50ce089f14b44241b73d7315b6cf36e,
         type: 3}
       propertyPath: pools.Array.size
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 538350748458415293, guid: a50ce089f14b44241b73d7315b6cf36e,
         type: 3}
       propertyPath: pools.Array.data[0].prefab.Array.size
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 538350748458415293, guid: a50ce089f14b44241b73d7315b6cf36e,
         type: 3}
       propertyPath: pools.Array.data[0].tag
-      value: 
+      value: Blood Splatter
       objectReference: {fileID: 0}
     - target: {fileID: 538350748458415293, guid: a50ce089f14b44241b73d7315b6cf36e,
         type: 3}
       propertyPath: pools.Array.data[0].amount
-      value: 0
+      value: 20
       objectReference: {fileID: 0}
+    - target: {fileID: 538350748458415293, guid: a50ce089f14b44241b73d7315b6cf36e,
+        type: 3}
+      propertyPath: pools.Array.data[0].prefab.Array.data[0]
+      value: 
+      objectReference: {fileID: 6593017465037746565, guid: f74d66cde6c53454faa4388302f395a5,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a50ce089f14b44241b73d7315b6cf36e, type: 3}
 --- !u!1001 &3450751549828372716
