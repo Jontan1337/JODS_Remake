@@ -255,7 +255,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         set
         {
             health = value;
-            if (health > 0)
+            if (health <= 0)
             {
                 Svr_Die();
             }
