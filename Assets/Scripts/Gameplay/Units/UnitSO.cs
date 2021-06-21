@@ -93,6 +93,8 @@ public class UnitSO : ScriptableObject
     public int viewAngle = 50;
     public int alertRadius = 20;
     public bool canAlert = true;
+    [Space]
+    public Color bloodColor = Color.red;
 
     [System.Serializable]
     public class Sounds
@@ -114,6 +116,7 @@ public class UnitSO : ScriptableObject
         public AudioClip[] footstepSounds;
         [Range(0, 1)] public float footstepVolume = 0.1f;
     }
+    [Space]
     public Sounds sounds;
 
     [System.Serializable]

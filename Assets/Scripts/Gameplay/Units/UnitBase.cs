@@ -107,6 +107,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     [SerializeField] private int alertRadius = 0;
     [SerializeField] private bool canAlert = true;
     [SerializeField] private LayerMask alertMask = 1 << 9; //Unit is layer 9. We only want to alert Units
+    [Space]
     [SerializeField] private Color particleColor = Color.red;
 
     [Header("AI")]
@@ -369,6 +370,9 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
         //Selecting
         select.canSelect = unitSO.select.canSelect;
+
+        //Other
+        particleColor = unitSO.bloodColor;
     }
 
     public void SetUnitSO(UnitSO myNewUnit)
