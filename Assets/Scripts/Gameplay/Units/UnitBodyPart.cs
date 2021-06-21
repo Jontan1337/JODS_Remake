@@ -15,7 +15,7 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable
 
 
     #region Fields
-    public UnitBase unitBase;
+    private UnitBase unitBase;
 
     public BodyParts bodyPart = BodyParts.Torso;
 
