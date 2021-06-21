@@ -224,6 +224,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyPart: 0
+  detachable: 0
+  attachedPart: {fileID: 0}
+  detachedPart: {fileID: 0}
 --- !u!1 &199962367499645475
 GameObject:
   m_ObjectHideFlags: 0
@@ -375,6 +378,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyPart: 2
+  detachable: 0
+  attachedPart: {fileID: 0}
+  detachedPart: {fileID: 0}
 --- !u!1 &474417694701787369
 GameObject:
   m_ObjectHideFlags: 0
@@ -720,6 +726,7 @@ MonoBehaviour:
   alertMask:
     serializedVersion: 2
     m_Bits: 512
+  particleColor: {r: 1, g: 0, b: 0, a: 1}
   currentTarget: {fileID: 0}
   navAgent: {fileID: 0}
   hasTarget: 0
@@ -742,10 +749,9 @@ MonoBehaviour:
     footstepVolume: 0.1
   select:
     canSelect: 1
-    unitRenderer: {fileID: 9218997157679224902}
-    unitMat: {fileID: 0}
+    bodyPartsRenderers: []
+    unitMats: []
     isSelected: 0
-  rangedCooldown: 0
   CaughtSurvivor: 0
 --- !u!114 &6403173154031129435
 MonoBehaviour:
@@ -764,6 +770,7 @@ MonoBehaviour:
   tickRate: 0.01
   timerEnabled: 0
   timerProgress: 0
+  materials: []
 --- !u!114 &3853630380662590646
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -836,6 +843,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyPart: 3
+  detachable: 0
+  attachedPart: {fileID: 0}
+  detachedPart: {fileID: 0}
 --- !u!1 &1447930340633920749
 GameObject:
   m_ObjectHideFlags: 0
@@ -1018,6 +1028,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyPart: 3
+  detachable: 0
+  attachedPart: {fileID: 0}
+  detachedPart: {fileID: 0}
 --- !u!1 &1934258694705639993
 GameObject:
   m_ObjectHideFlags: 0
@@ -1108,6 +1121,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyPart: 2
+  detachable: 0
+  attachedPart: {fileID: 0}
+  detachedPart: {fileID: 0}
 --- !u!1 &2316082600424967397
 GameObject:
   m_ObjectHideFlags: 0
@@ -1569,6 +1585,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyPart: 0
+  detachable: 0
+  attachedPart: {fileID: 0}
+  detachedPart: {fileID: 0}
 --- !u!1 &4571511875992700216
 GameObject:
   m_ObjectHideFlags: 0
@@ -1704,6 +1723,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyPart: 1
+  detachable: 0
+  attachedPart: {fileID: 0}
+  detachedPart: {fileID: 0}
 --- !u!1 &4785514375201789869
 GameObject:
   m_ObjectHideFlags: 0
@@ -1915,6 +1937,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyPart: 3
+  detachable: 0
+  attachedPart: {fileID: 0}
+  detachedPart: {fileID: 0}
 --- !u!1 &5738193839646553521
 GameObject:
   m_ObjectHideFlags: 0
@@ -2159,6 +2184,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyPart: 2
+  detachable: 0
+  attachedPart: {fileID: 0}
+  detachedPart: {fileID: 0}
 --- !u!1 &6402353874872120185
 GameObject:
   m_ObjectHideFlags: 0
@@ -2462,6 +2490,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyPart: 3
+  detachable: 0
+  attachedPart: {fileID: 0}
+  detachedPart: {fileID: 0}
 --- !u!1 &7637160087041854832
 GameObject:
   m_ObjectHideFlags: 0
@@ -2590,6 +2621,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyPart: 3
+  detachable: 0
+  attachedPart: {fileID: 0}
+  detachedPart: {fileID: 0}
 --- !u!1 &7989511075509558053
 GameObject:
   m_ObjectHideFlags: 0
@@ -2710,6 +2744,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyPart: 3
+  detachable: 0
+  attachedPart: {fileID: 0}
+  detachedPart: {fileID: 0}
 --- !u!1 &8568327156750102729
 GameObject:
   m_ObjectHideFlags: 0

@@ -25,6 +25,7 @@ public class MeleeWeapon : EquipmentItem
     [SerializeField] private SFXPlayer sfxPlayer = null;
     [SerializeField] private ParticleSystem hitParticle = null;
     [SerializeField] private Material material = null;
+    [SerializeField] private Collider col = null;
 
     [Header("Audio Settings")]
     [SerializeField] private AudioClip swingSound = null;
@@ -36,6 +37,8 @@ public class MeleeWeapon : EquipmentItem
 
     private const string AttackTrigger = "Attack";
     private const string BloodAmount = "_BloodAmount";
+
+    public Collider testCol;
 
     public float SplatterAmount
     {
@@ -70,7 +73,11 @@ public class MeleeWeapon : EquipmentItem
     private void OnTriggerEnter(Collider other)
     {
         if (!isServer) return;
-
+        if (damageType == DamageTypes.Slash)
+        {
+            weaponAnimator.ResetTrigger(AttackTrigger);
+            weaponAnimator.CrossFade("Idle", 1f);
+        }
         if (!isAttacking) return;
         if (other.TryGetComponent(out IDamagable damagable))
         {
@@ -78,8 +85,8 @@ public class MeleeWeapon : EquipmentItem
 
             if (other.TryGetComponent(out IParticleEffect particleEffect))
             {
-                Rpc_ParticleColor(particleEffect.ParticleColor);
-                Rpc_EmitParticles();
+                Vector3 weaponPos = new Vector3(transform.position.x, transform.position.y, transform.position.z + col.bounds.size.z / 1.5f);
+                Rpc_EmitParticle(other.ClosestPoint(weaponPos), particleEffect.ParticleColor);
                 Rpc_ApplySplatter(splatterAmountOnHit);
             }
         }
@@ -139,15 +146,13 @@ public class MeleeWeapon : EquipmentItem
         sfxPlayer.PlaySFX(hitSound);
     }
     [ClientRpc]
-    private void Rpc_EmitParticles()
+    private void Rpc_EmitParticle(Vector3 objectPos, Color color)
     {
-        hitParticle.Emit(20);
-    }
-    [ClientRpc]
-    private void Rpc_ParticleColor(Color color)
-    {
-        ParticleSystem.MainModule mainMod = hitParticle.main;
+        GameObject pooledParticleObject = ObjectPool.Instance.SpawnFromPool("Blood Splatter", objectPos, transform.rotation);
+        ParticleSystem pooledParticle = pooledParticleObject.GetComponent<ParticleSystem>();
+        ParticleSystem.MainModule mainMod = pooledParticle.main;
         mainMod.startColor = color;
+        ObjectPool.Instance.ReturnToPool("Blood Splatter", pooledParticleObject, pooledParticle.main.duration);
     }
 
     private IEnumerator IESplatterShader()
@@ -175,4 +180,13 @@ public class MeleeWeapon : EquipmentItem
     }
 
     #endregion
+
+    private void OnDrawGizmosSelected()
+    {
+        if (testCol != null)
+        {
+            Vector3 vec3 = new Vector3(transform.position.x, transform.position.y, transform.position.z + col.bounds.size.z / 1.5f);
+            Debug.DrawLine(vec3, testCol.ClosestPoint(vec3));
+        }
+    }
 }
