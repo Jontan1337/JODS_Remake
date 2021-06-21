@@ -12,6 +12,7 @@ public class MeleeWeapon : EquipmentItem
     [Header("Weapon stats")]
     [SerializeField] private int damage = 10;
     [SerializeField] private DamageTypes damageType = DamageTypes.Slash;
+    [SerializeField] private float attackInterval;
 
     [Header("Game details")]
     [SerializeField] private float splatterAmount = 0f;
@@ -32,8 +33,12 @@ public class MeleeWeapon : EquipmentItem
     [SerializeField] private AudioClip hitSound = null;
 
     [SyncVar] private bool isAttacking;
+    [SyncVar] private bool canAttack = true;
 
     private Coroutine COSplatterShader;
+    private Coroutine COAttackInterval;
+
+    private Transform previousHitColliderParent;
 
     private const string AttackTrigger = "Attack";
     private const string BloodAmount = "_BloodAmount";
@@ -73,26 +78,36 @@ public class MeleeWeapon : EquipmentItem
     private void OnTriggerEnter(Collider other)
     {
         if (!isServer) return;
-        if (damageType == DamageTypes.Slash)
-        {
-            weaponAnimator.ResetTrigger(AttackTrigger);
-            weaponAnimator.CrossFade("Idle", 1f);
-        }
         if (!isAttacking) return;
-        if (other.TryGetComponent(out IDamagable damagable))
+        if (other.transform.root != previousHitColliderParent)
         {
-            damagable?.Svr_Damage(damage);
-
-            if (other.TryGetComponent(out IParticleEffect particleEffect))
+            previousHitColliderParent = other.transform.root;
+            if (other.TryGetComponent(out IDamagable damagable))
             {
-                Vector3 weaponPos = new Vector3(transform.position.x, transform.position.y, transform.position.z + col.bounds.size.z / 1.5f);
-                Rpc_EmitParticle(other.ClosestPoint(weaponPos), particleEffect.ParticleColor);
-                Rpc_ApplySplatter(splatterAmountOnHit);
+                damagable?.Svr_Damage(damage);
             }
         }
-        if (other.TryGetComponent(out IDetachable detachable))
+        if (other.TryGetComponent(out IParticleEffect particleEffect))
         {
-            detachable?.Detach(damageType);
+            Vector3 weaponPos = new Vector3(transform.position.x, transform.position.y, transform.position.z + col.bounds.size.z / 1.5f);
+            Rpc_EmitParticle(other.ClosestPoint(weaponPos), particleEffect.ParticleColor);
+            Rpc_ApplySplatter(splatterAmountOnHit);
+        }
+        switch (damageType)
+        {
+            case DamageTypes.Slash:
+                if (other.TryGetComponent(out IDetachable detachable))
+                {
+                    detachable?.Detach(damageType);
+                }
+                break;
+            case DamageTypes.Blunt:
+                weaponAnimator.CrossFadeInFixedTime("Idle", 0.1f);
+                break;
+            case DamageTypes.Pierce:
+                break;
+            default:
+                break;
         }
     }
 
@@ -101,8 +116,10 @@ public class MeleeWeapon : EquipmentItem
     [Command]
     private void Cmd_Attack()
     {
+        if (!canAttack) return;
         // Play the melee attack animation.
         weaponAnimator.SetTrigger(AttackTrigger);
+        COAttackInterval = StartCoroutine(IEAttackInterval());
     }
 
     // Called by animation event.
@@ -124,11 +141,19 @@ public class MeleeWeapon : EquipmentItem
     {
         isAttacking = true;
         Rpc_ApplySplatter(splatterRemoveAmountOnSwing);
+        previousHitColliderParent = null;
     }
     [Command]
     private void Cmd_StopAttacking()
     {
         isAttacking = false;
+    }
+
+    private IEnumerator IEAttackInterval()
+    {
+        canAttack = false;
+        yield return new WaitForSeconds(attackInterval);
+        canAttack = true;
     }
 
     #endregion
