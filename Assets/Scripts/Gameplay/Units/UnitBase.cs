@@ -255,7 +255,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         set
         {
             health = value;
-            print($"{name}: lost {value} health. Current health: {health}");
             if (health > 0)
             {
                 Svr_Die();
@@ -1369,11 +1368,9 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             }
         }
 
-        health -= damage;
+        Health -= damage;
 
         animator.SetTrigger("Hit");
-
-        if (health <= 0) Svr_Die();
     }
 
     public int GetHealth()
