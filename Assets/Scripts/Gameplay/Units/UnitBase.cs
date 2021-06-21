@@ -452,7 +452,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
                 newMat //Assign a random material.
                 );
 
-            print(unitRenderer.sharedMaterial);
             select.unitMats[i] = unitRenderer.sharedMaterial;
         }
 
@@ -1003,7 +1002,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     #region Dismemberment
 
     [Server]
-    public void Svr_Dismember(DamageTypes damageType, GameObject oldPart, GameObject newPart)
+    public void Svr_Dismember(DamageTypes damageType, GameObject oldPart, GameObject newPart, GameObject bloodFX)
     {
         newPart.GetComponent<MeshRenderer>().material = new Material(oldPart.GetComponent<SkinnedMeshRenderer>().sharedMaterial);
 
@@ -1012,17 +1011,17 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             {
                 case DamageTypes.Blunt:
 
-                    Svr_Dismember_BodyPart(oldPart, newPart);
+                    Svr_Dismember_BodyPart(oldPart, newPart, bloodFX);
 
                     break;
                 case DamageTypes.Slash:
 
-                    Svr_Dismember_BodyPart(oldPart, newPart);
+                    Svr_Dismember_BodyPart(oldPart, newPart, bloodFX);
 
                     break;
                 case DamageTypes.Pierce:
 
-                    Svr_Dismember_BodyPart(oldPart, newPart);
+                    Svr_Dismember_BodyPart(oldPart, newPart, bloodFX);
 
                     break;
             }
@@ -1030,15 +1029,16 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     }
 
     [Server]
-    private void Svr_Dismember_BodyPart(GameObject oldPart, GameObject newPart)
+    private void Svr_Dismember_BodyPart(GameObject oldPart, GameObject newPart, GameObject bloodFX)
     {
         oldPart.SetActive(false);
-
-        Rigidbody newPartRB = newPart.GetComponent<Rigidbody>();
 
         newPart.gameObject.SetActive(true);
         newPart.transform.SetParent(null);
 
+        bloodFX.SetActive(true);
+
+        Rigidbody newPartRB = newPart.GetComponent<Rigidbody>();
         newPartRB.isKinematic = false;
 
         Vector3 randomForce = new Vector3(Random.Range(-50, 50), Random.Range(-20, 20), Random.Range(-50, 50));
@@ -1046,18 +1046,19 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         newPartRB.AddForce(randomForce / 2);
         newPartRB.AddTorque(randomForce);
 
-        Rpc_Dismember_BodyPart(oldPart, newPart, randomForce);
+        Rpc_Dismember_BodyPart(oldPart, newPart, bloodFX, randomForce);
     }
     [ClientRpc]
-    private void Rpc_Dismember_BodyPart(GameObject oldPart, GameObject newPart, Vector3 randomForce)
+    private void Rpc_Dismember_BodyPart(GameObject oldPart, GameObject newPart, GameObject bloodFX, Vector3 randomForce)
     {
         oldPart.SetActive(false);
 
-        Rigidbody newPartRB = newPart.GetComponent<Rigidbody>();
+        bloodFX.SetActive(true);
 
         newPart.gameObject.SetActive(true);
         newPart.transform.SetParent(null);
 
+        Rigidbody newPartRB = newPart.GetComponent<Rigidbody>();
         newPartRB.isKinematic = false;
 
         newPartRB.AddForce(randomForce / 2);
@@ -1140,15 +1141,9 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         yield return new WaitForSeconds(3);
 
         //Dissolve Effect
-        //Enable the Dissolve Boolean on the material, which allows for the material to do the dissolve effect
         //Start the DissolveCoroutine which slowly dissolves over a set amount of time.
 
-        foreach (Material unitMat in select.unitMats)
-        {
-            unitMat.SetInt("_Dissolve", 1);
-        }
-
-        GetComponent<Timer>()?.StartTimer(true, 2, select.unitMats);
+        GetComponent<Timer>()?.StartTimer(true, 2.5f, select.unitMats);
 
         yield return new WaitForSeconds(3);
         //After 3 seconds, tell the server to destroy the object/unit

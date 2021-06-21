@@ -18,8 +18,9 @@ public class UnitBodyPartEditor : Editor
 
         if (script.detachable)
         {
-            script.attachedPart = EditorGUILayout.ObjectField("Attached Part", script.attachedPart, typeof(GameObject), true) as GameObject;
-            script.detachedPart = EditorGUILayout.ObjectField("Detached Part", script.detachedPart, typeof(GameObject), true) as GameObject;
+            serializedObject.FindProperty("attachedPart").objectReferenceValue = EditorGUILayout.ObjectField("Attached Part", script.attachedPart, typeof(GameObject), true) as GameObject;
+            serializedObject.FindProperty("detachedPart").objectReferenceValue = EditorGUILayout.ObjectField("Detached Part", script.detachedPart, typeof(GameObject), true) as GameObject;
+            serializedObject.FindProperty("bodyBloodEmitter").objectReferenceValue = EditorGUILayout.ObjectField("Body Blood Emitter", script.bodyBloodEmitter, typeof(GameObject), true) as GameObject;
         }
 
         serializedObject.ApplyModifiedProperties();

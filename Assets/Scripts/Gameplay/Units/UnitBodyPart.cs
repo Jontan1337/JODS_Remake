@@ -23,13 +23,16 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEff
     [Space]
     public GameObject attachedPart;
     public GameObject detachedPart;
+    [Space]
+    public GameObject bodyBloodEmitter;
+
     #endregion
 
 
     public void Detach(DamageTypes damageType)
     {
         if (!detachable) return;
-        unitBase.Svr_Dismember(damageType, attachedPart, detachedPart);
+        unitBase.Svr_Dismember(damageType, attachedPart, detachedPart, bodyBloodEmitter);
     }
 
     public void Svr_Damage(int damage, Transform target = null)
@@ -59,6 +62,7 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEff
             attachedPart.SetActive(true);
             detachedPart.GetComponent<Rigidbody>().isKinematic = true;
             detachedPart.gameObject.SetActive(false);
+            bodyBloodEmitter.SetActive(false);
         }
     }
     public Teams Team => throw new System.NotImplementedException();

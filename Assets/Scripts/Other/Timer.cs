@@ -13,6 +13,9 @@ public abstract class Timer : MonoBehaviour
     [Header("Timer Settings")]
     [SerializeField] private TimerType timerType = TimerType.tickContinuously;
     [Space]
+    [SerializeField] private bool startTimerOnAwake = false;
+    [SerializeField] private float startOnAwakeDelay = 1.5f;
+    [Space]
     [SerializeField] private float stopTime = 5f;
     private readonly float startTime = 0f;
     private float currentTime = 0f;
@@ -22,8 +25,24 @@ public abstract class Timer : MonoBehaviour
     [SerializeField] private bool timerEnabled = false;
     [SerializeField, Range(0,100)] protected float timerProgress = 0f;
 
+    public virtual void Start()
+    {
+        if (startTimerOnAwake)
+        {
+            StartCoroutine(StartDelay(startOnAwakeDelay));
+        }
+    }
+
+    private IEnumerator StartDelay(float time)
+    {
+        print("delay");
+        yield return new WaitForSeconds(time);
+
+        StartTimer(true, stopTime);
+    }
+
     public virtual void StartTimer(bool start, float _stopTime = 5f)
-    { 
+    {
         timerEnabled = start;
 
         if (start == true)
