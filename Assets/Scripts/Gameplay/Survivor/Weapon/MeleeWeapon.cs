@@ -11,6 +11,7 @@ public class MeleeWeapon : EquipmentItem
 
     [Header("Weapon stats")]
     [SerializeField] private int damage = 10;
+    [SerializeField] private DamageTypes damageType = DamageTypes.Slash;
 
     [Header("Game details")]
     [SerializeField] private float splatterAmount = 0f;
@@ -81,6 +82,10 @@ public class MeleeWeapon : EquipmentItem
                 Rpc_EmitParticles();
                 Rpc_ApplySplatter(splatterAmountOnHit);
             }
+        }
+        if (other.TryGetComponent(out IDetachable detachable))
+        {
+            detachable?.Detach(damageType);
         }
     }
 
