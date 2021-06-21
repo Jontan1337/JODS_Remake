@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable
+public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEffect
 {
     private readonly float[] multiplierArray = new float[]
     {
@@ -63,4 +63,5 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable
     }
     public Teams Team => throw new System.NotImplementedException();
 
+    public Color ParticleColor => unitBase.ParticleColor;
 }
