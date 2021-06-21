@@ -15,7 +15,7 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable
 
 
     #region Fields
-    private UnitBase unitBase;
+    public UnitBase unitBase;
 
     public BodyParts bodyPart = BodyParts.Torso;
 
@@ -34,7 +34,7 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable
 
     public void Svr_Damage(int damage, Transform target = null)
     {
-        unitBase.Svr_Damage(Mathf.RoundToInt(damage * multiplier));
+        unitBase.Svr_Damage(Mathf.RoundToInt(damage * multiplier), target);
     }
 
 	int IDamagable.GetHealth()
