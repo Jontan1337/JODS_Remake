@@ -1081,7 +1081,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     private void Rpc_StopNavAgent()
     {
         //Stop NavMesh Movement
-        navAgent.isStopped = true;
+        //navAgent.isStopped = true;
         navAgent.enabled = false;
     }
     [Server]
