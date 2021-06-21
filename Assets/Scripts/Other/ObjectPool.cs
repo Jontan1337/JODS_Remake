@@ -71,7 +71,7 @@ public class ObjectPool : MonoBehaviour
     }
 
 
-    public GameObject SpawnFromPool(string tag, Vector3 position, Quaternion rotation)
+    public GameObject SpawnFromPool(string tag, Vector3 position, Quaternion rotation, float? time = null)
     {
         //If the tag does not exist within the pool dictionary, return nothing.
         if (!poolDictionary.ContainsKey(tag))
@@ -88,16 +88,33 @@ public class ObjectPool : MonoBehaviour
         objectToSpawn.transform.position = position;
         objectToSpawn.transform.rotation = rotation;
 
-        //If the section has a IPooledObject script, call the method
+        //If the object has a IPooledObject script, call the method
         IPooledObject pooledObj = objectToSpawn.GetComponent<IPooledObject>();
         if (pooledObj != null)
         {
             pooledObj.OnObjectSpawn();
         }
 
-        //Put the object back in the queue (putting it at the back of the queue)
-        poolDictionary[tag].Enqueue(objectToSpawn);
+        //Put the object back in the queue after 'time' has passed (putting it at the back of the queue)
+        if (time != null) 
+        {
+            StartCoroutine(DespawnTimer(tag, objectToSpawn, (float)time));
+        }
 
         return objectToSpawn;
+    }
+
+    public void ReturnToPool(string tag, GameObject objectToEnqueue, float time)
+    {
+        StartCoroutine(DespawnTimer(tag, objectToEnqueue, (float)time));
+    }
+
+
+    private IEnumerator DespawnTimer(string tag, GameObject objectToEnqueue, float time)
+    {
+        yield return new WaitForSeconds(time);
+
+        poolDictionary[tag].Enqueue(objectToEnqueue);
+        objectToEnqueue.SetActive(false);
     }
 }
