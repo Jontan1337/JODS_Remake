@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8536705584843177060}
   - component: {fileID: 6793136346190326935}
   - component: {fileID: 3959049277974515008}
+  - component: {fileID: 1152884676840508308}
   m_Layer: 0
   m_Name: PlayerHands
   m_TagString: Untagged
@@ -65,11 +66,14 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   parentData: {fileID: 0}
-  syncParent: 1
   positionData: {x: 0, y: 0, z: 0}
-  syncPosition: 1
+  localPositionData: {x: 0, y: 0, z: 0}
   rotationData: {x: 0, y: 0, z: 0, w: 0}
+  syncParent: 1
+  syncPosition: 1
   syncRotation: 1
+  syncVisibility: 0
+  objectRenderer: {fileID: 0}
 --- !u!114 &6793136346190326935
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -101,3 +105,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: 1
+--- !u!95 &1152884676840508308
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7469820133590246594}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
