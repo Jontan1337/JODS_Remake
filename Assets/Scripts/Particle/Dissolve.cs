@@ -4,24 +4,27 @@ using UnityEngine;
 
 public class Dissolve : Timer
 {
-    private Material material;
+    public Material[] materials;
 
-    public override void StartTimer(bool start, float _stopTime = 5f, Material mat = null)
+    public override void StartTimer(bool start, float _stopTime = 5f, Material[] mats = null)
     {
-        material = mat;
+        materials = mats;
 
         base.StartTimer(start, _stopTime);
     }
     public override void StartTimer(bool start, float _stopTime = 5f)
     {
-        material = GetComponent<MeshRenderer>().material;
+        materials[0] = GetComponent<MeshRenderer>().material;
 
         base.StartTimer(start, _stopTime);
     }
 
     protected override void Tick()
     {
-        material.SetFloat("_DissolveAmount", timerProgress / 100);
+        foreach (Material material in materials)
+        {
+            material.SetFloat("_DissolveAmount", timerProgress / 100);
+        }
     }
 
     protected override void Finish()

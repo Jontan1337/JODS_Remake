@@ -148,7 +148,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     {
         public bool canSelect = true;
         public SkinnedMeshRenderer[] bodyPartsRenderers;
-        public Material unitMat;
+        public Material[] unitMats;
         public bool isSelected = false;
     }
     [Space]
@@ -434,18 +434,24 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     
     private void SetMaterialsAndMeshes()
     {
-        //Random Material to assign
-        Material newMat = unitSO.unitMaterials[Random.Range(0, unitSO.unitMaterials.Length)];
+        bool randomMat = unitSO.unitMaterials.Length != 0;
+        select.unitMats = new Material[select.bodyPartsRenderers.Length];
 
-        foreach (SkinnedMeshRenderer unitRenderer in select.bodyPartsRenderers)
+        for (int i = 0; i < select.bodyPartsRenderers.Length; i++)
         {
-            unitRenderer.material = new Material(unitSO.unitMaterials.Length == 0 ? //If the unit has different materials to choose from
+            //Random Material to assign, if there are any
+            Material newMat = randomMat ? unitSO.unitMaterials[Random.Range(0, unitSO.unitMaterials.Length)] : null;
+
+            SkinnedMeshRenderer unitRenderer = select.bodyPartsRenderers[i];
+
+            unitRenderer.material = new Material(randomMat ? //If the unit has different materials to choose from
                 unitRenderer.sharedMaterial : //If not, use already assigned material.
                 newMat //Assign a random material.
                 );
-        }
 
-        select.unitMat = select.bodyPartsRenderers[0].sharedMaterial;
+            print(unitRenderer.sharedMaterial);
+            select.unitMats[i] = unitRenderer.sharedMaterial;
+        }
 
 
         if (unitSO.unitMeshes.Length != 0)
@@ -1122,8 +1128,13 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         //Dissolve Effect
         //Enable the Dissolve Boolean on the material, which allows for the material to do the dissolve effect
         //Start the DissolveCoroutine which slowly dissolves over a set amount of time.
-        select.unitMat.SetInt("_Dissolve", 1);
-        GetComponent<Timer>()?.StartTimer(true, 2, select.unitMat);
+
+        foreach (Material unitMat in select.unitMats)
+        {
+            unitMat.SetInt("_Dissolve", 1);
+        }
+
+        GetComponent<Timer>()?.StartTimer(true, 2, select.unitMats);
 
         yield return new WaitForSeconds(3);
         //After 3 seconds, tell the server to destroy the object/unit
@@ -1185,14 +1196,18 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
         OnSelect();
 
-        if (!select.unitMat)
+        if (select.unitMats.Length == 0)
         {
             Debug.LogWarning($"{name} had no material assigned and could not be highlighted. -" +
                 $"Does it have a unitRenderer assigned?");
             return;
         }
-        select.unitMat.SetInt("_Highlight", 1);
-        select.unitMat.SetColor("_HighlightColor", highlightColor);
+
+        foreach (Material unitMat in select.unitMats)
+        {
+            unitMat.SetInt("_Highlight", 1);
+            unitMat.SetColor("_HighlightColor", highlightColor);
+        }
     }
     public void Deselect()
     {
@@ -1200,13 +1215,17 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
         OnDeselect();
 
-        if (!select.unitMat)
+        if (select.unitMats.Length == 0)
         {
             Debug.LogWarning($"{name} had no material assigned and could not be highlighted. -" +
                 $"Does it have a unitRenderer assigned?");
             return;
         }
-        select.unitMat.SetInt("_Highlight", 0);
+
+        foreach (Material unitMat in select.unitMats)
+        {
+            unitMat.SetInt("_Highlight", 0);
+        }
     }
     #endregion
 

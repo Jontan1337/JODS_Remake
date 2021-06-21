@@ -62,7 +62,7 @@ public abstract class Timer : MonoBehaviour
         }
     }
 
-    public virtual void StartTimer(bool start, float _stopTime = 5f, Material mat = null)
+    public virtual void StartTimer(bool start, float _stopTime = 5f, Material[] mats = null)
     {
         StartTimer(start, _stopTime);
     }

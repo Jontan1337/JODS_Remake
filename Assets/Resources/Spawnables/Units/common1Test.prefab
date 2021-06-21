@@ -151,6 +151,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyPart: 2
+  detachable: 0
   attachedPart: {fileID: 0}
   detachedPart: {fileID: 0}
 --- !u!1 &725036692310319032
@@ -324,6 +325,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyPart: 2
+  detachable: 1
   attachedPart: {fileID: 725036692310319032}
   detachedPart: {fileID: 4930792767348644944}
 --- !u!1 &852494983293746136
@@ -433,6 +435,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyPart: 1
+  detachable: 1
   attachedPart: {fileID: 1591293922081551051}
   detachedPart: {fileID: 3002839366970647343}
 --- !u!1 &891550901147348063
@@ -529,6 +532,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyPart: 3
+  detachable: 0
   attachedPart: {fileID: 0}
   detachedPart: {fileID: 0}
 --- !u!1 &1117752681112546094
@@ -857,6 +861,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyPart: 3
+  detachable: 0
   attachedPart: {fileID: 0}
   detachedPart: {fileID: 0}
 --- !u!54 &8740446350278730148
@@ -1100,6 +1105,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyPart: 3
+  detachable: 0
   attachedPart: {fileID: 0}
   detachedPart: {fileID: 0}
 --- !u!1 &5965246839417215930
@@ -1160,6 +1166,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyPart: 3
+  detachable: 0
   attachedPart: {fileID: 0}
   detachedPart: {fileID: 0}
 --- !u!1 &5970947047749849938
@@ -1316,6 +1323,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyPart: 0
+  detachable: 0
   attachedPart: {fileID: 0}
   detachedPart: {fileID: 0}
 --- !u!1 &6810662297294556321
@@ -1469,6 +1477,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyPart: 2
+  detachable: 0
   attachedPart: {fileID: 0}
   detachedPart: {fileID: 0}
 --- !u!1 &7106934114223923855
@@ -1641,6 +1650,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyPart: 0
+  detachable: 0
   attachedPart: {fileID: 0}
   detachedPart: {fileID: 0}
 --- !u!1 &7399524171034295222
@@ -1983,9 +1993,10 @@ MonoBehaviour:
   select:
     canSelect: 1
     bodyPartsRenderers:
-    - {fileID: 2921412205291913384}
+    - {fileID: 8993884949330369461}
     - {fileID: 1758468292287379096}
     - {fileID: 1936120791989916468}
+    - {fileID: 2921412205291913384}
     unitMat: {fileID: 0}
     isSelected: 0
 --- !u!114 &5797044904028285280
@@ -2280,6 +2291,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyPart: 2
+  detachable: 1
   attachedPart: {fileID: 7626138182672898349}
   detachedPart: {fileID: 6849957032061247214}
 --- !u!1 &7931307902530315462
@@ -2402,6 +2414,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyPart: 3
+  detachable: 0
   attachedPart: {fileID: 0}
   detachedPart: {fileID: 0}
 --- !u!1 &8280208014952974754
@@ -2523,6 +2536,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyPart: 3
+  detachable: 0
   attachedPart: {fileID: 0}
   detachedPart: {fileID: 0}
 --- !u!1 &8826050293107502236

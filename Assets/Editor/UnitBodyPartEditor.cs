@@ -6,9 +6,11 @@ public class UnitBodyPartEditor : Editor
 {
     public override void OnInspectorGUI()
     {
+        DrawDefaultInspector();
+        /*
         var script = target as UnitBodyPart;
 
-        EditorGUILayout.EnumFlagsField("Body Part", script.bodyPart);
+        EditorGUILayout.EnumPopup("Body Part", script.bodyPart);
 
         EditorGUILayout.Space();
 
@@ -20,5 +22,6 @@ public class UnitBodyPartEditor : Editor
             script.attachedPart = EditorGUILayout.ObjectField("Attached Part", script.attachedPart, typeof(GameObject), true) as GameObject;
             script.detachedPart = EditorGUILayout.ObjectField("Detached Part", script.detachedPart, typeof(GameObject), true) as GameObject;
         }
+        */
     }
 }
