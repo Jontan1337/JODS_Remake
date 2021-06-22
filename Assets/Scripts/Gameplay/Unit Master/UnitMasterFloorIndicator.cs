@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class FloorIndicator : MonoBehaviour
+public class UnitMasterFloorIndicator : MonoBehaviour
 {
     [SerializeField] private Image image = null;
     [SerializeField] private Color deselected = Color.red;

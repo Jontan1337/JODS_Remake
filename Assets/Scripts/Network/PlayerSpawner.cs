@@ -9,7 +9,7 @@ public class PlayerSpawner : NetworkBehaviour
     [SerializeField] private GameObject survivorPrefab = null;
 
     [SerializeField] private List<SurvivorSO> survivorSOList = new List<SurvivorSO>();
-    [SerializeField] private List<MasterSO> masterSOList = new List<MasterSO>();
+    [SerializeField] private List<UnitMasterSO> masterSOList = new List<UnitMasterSO>();
 
     public override void OnStartServer()
     {
@@ -33,11 +33,11 @@ public class PlayerSpawner : NetworkBehaviour
         {
             if (_isMaster)
             {
-                foreach (MasterSO master in masterSOList)
+                foreach (UnitMasterSO master in masterSOList)
                 {
                     if (master.name == _class)
                     {
-                        newPlayerInstance.GetComponent<Master>().SetMasterClass(master);
+                        newPlayerInstance.GetComponent<UnitMaster>().SetMasterClass(master);
                         break;
                     }
                 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Master_TopdownController : MonoBehaviour
+public class UnitMaster_TopdownController : MonoBehaviour
 {
     private Camera cam = null;
     [Space]
@@ -15,7 +15,7 @@ public class Master_TopdownController : MonoBehaviour
     [Header("UI")]
     [SerializeField] private Transform floorUIContainer = null;
     [SerializeField] private GameObject floorIndicatorPrefab = null;
-    private List<FloorIndicator> floorIndicators = new List<FloorIndicator>();
+    private List<UnitMasterFloorIndicator> floorIndicators = new List<UnitMasterFloorIndicator>();
 
     private float horizontal; // These variables are used to move the player. 
     private float vertical; // They store the player's input values.
@@ -87,7 +87,7 @@ public class Master_TopdownController : MonoBehaviour
         //Instantiate floor indicators for each floor on the map
         for (int i = 0; i < amountOfFloors; i++)
         {
-            floorIndicators.Add(Instantiate(floorIndicatorPrefab, floorUIContainer).GetComponent<FloorIndicator>());
+            floorIndicators.Add(Instantiate(floorIndicatorPrefab, floorUIContainer).GetComponent<UnitMasterFloorIndicator>());
         }
 
         //Start on a random floor

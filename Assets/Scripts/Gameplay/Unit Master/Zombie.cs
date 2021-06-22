@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Zombie : MasterClass
+public class Zombie : UnitMasterClass
 {
     public string yes = " IMASG AZOMGHIN";
 

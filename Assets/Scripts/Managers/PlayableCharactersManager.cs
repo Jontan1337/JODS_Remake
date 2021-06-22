@@ -21,7 +21,7 @@ public class PlayableCharactersManager : MonoBehaviour
     [Header("Playable Characters Lists")]
     public List<SurvivorSO> survivorSOList = new List<SurvivorSO>();
     [Space]
-    public List<MasterSO> masterSOList = new List<MasterSO>();
+    public List<UnitMasterSO> masterSOList = new List<UnitMasterSO>();
 
     private void Start()
     {

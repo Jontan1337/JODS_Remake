@@ -22,12 +22,12 @@ public class UnitList
     public int unitIndex = 0;
 }
 [RequireComponent(typeof(AudioSource))]
-public class Master : NetworkBehaviour
+public class UnitMaster : NetworkBehaviour
 {
     #region Fields
     [Header("Master Class")]
-    [SerializeField] private MasterSO masterSO = null;
-    MasterClass mClass = null;
+    [SerializeField] private UnitMasterSO masterSO = null;
+    UnitMasterClass mClass = null;
 
     [System.Serializable]
     public class Stats
@@ -93,7 +93,7 @@ public class Master : NetworkBehaviour
     public class FlyingMaster
     {
         public Camera camera = null;
-        public Master_FlyingController flyingController;
+        public UnitMaster_FlyingController flyingController;
     }
     [Space]
     public FlyingMaster flying;
@@ -141,7 +141,7 @@ public class Master : NetworkBehaviour
         InitializeUnitButtons();
 
         //Setup the different camera modes
-        flying.flyingController = flying.camera.GetComponent<Master_FlyingController>();
+        flying.flyingController = flying.camera.GetComponent<UnitMaster_FlyingController>();
         flying.flyingController.master = this; //Assign the reference.
         inTopdownView = false; //This bool is simply to stop a raycast from being performed.
             //The bool will be set to true in this function.
@@ -196,7 +196,7 @@ public class Master : NetworkBehaviour
 
         //Attach the master's custom script to the gameobject.
         System.Type masterType = System.Type.GetType(masterSO.masterClass.name + ",Assembly-CSharp");
-        mClass = (MasterClass)gameObject.AddComponent(masterType);
+        mClass = (UnitMasterClass)gameObject.AddComponent(masterType);
         mClass.UseSpecial();
     }
 
@@ -298,7 +298,7 @@ public class Master : NetworkBehaviour
         }
     }
 
-    public void SetMasterClass(MasterSO mClass)
+    public void SetMasterClass(UnitMasterSO mClass)
     {
         masterSO = mClass;
     }
