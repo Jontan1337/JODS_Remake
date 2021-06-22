@@ -14,7 +14,7 @@ public class EnemyUnit
 public class OfflineUnitSpawner : NetworkBehaviour
 { 
     [Header("Master and Unit settings")]
-    [SerializeField] private MasterSO masterSO = null;
+    [SerializeField] private UnitMasterSO masterSO = null;
     [SerializeField] private List<EnemyUnit> unitList = new List<EnemyUnit>();
 
     [Header("Unit Numbers")]

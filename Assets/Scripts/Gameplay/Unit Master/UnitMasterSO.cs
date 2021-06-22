@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Master Class", menuName = "Classes/Master/New Master Class", order = 1)]
-public class MasterSO : ScriptableObject
+[CreateAssetMenu(fileName = "Unit Master Class", menuName = "Classes/Master/New Unit Master Class", order = 1)]
+public class UnitMasterSO : ScriptableObject
 {
     [Header("Necessities")]
     public string masterName = "Default Master";

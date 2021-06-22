@@ -32,13 +32,15 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEff
     public void Detach(DamageTypes damageType)
     {
         if (!detachable) return;
-        if( unitBase.Svr_Dismember(damageType, attachedPart, detachedPart, bodyBloodEmitter))
+        if( unitBase.Svr_Dismember(damageType, attachedPart, detachedPart))
         {
             Collider[] cols = GetComponents<Collider>();
             foreach (Collider col in cols)
             {
                 col.enabled = false;
             }
+
+            bodyBloodEmitter.SetActive(true);
         }
     }
 

@@ -1003,7 +1003,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     #region Dismemberment
 
     [Server]
-    public bool Svr_Dismember(DamageTypes damageType, GameObject oldPart, GameObject newPart, GameObject bloodFX)
+    public bool Svr_Dismember(DamageTypes damageType, GameObject oldPart, GameObject newPart)
     {
         newPart.GetComponent<MeshRenderer>().material = new Material(oldPart.GetComponent<SkinnedMeshRenderer>().sharedMaterial);
 
@@ -1012,17 +1012,17 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             {
                 case DamageTypes.Blunt:
 
-                    Svr_Dismember_BodyPart(oldPart, newPart, bloodFX);
+                    Svr_Dismember_BodyPart(oldPart, newPart);
 
                     break;
                 case DamageTypes.Slash:
 
-                    Svr_Dismember_BodyPart(oldPart, newPart, bloodFX);
+                    Svr_Dismember_BodyPart(oldPart, newPart);
 
                     break;
                 case DamageTypes.Pierce:
 
-                    Svr_Dismember_BodyPart(oldPart, newPart, bloodFX);
+                    Svr_Dismember_BodyPart(oldPart, newPart);
 
                     break;
             }
@@ -1032,14 +1032,12 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     }
 
     [Server]
-    private void Svr_Dismember_BodyPart(GameObject oldPart, GameObject newPart, GameObject bloodFX)
+    private void Svr_Dismember_BodyPart(GameObject oldPart, GameObject newPart)
     {
         oldPart.SetActive(false);
 
         newPart.gameObject.SetActive(true);
         newPart.transform.SetParent(null);
-
-        bloodFX.SetActive(true);
 
         Rigidbody newPartRB = newPart.GetComponent<Rigidbody>();
         newPartRB.isKinematic = false;
@@ -1049,14 +1047,12 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         newPartRB.AddForce(randomForce / 2);
         newPartRB.AddTorque(randomForce);
 
-        Rpc_Dismember_BodyPart(oldPart, newPart, bloodFX, randomForce);
+        Rpc_Dismember_BodyPart(oldPart, newPart, randomForce);
     }
     [ClientRpc]
-    private void Rpc_Dismember_BodyPart(GameObject oldPart, GameObject newPart, GameObject bloodFX, Vector3 randomForce)
+    private void Rpc_Dismember_BodyPart(GameObject oldPart, GameObject newPart, Vector3 randomForce)
     {
         oldPart.SetActive(false);
-
-        bloodFX.SetActive(true);
 
         newPart.gameObject.SetActive(true);
         newPart.transform.SetParent(null);
@@ -1066,7 +1062,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
         newPartRB.AddForce(randomForce / 2);
         newPartRB.AddTorque(randomForce);
-
     }
 
     #endregion

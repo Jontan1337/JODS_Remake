@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Master_FlyingController : MonoBehaviour
+public class UnitMaster_FlyingController : MonoBehaviour
 {
     private Camera cam = null;
     private Rigidbody rb = null;
-    public Master master;
+    public UnitMaster master;
 
     [SerializeField] private float movementSpeed = 50f;
     [SerializeField] private float speedModifier = 1.8f;
