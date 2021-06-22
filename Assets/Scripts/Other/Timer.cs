@@ -35,7 +35,6 @@ public abstract class Timer : MonoBehaviour
 
     private IEnumerator StartDelay(float time)
     {
-        print("delay");
         yield return new WaitForSeconds(time);
 
         StartTimer(true, stopTime);
