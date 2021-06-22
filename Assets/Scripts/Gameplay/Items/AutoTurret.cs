@@ -94,6 +94,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		}
 	}
 
+	// Turret lifetime. Dies when time runs out.
 	IEnumerator Duration()
 	{
 		while (duration > 0)
@@ -105,13 +106,17 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		Svr_Die();
 	}
 
+	// Shooting animation. Played once per shot.
 	bool barrelAnimation = false;
 	IEnumerator BarrelCo;
 	IEnumerator BarrelAnimation(Transform hit)
 	{
 		barrelAnimation = true;
+		// Barrel standard position and post-shooting position is saved.
 		Vector3 ogPosition = new Vector3(0, barrel.transform.localPosition.y, 0.3f);
 		barrel.transform.localPosition = new Vector3(0, barrel.transform.localPosition.y, 0.2f);
+
+		// Barrel position is incremently increased as long as its not in its standard position and its pointing at a damagable target.
 		while (barrel.transform.localPosition != ogPosition && hit.TryGetComponent(out IDamagable a))
 		{
 			yield return new WaitForSeconds(0.01f);
@@ -149,7 +154,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 			Svr_LostTarget();
 		}
 	}
-	
+
 
 
 	[Server]
@@ -267,13 +272,13 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	}
 
 	// Sends out two variables that can be used if the method is called.
-	// A bool that is determined by a raycast that checks if there is a straight line between the turret and the target, without any structures in between.
-	// And a transform that is determined by a raycast that points forward relative to the pivot.
 	void Ray(out Transform didHit, out bool lineOfSightCheck)
 	{
+		// A bool that is determined by a raycast that checks if there is a straight line between the turret and the target, without any structures in between.
 		Physics.Raycast(transform.position, ((target.position + target.GetComponent<BoxCollider>().center) - transform.position), out RaycastHit hitLOS, LOSLayer);
 		lineOfSightCheck = hitLOS.transform == target;
 
+		// A transform that is determined by a raycast that points forward relative to the pivot.
 		Physics.Raycast(pivot.position, pivot.forward, out RaycastHit hit, range, LOSLayer);
 		didHit = hit.transform;
 	}

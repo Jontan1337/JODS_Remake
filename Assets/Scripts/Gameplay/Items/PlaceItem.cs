@@ -18,10 +18,10 @@ public class PlaceItem : EquipmentItem
 
 	// Called when item is picked up and ready to be placed
 	[TargetRpc]
-	public void Equipped(NetworkConnection target)
+	public void Equipped(NetworkConnection target, GameObject player)
 	{
 		placeholder.SetActive(true);
-		look = GetComponentInParent<LookController>();
+		look = player.GetComponent<LookController>();
 		PlaceHolderActiveCo = PlaceHolderActive();
 		StartCoroutine(PlaceHolderActiveCo);
 	}
@@ -33,30 +33,30 @@ public class PlaceItem : EquipmentItem
 
 		while (true)
 		{
-
-			// If anything is within 'maxPlaceRange' meters in front of the player, 
-			// the placeholder will be positioned at the object.
-			// Otherwise the placeholder will be placed 'maxPlaceRange' meters in front of the player.
+			// Raycast pointing forward relative to the players camera.
 			if (Physics.Raycast(look.playerCamera.transform.position, look.playerCamera.transform.forward, out RaycastHit hit, maxPlaceRange, ~ignoreLayer))
 			{
+				// If anything is within 'maxPlaceRange' meters in front of the player, the placeholder will be positioned at the object.
 				placeholder.transform.position = PlaceholderPos(hit);
 			}
 			else
 			{
+				// Otherwise the placeholder will be placed 'maxPlaceRange' meters in front of the player.
 				placeholder.transform.position = look.playerCamera.transform.position + look.playerCamera.transform.forward * maxPlaceRange;
 			}
 
 			// Raycast pointing downwards from the placeholder.
-			// If the raycast hits anything the placeholder will be positioned at the object.
-			// If downwards facing raycast doesn't hit anything, the placeholder is inactive. Obstructed is set to false, since it doesn't do OnTriggerExit.
 			if (Physics.Raycast(placeholder.transform.position, -Vector3.up, out RaycastHit hitDown, maxPlaceRange, ~ignoreLayer))
 			{
+				// If the raycast hits anything the placeholder will be positioned at the object.
 				placeholder.transform.position = PlaceholderPos(hitDown);
 			}
 			else
 			{
+				 // if the raycast doesn't hit anything, obstructed is set to false here since it doesn't do OnTriggerExit.
 				placeholder.GetComponent<ItemPlaceholder>().Obstructed(false);
 			}
+			// If downwards facing raycast doesn't hit anything, the placeholder is inactive.
 			placeholder.gameObject.SetActive(hitDown.transform);
 
 
@@ -79,25 +79,33 @@ public class PlaceItem : EquipmentItem
 
 
 	// If the placeholder isn't obstructed, replaces the placeholder with the item, and removes the placeholder.
-	public void Place()
+	[Command]
+	public void Cmd_Place()
 	{
 		if (!placeholder.GetComponent<ItemPlaceholder>().obstructed && placeholder.activeSelf)
 		{
 			transform.position = placeholder.transform.position;
 			transform.rotation = placeholder.transform.rotation;
 			transform.parent = null;
+			Rpc_Place(connectionToClient);
 			OnPlaced?.Invoke();
-			StopCoroutine(PlaceHolderActiveCo);
-			Cmd_InvokeOnDrop();
-			Unbind();
-			placeholder.SetActive(false);
+			Svr_InvokeOnDrop();
 			authController.Svr_RemoveAuthority();
 		}
 	}
 
+	[TargetRpc]
+	private void Rpc_Place(NetworkConnection target)
+	{
+		StopCoroutine(PlaceHolderActiveCo);
+		Unbind();
+		placeholder.SetActive(false);
+
+	}
+
 	protected override void OnLMBPerformed(InputAction.CallbackContext obj)
 	{
-		Place();
+		Cmd_Place();
 	}
 
 	// When the turret is dropped, all coroutines are stopped, the placeholder is deactivated and depending on the equipment type, the item is destroyed or dropped.
@@ -130,7 +138,7 @@ public class PlaceItem : EquipmentItem
 	public override void Svr_Interact(GameObject interacter)
 	{
 		base.Svr_Interact(interacter);
-		Equipped(connectionToClient);
+		Equipped(connectionToClient, interacter);
 	}
 
 

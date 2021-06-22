@@ -96,8 +96,6 @@ public class TaekwondoClass : SurvivorClass, IHitter
 		flyingKickStart = 0;
 		flyingKick = false;
 
-		// UNITS COLLIDERS NOT IGNORED - FIX
-
 		foreach (Collider item in unitsHit)
 		{
 			if (item)
