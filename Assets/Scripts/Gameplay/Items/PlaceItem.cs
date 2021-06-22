@@ -80,16 +80,20 @@ public class PlaceItem : EquipmentItem
 
 	// If the placeholder isn't obstructed, replaces the placeholder with the item, and removes the placeholder.
 	[Command]
-	public void Cmd_Place()
+	public void Cmd_Place(bool obstructed, bool placeholderActive, Vector3 placeholderPos, Quaternion placeholderRot)
 	{
-		if (!placeholder.GetComponent<ItemPlaceholder>().obstructed && placeholder.activeSelf)
+		if (!obstructed && placeholderActive)
 		{
-			transform.position = placeholder.transform.position;
-			transform.rotation = placeholder.transform.rotation;
+			transform.position = placeholderPos;
+			transform.rotation = placeholderRot;
 			transform.parent = null;
 			Rpc_Place(connectionToClient);
 			OnPlaced?.Invoke();
 			Svr_InvokeOnDrop();
+
+			// MANGLER COLLISION - FIX
+
+			Svr_EnablePhysics();
 			authController.Svr_RemoveAuthority();
 		}
 	}
@@ -105,7 +109,7 @@ public class PlaceItem : EquipmentItem
 
 	protected override void OnLMBPerformed(InputAction.CallbackContext obj)
 	{
-		Cmd_Place();
+		Cmd_Place(placeholder.GetComponent<ItemPlaceholder>().obstructed, placeholder.activeSelf, placeholder.transform.position, placeholder.transform.rotation);
 	}
 
 	// When the turret is dropped, all coroutines are stopped, the placeholder is deactivated and depending on the equipment type, the item is destroyed or dropped.

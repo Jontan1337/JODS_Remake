@@ -24,6 +24,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	[SerializeField] private Transform barrel = null;
 	[SerializeField] private ParticleSystem muzzleFlash = null;
 	[SerializeField] private ParticleSystem bulletShell = null;
+	[SerializeField] private GameObject turretSmoke = null;
 	[SerializeField, SyncVar] private Transform target = null;
 
 	[Space]
@@ -32,7 +33,6 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 
 	private List<Collider> enemiesInSight = new List<Collider>();
 	[SyncVar] private bool isDead;
-
 
 	// The turret tries to shoot at a fixed interval. The value of fireRate should be the desired rounds per minute (RPM).
 	#region Coroutines
@@ -290,10 +290,23 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	{
 		StopAllCoroutines();
 
-		ObjectPool.Instance.SpawnFromPool("Turret Smoke", transform.position, Quaternion.identity);
+		turretSmoke.transform.parent = null;
 
-		// TO DO - WHATEVER HAPPENS WHEN TURRET DIES
-		Destroy(gameObject, 0.2f);
+		// RPC SKER IKKE - FIX
+		Rpc_Explosion();
+		turretSmoke.GetComponent<DestroyAfterTime>().Svr_Destroy(5f);
+
+		NetworkServer.Destroy(gameObject);
+	}
+
+	[ClientRpc]
+	private void Rpc_Explosion()
+	{
+		ParticleSystem[] particleSystems = turretSmoke.GetComponentsInChildren<ParticleSystem>();
+		foreach (var item in particleSystems)
+		{
+			item.Play();
+		}
 	}
 
 	// Invoked when the turret is put down on the ground.

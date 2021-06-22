@@ -8,13 +8,18 @@ public class DestroyAfterTime : MonoBehaviour
     public float time;
     void Start()
     {
-        Destroy(gameObject, time);
         //StartCoroutine(DestroyUnit(time));
     }
 
-    IEnumerator DestroyUnit(float tiem)
+    [Server]
+	public void Svr_Destroy(float time)
+	{
+        StartCoroutine(DestroyUnit(time));
+	}
+
+	IEnumerator DestroyUnit(float time)
     {
-        yield return new WaitForSeconds(tiem);
+        yield return new WaitForSeconds(time);
 
         NetworkServer.Destroy(gameObject);
     }
