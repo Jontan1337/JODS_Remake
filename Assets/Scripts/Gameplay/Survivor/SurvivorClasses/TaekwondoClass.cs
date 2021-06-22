@@ -75,6 +75,7 @@ public class TaekwondoClass : SurvivorClass, IHitter
 		}
 	}
 
+	
 	private IEnumerator FlyingKick()
 	{
 		unitsHit.Clear();
@@ -99,7 +100,6 @@ public class TaekwondoClass : SurvivorClass, IHitter
 
 		foreach (Collider item in unitsHit)
 		{
-
 			if (item)
 			{
 				Physics.IgnoreCollision(item, cController, false);
@@ -119,17 +119,13 @@ public class TaekwondoClass : SurvivorClass, IHitter
 	{
 
 		if (!isServer) return;
-
-		if (hit.gameObject.layer == 9 && flyingKick)
+		if (hit.gameObject.layer == 9 && flyingKick || hit.gameObject.layer == 10 && flyingKick)
 		{
-			print(hit.gameObject.name);
 			unitsHit.Add(hit.collider);
 			Physics.IgnoreCollision(hit.collider, cController);
 			hit.gameObject.GetComponent<IDamagable>()?.Svr_Damage(flyingKickDamage);
 		}
-		else if (hit.gameObject.layer == 0 && flyingKick)
-		{
-			flyingKickStart = flyingKickEnd;
-		}
+		else if (hit.gameObject.layer == 0 && flyingKick) flyingKickStart = flyingKickEnd;
+
 	}
 }

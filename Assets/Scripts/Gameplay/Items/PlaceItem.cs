@@ -94,11 +94,13 @@ public class PlaceItem : EquipmentItem
 			authController.Svr_RemoveAuthority();
 		}
 	}
+
 	protected override void OnLMBPerformed(InputAction.CallbackContext obj)
 	{
 		Place();
 	}
 
+	// When the turret is dropped, all coroutines are stopped, the placeholder is deactivated and depending on the equipment type, the item is destroyed or dropped.
 	protected override void OnDropPerformed(InputAction.CallbackContext obj)
 	{
 		StopAllCoroutines();

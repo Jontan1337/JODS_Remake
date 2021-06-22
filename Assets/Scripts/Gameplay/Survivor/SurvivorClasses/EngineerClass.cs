@@ -41,7 +41,7 @@ public class EngineerClass : SurvivorClass
         EquipTurret();
     }
 
-
+    [Server]
     private void EquipTurret()
 	{
 
