@@ -77,6 +77,7 @@ public class PhysicsToggler : NetworkBehaviour
     [ClientRpc]
     private void Rpc_DisableItemPhysics()
     {
+        print("disable");
         DisableItemPhysics();
     }
 

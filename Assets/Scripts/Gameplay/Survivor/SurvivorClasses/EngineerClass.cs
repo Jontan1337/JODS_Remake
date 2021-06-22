@@ -41,7 +41,7 @@ public class EngineerClass : SurvivorClass
         EquipTurret();
     }
 
-
+    [Server]
     private void EquipTurret()
 	{
 
@@ -52,9 +52,9 @@ public class EngineerClass : SurvivorClass
         playerEquipment = transform.parent.GetComponentInChildren<PlayerEquipment>();
 
 
-        playerEquipment?.Svr_Equip(turret, EquipmentType.None);
         turret.GetComponent<EquipmentItem>().Svr_Pickup(playerEquipment.playerHands, connectionToClient);
-		turret.GetComponent<PlaceItem>().Equipped(connectionToClient);
+        playerEquipment?.Svr_Equip(turret, EquipmentType.None);
+		turret.GetComponent<PlaceItem>().Equipped(connectionToClient, transform.parent.gameObject);
     }
 
 }
