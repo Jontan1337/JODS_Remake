@@ -437,29 +437,30 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     
     private void SetMaterialsAndMeshes()
     {
-        bool randomMat = unitSO.unitMaterials.Length != 0;
+        bool randomMat = unitSO.unitMaterialVariations.Length != 0;
         select.unitMats = new Material[select.bodyPartsRenderers.Length];
+
+        //Random Material to assign, if there are any
+        Material newMat = randomMat ? unitSO.unitMaterialVariations[Random.Range(0, unitSO.unitMaterialVariations.Length)] : null;
 
         for (int i = 0; i < select.bodyPartsRenderers.Length; i++)
         {
-            //Random Material to assign, if there are any
-            Material newMat = randomMat ? unitSO.unitMaterials[Random.Range(0, unitSO.unitMaterials.Length)] : null;
 
             SkinnedMeshRenderer unitRenderer = select.bodyPartsRenderers[i];
 
             unitRenderer.material = new Material(randomMat ? //If the unit has different materials to choose from
-                unitRenderer.sharedMaterial : //If not, use already assigned material.
-                newMat //Assign a random material.
+                newMat : //Assign a random material.
+                unitRenderer.sharedMaterial //If not, use already assigned material.
                 );
 
             select.unitMats[i] = unitRenderer.sharedMaterial;
         }
 
 
-        if (unitSO.unitMeshes.Length != 0)
+        if (unitSO.unitAppearanceVariations.Length != 0)
         {
             Debug.LogWarning("TODO: fix body parts dynamic meshes");
-            select.bodyPartsRenderers[0].sharedMesh = unitSO.unitMeshes[Random.Range(0, unitSO.unitMeshes.Length)];
+            //select.bodyPartsRenderers[0].sharedMesh = unitSO.unitMeshes[Random.Range(0, unitSO.unitMeshes.Length)];
         }
     }
 
@@ -1002,7 +1003,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     #region Dismemberment
 
     [Server]
-    public void Svr_Dismember(DamageTypes damageType, GameObject oldPart, GameObject newPart, GameObject bloodFX)
+    public bool Svr_Dismember(DamageTypes damageType, GameObject oldPart, GameObject newPart, GameObject bloodFX)
     {
         newPart.GetComponent<MeshRenderer>().material = new Material(oldPart.GetComponent<SkinnedMeshRenderer>().sharedMaterial);
 
@@ -1025,7 +1026,9 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
                     break;
             }
+            return true;
         }
+        return false;
     }
 
     [Server]

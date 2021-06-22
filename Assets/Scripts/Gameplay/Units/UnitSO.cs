@@ -2,14 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Unit", menuName = "Units/New Unit", order = 1)]
+[System.Serializable]
+public struct UnitMeshGroup
+{
+    public Mesh body;
+    public Mesh head;
+    public Mesh leftArm;
+    public Mesh rightArm;
+}
 
+[CreateAssetMenu(fileName = "Unit", menuName = "Units/New Unit", order = 1)]
 public class UnitSO : ScriptableObject
 {
     [Header("Necessities")]
     public new string name;
     public GameObject unitPrefab;
-    public Mesh[] unitMeshes;
+    [Space]
+    public UnitMeshGroup[] unitAppearanceVariations;
+    public Material[] unitMaterialVariations;
+    [Space]
     public Sprite unitSprite;
     [Space]
     public int energyCost = 10;
@@ -127,7 +138,6 @@ public class UnitSO : ScriptableObject
     [Space]
     public Selectable select;
 
-    public Material[] unitMaterials;
 
     [Header("Animations")]
     public RuntimeAnimatorController unitAnimator;
