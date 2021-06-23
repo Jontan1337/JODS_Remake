@@ -456,12 +456,13 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             select.unitMats[i] = unitRenderer.sharedMaterial;
         }
 
-
+            Debug.LogWarning("TODO: fix body parts dynamic meshes");
+        /*
         if (unitSO.unitAppearanceVariations.Length != 0)
         {
-            Debug.LogWarning("TODO: fix body parts dynamic meshes");
             //select.bodyPartsRenderers[0].sharedMesh = unitSO.unitMeshes[Random.Range(0, unitSO.unitMeshes.Length)];
         }
+        */
     }
 
     //This is called by the Master, who sets the unit's level, which increases it's stats.
