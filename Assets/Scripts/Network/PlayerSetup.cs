@@ -51,14 +51,14 @@ public class PlayerSetup : NetworkBehaviour
     [SerializeField] private List<GameObject> disableIfNotPlayer = new List<GameObject>();
     [SerializeField] private List<GameObject> enableIfPlayer = new List<GameObject>();
     [SerializeField] private List<GameObject> enableIfNotPlayer = new List<GameObject>();
-    [SerializeField] private GameObject[] prefabDisableIfPlayer;
-    [SerializeField] private GameObject[] prefabDisableIfNotPlayer;
-    [SerializeField] private GameObject[] prefabEnableIfPlayer;
-    [SerializeField] private GameObject[] prefabEnableIfNotPlayer;
+    [SerializeField] private GameObject[] prefabDisableIfPlayer = null;
+    [SerializeField] private GameObject[] prefabDisableIfNotPlayer = null;
+    [SerializeField] private GameObject[] prefabEnableIfPlayer = null;
+    [SerializeField] private GameObject[] prefabEnableIfNotPlayer = null;
 
     [SerializeField] private List<GameObject> dynamicallySpawnedItems;
 
-    [SerializeField] private bool Survivor;
+    [SerializeField] private bool Survivor = false;
     [SerializeField] private bool isMe;
     [SerializeField] private int points;
 

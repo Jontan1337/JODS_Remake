@@ -14,8 +14,8 @@ public class SurvivorController : NetworkBehaviour
     private float groundDistance = 0.2f;
     private bool isJumping;
 
-    [SerializeField] private Transform groundCheck;
-    [SerializeField] private LayerMask groundMask;
+    [SerializeField] private Transform groundCheck = null;
+    [SerializeField] private LayerMask groundMask = 0;
     
     CharacterController cc;
     public float speed;

@@ -10,7 +10,7 @@ public class AimDownSights : MonoBehaviour
     public Transform weaponSightsPointRef = null;
     public Transform originalWeaponSightsPointPos = null;
     public Quaternion tempQ = new Quaternion(0f, 0.08f, 0f, 1f);
-    [SerializeField] private float aimTime = 20f;
+    //[SerializeField] private float aimTime = 20f;
     private bool settingsSet = false;
 
     // TODO:

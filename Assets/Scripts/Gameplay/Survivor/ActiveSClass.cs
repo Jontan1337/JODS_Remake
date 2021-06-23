@@ -9,7 +9,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	private SurvivorController sController;
 
 	[SerializeField] private SurvivorSO survivorSO;
-	[SerializeField] private SkinnedMeshRenderer survivorRenderer;
+	[SerializeField] private SkinnedMeshRenderer survivorRenderer = null;
 	[Space]
 	[Header("Stats")]
 	[SerializeField] private int health = 100;
