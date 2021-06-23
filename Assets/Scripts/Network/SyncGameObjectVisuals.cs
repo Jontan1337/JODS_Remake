@@ -59,8 +59,6 @@ public class SyncGameObjectVisuals : NetworkBehaviour
         }
         if (syncRotation)
             Rpc_UpdateRotation(conn, transform.rotation);
-        if (syncVisibility)
-            Rpc_UpdateVisibility(conn, objectRenderer.enabled);
     }
 
     [Server]
@@ -143,11 +141,6 @@ public class SyncGameObjectVisuals : NetworkBehaviour
     {
         transform.rotation = newRotationData;
     }
-    [TargetRpc]
-    private void Rpc_UpdateVisibility(NetworkConnection target, bool isVisible)
-    {
-        objectRenderer.enabled = isVisible;
-    }
 
     private void UpdateParent(Transform oldParentData, Transform newParentData)
     {
@@ -166,9 +159,5 @@ public class SyncGameObjectVisuals : NetworkBehaviour
     private void UpdateRotation(Quaternion oldRotationData, Quaternion newRotationData)
     {
         transform.rotation = newRotationData;
-    }
-    private void UpdateVisibility(bool oldValue, bool newValue)
-    {
-        objectRenderer.enabled = newValue;
     }
 }

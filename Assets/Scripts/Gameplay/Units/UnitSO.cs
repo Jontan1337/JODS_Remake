@@ -18,7 +18,7 @@ public class UnitSO : ScriptableObject
     public new string name;
     public GameObject unitPrefab;
     [Space]
-    public UnitMeshGroup[] unitAppearanceVariations;
+    public UnitMeshGroup unitAppearanceVariations;
     public Material[] unitMaterialVariations;
     [Space]
     public Sprite unitSprite;

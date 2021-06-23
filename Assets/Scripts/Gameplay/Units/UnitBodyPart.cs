@@ -24,6 +24,7 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEff
     public GameObject attachedPart;
     public GameObject detachedPart;
     [Space]
+    public GameObject childBloodEmitter;
     public GameObject bodyBloodEmitter;
 
     #endregion
@@ -40,6 +41,7 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEff
                 col.enabled = false;
             }
 
+            childBloodEmitter.SetActive(true);
             bodyBloodEmitter.SetActive(true);
         }
     }
@@ -69,8 +71,8 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEff
         {
             //Dismemberment default states
             attachedPart.SetActive(true);
-            detachedPart.GetComponent<Rigidbody>().isKinematic = true;
-            detachedPart.gameObject.SetActive(false);
+            //detachedPart.GetComponent<Rigidbody>().isKinematic = true;
+            //detachedPart.gameObject.SetActive(false);
             bodyBloodEmitter.SetActive(false);
         }
     }

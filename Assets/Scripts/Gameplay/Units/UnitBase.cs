@@ -456,12 +456,13 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             select.unitMats[i] = unitRenderer.sharedMaterial;
         }
 
-
+            Debug.LogWarning("TODO: fix body parts dynamic meshes");
+        /*
         if (unitSO.unitAppearanceVariations.Length != 0)
         {
-            Debug.LogWarning("TODO: fix body parts dynamic meshes");
             //select.bodyPartsRenderers[0].sharedMesh = unitSO.unitMeshes[Random.Range(0, unitSO.unitMeshes.Length)];
         }
+        */
     }
 
     //This is called by the Master, who sets the unit's level, which increases it's stats.
@@ -1036,11 +1037,19 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     {
         oldPart.SetActive(false);
 
-        newPart.gameObject.SetActive(true);
+        //newPart.SetActive(true);
+
+        if (newPart.TryGetComponent(out PhysicsToggler pt))
+        {
+            pt.Svr_EnableItemPhysics();
+        }
+        if (newPart.TryGetComponent(out Renderer renderer))
+        {
+            renderer.enabled = true;
+        }
         newPart.transform.SetParent(null);
 
         Rigidbody newPartRB = newPart.GetComponent<Rigidbody>();
-        newPartRB.isKinematic = false;
 
         Vector3 randomForce = new Vector3(Random.Range(-50, 50), Random.Range(-20, 20), Random.Range(-50, 50));
 
@@ -1054,11 +1063,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     {
         oldPart.SetActive(false);
 
-        newPart.gameObject.SetActive(true);
-        newPart.transform.SetParent(null);
-
         Rigidbody newPartRB = newPart.GetComponent<Rigidbody>();
-        newPartRB.isKinematic = false;
 
         newPartRB.AddForce(randomForce / 2);
         newPartRB.AddTorque(randomForce);
