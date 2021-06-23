@@ -39,6 +39,8 @@ public class MeleeWeapon : EquipmentItem
 
     private Transform previousHitColliderParent;
 
+    private NetworkAnimator networkAnimator;
+
     private const string AttackTrigger = "Attack";
     private const string BloodAmount = "_BloodAmount";
 
@@ -57,6 +59,7 @@ public class MeleeWeapon : EquipmentItem
     private void Awake()
     {
         material = GetComponent<MeshRenderer>().material;
+        networkAnimator = GetComponent<NetworkAnimator>();
     }
 
     protected override void OnLMBPerformed(InputAction.CallbackContext context) => Cmd_Attack();
@@ -80,9 +83,9 @@ public class MeleeWeapon : EquipmentItem
         if (!isAttacking) return;
         if (other.transform.root != previousHitColliderParent)
         {
-            previousHitColliderParent = other.transform.root;
             if (other.TryGetComponent(out IDamagable damagable))
             {
+                previousHitColliderParent = other.transform.root;
                 damagable?.Svr_Damage(damage);
             }
         }
@@ -117,7 +120,8 @@ public class MeleeWeapon : EquipmentItem
     {
         if (!canAttack) return;
         // Play the melee attack animation.
-        weaponAnimator.SetTrigger(AttackTrigger);
+        networkAnimator.SetTrigger(AttackTrigger);
+        //weaponAnimator.SetTrigger(AttackTrigger);
         COAttackInterval = StartCoroutine(IEAttackInterval());
     }
 
