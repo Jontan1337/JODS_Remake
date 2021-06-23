@@ -7,55 +7,63 @@ using Mirror;
 public class EngineerClass : SurvivorClass
 {
 
-    PlayerEquipment playerEquipment;
+	PlayerEquipment playerEquipment;
 
-    #region Serialization
+	#region Serialization
 
-    public override bool OnSerialize(NetworkWriter writer, bool initialState)
-    {
-        if (!initialState)
-        {
-            return true;
-        }
-        else
-        {
-            return true;
-        }
-    }
-    public override void OnDeserialize(NetworkReader reader, bool initialState)
-    {
-        if (!initialState)
-        {
+	public override bool OnSerialize(NetworkWriter writer, bool initialState)
+	{
+		if (!initialState)
+		{
+			return true;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	public override void OnDeserialize(NetworkReader reader, bool initialState)
+	{
+		if (!initialState)
+		{
 
-        }
-        else
-        {
+		}
+		else
+		{
 
-        }
-    }
-    #endregion
+		}
+	}
+	#endregion
 
+	private void Start()
+	{
+	}
 
-    public override void ActiveAbility()
-    {
-        EquipTurret();
-    }
+	public override void ActiveAbility()
+	{
+		if (!abilityIsToggled)
+		{
+			EquipTurret();
+			abilityIsToggled = true;
+		}
+	}
 
-    [Server]
-    private void EquipTurret()
+	[Server]
+	private void EquipTurret()
 	{
 
-        print("Turret was instantiated. Change to object pool");
-        GameObject turret = Instantiate(abilityObject, transform.position, transform.rotation);
-        NetworkServer.Spawn(turret);
+		print("Turret was instantiated. Change to object pool");
+		GameObject turret = Instantiate(abilityObject, transform.position, transform.rotation);
+		NetworkServer.Spawn(turret);
 
-        playerEquipment = transform.parent.GetComponentInChildren<PlayerEquipment>();
+		playerEquipment = transform.parent.GetComponentInChildren<PlayerEquipment>();
 
-        // FIX TURRET SPAM
+		// FIX TURRET SPAM
 
-        turret.GetComponent<EquipmentItem>().Svr_Pickup(playerEquipment.playerHands, connectionToClient);
-        playerEquipment?.Svr_Equip(turret, EquipmentType.None);
+		turret.GetComponent<EquipmentItem>().Svr_Pickup(playerEquipment.playerHands, connectionToClient);
+		playerEquipment?.Svr_Equip(turret, EquipmentType.None);
 		turret.GetComponent<PlaceItem>().Equipped(connectionToClient, transform.parent.gameObject);
-    }
+		abilityIsToggled = false;
+	}
 
 }

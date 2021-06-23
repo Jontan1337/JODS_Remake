@@ -28,8 +28,8 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	[SerializeField, SyncVar] private Transform target = null;
 
 	[Space]
-	[SerializeField] private LayerMask unitLayer;
-	[SerializeField] private LayerMask LOSLayer;
+	[SerializeField] private LayerMask unitLayer = 0;
+	[SerializeField] private LayerMask LOSLayer = 0;
 
 	private List<Collider> enemiesInSight = new List<Collider>();
 	[SyncVar] private bool isDead;
@@ -135,14 +135,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		Debug.DrawRay(barrel.position, barrel.forward * 10, Color.red, 0.1f);
 
 		// A shooting animation coroutine is played.
-		BarrelCo = BarrelAnimation(didHit);
-		if (barrelAnimation)
-		{
-			StopCoroutine(BarrelCo);
-		}
-		StartCoroutine(BarrelCo);
-		muzzleFlash.Emit(50);
-		bulletShell.Emit(1);
+		Rpc_Shoot(didHit);
 
 		// The turret uses a raycast to check if a damagable unit is in front of its barrel.
 		// The turret will shoot at any unit that can be damaged, even if it's not the target.
@@ -154,7 +147,19 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 			Svr_LostTarget();
 		}
 	}
+	[ClientRpc]
+	private void Rpc_Shoot(Transform didHit)
+	{
+		BarrelCo = BarrelAnimation(didHit);
+		if (barrelAnimation)
+		{
+			StopCoroutine(BarrelCo);
+		}
+		StartCoroutine(BarrelCo);
+		muzzleFlash.Emit(50);
+		bulletShell.Emit(1);
 
+	}
 
 
 	[Server]
@@ -177,7 +182,6 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 				{
 					enemiesInSight.Add(item);
 				}
-
 			}
 		}
 		// The turret uses the list of enemies in sight to find a target.
@@ -189,22 +193,34 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 
 	// When a target is found, the searching and passive rotation coroutines are stopped.
 	// The coroutines that makes the turret look at the target is started, and the turret attempts to shoot at the target if able.
-	[Server]
-	void Svr_NewTarget(Transform newTarget)
+	[ClientRpc]
+	void Rpc_NewTarget(Transform newTarget)
 	{
 		target = newTarget;
 
-		StopCoroutine(SearchingCo);
 		StopCoroutine(RotatePassiveCo);
 
 		RotateYCo = RotateY();
 		RotateXCo = RotateX();
-		ShootIntervalCo = ShootInterval();
+		
 
 		StartCoroutine(RotateXCo);
 		StartCoroutine(RotateYCo);
-		StartCoroutine(ShootIntervalCo);
 	}
+	[Server]
+	private void Svr_NewTarget(Transform newTarget)
+	{
+		target = newTarget;
+		Rpc_NewTarget(newTarget);
+
+		StopCoroutine(SearchingCo);
+
+		ShootIntervalCo = ShootInterval();
+		StartCoroutine(ShootIntervalCo);
+
+	}
+
+
 	// Checks a list of colliders to see which one is closest to the turret.
 	Collider GetClosestEnemyCollider(List<Collider> enemyColliders)
 	{
@@ -230,30 +246,46 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	{
 		target = null;
 
+		Rpc_LostTarget();
+		StopCoroutine(ShootIntervalCo);
+		Svr_StartSearching();
+
+
+	}
+
+	[ClientRpc]
+	private void Rpc_LostTarget()
+	{
 		StopCoroutine(BarrelCo);
 		StopCoroutine(RotateYCo);
 		StopCoroutine(RotateXCo);
-		StopCoroutine(ShootIntervalCo);
-		Svr_StartSearching();
 	}
 
 	// Starts the passive rotation and searching coroutine
 	[Server]
 	void Svr_StartSearching()
 	{
-		RotatePassiveCo = RotatePassive();
-		StartCoroutine(RotatePassiveCo);
+		Rpc_StartRotating();
 
 		SearchingCo = Searching();
 		StartCoroutine(SearchingCo);
 
-		//TO DO - WHATEVER HAPPENS WHEN TURRET STARTS SEARCHING
 	}
+
+	[ClientRpc]
+	private void Rpc_StartRotating()
+	{
+		RotatePassiveCo = RotatePassive();
+		StartCoroutine(RotatePassiveCo);
+	}
+
+
 
 	// Returns true if the transform that is hit by the raycast is damagable otherwise returns false.
 	// If its not damagable, checks line of sight to the target. If it's not in sight, the target is lost.
 	// This is to make sure that the turret doesn't lose its target just because it isn't currently hitting it or pointing at it.
 	// Even if another unit is standing in front of the target, the turret will still try to hit the target, damaging the unit in front of it instead.
+	[Server]
 	bool CanShoot()
 	{
 		Ray(out Transform didHit, out bool lineOfSightCheck);
@@ -286,28 +318,34 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 
 	// Stops all coroutines and destroys the turret.
 	[Server]
-	void Svr_Die()
+	private void Svr_Die()
 	{
 		StopAllCoroutines();
 
-		turretSmoke.transform.parent = null;
-
-		// RPC SKER IKKE - FIX
-		Rpc_Explosion();
-		turretSmoke.GetComponent<DestroyAfterTime>().Svr_Destroy(5f);
-
+		Rpc_Die();
+		PlaySmoke();
 		NetworkServer.Destroy(gameObject);
 	}
 
 	[ClientRpc]
-	private void Rpc_Explosion()
+	private void Rpc_Die()
 	{
+		StopAllCoroutines();
+		PlaySmoke();
+
+	}
+
+	private void PlaySmoke()
+	{
+		turretSmoke.transform.parent = null;
 		ParticleSystem[] particleSystems = turretSmoke.GetComponentsInChildren<ParticleSystem>();
 		foreach (var item in particleSystems)
 		{
 			item.Play();
 		}
 	}
+
+
 
 	// Invoked when the turret is put down on the ground.
 	// Starts the searching coroutine, the time until the turret dies and the cooldown on the engineers ability.
@@ -336,6 +374,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	public Teams Team => throw new System.NotImplementedException();
 
 	// The turret loses health and dies if its health is 0 or less.
+	[Server]
 	public void Svr_Damage(int damage, Transform target = null)
 	{
 		if (IsDead()) return;
