@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 608700618524033809}
   - component: {fileID: 4609404701648697094}
   - component: {fileID: 4923435655667672491}
+  - component: {fileID: 3598007620588689026}
   - component: {fileID: 7169297317481562601}
   - component: {fileID: 3233265353284567669}
   - component: {fileID: 2749903457277672227}
@@ -82,7 +83,6 @@ MonoBehaviour:
   splatterRemoveAmountOnSwing: -0.005
   weaponAnimator: {fileID: 3233265353284567669}
   sfxPlayer: {fileID: 6768451046035223808}
-  hitParticle: {fileID: 7515532425023684477}
   material: {fileID: 2100000, guid: f96cadb658ef79f4cb1d04fc10740bb9, type: 2}
   col: {fileID: 7670592048999142384}
   swingSound: {fileID: 0}
@@ -792,8 +792,24 @@ MonoBehaviour:
   syncParent: 1
   syncPosition: 1
   syncRotation: 1
-  syncVisibility: 1
+  syncVisibility: 0
   objectRenderer: {fileID: 6484964077650548063}
+--- !u!114 &3598007620588689026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6484964077652478879}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c980ae2e62e1a5d4c90c3542025963b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  isVisible: 1
+  objectRenderer: {fileID: 0}
 --- !u!114 &7169297317481562601
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -915,12 +931,6 @@ PrefabInstance:
 --- !u!4 &8584084213580676449 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9165076878492016858, guid: f74d66cde6c53454faa4388302f395a5,
-    type: 3}
-  m_PrefabInstance: {fileID: 581016855241170363}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &7515532425023684477 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 6943608530945270470, guid: f74d66cde6c53454faa4388302f395a5,
     type: 3}
   m_PrefabInstance: {fileID: 581016855241170363}
   m_PrefabAsset: {fileID: 0}

@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IDetachable
 {
-    void Detach(DamageTypes damageType);
+    bool Detach(DamageTypes damageType);
 }

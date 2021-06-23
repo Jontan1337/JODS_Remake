@@ -79,7 +79,7 @@ public class Interactor : NetworkBehaviour
             {
                 if (rayHit.collider.TryGetComponent(out Outline outline))
                 {
-                    outline.ShowOutline(0.1f, 10f);
+                    outline.ShowOutline(0.1f, interactionOutline);
                 }
             }
 
@@ -91,7 +91,7 @@ public class Interactor : NetworkBehaviour
 
                 if (item.collider.TryGetComponent(out Outline outline2))
                 {
-                    outline2.ShowOutline(0.1f, 3f);
+                    outline2.ShowOutline(0.1f, inRangeOutline);
                 }
             }
 

@@ -12,7 +12,8 @@ public class MeleeWeapon : EquipmentItem
     [Header("Weapon stats")]
     [SerializeField] private int damage = 10;
     [SerializeField] private DamageTypes damageType = DamageTypes.Slash;
-    [SerializeField] private float attackInterval;
+    [SerializeField] private float attackInterval = 0.1f;
+    [SerializeField] private int slashPower = 2;
 
     [Header("Game details")]
     [SerializeField] private float splatterAmount = 0f;
@@ -31,11 +32,13 @@ public class MeleeWeapon : EquipmentItem
     [SerializeField] private AudioClip swingSound = null;
     [SerializeField] private AudioClip hitSound = null;
 
-    [SyncVar] private bool isAttacking;
+    [SyncVar] private bool isAttacking = false;
     [SyncVar] private bool canAttack = true;
 
     private Coroutine COSplatterShader;
     private Coroutine COAttackInterval;
+
+    private int amountSlashed = 0;
 
     private Transform previousHitColliderParent;
 
@@ -71,10 +74,11 @@ public class MeleeWeapon : EquipmentItem
         weaponAnimator.enabled = true;
     }
 
-    protected override void OnDropPerformed(InputAction.CallbackContext obj)
+    [Server]
+    public override void Svr_Drop()
     {
         weaponAnimator.enabled = false;
-        base.OnDropPerformed(obj);
+        base.Svr_Drop();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -88,6 +92,7 @@ public class MeleeWeapon : EquipmentItem
                 previousHitColliderParent = other.transform.root;
                 damagable?.Svr_Damage(damage);
             }
+            amountSlashed++;
         }
         if (other.TryGetComponent(out IParticleEffect particleEffect))
         {
@@ -98,9 +103,17 @@ public class MeleeWeapon : EquipmentItem
         switch (damageType)
         {
             case DamageTypes.Slash:
-                if (other.TryGetComponent(out IDetachable detachable))
+                if (other.TryGetComponent(out IDamagable damagable))
                 {
-                    detachable?.Detach(damageType);
+                    if (other.TryGetComponent(out IDetachable detachable))
+                    {
+                        detachable.Detach(damageType);
+                    }
+                    if (amountSlashed == slashPower)
+                    {
+                        weaponAnimator.CrossFadeInFixedTime("Idle", 0.1f);
+                        amountSlashed = 0;
+                    }
                 }
                 break;
             case DamageTypes.Blunt:

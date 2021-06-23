@@ -30,10 +30,10 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEff
     #endregion
 
 
-    public void Detach(DamageTypes damageType)
+    public bool Detach(DamageTypes damageType)
     {
-        if (!detachable) return;
-        if( unitBase.Svr_Dismember(damageType, attachedPart, detachedPart))
+        if (!detachable) return false;
+        if (unitBase.Svr_Dismember(damageType, attachedPart, detachedPart))
         {
             Collider[] cols = GetComponents<Collider>();
             foreach (Collider col in cols)
@@ -43,7 +43,9 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEff
 
             childBloodEmitter.SetActive(true);
             bodyBloodEmitter.SetActive(true);
+            return true;
         }
+        return false;
     }
 
     public void Svr_Damage(int damage, Transform target = null)

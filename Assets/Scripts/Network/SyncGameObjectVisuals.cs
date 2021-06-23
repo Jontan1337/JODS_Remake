@@ -51,7 +51,13 @@ public class SyncGameObjectVisuals : NetworkBehaviour
     private void Svr_UpdateVars(NetworkConnection conn)
     {
         if (syncParent)
+        {
+            if (transform.parent != null)
+            {
+                // What was I doing here??
+            }
             Rpc_UpdateParent(conn, transform.parent);
+        }
         if (syncPosition)
         {
             Rpc_UpdatePosition(conn, transform.position);

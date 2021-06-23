@@ -120,10 +120,10 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     [Header("References")]
     public Animator animator;
     [Space]
-    [SerializeField] private SkinnedMeshRenderer bodyRenderer;
-    [SerializeField] private SkinnedMeshRenderer headRenderer;
-    [SerializeField] private SkinnedMeshRenderer leftArmRenderer;
-    [SerializeField] private SkinnedMeshRenderer rightArmRenderer;
+    [SerializeField] private SkinnedMeshRenderer bodyRenderer = null;
+    [SerializeField] private SkinnedMeshRenderer headRenderer = null;
+    [SerializeField] private SkinnedMeshRenderer leftArmRenderer = null;
+    [SerializeField] private SkinnedMeshRenderer rightArmRenderer = null;
 
     [System.Serializable]
     public class Sounds
@@ -1050,6 +1050,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     public bool Svr_Dismember(DamageTypes damageType, GameObject oldPart, GameObject newPart)
     {
         newPart.GetComponent<MeshRenderer>().material = new Material(oldPart.GetComponent<SkinnedMeshRenderer>().sharedMaterial);
+        newPart.GetComponent<MeshFilter>().mesh = oldPart.GetComponent<SkinnedMeshRenderer>().sharedMesh;
 
         if (IsDead()) { 
             switch (damageType)
