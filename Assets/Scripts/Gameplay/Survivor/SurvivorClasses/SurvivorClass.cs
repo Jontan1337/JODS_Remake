@@ -8,6 +8,8 @@ public abstract class SurvivorClass : NetworkBehaviour
 {
     public GameObject abilityObject;
 
+    public bool abilityIsToggled;
+
     public abstract void ActiveAbility();
 }
 
