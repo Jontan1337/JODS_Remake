@@ -1036,11 +1036,19 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     {
         oldPart.SetActive(false);
 
-        newPart.gameObject.SetActive(true);
+        //newPart.SetActive(true);
+
+        if (newPart.TryGetComponent(out PhysicsToggler pt))
+        {
+            pt.Svr_EnableItemPhysics();
+        }
+        if (newPart.TryGetComponent(out Renderer renderer))
+        {
+            renderer.enabled = true;
+        }
         newPart.transform.SetParent(null);
 
         Rigidbody newPartRB = newPart.GetComponent<Rigidbody>();
-        newPartRB.isKinematic = false;
 
         Vector3 randomForce = new Vector3(Random.Range(-50, 50), Random.Range(-20, 20), Random.Range(-50, 50));
 
@@ -1054,11 +1062,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     {
         oldPart.SetActive(false);
 
-        newPart.gameObject.SetActive(true);
-        newPart.transform.SetParent(null);
-
         Rigidbody newPartRB = newPart.GetComponent<Rigidbody>();
-        newPartRB.isKinematic = false;
 
         newPartRB.AddForce(randomForce / 2);
         newPartRB.AddTorque(randomForce);
