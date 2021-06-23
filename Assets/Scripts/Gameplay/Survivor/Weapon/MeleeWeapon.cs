@@ -24,7 +24,6 @@ public class MeleeWeapon : EquipmentItem
     [Header("References")]
     [SerializeField] private Animator weaponAnimator = null;
     [SerializeField] private SFXPlayer sfxPlayer = null;
-    [SerializeField] private ParticleSystem hitParticle = null;
     [SerializeField] private Material material = null;
     [SerializeField] private Collider col = null;
 
