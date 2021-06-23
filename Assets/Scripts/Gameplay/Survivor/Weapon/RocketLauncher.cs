@@ -10,7 +10,7 @@ public class RocketLauncher : EquipmentItem
 	private int rocketSpeed = 5000;
 
 	[Command]
-	void CmdRocketLaunch()
+	private void CmdRocketLaunch()
 	{
 		GameObject currentRocket = Instantiate(rocket, transform.position, transform.rotation);
 		NetworkServer.Spawn(currentRocket);
@@ -18,7 +18,7 @@ public class RocketLauncher : EquipmentItem
 	}
 
 	[ClientRpc]
-	void RpcRocketLaunch(GameObject currentRocket)
+	private void RpcRocketLaunch(GameObject currentRocket)
 	{
 		Rigidbody rb = currentRocket.GetComponent<Rigidbody>();
 		rb.AddForce(transform.forward * rocketSpeed);

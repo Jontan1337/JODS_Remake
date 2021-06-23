@@ -14,9 +14,9 @@ public class LookController : NetworkBehaviour
 	private bool canLook = true;
 	public Camera playerCamera;
 	[SerializeField]
-	private Transform rotateHorizontal;
+	private Transform rotateHorizontal = null;
 	[SerializeField]
-	private Transform rotateVertical;
+	private Transform rotateVertical = null;
 
 	#region NetworkBehaviour Callbacks
 

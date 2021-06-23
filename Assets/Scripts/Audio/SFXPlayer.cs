@@ -6,7 +6,7 @@ using UnityEngine;
 public class SFXPlayer : MonoBehaviour
 {
     [SerializeField]
-    private AudioClip[] clips;
+    private AudioClip[] clips = null;
     [SerializeField, Range(0f, 2f)] 
     private float maxPitch = 1.05f;
     [SerializeField, Range(0f, 2f)]

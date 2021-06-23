@@ -5,7 +5,7 @@ using UnityEngine.Rendering.Universal;
 
 public class CameraSettings : MonoBehaviour
 {
-    [SerializeField] private List<Camera> playerCameras;
+    [SerializeField] private List<Camera> playerCameras = null;
     [SerializeField] private UniversalAdditionalCameraData universalCamData;
     [SerializeField] private bool mainCamera;
     [SerializeField] private float playerCamFOV = 60f;

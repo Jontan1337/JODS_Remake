@@ -14,8 +14,6 @@ public class CameraController : MonoBehaviour
     private Transform playerModel = null;
     [SerializeField]
     private float sensitivity = 1f;
-    [SerializeField]
-    private float cameraSmoothing = 10f;
 
     Vector3 verticalRotation = Vector3.zero;
     Vector3 horizontalRotation = Vector3.zero;

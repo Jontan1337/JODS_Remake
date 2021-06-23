@@ -129,7 +129,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	#region Methods
 
 	[Server]
-	void Svr_Shoot()
+	private void Svr_Shoot()
 	{
 		Ray(out Transform didHit, out bool lineOfSightCheck);
 		Debug.DrawRay(barrel.position, barrel.forward * 10, Color.red, 0.1f);
@@ -163,7 +163,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 
 
 	[Server]
-	void Svr_FindTarget()
+	private void Svr_FindTarget()
 	{
 		enemiesInSight.Clear();
 		// The turret checks for units in a sphere around it, and adds the found units to a list.
@@ -194,7 +194,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	// When a target is found, the searching and passive rotation coroutines are stopped.
 	// The coroutines that makes the turret look at the target is started, and the turret attempts to shoot at the target if able.
 	[ClientRpc]
-	void Rpc_NewTarget(Transform newTarget)
+	private void Rpc_NewTarget(Transform newTarget)
 	{
 		target = newTarget;
 
@@ -242,7 +242,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 
 	// When the target is lost, the active coroutines are stopped and the turret starts searching again.
 	[Server]
-	void Svr_LostTarget()
+	private void Svr_LostTarget()
 	{
 		target = null;
 
@@ -263,7 +263,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 
 	// Starts the passive rotation and searching coroutine
 	[Server]
-	void Svr_StartSearching()
+	private void Svr_StartSearching()
 	{
 		Rpc_StartRotating();
 
@@ -286,7 +286,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	// This is to make sure that the turret doesn't lose its target just because it isn't currently hitting it or pointing at it.
 	// Even if another unit is standing in front of the target, the turret will still try to hit the target, damaging the unit in front of it instead.
 	[Server]
-	bool CanShoot()
+	private bool CanShoot()
 	{
 		Ray(out Transform didHit, out bool lineOfSightCheck);
 		if (didHit)
@@ -304,7 +304,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	}
 
 	// Sends out two variables that can be used if the method is called.
-	void Ray(out Transform didHit, out bool lineOfSightCheck)
+	private void Ray(out Transform didHit, out bool lineOfSightCheck)
 	{
 		// A bool that is determined by a raycast that checks if there is a straight line between the turret and the target, without any structures in between.
 		Physics.Raycast(transform.position, ((target.position + target.GetComponent<BoxCollider>().center) - transform.position), out RaycastHit hitLOS, LOSLayer);

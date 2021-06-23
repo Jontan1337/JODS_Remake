@@ -25,9 +25,9 @@ public class EquipmentSlot : NetworkBehaviour
     [SerializeField]
     private GameObject uiSlot;
     [SerializeField]
-    private Color selectedColor;
+    private Color selectedColor = Color.white;
     [SerializeField]
-    private Color deselectedColor;
+    private Color deselectedColor = Color.gray;
     [SerializeField]
     private TMP_Text textItemName;
     [SerializeField]

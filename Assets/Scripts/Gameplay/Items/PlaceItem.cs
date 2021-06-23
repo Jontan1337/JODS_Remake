@@ -8,9 +8,9 @@ using UnityEngine.Events;
 public class PlaceItem : EquipmentItem
 {
 
-	[SerializeField] private UnityEvent OnPlaced;
-	[SerializeField] private GameObject placeholder;
-	[SerializeField] private LayerMask ignoreLayer;
+	[SerializeField] private UnityEvent OnPlaced = null;
+	[SerializeField] private GameObject placeholder = null;
+	[SerializeField] private LayerMask ignoreLayer = 0;
 	[SerializeField] private float maxPlaceRange = 3;
 	[SerializeField, Range(0, 1)] private float maxSlopeAngle = 0.965f;
 
@@ -148,7 +148,7 @@ public class PlaceItem : EquipmentItem
 
 	// Makes a child object with identical appearance. 
 	[ContextMenu("Create Placeholder")]
-	void CreatePlaceHolder()
+	private void CreatePlaceHolder()
 	{
 		GameObject placeHolderChildParentObject = new GameObject();
 		placeHolderChildParentObject.transform.SetParent(transform);

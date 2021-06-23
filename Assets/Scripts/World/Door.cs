@@ -5,7 +5,7 @@ using Mirror;
 
 public class Door : NetworkBehaviour, IInteractable
 {
-    [SerializeField] private DoorMain doorMain;
+    [SerializeField] private DoorMain doorMain = null;
 
     public bool IsInteractable { get => true; set => throw new System.NotImplementedException(); }
 
