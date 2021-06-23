@@ -7,7 +7,8 @@ using Mirror;
 public class EngineerClass : SurvivorClass
 {
 
-	PlayerEquipment playerEquipment;
+	private PlayerEquipment playerEquipment;
+	private GameObject turret;
 
 	#region Serialization
 
@@ -35,16 +36,12 @@ public class EngineerClass : SurvivorClass
 	}
 	#endregion
 
-	private void Start()
-	{
-	}
 
 	public override void ActiveAbility()
 	{
-		if (!abilityIsToggled)
+		if (!turret)
 		{
 			EquipTurret();
-			abilityIsToggled = true;
 		}
 	}
 
@@ -53,17 +50,14 @@ public class EngineerClass : SurvivorClass
 	{
 
 		print("Turret was instantiated. Change to object pool");
-		GameObject turret = Instantiate(abilityObject, transform.position, transform.rotation);
+		turret = Instantiate(abilityObject, transform.position, transform.rotation);
 		NetworkServer.Spawn(turret);
 
 		playerEquipment = transform.parent.GetComponentInChildren<PlayerEquipment>();
 
-		// FIX TURRET SPAM
-
 		turret.GetComponent<EquipmentItem>().Svr_Pickup(playerEquipment.playerHands, connectionToClient);
 		playerEquipment?.Svr_Equip(turret, EquipmentType.None);
 		turret.GetComponent<PlaceItem>().Equipped(connectionToClient, transform.parent.gameObject);
-		abilityIsToggled = false;
 	}
 
 }

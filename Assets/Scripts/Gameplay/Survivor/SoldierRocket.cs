@@ -6,21 +6,21 @@ public class SoldierRocket : NetworkBehaviour
 {
 	private void Start()
 	{
-		Destroy(gameObject, 10f);
+		//Destroy(gameObject, 10f);
 	}
+	[Server]
 	private void OnCollisionEnter(Collision collision)
 	{
 		if (!isServer) return;
 
 		if (collision.gameObject.tag != "Player")
 		{
-			Svr_Explode();
+			Rpc_Explode();
 		}
 	}
-	[Server]
-	void Svr_Explode()
+	[ClientRpc]
+	private void Rpc_Explode()
 	{
-		//GetComponent<IDamagable>()?.Svr_Damage(50);
 		GetComponent<LiveEntity>()?.DestroyEntity(transform);
 	}
 }

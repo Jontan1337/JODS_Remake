@@ -148,7 +148,7 @@ public class PlaceItem : EquipmentItem
 
 	// Makes a child object with identical appearance. 
 	[ContextMenu("Create Placeholder")]
-	void CreatePlaceHolder()
+	private void CreatePlaceHolder()
 	{
 		GameObject placeHolderChildParentObject = new GameObject();
 		placeHolderChildParentObject.transform.SetParent(transform);

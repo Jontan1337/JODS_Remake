@@ -5,52 +5,57 @@ using UnityEngine;
 
 public class SoldierClass : SurvivorClass
 {
-    PlayerEquipment playerEquipment;
+	private PlayerEquipment playerEquipment;
+	private GameObject rocketLauncher;
 
-    #region Serialization
+	#region Serialization
 
-    public override bool OnSerialize(NetworkWriter writer, bool initialState)
-    {
-        if (!initialState)
-        {
-            return true;
-        }
-        else
-        {
-            return true;
-        }
-    }
-    public override void OnDeserialize(NetworkReader reader, bool initialState)
-    {
-        if (!initialState)
-        {
+	public override bool OnSerialize(NetworkWriter writer, bool initialState)
+	{
+		if (!initialState)
+		{
+			return true;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	public override void OnDeserialize(NetworkReader reader, bool initialState)
+	{
+		if (!initialState)
+		{
 
-        }
-        else
-        {
+		}
+		else
+		{
 
-        }
-    }
-    #endregion
+		}
+	}
+	#endregion
 
 
-    public override void ActiveAbility()
-    {
-		EquipRocketLauncher();
+	public override void ActiveAbility()
+	{
+		if (!rocketLauncher)
+		{
+			EquipRocketLauncher();
+		}
 	}
 
-    void EquipRocketLauncher()
+	[Server]
+	private void EquipRocketLauncher()
 	{
-        print("Rocket launcher was instantiated. Change to object pool");
+		print("Rocket launcher was instantiated. Change to object pool");
 
-        GameObject rocketLauncher = Instantiate(abilityObject, transform.position, transform.rotation);
+		rocketLauncher = Instantiate(abilityObject, transform.position, transform.rotation);
 		NetworkServer.Spawn(rocketLauncher);
 
-        playerEquipment = transform.parent.GetComponentInChildren<PlayerEquipment>();
+		playerEquipment = transform.parent.GetComponentInChildren<PlayerEquipment>();
 
-        playerEquipment?.Svr_Equip(rocketLauncher, EquipmentType.None);
-        rocketLauncher.GetComponent<EquipmentItem>().Svr_Pickup(playerEquipment.playerHands, connectionToClient);
-    }
+		rocketLauncher.GetComponent<EquipmentItem>().Svr_Pickup(playerEquipment.playerHands, connectionToClient);
+		playerEquipment?.Svr_Equip(rocketLauncher, EquipmentType.None);
+	}
 
 
 }
