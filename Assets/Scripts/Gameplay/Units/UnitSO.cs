@@ -5,10 +5,10 @@ using UnityEngine;
 [System.Serializable]
 public struct UnitMeshGroup
 {
-    public Mesh body;
-    public Mesh head;
-    public Mesh leftArm;
-    public Mesh rightArm;
+    public Mesh[] bodyVariations;
+    public Mesh[] headVariations;
+    public Mesh[] leftArmVariations;
+    public Mesh[] rightArmVariations;
 }
 
 [CreateAssetMenu(fileName = "Unit", menuName = "Units/New Unit", order = 1)]
