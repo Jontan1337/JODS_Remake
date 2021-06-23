@@ -21,7 +21,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
     [SerializeField] private float upwardExplosionForce = 1f;
     [SerializeField] private int criticalEffectDamage = 3;
     [SerializeField] private float criticalDamageInterval = 0.8f;
-    [SerializeField] private int friendlyFireReduction = 16;
+    //[SerializeField] private int friendlyFireReduction = 16;
 
     [Header("NonExplosive entity settings")]
     [SerializeField] private GameObject[] pieces = null;

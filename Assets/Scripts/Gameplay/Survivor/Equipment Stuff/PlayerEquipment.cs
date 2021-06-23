@@ -32,9 +32,9 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     [SerializeField, Tooltip("The parent transform, where the UI equipment slots should be instantiated.")]
     private Transform equipmentSlotsUIParent;
     [SerializeField, Tooltip("The prefab of the equipment slots.")]
-    private GameObject equipmentSlotPrefab;
+    private GameObject equipmentSlotPrefab = null;
     [SerializeField, Tooltip("The prefab of the UI equipment slots.")]
-    private GameObject equipmentSlotUIPrefab;
+    private GameObject equipmentSlotUIPrefab = null;
 
     private int equipmentSlotsCount = 0;
     private Coroutine COMoveToHands;

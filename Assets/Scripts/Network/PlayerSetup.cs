@@ -39,7 +39,7 @@ public class PlayerSetup : NetworkBehaviour
     [SerializeField] private GameObject playerHands;
     [SerializeField] private GameObject equipment;
     [SerializeField] private GameObject slotsUIParent;
-    [SerializeField] private TextMesh playerNameText;
+    [SerializeField] private TextMesh playerNameText = null;
     [SerializeField, Tooltip("A list of the equipment types, the player should start with.")]
     public List<EquipmentType> equipmentSlotsTypes = new List<EquipmentType>();
 
