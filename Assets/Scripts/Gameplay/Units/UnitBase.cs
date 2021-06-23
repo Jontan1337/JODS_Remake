@@ -119,6 +119,11 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     [Header("References")]
     public Animator animator;
+    [Space]
+    [SerializeField] private SkinnedMeshRenderer bodyRenderer;
+    [SerializeField] private SkinnedMeshRenderer headRenderer;
+    [SerializeField] private SkinnedMeshRenderer leftArmRenderer;
+    [SerializeField] private SkinnedMeshRenderer rightArmRenderer;
 
     [System.Serializable]
     public class Sounds
@@ -456,13 +461,51 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             select.unitMats[i] = unitRenderer.sharedMaterial;
         }
 
-            Debug.LogWarning("TODO: fix body parts dynamic meshes");
-        /*
-        if (unitSO.unitAppearanceVariations.Length != 0)
+        Debug.LogWarning("TODO: fix body parts dynamic meshes");
+
+        //Assign a random appearance to each of the body parts
+
+        select.bodyPartsRenderers = new SkinnedMeshRenderer[4];
+
+        //Body --- INDEX : 0
+        if (unitSO.unitAppearanceVariations.bodyVariations.Length != 0)
         {
-            //select.bodyPartsRenderers[0].sharedMesh = unitSO.unitMeshes[Random.Range(0, unitSO.unitMeshes.Length)];
+            Mesh newAppearance = unitSO.unitAppearanceVariations.bodyVariations[
+                Random.Range(0, unitSO.unitAppearanceVariations.bodyVariations.Length)];
+
+            bodyRenderer.sharedMesh = newAppearance;
+            select.bodyPartsRenderers[0] = bodyRenderer;
         }
-        */
+
+        //Head --- INDEX : 1
+        if (unitSO.unitAppearanceVariations.headVariations.Length != 0)
+        {
+            Mesh newAppearance = unitSO.unitAppearanceVariations.headVariations[
+                Random.Range(0, unitSO.unitAppearanceVariations.headVariations.Length)];
+
+            headRenderer.sharedMesh = newAppearance;
+            select.bodyPartsRenderers[1] = headRenderer;
+        }
+
+        //Left Arm --- INDEX : 2
+        if (unitSO.unitAppearanceVariations.leftArmVariations.Length != 0)
+        {
+            Mesh newAppearance = unitSO.unitAppearanceVariations.leftArmVariations[
+                Random.Range(0, unitSO.unitAppearanceVariations.leftArmVariations.Length)];
+
+            leftArmRenderer.sharedMesh = newAppearance;
+            select.bodyPartsRenderers[2] = leftArmRenderer;
+        }
+
+        //Right Arm --- INDEX : 3
+        if (unitSO.unitAppearanceVariations.rightArmVariations.Length != 0)
+        {
+            Mesh newAppearance = unitSO.unitAppearanceVariations.rightArmVariations[
+                Random.Range(0, unitSO.unitAppearanceVariations.rightArmVariations.Length)];
+
+            rightArmRenderer.sharedMesh = newAppearance;
+            select.bodyPartsRenderers[3] = rightArmRenderer;
+        }
     }
 
     //This is called by the Master, who sets the unit's level, which increases it's stats.
