@@ -442,25 +442,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     
     private void SetMaterialsAndMeshes()
     {
-        bool randomMat = unitSO.unitMaterialVariations.Length != 0;
-        select.unitMats = new Material[select.bodyPartsRenderers.Length];
-
-        //Random Material to assign, if there are any
-        Material newMat = randomMat ? unitSO.unitMaterialVariations[Random.Range(0, unitSO.unitMaterialVariations.Length)] : null;
-
-        for (int i = 0; i < select.bodyPartsRenderers.Length; i++)
-        {
-
-            SkinnedMeshRenderer unitRenderer = select.bodyPartsRenderers[i];
-
-            unitRenderer.material = new Material(randomMat ? //If the unit has different materials to choose from
-                newMat : //Assign a random material.
-                unitRenderer.sharedMaterial //If not, use already assigned material.
-                );
-
-            select.unitMats[i] = unitRenderer.sharedMaterial;
-        }
-
         Debug.LogWarning("TODO: fix body parts dynamic meshes");
 
         //Assign a random appearance to each of the body parts
@@ -505,6 +486,25 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
             rightArmRenderer.sharedMesh = newAppearance;
             select.bodyPartsRenderers[3] = rightArmRenderer;
+        }
+
+        bool randomMat = unitSO.unitMaterialVariations.Length != 0;
+        select.unitMats = new Material[select.bodyPartsRenderers.Length];
+
+        //Random Material to assign, if there are any
+        Material newMat = randomMat ? unitSO.unitMaterialVariations[Random.Range(0, unitSO.unitMaterialVariations.Length)] : null;
+
+        for (int i = 0; i < select.bodyPartsRenderers.Length; i++)
+        {
+            if (select.bodyPartsRenderers[i] == null) continue;
+            SkinnedMeshRenderer unitRenderer = select.bodyPartsRenderers[i];
+
+            unitRenderer.material = new Material(randomMat ? //If the unit has different materials to choose from
+                newMat : //Assign a random material.
+                unitRenderer.sharedMaterial //If not, use already assigned material.
+                );
+
+            select.unitMats[i] = unitRenderer.sharedMaterial;
         }
     }
 
