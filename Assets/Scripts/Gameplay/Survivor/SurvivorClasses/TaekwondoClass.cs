@@ -6,15 +6,15 @@ using Mirror;
 
 public class TaekwondoClass : SurvivorClass, IHitter
 {
-	CharacterController cController;
-	SurvivorController sController;
-	LookController lController;
+	private CharacterController cController;
+	private SurvivorController sController;
+	private LookController lController;
 
-	[SyncVar] public float flyingKickStart = 0;
-	[SyncVar] public float flyingKickEnd = 100;
-	[SyncVar] public float flyingKickSpeed = 1.5f;
-	[SyncVar] public int flyingKickDamage = 100;
-	[SyncVar] bool flyingKick = false;
+	[SerializeField, SyncVar] private float flyingKickStart = 0;
+	[SerializeField, SyncVar] private float flyingKickEnd = 100;
+	[SerializeField, SyncVar] private float flyingKickSpeed = 1.5f;
+	[SerializeField, SyncVar] private int flyingKickDamage = 100;
+	[SyncVar] private bool flyingKick = false;
 
 	public List<Collider> unitsHit = new List<Collider>();
 
@@ -57,13 +57,18 @@ public class TaekwondoClass : SurvivorClass, IHitter
 		}
 	}
 	#endregion
-	public override void OnStartClient()
+
+	private void OnTransformParentChanged()
 	{
 		if (hasAuthority || isServer)
 		{
 			cController = GetComponentInParent<CharacterController>();
 			sController = GetComponentInParent<SurvivorController>();
 			lController = GetComponentInParent<LookController>();
+			print(cController);
+			print(sController);
+			print(lController);
+			print(GetComponentInParent<LookController>());
 		}
 	}
 
@@ -75,21 +80,34 @@ public class TaekwondoClass : SurvivorClass, IHitter
 		}
 	}
 
-	
 	private IEnumerator FlyingKick()
+	{
+		FlyingKickStart();
+		while (flyingKickStart < flyingKickEnd)
+		{
+			flyingKickStart += Time.deltaTime;
+
+			MoveForward();
+			yield return null;
+		};
+		FlyingKickEnd();
+
+	}
+
+	private void MoveForward()
+	{
+		cController.Move(transform.forward * flyingKickSpeed * Time.deltaTime);
+	}
+
+	private void FlyingKickStart()
 	{
 		unitsHit.Clear();
 		flyingKick = true;
 		sController.enabled = false;
 		lController.DisableLook();
-		while (flyingKickStart < flyingKickEnd)
-		{
-			flyingKickStart += Time.deltaTime;
-			cController.Move(transform.forward * flyingKickSpeed * Time.deltaTime);
-
-			yield return null;
-		};
-
+	}
+	private void FlyingKickEnd()
+	{
 		lController.EnableLook();
 		sController.enabled = true;
 
@@ -106,6 +124,7 @@ public class TaekwondoClass : SurvivorClass, IHitter
 		GetComponentInParent<ActiveSClass>().StartAbilityCooldownCo();
 	}
 
+
 	// TO DO - ONLY FLY KICK WHEN SPRINTING FORWARD
 
 	private bool CanFlyKick()
@@ -115,15 +134,19 @@ public class TaekwondoClass : SurvivorClass, IHitter
 
 	public void OnHit(ControllerColliderHit hit)
 	{
-
-		if (!isServer) return;
+		if (!hasAuthority) return;
 		if (hit.gameObject.layer == 9 && flyingKick || hit.gameObject.layer == 10 && flyingKick)
 		{
 			unitsHit.Add(hit.collider);
 			Physics.IgnoreCollision(hit.collider, cController);
-			hit.gameObject.GetComponent<IDamagable>()?.Svr_Damage(flyingKickDamage);
+			Cmd_OnHit(hit.gameObject);
 		}
 		else if (hit.gameObject.layer == 0 && flyingKick) flyingKickStart = flyingKickEnd;
+	}
 
+	[Command]
+	private void Cmd_OnHit(GameObject hitObject)
+	{
+		hitObject.GetComponent<IDamagable>()?.Svr_Damage(flyingKickDamage);
 	}
 }
