@@ -111,6 +111,8 @@ public class MeleeWeapon : EquipmentItem
                     if (other.TryGetComponent(out IDetachable detachable))
                     {
                         detachable.Detach(damageType);
+                        //Rpc_Detach(other.GetComponent<NetworkIdentity>().netId);
+                        //Rpc_Detach(other.gameObject);
                     }
                     if (amountSlashed == slashPower)
                     {
@@ -180,6 +182,15 @@ public class MeleeWeapon : EquipmentItem
 
     #region Client
 
+    [ClientRpc]
+    private void Rpc_Detach(GameObject part)
+    {
+        //GameObject objectPart = NetworkIdentity.spawned[id].gameObject;
+        if (part.TryGetComponent(out IDetachable detachable))
+        {
+            detachable.Detach(damageType);
+        }
+    }
     [ClientRpc]
     private void Rpc_SwingSFX()
     {

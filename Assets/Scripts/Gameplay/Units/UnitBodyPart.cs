@@ -22,7 +22,7 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEff
     public bool detachable = false;
     [Space]
     public GameObject attachedPart;
-    public GameObject detachedPart;
+    public Transform partTransform;
     [Space]
     public GameObject childBloodEmitter;
     public GameObject bodyBloodEmitter;
@@ -33,7 +33,7 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEff
     public bool Detach(DamageTypes damageType)
     {
         if (!detachable) return false;
-        if (unitBase.Svr_Dismember(damageType, attachedPart, detachedPart))
+        if (unitBase.Svr_Dismember(damageType, attachedPart, partTransform.position, partTransform.rotation))
         {
             Collider[] cols = GetComponents<Collider>();
             foreach (Collider col in cols)
@@ -41,7 +41,7 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEff
                 col.enabled = false;
             }
 
-            childBloodEmitter.SetActive(true);
+            //childBloodEmitter.SetActive(true);
             bodyBloodEmitter.SetActive(true);
             return true;
         }
