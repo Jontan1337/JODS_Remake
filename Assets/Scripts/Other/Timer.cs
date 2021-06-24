@@ -30,18 +30,11 @@ public abstract class Timer : MonoBehaviour
     {
         if (startTimerOnAwake)
         {
-            StartCoroutine(StartDelay(startOnAwakeDelay));
+            StartTimer(true, stopTime, startOnAwakeDelay);
         }
     }
 
-    private IEnumerator StartDelay(float time)
-    {
-        yield return new WaitForSeconds(time);
-
-        StartTimer(true, stopTime);
-    }
-
-    public virtual void StartTimer(bool start, float _stopTime = 5f)
+    public virtual void StartTimer(bool start, float _stopTime = 5f, float delay = 0)
     {
         timerEnabled = start;
 
@@ -52,14 +45,14 @@ public abstract class Timer : MonoBehaviour
             switch (timerType)
             {
                 case TimerType.tickContinuously:
-                    TickEn = StartCoroutine(TickEnumerator());
+                    TickEn = StartCoroutine(TickEnumerator(delay));
                     break;
                 case TimerType.tickOnFinish:
-                    FinishEn = StartCoroutine(FinishEnumerator());
+                    FinishEn = StartCoroutine(FinishEnumerator(delay));
                     break;
                 case TimerType.continuousAndFinish:
-                    TickEn = StartCoroutine(TickEnumerator());
-                    FinishEn = StartCoroutine(FinishEnumerator());
+                    TickEn = StartCoroutine(TickEnumerator(delay));
+                    FinishEn = StartCoroutine(FinishEnumerator(delay));
                     break;
             }
         }
@@ -81,15 +74,17 @@ public abstract class Timer : MonoBehaviour
         }
     }
 
-    public virtual void StartTimer(bool start, float _stopTime = 5f, Material[] mats = null)
+    public virtual void StartTimer(bool start, float _stopTime = 5f, float delay = 0, Material[] mats = null)
     {
-        StartTimer(start, _stopTime);
+        StartTimer(start, _stopTime, delay);
     }
 
     #region Coroutines
     private Coroutine TickEn;
-    private IEnumerator TickEnumerator()
+    private IEnumerator TickEnumerator(float delay = 0)
     {
+        yield return new WaitForSeconds(delay);
+
         currentTime = startTime;
         timerProgress = 0f;
 
@@ -106,8 +101,10 @@ public abstract class Timer : MonoBehaviour
     }
 
     private Coroutine FinishEn;
-    private IEnumerator FinishEnumerator()
+    private IEnumerator FinishEnumerator(float delay = 0)
     {
+        yield return new WaitForSeconds(delay);
+
         currentTime = startTime;
         timerProgress = 0f;
 
