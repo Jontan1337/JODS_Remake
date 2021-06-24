@@ -9,48 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd43e5d95cc41c2489c0b0e6d43c20e8, type: 3}
+  m_Script: {fileID: 0}
   m_Name: Zombie Master
   m_EditorClassIdentifier: 
-  masterName: Zombie Master
-  masterClass: {fileID: 11500000, guid: e4aff5903c8b84d489d35414d57ac28c, type: 3}
-  units:
-  - {fileID: 11400000, guid: 254796e5ec2c1ff49a903f70e84b5945, type: 2}
-  - {fileID: 11400000, guid: 746c20bacaa906a419ba0951252abddd, type: 2}
-  - {fileID: 11400000, guid: ac3d4f2c81696dc45a322377fecbb484, type: 2}
-  - {fileID: 11400000, guid: 85b159902791cc14d9bcdbc9a9eddf26, type: 2}
-  - {fileID: 11400000, guid: cdc65d9cad1af5e42b5149ac75e235d9, type: 2}
-  spawnSound: {fileID: 8300000, guid: 525c62349b4506c43883d2a8763170fa, type: 3}
-  globalSound: {fileID: 8300000, guid: 70ce02da8d5794a41821b9e446dfb946, type: 3}
-  energyColor: {r: 0.4117647, g: 0.81960785, b: 0.40784314, a: 1}
-  energyUseColor: {r: 0.6313726, g: 0, b: 0, a: 0.8627451}
-  unitSelectColor: {r: 1, g: 0, b: 0, a: 1}
-  screenTintColor: {r: 1, g: 0, b: 0.03915453, a: 0.039215688}
-  topdownLightColor: {r: 0, g: 0, b: 0, a: 1}
-  selectPositionMarkerMesh: {fileID: -5495902117074765545, guid: da0546632e15448458b0057a456d8396,
-    type: 3}
-  selectPositionMarkerColor: {r: 1, g: 0, b: 0, a: 1}
-  markerMesh: {fileID: -8803937527578110353, guid: 1012fb092bf32c0438b760d541e93161,
-    type: 3}
-  markerColor: {r: 1, g: 0, b: 0, a: 1}
-  classDescription: 'Zombie Apocalypse
-
-
-
-    The Zombie Master specializes in hordes
-    of units.
-
-
-
-    Most zombie units are cheap, giving the master opportunities
-    to overwhelm the survivors with many zombies.'
-  classSpecialDescription: 'Infection (passive)
-
-
-
-    Zombies infect survivors with
-    each attack.
-
-
-    If this infection reaches 100, the survivor will gain permanent
-    debuffs, stacking up to 3 times.'
