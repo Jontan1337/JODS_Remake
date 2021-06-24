@@ -34,6 +34,7 @@ public class MeleeWeapon : EquipmentItem
 
     [SyncVar] private bool isAttacking = false;
     [SyncVar] private bool canAttack = true;
+    [SyncVar(hook = nameof(ToggleAnimator))] private bool animatorEnabled = false;
 
     private Coroutine COSplatterShader;
     private Coroutine COAttackInterval;
@@ -72,12 +73,14 @@ public class MeleeWeapon : EquipmentItem
     {
         base.Svr_Pickup(newParent, conn);
         weaponAnimator.enabled = true;
+        animatorEnabled = true;
     }
 
     [Server]
     public override void Svr_Drop()
     {
         weaponAnimator.enabled = false;
+        animatorEnabled = false;
         base.Svr_Drop();
     }
 
@@ -132,6 +135,7 @@ public class MeleeWeapon : EquipmentItem
     private void Cmd_Attack()
     {
         if (!canAttack) return;
+        amountSlashed = 0;
         // Play the melee attack animation.
         networkAnimator.SetTrigger(AttackTrigger);
         //weaponAnimator.SetTrigger(AttackTrigger);
@@ -218,6 +222,11 @@ public class MeleeWeapon : EquipmentItem
     private void StartSplatterFading()
     {
         COSplatterShader = StartCoroutine(IESplatterShader());
+    }
+
+    private void ToggleAnimator(bool oldValue, bool newValue)
+    {
+        weaponAnimator.enabled = newValue;
     }
 
     #endregion

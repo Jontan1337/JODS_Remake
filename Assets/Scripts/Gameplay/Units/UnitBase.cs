@@ -1076,12 +1076,33 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         return false;
     }
 
+    private void Dismember_BodyPart(GameObject oldPart, GameObject newPart)
+    {
+        oldPart.SetActive(false);
+        newPart.GetComponent<Dissolve>().StartTimer(true, 5, 3);
+
+        if (newPart.TryGetComponent(out PhysicsToggler pt))
+        {
+            pt.Svr_EnableItemPhysics();
+        }
+        if (newPart.TryGetComponent(out Renderer renderer))
+        {
+            renderer.enabled = true;
+        }
+        newPart.transform.SetParent(null);
+
+        Rigidbody newPartRB = newPart.GetComponent<Rigidbody>();
+
+        Vector3 randomForce = new Vector3(Random.Range(-50, 50), Random.Range(-20, 20), Random.Range(-50, 50));
+
+        newPartRB.AddForce(randomForce / 2);
+        newPartRB.AddTorque(randomForce);
+    }
     [Server]
     private void Svr_Dismember_BodyPart(GameObject oldPart, GameObject newPart)
     {
         oldPart.SetActive(false);
-
-        //newPart.SetActive(true);
+        newPart.GetComponent<Dissolve>().StartTimer(true, 5, 3);
 
         if (newPart.TryGetComponent(out PhysicsToggler pt))
         {
@@ -1106,6 +1127,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     private void Rpc_Dismember_BodyPart(GameObject oldPart, GameObject newPart, Vector3 randomForce)
     {
         oldPart.SetActive(false);
+        newPart.GetComponent<Dissolve>().StartTimer(true, 5, 3);
 
         Rigidbody newPartRB = newPart.GetComponent<Rigidbody>();
 
@@ -1185,12 +1207,11 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     private IEnumerator PostDeath() 
     {
-        yield return new WaitForSeconds(3);
 
         //Dissolve Effect
         //Start the DissolveCoroutine which slowly dissolves over a set amount of time.
 
-        GetComponent<Timer>()?.StartTimer(true, 2.5f, select.unitMats);
+        GetComponent<Timer>()?.StartTimer(true, 2.5f, 3f, select.unitMats);
 
         yield return new WaitForSeconds(3);
         //After 3 seconds, tell the server to destroy the object/unit

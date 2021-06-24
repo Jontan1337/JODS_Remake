@@ -18,7 +18,7 @@ public class Dissolve : Timer
         base.Start();
     }
 
-    public override void StartTimer(bool start, float _stopTime = 5f, Material[] mats = null)
+    public override void StartTimer(bool start, float _stopTime = 5f, float delay = 0, Material[] mats = null)
     {
         materials = mats;
 
@@ -27,9 +27,9 @@ public class Dissolve : Timer
             material.SetInt("_Dissolve", 1);
         }
 
-        base.StartTimer(start, _stopTime);
+        base.StartTimer(start, _stopTime, delay);
     }
-    public override void StartTimer(bool start, float _stopTime = 5f)
+    public override void StartTimer(bool start, float _stopTime = 5f, float delay = 0)
     {
         materials = GetComponent<MeshRenderer>().sharedMaterials;
 
@@ -38,7 +38,7 @@ public class Dissolve : Timer
             material.SetInt("_Dissolve", 1);
         }
 
-        base.StartTimer(start, _stopTime);
+        base.StartTimer(start, _stopTime, delay);
     }
 
     protected override void Tick()

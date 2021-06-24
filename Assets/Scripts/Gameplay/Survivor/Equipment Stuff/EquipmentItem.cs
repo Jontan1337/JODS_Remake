@@ -129,6 +129,12 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
         {
             Rpc_ToggleOutline(false);
         }
+        Rpc_Pickup();
+    }
+    [ClientRpc]
+    public virtual void Rpc_Pickup()
+    {
+
     }
 
     [Command]
@@ -155,6 +161,12 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
             Svr_Spin(2);
         }
         authController.Svr_RemoveAuthority();
+        Rpc_Drop();
+    }
+    [ClientRpc]
+    public virtual void Rpc_Drop()
+    {
+
     }
 
     [Server]

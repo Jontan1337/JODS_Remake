@@ -151,17 +151,16 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
     {
         foreach (GameObject piece in pieces)
         {
-            StartCoroutine(DissolvePiece(piece));
+            DissolvePiece(piece);
         }
         if (destroySelf) Destroy(gameObject,10f);
     }
-    private IEnumerator DissolvePiece(GameObject piece)
+    private void DissolvePiece(GameObject piece)
     {
         piece.transform.SetParent(null);
         float interval = Random.Range(3f, 5f);
-        yield return new WaitForSeconds(interval);
 
-        piece.GetComponent<Timer>()?.StartTimer(true, 5f);
+        piece.GetComponent<Timer>()?.StartTimer(true, 5f, interval);
     }
 
     public void DestroyEntity(Transform sourceOfExplosion = null)

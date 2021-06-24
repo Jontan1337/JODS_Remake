@@ -54,7 +54,7 @@ public class SyncGameObjectVisuals : NetworkBehaviour
         {
             if (transform.parent != null)
             {
-                // What was I doing here??
+                parentData = transform.parent;
             }
             Rpc_UpdateParent(conn, transform.parent);
         }
@@ -130,6 +130,7 @@ public class SyncGameObjectVisuals : NetworkBehaviour
     [TargetRpc]
     private void Rpc_UpdateParent(NetworkConnection target, Transform newParentData)
     {
+        parentData = newParentData;
         transform.parent = newParentData;
     }
     [TargetRpc]
