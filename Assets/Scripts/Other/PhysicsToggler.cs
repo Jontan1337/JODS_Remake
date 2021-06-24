@@ -16,10 +16,11 @@ public class PhysicsToggler : NetworkBehaviour
         TryGetComponent(out _collider);
     }
 
-    //public override void OnStartServer()
-    //{
-    //    NetworkTest.RelayOnServerAddPlayer += Svr_UpdateVars;
-    //}
+    public override void OnStartServer()
+    {
+        //NetworkTest.RelayOnServerAddPlayer += Svr_UpdateVars;
+        ToggleItemPhysics(false, hasPhysics);
+    }
     //public override void OnStopServer()
     //{
     //    NetworkTest.RelayOnServerAddPlayer -= Svr_UpdateVars;
