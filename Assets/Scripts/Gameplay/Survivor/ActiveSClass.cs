@@ -60,11 +60,12 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	public override void OnStartAuthority()
 	{
 		if (test) SetSurvivorClass(survivorSO);
-		JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => Ability();
+		JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => Cmd_Ability();
 
 	}
 
-	void Ability()
+	[Command]
+	void Cmd_Ability()
 	{
 		if (abilityIsReady)
 		{

@@ -48,7 +48,6 @@ public class EngineerClass : SurvivorClass
 	[Server]
 	private void EquipTurret()
 	{
-
 		print("Turret was instantiated. Change to object pool");
 		turret = Instantiate(abilityObject, transform.position, transform.rotation);
 		NetworkServer.Spawn(turret);
