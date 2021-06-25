@@ -107,7 +107,6 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
         get => selectedEquipmentSlot;
         private set
         {
-            print("Drop turret!");
             if (!isServer) return;
 
             // Stop listening if the old selected slot's item changes.
@@ -480,7 +479,6 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
         {
             if (equipmentSlots[slotIndex] != null)
             {
-                print("AWEWQE");
                 SelectedEquipmentSlot?.Rpc_Deselect(connectionToClient);
                 SelectedEquipmentSlot = equipmentSlots[slotIndex];
                 SelectedEquipmentSlot.Rpc_Select(connectionToClient);
