@@ -8,12 +8,13 @@ public class Dissolve : Timer
 
     [Header("Dissolve Settings")]
     [SerializeField] private bool getObjectMaterial = false;
+    [SerializeField] private bool destroyOnFinish = false;
 
     public override void Start()
     {
         if (getObjectMaterial)
         {
-            materials = GetComponent<MeshRenderer>().sharedMaterials;
+            materials = GetComponent<MeshRenderer>().materials;
         }
         base.Start();
     }
@@ -22,23 +23,27 @@ public class Dissolve : Timer
     {
         materials = mats;
 
-        foreach (Material material in materials)
-        {
-            material.SetInt("_Dissolve", 1);
-        }
+        SetMaterialDefaults();
 
         base.StartTimer(start, _stopTime, delay);
     }
     public override void StartTimer(bool start, float _stopTime = 5f, float delay = 0)
     {
-        materials = GetComponent<MeshRenderer>().sharedMaterials;
+        
+        materials = GetComponent<MeshRenderer>().materials;
 
+        SetMaterialDefaults();
+
+        base.StartTimer(start, _stopTime, delay);
+    }
+
+    private void SetMaterialDefaults()
+    {
         foreach (Material material in materials)
         {
             material.SetInt("_Dissolve", 1);
+            material.SetFloat("_DissolveAmount", 0);
         }
-
-        base.StartTimer(start, _stopTime, delay);
     }
 
     protected override void Tick()
@@ -51,6 +56,6 @@ public class Dissolve : Timer
 
     protected override void Finish()
     {
-        Destroy(gameObject);
+        if (destroyOnFinish) { Destroy(gameObject); }
     }
 }

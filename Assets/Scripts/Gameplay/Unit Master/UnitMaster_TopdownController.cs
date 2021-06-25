@@ -80,9 +80,7 @@ public class UnitMaster_TopdownController : MonoBehaviour
         //Get amount of floors from WorldSettings. If there is no worldSettings then assign with a value of 1.
         amountOfFloors = worldSettings == null ? 1 : worldSettings.amountOfFloors;
 
-        Debug.Log($"There are {amountOfFloors} floors on this map");
-
-
+        //Debug.Log($"There are {amountOfFloors} floors on this map");
 
         //Instantiate floor indicators for each floor on the map
         for (int i = 0; i < amountOfFloors; i++)
@@ -93,7 +91,7 @@ public class UnitMaster_TopdownController : MonoBehaviour
         //Start on a random floor
         int rndFloor = Random.Range(1, amountOfFloors + 1);
         currentFloor = rndFloor;
-        Debug.Log($"Current floor : {currentFloor}");
+        //Debug.Log($"Current floor : {currentFloor}");
 
         ChangeFloor();
     }
@@ -112,7 +110,7 @@ public class UnitMaster_TopdownController : MonoBehaviour
     }
     void ChangeFloor(bool up)
     {
-        print("Changing floor " + (up ? "up" : "down"));
+        //print("Changing floor " + (up ? "up" : "down"));
 
         currentFloor = Mathf.Clamp(currentFloor += up ? 1 : -1, 1, amountOfFloors); //This needs fixin
 

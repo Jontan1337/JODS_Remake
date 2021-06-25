@@ -20,7 +20,7 @@ public class LobbyCharacters : NetworkBehaviour
 
     private void Start()
     {
-        survivorSOList = PlayableCharactersManager.instance.survivorSOList;
+        survivorSOList = PlayableCharactersManager.instance.GetAllSurvivors();
         charSmoke = smoke.GetComponent<ParticleSystem>();
     }
 

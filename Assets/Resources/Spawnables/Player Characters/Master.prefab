@@ -1400,14 +1400,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 3737111488096023313}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c6dc55c66a7c9bc49ab49f9b06ba7284, type: 3}
+  m_Script: {fileID: 11500000, guid: 214fab643d0752e4b8531181fe2f444e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   master: {fileID: 0}
   movementSpeed: 50
   speedModifier: 1.8
-  minRotY: -50
-  maxRotY: 50
+  minRotY: -60
+  maxRotY: 60
   sensitivity: 10
   cursorMarker: {fileID: 6894463585626301129}
   showMarker: 0
@@ -3075,7 +3075,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  masterSO: {fileID: 11400000, guid: a6e713bc364b1a24786870f298bd8018, type: 2}
+  masterSO: {fileID: 0}
   stats:
     currentEnergy: 50
     maxEnergy: 100
@@ -3083,42 +3083,7 @@ MonoBehaviour:
     maxEnergyIncrement: 20
     currentXp: 0
     timeUntillNextUpgrade: 5
-  unitList:
-  - name: Common
-    unit: {fileID: 11400000, guid: 254796e5ec2c1ff49a903f70e84b5945, type: 2}
-    level: 1
-    maxAmount: 0
-    unlocked: 1
-    chosen: 0
-    unitIndex: 0
-  - name: Slav
-    unit: {fileID: 11400000, guid: 746c20bacaa906a419ba0951252abddd, type: 2}
-    level: 1
-    maxAmount: 0
-    unlocked: 1
-    chosen: 0
-    unitIndex: 1
-  - name: Spitter
-    unit: {fileID: 11400000, guid: ac3d4f2c81696dc45a322377fecbb484, type: 2}
-    level: 1
-    maxAmount: 0
-    unlocked: 1
-    chosen: 0
-    unitIndex: 2
-  - name: Tentacle
-    unit: {fileID: 11400000, guid: 85b159902791cc14d9bcdbc9a9eddf26, type: 2}
-    level: 1
-    maxAmount: 0
-    unlocked: 1
-    chosen: 0
-    unitIndex: 3
-  - name: Stronk
-    unit: {fileID: 11400000, guid: cdc65d9cad1af5e42b5149ac75e235d9, type: 2}
-    level: 1
-    maxAmount: 0
-    unlocked: 1
-    chosen: 0
-    unitIndex: 4
+  unitList: []
   chosenUnitIndex: 0
   hasChosenAUnit: 0
   selectedUnit: {fileID: 0}
