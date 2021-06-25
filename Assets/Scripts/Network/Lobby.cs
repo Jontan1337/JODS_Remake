@@ -133,8 +133,19 @@ public class Lobby : NetworkManager
         base.OnServerConnect(conn);
     }
 
+    public static Dictionary<string, object[]> dict = new Dictionary<string, object[]>();
+
     public override void OnServerAddPlayer(NetworkConnection conn)
     {
+        foreach (var item in dict)
+        {
+            if (item.Value[0].ToString() == "NetworkConnection")
+            {
+                item.Value[0] = conn;
+            }
+            this.GetType().GetMethod(item.Key).Invoke(null, item.Value);
+        }
+
         if (SceneManager.GetActiveScene().path == gameplayScene) return;
 
         base.OnServerAddPlayer(conn);

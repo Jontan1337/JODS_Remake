@@ -1,10 +1,7 @@
-﻿using System.Text;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 using UnityEngine.AI;
 using Mirror;
 
@@ -1046,34 +1043,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     #region Dismemberment
 
-    public bool Dismember(DamageTypes damageType, GameObject oldPart, GameObject newPart)
-    {
-        newPart.GetComponent<MeshRenderer>().material = new Material(oldPart.GetComponent<SkinnedMeshRenderer>().sharedMaterial);
-        newPart.GetComponent<MeshFilter>().mesh = oldPart.GetComponent<SkinnedMeshRenderer>().sharedMesh;
-
-        if (IsDead()) { 
-            switch (damageType)
-            {
-                case DamageTypes.Blunt:
-
-                    Dismember_BodyPart(oldPart, newPart);
-
-                    break;
-                case DamageTypes.Slash:
-
-                    Dismember_BodyPart(oldPart, newPart);
-
-                    break;
-                case DamageTypes.Pierce:
-
-                    Dismember_BodyPart(oldPart, newPart);
-
-                    break;
-            }
-            return true;
-        }
-        return false;
-    }
     [Server]
     public bool Svr_Dismember(DamageTypes damageType, GameObject oldPart, Vector3 partPosition, Quaternion partRotation)
     {
@@ -1101,59 +1070,19 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         return false;
     }
 
-    private void Dismember_BodyPart(GameObject oldPart, GameObject newPart)
-    {
-        oldPart.SetActive(false);
-        newPart.GetComponent<Dissolve>().StartTimer(true, 5, 3);
-
-        if (newPart.TryGetComponent(out Rigidbody rb))
-        {
-            rb.isKinematic = false;
-        }
-        if (newPart.TryGetComponent(out Renderer renderer))
-        {
-            renderer.enabled = true;
-        }
-        newPart.transform.SetParent(null);
-
-        Rigidbody newPartRB = newPart.GetComponent<Rigidbody>();
-
-        Vector3 randomForce = new Vector3(Random.Range(-50, 50), Random.Range(-20, 20), Random.Range(-50, 50));
-
-        newPartRB.AddForce(randomForce / 2);
-        newPartRB.AddTorque(randomForce);
-    }
     [Server]
     private void Svr_Dismember_BodyPart(GameObject oldPart, Vector3 partPosition, Quaternion partRotation)
     {
-        //newPart.GetComponent<MeshRenderer>().material = new Material(oldPart.GetComponent<SkinnedMeshRenderer>().sharedMaterial);
-        //newPart.GetComponent<MeshFilter>().mesh = oldPart.GetComponent<SkinnedMeshRenderer>().sharedMesh;
-
-
-        oldPart.SetActive(false);
-        //newPart.GetComponent<Dissolve>().StartTimer(true, 5, 3);
-
-        //if (newPart.TryGetComponent(out PhysicsToggler pt))
-        //{
-        //    pt.Svr_EnableItemPhysics();
-        //}
-        //if (newPart.TryGetComponent(out Renderer renderer))
-        //{
-        //    renderer.enabled = true;
-        //}
-        //newPart.transform.SetParent(null);
-
-        //Rigidbody newPartRB = newPart.GetComponent<Rigidbody>();
-
         Vector3 randomForce = new Vector3(Random.Range(-50, 50), Random.Range(-20, 20), Random.Range(-50, 50));
-
-        //newPartRB.AddForce(randomForce / 2);
-        //newPartRB.AddTorque(randomForce);
 
         Rpc_Dismember_BodyPart(oldPart, partPosition, partRotation, randomForce);
     }
     [ClientRpc]
     private void Rpc_Dismember_BodyPart(GameObject oldPart, Vector3 partPosition, Quaternion partRotation, Vector3 randomForce)
+    {
+        Dismember_BodyPart(oldPart, partPosition, partRotation, randomForce);
+    }
+    private void Dismember_BodyPart(GameObject oldPart, Vector3 partPosition, Quaternion partRotation, Vector3 randomForce)
     {
         SkinnedMeshRenderer oldSkinMeshRenderer = oldPart.GetComponent<SkinnedMeshRenderer>();
 

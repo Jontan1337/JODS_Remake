@@ -142,6 +142,26 @@ public class MeleeWeapon : EquipmentItem
         networkAnimator.SetTrigger(AttackTrigger);
         //weaponAnimator.SetTrigger(AttackTrigger);
         COAttackInterval = StartCoroutine(IEAttackInterval());
+
+        string method = nameof(Rpc_TestPrint);
+        object type = this;
+        object arg1 = "NetworkConnection";
+        object arg2 = "Attack!";
+        object[] objectArr = new object[]
+        {
+            type,
+            method,
+            arg1,
+            arg2
+        };
+
+        NetworkTest.bufferList.Add(objectArr);
+    }
+
+    [TargetRpc]
+    private void Rpc_TestPrint(NetworkConnection target, string message)
+    {
+        print(message);
     }
 
     // Called by animation event.

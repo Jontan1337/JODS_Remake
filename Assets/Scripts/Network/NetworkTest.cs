@@ -46,6 +46,7 @@ public class NetworkTest : NetworkManager
         manager = GetComponent<NetworkManager>();
     }
 
+    public static List<object[]> bufferList = new List<object[]>();
     // This is only called on the server.
     public override void OnServerAddPlayer(NetworkConnection conn)
     {
@@ -62,6 +63,27 @@ public class NetworkTest : NetworkManager
         if (conn.connectionId != 0)
         {
             RelayOnServerAddPlayer?.Invoke(conn);
+        }
+
+
+        foreach (var item in bufferList)
+        {
+            if (item.Length > 2)
+            {
+                if (item[2].ToString() == "NetworkConnection")
+                {
+                    item[2] = conn;
+                }
+            }
+            object[] tempArgs = new object[item.Length-2];
+            for (int i = 0; i < tempArgs.Length; i++)
+            {
+                tempArgs[i] = item[i+2];
+            }
+            object type = item[0];
+            string method = item[1].ToString();
+            type.GetType().GetMethod(method, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                .Invoke(type, tempArgs);
         }
     }
 
