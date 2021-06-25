@@ -4,10 +4,6 @@ using UnityEngine.AI;
 
 public class SoldierRocket : NetworkBehaviour
 {
-	private void Start()
-	{
-		//Destroy(gameObject, 10f);
-	}
 	[Server]
 	private void OnCollisionEnter(Collision collision)
 	{
