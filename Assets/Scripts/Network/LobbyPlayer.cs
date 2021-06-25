@@ -38,6 +38,8 @@ public class LobbyPlayer : NetworkBehaviour
     private bool launcherLogin = false;
     private string userName = null;
 
+    private LobbySettings lobbySettings;
+
     private void Awake()
     {
         DontDestroyOnLoad(this);
@@ -58,9 +60,17 @@ public class LobbyPlayer : NetworkBehaviour
         #endregion
     }
 
+    public override void OnStartServer()
+    {
+        lobbySettings = LobbySettings.instance;
+        MasterSelection ms = MasterSelection.instance;
+
+        lobbySettings.Svr_SetMasterName(ms.GetMasterName);
+    }
 
     public override void OnStartClient()
     {
+        
         lobbyCharacters = GetComponent<LobbyCharacters>();
 
         // Is this the Host
@@ -74,6 +84,11 @@ public class LobbyPlayer : NetworkBehaviour
         // Is this me
         if (isLocalPlayer)
         {
+            if (isServer)
+            {
+                
+            }
+
             isMe = true;
             // Is the player logged in via the launcher
             string newName;
@@ -121,8 +136,6 @@ public class LobbyPlayer : NetworkBehaviour
     public void Cmd_ChangePreference()
     {
         wantsToBeMaster = !wantsToBeMaster;
-        Debug.LogWarning("Cmd_ChangePreference needs to change");
-        Debug.LogWarning("Master Smoke does not work for clients? It still sets their preference, but no smoke.");
 
         lobbyCharacters.Svr_GetChoice(wantsToBeMaster);
     }

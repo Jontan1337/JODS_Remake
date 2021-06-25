@@ -16,7 +16,7 @@ public class MainMenuVisuals : MonoBehaviour
 
     public void LoadVisual()
     {
-        int value = MasterSelection.instance.GetMaster;
+        int value = MasterSelection.instance.GetMasterIndex;
 
         Debug.Log("Loading world visuals with index " + value);
 

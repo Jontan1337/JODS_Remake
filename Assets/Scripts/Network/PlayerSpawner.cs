@@ -13,8 +13,8 @@ public class PlayerSpawner : NetworkBehaviour
 
     public override void OnStartServer()
     {
-        survivorSOList = PlayableCharactersManager.instance.survivorSOList;
-        masterSOList = PlayableCharactersManager.instance.masterSOList;
+        survivorSOList = PlayableCharactersManager.instance.GetAllSurvivors();
+        masterSOList = PlayableCharactersManager.instance.GetAllMasters();
 
         Lobby.OnServerReadied += SpawnPlayer;
     }

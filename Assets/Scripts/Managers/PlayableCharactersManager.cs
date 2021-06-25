@@ -19,12 +19,34 @@ public class PlayableCharactersManager : MonoBehaviour
     #endregion
 
     [Header("Playable Characters Lists")]
-    public List<SurvivorSO> survivorSOList = new List<SurvivorSO>();
+    [SerializeField] private List<SurvivorSO> survivorSOList = new List<SurvivorSO>();
     [Space]
-    public List<UnitMasterSO> masterSOList = new List<UnitMasterSO>();
+    [SerializeField] private List<UnitMasterSO> masterSOList = new List<UnitMasterSO>();
 
     private void Start()
     {
         DontDestroyOnLoad(this);
+    }
+
+    public List<SurvivorSO> GetAllSurvivors()
+    {
+        return survivorSOList;
+    }
+
+    public List<UnitMasterSO> GetAllMasters()
+    {
+        return masterSOList;
+    }
+    public string GetMasterName(string master)
+    {
+        foreach(UnitMasterSO masterSO in masterSOList)
+        {
+            if (masterSO.masterName == master)
+            {
+                return masterSO.masterName;
+            }
+        }
+        Debug.LogWarning($"No master SO with the name '{master}' could be found.");
+        return null;
     }
 }

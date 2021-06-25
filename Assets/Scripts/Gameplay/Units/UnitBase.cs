@@ -439,8 +439,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     
     private void SetMaterialsAndMeshes()
     {
-        Debug.LogWarning("TODO: fix body parts dynamic meshes");
-
         //Assign a random appearance to each of the body parts
 
         select.bodyPartsRenderers = new SkinnedMeshRenderer[4];

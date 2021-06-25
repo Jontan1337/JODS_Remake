@@ -29,7 +29,7 @@ public class SurvivorSelection : MonoBehaviour
 
     public void LoadSelection()
     {
-        int value = MasterSelection.instance.GetMaster;
+        int value = MasterSelection.instance.GetMasterIndex;
 
         //Debug.Log("Loading selection with index " + value);
 

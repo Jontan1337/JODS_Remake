@@ -115,8 +115,17 @@ public class PlaceItem : EquipmentItem
 	// When the turret is dropped, all coroutines are stopped, the placeholder is deactivated and depending on the equipment type, the item is destroyed or dropped.
 	protected override void OnDropPerformed(InputAction.CallbackContext obj)
 	{
-		StopAllCoroutines();
 		Unbind();
+	}
+	public override void Unbind()
+	{
+		base.Unbind();
+		Drop();
+	}
+
+	public void Drop()
+	{
+		StopAllCoroutines();
 		placeholder.SetActive(false);
 		switch (equipmentType)
 		{
