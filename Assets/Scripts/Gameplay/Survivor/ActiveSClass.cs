@@ -12,7 +12,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	[SerializeField] private SkinnedMeshRenderer survivorRenderer = null;
 	[Space]
 	[Header("Stats")]
-	[SerializeField] private int health = 100;
+	[SerializeField] public int health = 100;
 	[SerializeField] private int armor = 0;
 	[SerializeField] private float abilityCooldown = 0;
 	[SerializeField] private float abilityCooldownCount = 0;
