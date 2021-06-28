@@ -47,6 +47,33 @@ public class NetworkTest : NetworkManager
     }
 
     public static List<object[]> bufferList = new List<object[]>();
+    public static void AddBuffer(object type, string methodName, object args)
+    {
+        object[] objectArr = new object[]
+        {
+            type,
+            methodName,
+            args
+        };
+
+        NetworkTest.bufferList.Add(objectArr);
+    }
+    public static void RemoveBuffer(object type, string methodName, object args)
+    {
+        object[] objectArr = new object[]
+        {
+            type,
+            methodName,
+            args
+        };
+
+        NetworkTest.bufferList.Remove(objectArr);
+    }
+    private static void InvokeBuffer()
+    {
+        
+    }
+
     // This is only called on the server.
     public override void OnServerAddPlayer(NetworkConnection conn)
     {
@@ -65,7 +92,6 @@ public class NetworkTest : NetworkManager
             RelayOnServerAddPlayer?.Invoke(conn);
         }
 
-
         foreach (var item in bufferList)
         {
             if (item.Length > 2)
@@ -75,14 +101,16 @@ public class NetworkTest : NetworkManager
                     item[2] = conn;
                 }
             }
-            object[] tempArgs = new object[item.Length-2];
+            // Create new array that only holds the args to pass to the method parameters.
+            object[] tempArgs = new object[item.Length - 2];
             for (int i = 0; i < tempArgs.Length; i++)
             {
-                tempArgs[i] = item[i+2];
+                tempArgs[i] = item[i + 2];
             }
             object type = item[0];
             string method = item[1].ToString();
-            type.GetType().GetMethod(method, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+            type.GetType()
+                .GetMethod(method, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
                 .Invoke(type, tempArgs);
         }
     }

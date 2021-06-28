@@ -143,19 +143,9 @@ public class MeleeWeapon : EquipmentItem
         //weaponAnimator.SetTrigger(AttackTrigger);
         COAttackInterval = StartCoroutine(IEAttackInterval());
 
-        string method = nameof(Rpc_TestPrint);
-        object type = this;
         object arg1 = "NetworkConnection";
         object arg2 = "Attack!";
-        object[] objectArr = new object[]
-        {
-            type,
-            method,
-            arg1,
-            arg2
-        };
-
-        NetworkTest.bufferList.Add(objectArr);
+        NetworkTest.AddBuffer(nameof(Rpc_TestPrint), this, new object[] { arg1, arg2 });
     }
 
     [TargetRpc]
