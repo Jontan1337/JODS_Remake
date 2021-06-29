@@ -46,28 +46,18 @@ public class NetworkTest : NetworkManager
         manager = GetComponent<NetworkManager>();
     }
 
-    public static List<object[]> bufferList = new List<object[]>();
-    public static void AddBuffer(object type, string methodName, object args)
+    public static List<NetworkBufferItem> networkBufferList = new List<NetworkBufferItem>();
+    public static void AddBuffer(MonoBehaviour type, string methodName, object[] args)
     {
-        object[] objectArr = new object[]
-        {
-            type,
-            methodName,
-            args
-        };
+        NetworkBufferItem bufferItem = new NetworkBufferItem(type, methodName, args);
 
-        NetworkTest.bufferList.Add(objectArr);
+        networkBufferList.Add(bufferItem);
     }
-    public static void RemoveBuffer(object type, string methodName, object args)
+    public static void RemoveBuffer(MonoBehaviour type, string methodName, object[] args)
     {
-        object[] objectArr = new object[]
-        {
-            type,
-            methodName,
-            args
-        };
+        NetworkBufferItem bufferItem = new NetworkBufferItem(type, methodName, args);
 
-        NetworkTest.bufferList.Remove(objectArr);
+        networkBufferList.Remove(bufferItem);
     }
     private static void InvokeBuffer()
     {
@@ -92,51 +82,35 @@ public class NetworkTest : NetworkManager
             RelayOnServerAddPlayer?.Invoke(conn);
         }
 
-        foreach (var item in bufferList)
+        foreach (var item in networkBufferList)
         {
-            if (item.Length > 2)
+            object type = item.objectType;
+            string method = item.objectMethod;
+            object[] args = item.args;
+            object[] tempArgs = new object[item.args.Length];
+            if (args.Length > 1)
             {
-                if (item[2].ToString() == "NetworkConnection")
+                if (args[0].ToString() == "NetworkConnection")
                 {
-                    item[2] = conn;
+                    // Boxing to replace string "NetworkConnection" with the actual connection.
+                    tempArgs[0] = conn;
                 }
             }
             // Create new array that only holds the args to pass to the method parameters.
-            object[] tempArgs = new object[item.Length - 2];
-            for (int i = 0; i < tempArgs.Length; i++)
+            for (int i = 1; i < tempArgs.Length; i++)
             {
-                tempArgs[i] = item[i + 2];
+                tempArgs[i] = args[i];
             }
-            object type = item[0];
-            string method = item[1].ToString();
             type.GetType()
                 .GetMethod(method, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
                 .Invoke(type, tempArgs);
         }
     }
 
-    public GameObject dummyPlayer;
     // This is only called on the server.
     public override void OnServerDisconnect(NetworkConnection conn)
     {
-        HashSet<NetworkIdentity> copyOfClientOwnedObject = conn.clientOwnedObjects;
-
-        //GameObject dummy = Instantiate(dummyPlayer);
-        //NetworkServer.ReplacePlayerForConnection(conn, dummy);
-
         conn.identity.gameObject.GetComponentInChildren<PlayerEquipment>().Svr_DropAllItems();
-
-        //foreach (NetworkIdentity identity in copyOfClientOwnedObject)
-        //{
-        //    if (identity != conn.identity)
-        //    {
-        //        //identity.RemoveClientAuthority();
-        //        if (identity.TryGetComponent(out PlayerEquipment equipment))
-        //        {
-        //            equipment.Svr_DropAllItems();
-        //        }
-        //    }
-        //}
         playerIds.Remove(conn);
         base.OnServerDisconnect(conn);
     }

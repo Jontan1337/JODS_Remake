@@ -16,13 +16,14 @@ GameObject:
   - component: {fileID: 3617518231194323222}
   - component: {fileID: 7628148484119422582}
   - component: {fileID: 2016954922835176079}
+  - component: {fileID: 4174980415417863982}
   m_Layer: 13
   m_Name: WorldCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6222407410909346250
 Transform:
   m_ObjectHideFlags: 0
@@ -191,6 +192,25 @@ MonoBehaviour:
   serverOnly: 0
   m_AssetId: 
   hasSpawned: 0
+--- !u!114 &4174980415417863982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6222407410909346251}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 734b48bea0b204338958ee3d885e11f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  clientAuthority: 0
+  localPositionSensitivity: 0.01
+  localRotationSensitivity: 0.01
+  localScaleSensitivity: 0.01
+  target: {fileID: 5179075239126234424}
 --- !u!1001 &1262604317729328370
 PrefabInstance:
   m_ObjectHideFlags: 0

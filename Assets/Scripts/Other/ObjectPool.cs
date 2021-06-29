@@ -60,7 +60,8 @@ public class ObjectPool : MonoBehaviour
             {
                 //Create the object, and add it to the queue
                 GameObject obj = Instantiate(pool.prefab[Random.Range(0, pool.prefab.Length)], transform);
-                obj.name = "(" + pool.tag + ") " + obj.name; //Give it a name to represent which pool it is from
+                obj.name = "(" + pool.tag + ") " + obj.name; //Give it a name to represent which pool it is from.
+                                                             //RE: Stop seperating the strings you cringeboi, use ${}.
                 obj.SetActive(false);
                 objectPool.Enqueue(obj);
             }

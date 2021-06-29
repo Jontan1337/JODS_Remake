@@ -1515,7 +1515,7 @@ SkinnedMeshRenderer:
   m_SortingOrder: 0
   serializedVersion: 2
   m_Quality: 0
-  m_UpdateWhenOffscreen: 0
+  m_UpdateWhenOffscreen: 1
   m_SkinnedMotionVectors: 1
   m_Mesh: {fileID: 2959467708922500008, guid: 4e67c226c41ce9342af6c3cc8273c117, type: 3}
   m_Bones:
@@ -1994,6 +1994,7 @@ MonoBehaviour:
   timerProgress: 0
   materials: []
   getObjectMaterial: 0
+  destroyOnFinish: 0
 --- !u!114 &2731920150712722263
 MonoBehaviour:
   m_ObjectHideFlags: 0

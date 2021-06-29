@@ -12,11 +12,11 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     [Space]
     public Transform playerHands;
 
-    [SerializeField, SyncVar]
+    [SerializeField]
     private GameObject itemInHands;
     [SerializeField]
     private EquipmentItem equipmentItem;
-    [SerializeField, SyncVar]
+    [SerializeField]
     private EquipmentSlot selectedEquipmentSlot;
     // Maybe change to SyncList?
     [SerializeField]
@@ -156,16 +156,13 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
 
     private void OnTransformParentChanged()
     {
-        //if (hasAuthority)
-        {
-            // When parent changed, check if it's correctly set to player Survivor
-            // and then find UI hotbar under Survivors canvas.
-            Debug.Log($"My parent {transform.parent}", this);
+        // When parent changed, check if it's correctly set to player Survivor
+        // and then find UI hotbar under Survivors canvas.
+        Debug.Log($"My parent {transform.parent}", this);
 
-            if (transform.parent.name.Contains("Survivor"))
-            {
-                equipmentSlotsUIParent = transform.parent.Find(slotsUIParentName);
-            }
+        if (transform.parent.name.Contains("Survivor"))
+        {
+            equipmentSlotsUIParent = transform.parent.Find(slotsUIParentName);
         }
     }
 
@@ -228,20 +225,52 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     {
         if (!initialState)
         {
+            print("Not Initial state");
             writer.WriteGameObject(itemInHands);
             writer.WriteEquipmentSlot(selectedEquipmentSlot);
             return true;
         }
+        else
+        {
+            print("Initial state");
+            writer.WriteList(equipmentSlotsTypes);
+            writer.WriteTransform(playerHands);
+            writer.WriteGameObject(itemInHands);
+            // Equipment item
+            //writer.WriteEquipmentSlot(selectedEquipmentSlot);
+            //writer.WriteList(equipmentSlots);
+            //writer.WriteInt32((int)itemPickupBehaviour);
+            //writer.WriteTransform(equipmentSlotsParent);
+            //writer.WriteTransform(equipmentSlotsUIParent);
+            //writer.WriteGameObject(equipmentSlotPrefab);
+            //writer.WriteGameObject(equipmentSlotUIPrefab);
+            return true;
+        }
         return false;
-
     }
 
     public override void OnDeserialize(NetworkReader reader, bool initialState)
     {
         if (!initialState)
         {
+            print("Not Initial state");
             itemInHands = reader.ReadGameObject();
             selectedEquipmentSlot = reader.ReadEquipmentSlot();
+        }
+        else
+        {
+            print("Initial state");
+            equipmentSlotsTypes = reader.ReadList<EquipmentType>();
+            playerHands = reader.ReadTransform();
+            itemInHands = reader.ReadGameObject();
+            //equipmentItem = itemInHands.GetComponent<EquipmentItem>();
+            //selectedEquipmentSlot = reader.ReadEquipmentSlot();
+            //equipmentSlots = reader.ReadList<EquipmentSlot>();
+            //itemPickupBehaviour = (ItemPickupBehaviour)reader.ReadInt32();
+            //equipmentSlotsParent = reader.ReadTransform();
+            //equipmentSlotsUIParent = reader.ReadTransform();
+            //equipmentSlotPrefab = reader.ReadGameObject();
+            //equipmentSlotUIPrefab = reader.ReadGameObject();
         }
     }
     #endregion
@@ -403,7 +432,6 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     [Server]
     private void Svr_OnItemPickedUp(GameObject newItem)
     {
-        print("Svr_OnItemPickedUp");
         OnItemPickedUp(newItem);
         Rpc_OnItemPickedUp(newItem);
     }
@@ -423,7 +451,10 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     {
         OnItemDropped(item);
         Rpc_OnItemDropped(item);
-        Svr_ClearHotbarSlot();
+        if (SelectedEquipmentSlot)
+        {
+            Svr_ClearHotbarSlot(SelectedEquipmentSlot);
+        }
     }
     [ClientRpc]
     private void Rpc_OnItemDropped(GameObject item)
@@ -484,6 +515,12 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
                 SelectedEquipmentSlot.Rpc_Select(connectionToClient);
             }
         }
+    }
+    [Server]
+    public void Svr_DeselectSlot()
+    {
+        SelectedEquipmentSlot?.Rpc_Deselect(connectionToClient);
+        SelectedEquipmentSlot = null;
     }
 
     private IEnumerator SmoothMoveToHands(GameObject newItem)
@@ -549,9 +586,9 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     }
 
     [Server]
-    private void Svr_ClearHotbarSlot()
+    private void Svr_ClearHotbarSlot(EquipmentSlot equipmentSlot)
     {
-        SelectedEquipmentSlot.Svr_RemoveItem();
+        equipmentSlot.Svr_RemoveItem();
     }
 
     [Command]

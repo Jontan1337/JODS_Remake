@@ -6,6 +6,19 @@ using UnityEngine.SceneManagement;
 using Mirror;
 using System;
 
+public struct NetworkBufferItem
+{
+    public MonoBehaviour objectType;
+    public string objectMethod;
+    public object[] args;
+    public NetworkBufferItem(MonoBehaviour objectType, string objectMethod, object[] args)
+    {
+        this.objectType = objectType;
+        this.objectMethod = objectMethod;
+        this.args = args;
+    }
+}
+
 public class Lobby : NetworkManager
 {
     [Header("References")]
