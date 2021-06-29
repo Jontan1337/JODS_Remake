@@ -10,21 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1aa71964c384d5e42a10f844eca6fe11, type: 3}
-  m_Name: Taekwondo
+  m_Name: Doctor
   m_EditorClassIdentifier: 
-  survivorName: Taekwondo
+  survivorName: Doctor
   health: 100
   armor: 0
-  movementSpeed: 1.3
-  abilityCooldown: 20
-  reloadSpeed: 1
-  accuracy: 1
-  ammoCapacity: 1
-  classScript: {fileID: 507536392163164668, guid: fc043e41a9f72684884cc1755ac0f456,
+  movementSpeed: 1
+  abilityCooldown: 5
+  reloadSpeed: 0.8
+  accuracy: 0.8
+  ammoCapacity: 0.8
+  classScript: {fileID: 507536392163164668, guid: 72b6f26d123c1ea44a6ad4d537db32d3,
     type: 3}
   starterWeapon: {fileID: 0}
-  abilityObject: {fileID: 0}
-  survivorMesh: {fileID: 4493585093827132993, guid: e3f7aad19bf755c4da7df960fb56a376,
+  abilityObject: {fileID: 2679961963008141046, guid: 0cdd5d57e053ff54e8caaf2ae30a6c2d,
+    type: 3}
+  survivorMesh: {fileID: -5495902117074765545, guid: c7b8f2d275870694b8beaf344f85cb11,
     type: 3}
   survivorMaterial: {fileID: 2100000, guid: 8f374008d292f71439e18e8caf385f28, type: 2}
   classDescription: This survivor survives
