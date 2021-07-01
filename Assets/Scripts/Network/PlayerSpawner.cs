@@ -37,7 +37,7 @@ public class PlayerSpawner : NetworkBehaviour
                 {
                     if (master.name == _class)
                     {
-                        newPlayerInstance.GetComponent<UnitMaster>().SetMasterClass(master);
+                        newPlayerInstance.GetComponent<UnitMaster>().Rpc_SetMasterClass(_class);
                         break;
                     }
                 }
@@ -57,12 +57,5 @@ public class PlayerSpawner : NetworkBehaviour
         }
 
         //StartCoroutine(IESpawnPlayer(conn, _class, _isMaster));
-    }
-
-    IEnumerator IESpawnPlayer(NetworkConnection conn, string _class, bool _isMaster)
-    {
-        yield return new WaitForSeconds(0.2f);
-
-        
     }
 }
