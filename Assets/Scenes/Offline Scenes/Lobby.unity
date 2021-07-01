@@ -5325,7 +5325,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneId: 3150485311
-  serverOnly: 0
+  serverOnly: 1
   m_AssetId: 
   hasSpawned: 0
 --- !u!850595691 &1011000352
@@ -6039,6 +6039,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 6e02f3f114526574798927bb6afebdfd, type: 2}
   - {fileID: 11400000, guid: 01e3a2fd5de2ca54093550f70bd3b953, type: 2}
   - {fileID: 11400000, guid: 1217c7de04298614a84ebffa22d3814c, type: 2}
+  - {fileID: 11400000, guid: a6c4c8d579e294a4b88b3f2d90be9e20, type: 2}
   masterSOList:
   - {fileID: 11400000, guid: 020c1bd2256b96247a9b702d6910df49, type: 2}
 --- !u!4 &1064583655
@@ -16726,6 +16727,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: Medic
       objectReference: {fileID: 0}
+    - target: {fileID: 9120445677705984807, guid: f485bd871f03f4e4893b6e9f66ebbf94,
+        type: 3}
+      propertyPath: survivor
+      value: 
+      objectReference: {fileID: 11400000, guid: a6c4c8d579e294a4b88b3f2d90be9e20,
+        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f485bd871f03f4e4893b6e9f66ebbf94, type: 3}
 --- !u!1001 &6921113276845031500

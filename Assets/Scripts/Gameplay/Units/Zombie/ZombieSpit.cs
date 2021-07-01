@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class ZombieSpit : UnitProjectile
+public class ZombieSpit : Projectile
 {
     [Header("Spit Visuals")]
     [SerializeField] private GameObject spitBall = null;
@@ -10,15 +10,15 @@ public class ZombieSpit : UnitProjectile
     [SerializeField] private ParticleSystem trailParticles = null;
     [SerializeField] private ParticleSystem[] hitParticles = null;
 
-    public override void OnTriggerEnter(Collider other)
+    public override void OnHit(Collider objectHit)
     {
         if (!piercing && !hasHit)
         {
             hasHit = true;
 
-            Damage(other.gameObject); //Damage the object hit
+            Damage(objectHit.gameObject); //Damage the object hit
 
-            other.GetComponent<StatusEffectManager>()?.ApplyStatusEffect(statusEffectToApply.ApplyEffect(other.gameObject), amount); //apply DOT effect
+            objectHit.GetComponent<StatusEffectManager>()?.ApplyStatusEffect(statusEffectToApply.ApplyEffect(objectHit.gameObject), amount); //apply DOT effect
 
             SpitEffects(); //Apply visual effects
 

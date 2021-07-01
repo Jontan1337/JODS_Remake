@@ -958,7 +958,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
         projectile.transform.SetParent(null);
 
-        UnitProjectile uProjectile = projectile.GetComponent<UnitProjectile>();
+        Projectile uProjectile = projectile.GetComponent<Projectile>();
         uProjectile.damage = ranged.rangedDamage;
         uProjectile.statusEffectToApply = ranged.statusEffectToApply;
         uProjectile.amount = ranged.amount;

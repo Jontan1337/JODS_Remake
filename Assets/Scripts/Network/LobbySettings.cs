@@ -17,11 +17,4 @@ public class LobbySettings : NetworkBehaviour
 
     [SyncVar] public string masterName;
     [SyncVar] public int masterIndex;
-
-    [Server]
-    public void Svr_SetMasterName(string name)
-    {
-        masterName = name;
-    }
-
 }
