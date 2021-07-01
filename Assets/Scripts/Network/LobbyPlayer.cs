@@ -24,6 +24,8 @@ public class LobbyPlayer : NetworkBehaviour
     [SyncVar] public bool hasSelectedACharacter;
     [Space]
     public Color playerColor = Color.red;
+    [Space]
+    [SyncVar] public string masterClass;
 
     [Header("Data")]
     [SyncVar] public int playerID;
@@ -60,12 +62,14 @@ public class LobbyPlayer : NetworkBehaviour
         #endregion
     }
 
-    public override void OnStartServer()
+    [Command]
+    void Cmd_SetMasterName()
     {
-        lobbySettings = LobbySettings.instance;
         MasterSelection ms = MasterSelection.instance;
+        masterClass = ms.GetMasterName;
 
-        lobbySettings.Svr_SetMasterName(ms.GetMasterName);
+        lobbySettings = LobbySettings.instance;
+        lobbySettings.masterName  = ms.GetMasterName;
     }
 
     public override void OnStartClient()
@@ -86,7 +90,7 @@ public class LobbyPlayer : NetworkBehaviour
         {
             if (isServer)
             {
-                
+                Cmd_SetMasterName();
             }
 
             isMe = true;

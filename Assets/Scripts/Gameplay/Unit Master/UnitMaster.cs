@@ -130,8 +130,10 @@ public class UnitMaster : NetworkBehaviour
         }
     }
 
-    public override void OnStartAuthority()
+    public void Initialize()
     {
+        if (!hasAuthority) return;
+
         AddBinds();
 
         //Add (MASTER to end of name)
@@ -298,9 +300,25 @@ public class UnitMaster : NetworkBehaviour
         }
     }
 
-    public void SetMasterClass(UnitMasterSO mClass)
+    [ClientRpc]
+    public void Rpc_SetMasterClass(string _class)
     {
-        masterSO = mClass;
+        List<UnitMasterSO> masterSOList = PlayableCharactersManager.instance.GetAllMasters();
+        print("Rpc_SetSurvivorClass");
+        foreach (UnitMasterSO master in masterSOList)
+        {
+            if (master.name == _class)
+            {
+                print(master.name);
+                SetMasterClass(master);
+                break;
+            }
+        }
+    }
+    public void SetMasterClass(UnitMasterSO masterSO)
+    {
+        this.masterSO = masterSO;
+        Initialize();
     }
 
     #region Normal Mouse

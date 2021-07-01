@@ -335,11 +335,12 @@ public class Lobby : NetworkManager
             }
         }
 
-        StartCoroutine(InvokeOnServerReady(conn, player.isMaster ? MasterSelection.instance.GetMasterName : player.survivorSO.name, player.isMaster));
+        StartCoroutine(InvokeOnServerReady(conn, player.isMaster ? LobbySettings.instance.masterName : player.survivorSO.name, player.isMaster));
     }
 
     private IEnumerator InvokeOnServerReady(NetworkConnection conn, string _class, bool isMaster)
     {
+        Debug.Log($"Readying {conn.identity.name} : class = {_class} : isMaster = " + isMaster);
         yield return new WaitForSeconds(0.2f);
         OnServerReadied?.Invoke(conn, _class, isMaster);
         yield return new WaitForSeconds(0.3f);
