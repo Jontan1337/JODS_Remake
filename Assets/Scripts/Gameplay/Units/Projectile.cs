@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-public abstract class UnitProjectile : NetworkBehaviour
+public abstract class Projectile : NetworkBehaviour
 {
     public int damage = 0;
     public StatusEffectSO statusEffectToApply;
@@ -48,11 +48,13 @@ public abstract class UnitProjectile : NetworkBehaviour
         }
     }
 
-    public virtual void OnTriggerEnter(Collider other)
+    public void OnTriggerEnter(Collider other)
     {
-        Damage(other.gameObject);
-        
+        OnHit(other);        
+    }
 
+    public virtual void OnHit(Collider objectHit)
+    {
         if (!piercing && !hasHit)
         {
             hasHit = true; //Prevents the projectile from hitting multiple times
