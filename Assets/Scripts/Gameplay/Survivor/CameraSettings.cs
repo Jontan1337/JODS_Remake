@@ -8,11 +8,13 @@ public class CameraSettings : MonoBehaviour
     [SerializeField] private List<Camera> playerCameras = null;
     [SerializeField] private UniversalAdditionalCameraData universalCamData;
     [SerializeField] private bool mainCamera;
-    [SerializeField] private float playerCamFOV = 60f;
+    [SerializeField] private float fieldOfView = 60f;
+
+    public float FieldOfView { get => fieldOfView; }
 
     private void OnValidate()
     {
-        SetFOV(playerCamFOV);
+        SetFOV(fieldOfView);
     }
 
     public void SetFOV(float value)
@@ -20,7 +22,7 @@ public class CameraSettings : MonoBehaviour
         //playerCamFOV = value;
         foreach (Camera camera in playerCameras)
         {
-            camera.fieldOfView = playerCamFOV;
+            camera.fieldOfView = value;
         }
     }
 }

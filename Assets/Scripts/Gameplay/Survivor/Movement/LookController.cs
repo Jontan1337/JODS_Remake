@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using DG.Tweening;
 
 public class LookController : NetworkBehaviour
 {
@@ -13,16 +14,18 @@ public class LookController : NetworkBehaviour
 	public float sensitivity;
 	private bool canLook = true;
 	public Camera playerCamera;
-	[SerializeField]
-	private Transform rotateHorizontal = null;
-	[SerializeField]
-	private Transform rotateVertical = null;
+	public Camera playerItemCamera;
+	[SerializeField] private Transform rotateHorizontal = null;
+	[SerializeField] private Transform rotateVertical = null;
+	[SerializeField] private CameraSettings cameraSettings;
+
+	private PlayerEquipment playerEquipment;
 
 	#region NetworkBehaviour Callbacks
 
 	public override void OnStartAuthority()
 	{
-		transform.root.GetComponent<PlayerSetup>().onSpawnItem += GetCamera;
+		transform.root.GetComponent<PlayerSetup>().onSpawnItem += GetInitialItems;
 		Cursor.lockState = CursorLockMode.Locked;
 	}
 	public override void OnStartClient()
@@ -34,7 +37,7 @@ public class LookController : NetworkBehaviour
 	}
 	public override void OnStopAuthority()
 	{
-		transform.root.GetComponent<PlayerSetup>().onSpawnItem -= GetCamera;
+		transform.root.GetComponent<PlayerSetup>().onSpawnItem -= GetInitialItems;
 
 	}
 	public override void OnStopClient()
@@ -72,7 +75,38 @@ public class LookController : NetworkBehaviour
 		canLook = false;
 	}
 
-	private void GetCamera(GameObject item)
+	private float shakeAmount;
+	private void CameraShake(float amount)
+    {
+		shakeAmount = amount;
+		//playerCamera.DOFieldOfView(cameraSettings.FieldOfView + amount, 0.05f).OnComplete(ResetShake);
+		//playerItemCamera.DOFieldOfView(cameraSettings.FieldOfView + amount, 0.05f);
+    }
+	private void ResetShake()
+    {
+		//playerCamera.DOFieldOfView(cameraSettings.FieldOfView - shakeAmount, 0.05f);
+		//playerItemCamera.DOFieldOfView(cameraSettings.FieldOfView - shakeAmount, 0.05f);
+	}
+
+	private void GetImpacter(GameObject oldObject, GameObject newObject)
+    {
+        if (oldObject)
+        {
+            if (oldObject.TryGetComponent(out IImpacter impacter))
+            {
+				impacter.OnImpact -= CameraShake;
+            }
+        }
+        if (newObject)
+        {
+			if (newObject.TryGetComponent(out IImpacter impacter))
+			{
+				impacter.OnImpact += CameraShake;
+			}
+		}
+    }
+
+	private void GetInitialItems(GameObject item)
 	{
 		if (item.TryGetComponent(out ItemName itemName))
 		{
@@ -83,6 +117,12 @@ public class LookController : NetworkBehaviour
 					break;
 				case ItemNames.Camera:
 					playerCamera = item.GetComponent<Camera>();
+					playerItemCamera = item.GetComponentInChildren<Camera>();
+					cameraSettings = playerCamera.GetComponent<CameraSettings>();
+					break;
+				case ItemNames.Equipment:
+					playerEquipment = item.GetComponent<PlayerEquipment>();
+                    playerEquipment.onClientEquippedItemChange += GetImpacter;
 					break;
 				default:
 					break;
