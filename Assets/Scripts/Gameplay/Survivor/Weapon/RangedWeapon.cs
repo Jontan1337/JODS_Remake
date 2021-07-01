@@ -3,9 +3,9 @@ using Mirror;
 using UnityEngine.InputSystem;
 using System.Collections;
 using System;
+using DG.Tweening;
 
-
-public class RangedWeapon : EquipmentItem
+public class RangedWeapon : EquipmentItem, IImpacter
 {
     [Header("Settings")]
     [SerializeField] private LayerMask ignoreLayer;
@@ -26,6 +26,7 @@ public class RangedWeapon : EquipmentItem
 
     [Header("Game details")]
     [SerializeField, SyncVar] private string player = "Player name";
+    [SerializeField] private float recoil = 1f;
 
     [Header("References")]
     [SerializeField] private Animator weaponAnimator = null;
@@ -46,6 +47,13 @@ public class RangedWeapon : EquipmentItem
     private bool canShoot = true;
 
     private int fireModeIndex = 0;
+
+    public Action<float> OnImpact { get; set; }
+
+    private void Awake()
+    {
+        OnImpact += ImpactShake;
+    }
 
     private void OnValidate()
     {
@@ -156,7 +164,6 @@ public class RangedWeapon : EquipmentItem
                 if (currentAmmunition == 0)
                 {
                     Rpc_EmptySFX();
-                    StartCooldown();
                 }
                 return;
             }
@@ -247,8 +254,7 @@ public class RangedWeapon : EquipmentItem
     // Main shoot method.
     private void Shoot()
     {
-
-        Rpc_ShootSFX();
+        Rpc_ShootFX();
         Ray shootRay = new Ray(bulletRayOrigin.position, transform.forward);
         RaycastHit rayHit;
         if (Physics.Raycast(shootRay, out rayHit, range, ~ignoreLayer))
@@ -300,23 +306,32 @@ public class RangedWeapon : EquipmentItem
     #region Clients
 
     [ClientRpc]
-    private void Rpc_ShootSFX()
+    private void Rpc_ShootFX()
     {
         sfxPlayer.PlaySFX(shootSound);
         muzzleParticle.Emit(10);
-        // Implement partyicle efect.
+        if (hasAuthority)
+        {
+            OnImpact?.Invoke(recoil);
+        }
     }
+    private void ImpactShake(float amount)
+    {
+        transform.DOPunchPosition(new Vector3(0f, 0f, -0.1f), 0.1f, 10, 1f);
+        transform.DOPunchRotation(new Vector3(-2f, 0f, 0f), 0.1f, 10, 1f);
+        //transform.DOShakePosition(0.1f, new Vector3(0f, 0f, 100f), 10, 0.02f, false, true);
+        //transform.DOShakeRotation(0.1f, 1, 10, 0.02f);
+    }
+
     [ClientRpc]
     private void Rpc_EmptySFX()
     {
         sfxPlayer.PlaySFX(emptySound);
-        // Implement partyicle efect.
     }
     [ClientRpc]
     private void Rpc_ChangeFireModeSFX()
     {
         sfxPlayer.PlaySFX(emptySound);
-        // Implement partyicle efect.
     }
 
     #endregion
