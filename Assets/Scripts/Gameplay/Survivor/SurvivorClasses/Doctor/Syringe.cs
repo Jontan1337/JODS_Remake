@@ -2,16 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Syringe : MonoBehaviour
+public class Syringe : Projectile
 {
-	private void OnCollisionEnter(Collision collision)
+	public override void OnHit(Collider hit)
 	{
-		
-	}
-
-	private void Heal(Collider hit)
-	{
-		//hit.GetComponent<ActiveSClass>()?.health += 50;  
-
+		hit.transform.root.gameObject.GetComponent<StatusEffectManager>().ApplyStatusEffect(statusEffectToApply.ApplyEffect(hit.transform.root.gameObject));
+		transform.SetParent(hit.transform);
+		base.OnHit(hit);
 	}
 }
