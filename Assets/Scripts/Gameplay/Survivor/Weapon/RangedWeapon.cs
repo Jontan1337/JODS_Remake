@@ -34,6 +34,9 @@ public class RangedWeapon : EquipmentItem, IImpacter
     [SerializeField] private GameObject muzzleFlash = null;
     [SerializeField] private SFXPlayer sfxPlayer = null;
 
+    private const string projectileTag = "Bullet";
+    [SerializeField] private bool useProjectile;
+
     [Header("Audio Settings")]
     [SerializeField] private AudioClip shootSound = null;
     [SerializeField] private AudioClip emptySound = null;
@@ -48,11 +51,21 @@ public class RangedWeapon : EquipmentItem, IImpacter
 
     private int fireModeIndex = 0;
 
+    private Action shootAction;
+
     public Action<float> OnImpact { get; set; }
 
     private void Awake()
     {
         OnImpact += ImpactShake;
+        if (useProjectile)
+        {
+            shootAction += ShootProjectile;
+        }
+        else
+        {
+            shootAction += ShootRay;
+        }
     }
 
     private void OnValidate()
@@ -246,13 +259,15 @@ public class RangedWeapon : EquipmentItem, IImpacter
         canShoot = true;
     }
 
-    private void ShotShell()
+    private void Shoot()
     {
+        shootAction?.Invoke();
 
+        currentAmmunition -= 1;
     }
 
     // Main shoot method.
-    private void Shoot()
+    private void ShootRay()
     {
         Rpc_ShootFX();
         Ray shootRay = new Ray(bulletRayOrigin.position, transform.forward);
@@ -261,8 +276,13 @@ public class RangedWeapon : EquipmentItem, IImpacter
         {
             rayHit.collider.GetComponent<IDamagable>()?.Svr_Damage(damage);
         }
+    }
 
-        currentAmmunition -= 1;
+    private void ShootProjectile()
+    {
+        Rpc_ShootFX();
+        GameObject projectile = ObjectPool.Instance.SpawnFromPool(projectileTag, bulletRayOrigin.position, bulletRayOrigin.rotation, 5f);
+        projectile.GetComponent<Rigidbody>().AddForce(bulletRayOrigin.forward * 50, ForceMode.Impulse);
     }
 
 
@@ -318,7 +338,7 @@ public class RangedWeapon : EquipmentItem, IImpacter
     private void ImpactShake(float amount)
     {
         transform.DOPunchPosition(new Vector3(0f, 0f, -0.1f), 0.1f, 10, 1f);
-        transform.DOPunchRotation(new Vector3(-2f, 0f, 0f), 0.1f, 10, 1f);
+        transform.DOPunchRotation(new Vector3(-2f, 0f, UnityEngine.Random.Range(-10f, 10f)), 0.1f, 10, 1f);
         //transform.DOShakePosition(0.1f, new Vector3(0f, 0f, 100f), 10, 0.02f, false, true);
         //transform.DOShakeRotation(0.1f, 1, 10, 0.02f);
     }
