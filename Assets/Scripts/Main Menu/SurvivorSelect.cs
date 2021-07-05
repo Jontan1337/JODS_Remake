@@ -43,8 +43,6 @@ public class SurvivorSelect : NetworkBehaviour
         }
 
         Select(!selected);
-
-
     }
 
     public bool IsMySelection(int index)
@@ -62,12 +60,14 @@ public class SurvivorSelect : NetworkBehaviour
 
         player.GetComponent<LobbyPlayer>()?.SetSurvivorSO(survivor);
         player.GetComponent<SurvivorSelector>().ChangeCharacter(survivor.name);
-
     }
 
     private void RemovePlayerSurvivorSO(int index)
     {
-        NetworkIdentity.spawned[(uint)index]?.GetComponent<LobbyPlayer>()?.SetSurvivorSO(null);
+        NetworkIdentity player = NetworkIdentity.spawned[(uint)index];
+
+        player?.GetComponent<LobbyPlayer>()?.SetSurvivorSO(null);
+        player?.GetComponent<SurvivorSelector>().ChangeCharacter(null);
     }
 
     private void ShowVisuals(bool oldVal, bool newVal)

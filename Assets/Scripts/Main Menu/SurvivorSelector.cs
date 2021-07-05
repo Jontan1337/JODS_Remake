@@ -99,7 +99,6 @@ public class SurvivorSelector : NetworkBehaviour
         if (!hasAuthority) return;
 
         Cmd_ChangeCharacter(characterName);
-        PlayerPrefs.SetString("Survivor", characterName);
     }
 
     [Command]

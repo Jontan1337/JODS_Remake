@@ -26,6 +26,7 @@ public class LobbyPlayer : NetworkBehaviour
     public Color playerColor = Color.red;
     [Space]
     [SyncVar] public string masterClass;
+    [SyncVar] public int masterIndex;
 
     [Header("Data")]
     [SyncVar] public int playerID;
@@ -36,11 +37,11 @@ public class LobbyPlayer : NetworkBehaviour
     public Camera _lobbyCam;
     public LobbySeat playerSeat;
     private LobbyCharacters lobbyCharacters;
+    private MasterSelection masterSelection;
+    private LobbyPlayer host;
 
     private bool launcherLogin = false;
     private string userName = null;
-
-    private LobbySettings lobbySettings;
 
     private void Awake()
     {
@@ -67,14 +68,11 @@ public class LobbyPlayer : NetworkBehaviour
     {
         MasterSelection ms = MasterSelection.instance;
         masterClass = ms.GetMasterName;
-
-        lobbySettings = LobbySettings.instance;
-        lobbySettings.masterName  = ms.GetMasterName;
+        masterIndex = ms.GetMasterIndex;
     }
 
     public override void OnStartClient()
-    {
-        
+    {        
         lobbyCharacters = GetComponent<LobbyCharacters>();
 
         // Is this the Host
@@ -92,6 +90,14 @@ public class LobbyPlayer : NetworkBehaviour
             {
                 Cmd_SetMasterName();
             }
+            else
+            {
+                GetHost();
+
+                GetAndSetMasterSelection();
+            }
+            
+            MainMenuVisuals.instance.LoadVisual();
 
             isMe = true;
             // Is the player logged in via the launcher
@@ -187,6 +193,31 @@ public class LobbyPlayer : NetworkBehaviour
     public void TogglePreference()
     {
         Cmd_ChangePreference();
+    }
+
+    #endregion
+
+    #region Client only
+
+    void GetHost()
+    {
+        LobbyPlayer[] otherPlayers = FindObjectsOfType<LobbyPlayer>();
+
+        foreach (LobbyPlayer lobbyPlayer in otherPlayers)
+        {
+            if (lobbyPlayer.isHost)
+            {
+                host = lobbyPlayer;
+                print(host.name);
+            }
+        }
+    }
+    void GetAndSetMasterSelection()
+    {
+        masterSelection = MasterSelection.instance;
+
+        masterSelection.SetMasterIndex(host.masterIndex);
+        masterSelection.SetMasterName(host.masterClass);
     }
 
     #endregion
