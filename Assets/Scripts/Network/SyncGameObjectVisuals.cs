@@ -12,8 +12,6 @@ public class SyncGameObjectVisuals : NetworkBehaviour
     [SerializeField] private bool syncParent = false;
     [SerializeField] private bool syncPosition = false;
     [SerializeField] private bool syncRotation = false;
-    [SerializeField] private bool syncVisibility = false;
-    [SerializeField] private Renderer objectRenderer;
 
 
     private void OnTransformParentChanged()

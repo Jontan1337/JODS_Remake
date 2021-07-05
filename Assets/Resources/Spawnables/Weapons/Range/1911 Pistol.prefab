@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3996029152889961128}
-  - component: {fileID: 503795804001173361}
+  - component: {fileID: 4144581666096024672}
   - component: {fileID: 5345695691695145118}
   - component: {fileID: 1806841218464267367}
   - component: {fileID: 2061618532982212390}
@@ -43,7 +43,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &503795804001173361
+--- !u!114 &4144581666096024672
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -52,27 +52,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 85540421233182907}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 43e1c144121ecb7419ed7e7af4e0e499, type: 3}
+  m_Script: {fileID: 11500000, guid: 5a4ff023a987e1243b8016492a9b1431, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  itemName: 1911 P
+  itemName: 1911 Pistol
   equipmentType: 1
   unequippedLayer: 14
   equippedLayer: 15
   isInteractable: 1
-  authController: {fileID: 0}
-  objectVisuals: {fileID: 0}
-  rb: {fileID: 0}
-  outline: {fileID: 0}
-  ignoreLayer:
-    serializedVersion: 2
-    m_Bits: 8192
+  authController: {fileID: 8082692978506899871}
+  objectVisuals: {fileID: 4205471886713475442}
+  rb: {fileID: 1239462214569360422}
+  outline: {fileID: 7710725455544763732}
   damage: 10
-  range: 1000
   fireMode: 0
-  fireModes: 00000000
+  fireModes: 
   burstBulletAmount: 3
   fireRate: 600
   fireInterval: 0.1
@@ -80,15 +76,16 @@ MonoBehaviour:
   currentAmmunition: 10
   maxCurrentAmmunition: 10
   extraAmmunition: 20
-  maxExtraAmmunition: 20
-  player: Player name
-  weaponAnimator: {fileID: 0}
-  bulletRayOrigin: {fileID: 7524927748538246105}
+  recoil: 1
+  shootOrigin: {fileID: 7524927748538246105}
   muzzleFlash: {fileID: 2950831069213408769}
   sfxPlayer: {fileID: 5993857186654271412}
-  shootSound: {fileID: 8300000, guid: 1a8129b372eb6a342acea02d4ed963c5, type: 3}
+  shootSound: {fileID: 8300000, guid: 59033cce093954c4e968552b47b09c6a, type: 3}
   emptySound: {fileID: 8300000, guid: 6e8772b49f34d402a90016ed445d8a2f, type: 3}
-  volume: 1
+  range: 1000
+  ignoreLayer:
+    serializedVersion: 2
+    m_Bits: 13
 --- !u!33 &5345695691695145118
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -233,8 +230,6 @@ MonoBehaviour:
   syncParent: 0
   syncPosition: 0
   syncRotation: 0
-  syncVisibility: 0
-  objectRenderer: {fileID: 0}
 --- !u!114 &7710725455544763732
 MonoBehaviour:
   m_ObjectHideFlags: 0

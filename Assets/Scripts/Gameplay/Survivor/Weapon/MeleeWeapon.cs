@@ -79,8 +79,8 @@ public class MeleeWeapon : EquipmentItem
     [Server]
     public override void Svr_Drop()
     {
-        weaponAnimator.enabled = false;
         animatorEnabled = false;
+        weaponAnimator.enabled = animatorEnabled;
         base.Svr_Drop();
     }
 

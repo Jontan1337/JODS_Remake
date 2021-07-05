@@ -52,7 +52,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 814314852993368252}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 43e1c144121ecb7419ed7e7af4e0e499, type: 3}
+  m_Script: {fileID: 11500000, guid: 5a4ff023a987e1243b8016492a9b1431, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncMode: 0
@@ -66,29 +66,26 @@ MonoBehaviour:
   objectVisuals: {fileID: 2721683097890432565}
   rb: {fileID: 8677567993216096716}
   outline: {fileID: 8677567993216096713}
-  ignoreLayer:
-    serializedVersion: 2
-    m_Bits: 0
-  damage: 30
-  range: 1000
+  damage: 10
   fireMode: 4
   fireModes: 010000000300000004000000
   burstBulletAmount: 3
   fireRate: 600
   fireInterval: 0.1
   bulletsPerShot: 1
-  currentAmmunition: 30
-  maxCurrentAmmunition: 30
-  extraAmmunition: 60
-  maxExtraAmmunition: 60
-  player: Player name
-  weaponAnimator: {fileID: 0}
-  bulletRayOrigin: {fileID: 8677567994327279421}
+  currentAmmunition: 10
+  maxCurrentAmmunition: 10
+  extraAmmunition: 20
+  recoil: 1
+  shootOrigin: {fileID: 8677567994327279421}
   muzzleFlash: {fileID: 1986087315752043727}
   sfxPlayer: {fileID: 8677567993216096715}
-  shootSound: {fileID: 8300000, guid: b569bb42ec9c2cd4b886a69e7a3e1b57, type: 3}
+  shootSound: {fileID: 8300000, guid: 209b5b9f5033ab3448abedb2a7ccbeff, type: 3}
   emptySound: {fileID: 8300000, guid: 6e8772b49f34d402a90016ed445d8a2f, type: 3}
-  volume: 1
+  range: 1000
+  ignoreLayer:
+    serializedVersion: 2
+    m_Bits: 13
 --- !u!114 &8677567993216096715
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1512,8 +1509,6 @@ MonoBehaviour:
   syncParent: 1
   syncPosition: 1
   syncRotation: 1
-  syncVisibility: 1
-  objectRenderer: {fileID: 1401130791084012640}
 --- !u!1 &8677567994327279420
 GameObject:
   m_ObjectHideFlags: 0

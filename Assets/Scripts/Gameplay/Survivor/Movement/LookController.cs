@@ -81,7 +81,7 @@ public class LookController : NetworkBehaviour
 		shakeAmount = amount;
 		//playerCamera.DOFieldOfView(cameraSettings.FieldOfView + amount, 0.05f).OnComplete(ResetShake);
 		//playerItemCamera.DOFieldOfView(cameraSettings.FieldOfView + amount, 0.05f);
-		playerCamera.DOShakeRotation(0.1f, 0.2f, 1, 1f);
+		playerCamera.DOShakeRotation(0.1f, 0.2f, 1, 90f);
     }
 	private void ResetShake()
     {

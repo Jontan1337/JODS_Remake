@@ -247,7 +247,6 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
             //writer.WriteGameObject(equipmentSlotUIPrefab);
             return true;
         }
-        return false;
     }
 
     public override void OnDeserialize(NetworkReader reader, bool initialState)

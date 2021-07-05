@@ -5,42 +5,34 @@ using System.Collections;
 using System;
 using DG.Tweening;
 
-public class RangedWeapon : EquipmentItem, IImpacter
+public abstract class RangedWeapon : EquipmentItem, IImpacter
 {
-    [Header("Settings")]
-    [SerializeField] private LayerMask ignoreLayer;
-
     [Header("Weapon stats")]
-    [SerializeField] private int damage = 10;
-    [SerializeField] private float range = 1000f;
+    [SerializeField] protected int damage = 10;
     [SerializeField] private FireModes fireMode = FireModes.Single;
-    [SerializeField] private FireModes[] fireModes;
+    [SerializeField] private FireModes[] fireModes = null;
     [SerializeField] private int burstBulletAmount = 3;
     [SerializeField] private float fireRate = 600f;
     [SerializeField] private float fireInterval = 0f;
     [SerializeField] private int bulletsPerShot = 1;
-    [SerializeField, SyncVar] private int currentAmmunition = 10;
-    [SerializeField] private int maxCurrentAmmunition = 10;
-    [SerializeField, SyncVar] private int extraAmmunition = 20;
-    [SerializeField] private int maxExtraAmmunition = 20;
+    [SerializeField, SyncVar] protected int currentAmmunition = 10;
+    [SerializeField] protected int maxCurrentAmmunition = 10;
+    [SerializeField, SyncVar] protected int extraAmmunition = 20;
+    //[SerializeField] protected int maxExtraAmmunition = 20;
 
     [Header("Game details")]
-    [SerializeField, SyncVar] private string player = "Player name";
-    [SerializeField] private float recoil = 1f;
+    //[SerializeField, SyncVar] private string player = "Player name";
+    [SerializeField] protected float recoil = 1f;
 
     [Header("References")]
-    [SerializeField] private Animator weaponAnimator = null;
-    [SerializeField] private Transform bulletRayOrigin = null;
+    [SerializeField] protected Transform shootOrigin = null;
     [SerializeField] private GameObject muzzleFlash = null;
     [SerializeField] private SFXPlayer sfxPlayer = null;
 
-    private const string projectileTag = "Bullet";
-    [SerializeField] private bool useProjectile;
 
     [Header("Audio Settings")]
     [SerializeField] private AudioClip shootSound = null;
     [SerializeField] private AudioClip emptySound = null;
-    [SerializeField, Range(0f, 1f)] private float volume = 1f;
 
     private Coroutine COShootLoop;
     private Coroutine COStopShootLoop;
@@ -51,22 +43,7 @@ public class RangedWeapon : EquipmentItem, IImpacter
 
     private int fireModeIndex = 0;
 
-    private Action shootAction;
-
     public Action<float> OnImpact { get; set; }
-
-    private void Awake()
-    {
-        OnImpact += ImpactShake;
-        if (useProjectile)
-        {
-            shootAction += ShootProjectile;
-        }
-        else
-        {
-            shootAction += ShootRay;
-        }
-    }
 
     private void OnValidate()
     {
@@ -93,6 +70,7 @@ public class RangedWeapon : EquipmentItem, IImpacter
         base.Bind();
         JODSInput.Controls.Survivor.Reload.performed += OnReload;
         JODSInput.Controls.Survivor.Changefiremode.performed += OnChangeFireMode;
+        OnImpact += ImpactShake;
     }
     public override void Unbind()
     {
@@ -104,6 +82,7 @@ public class RangedWeapon : EquipmentItem, IImpacter
         base.Unbind();
         JODSInput.Controls.Survivor.Reload.performed -= OnReload;
         JODSInput.Controls.Survivor.Changefiremode.performed -= OnChangeFireMode;
+        OnImpact -= ImpactShake;
     }
 
     protected override void OnLMBPerformed(InputAction.CallbackContext obj)
@@ -259,32 +238,10 @@ public class RangedWeapon : EquipmentItem, IImpacter
         canShoot = true;
     }
 
-    private void Shoot()
+    protected virtual void Shoot()
     {
-        shootAction?.Invoke();
-
         currentAmmunition -= 1;
     }
-
-    // Main shoot method.
-    private void ShootRay()
-    {
-        Rpc_ShootFX();
-        Ray shootRay = new Ray(bulletRayOrigin.position, transform.forward);
-        RaycastHit rayHit;
-        if (Physics.Raycast(shootRay, out rayHit, range, ~ignoreLayer))
-        {
-            rayHit.collider.GetComponent<IDamagable>()?.Svr_Damage(damage);
-        }
-    }
-
-    private void ShootProjectile()
-    {
-        Rpc_ShootFX();
-        GameObject projectile = ObjectPool.Instance.SpawnFromPool(projectileTag, bulletRayOrigin.position, bulletRayOrigin.rotation, 5f);
-        projectile.GetComponent<Rigidbody>().AddForce(bulletRayOrigin.forward * 50, ForceMode.Impulse);
-    }
-
 
     // Later this should be called by a reload animation event.
     [Command]
@@ -326,7 +283,7 @@ public class RangedWeapon : EquipmentItem, IImpacter
     #region Clients
 
     [ClientRpc]
-    private void Rpc_ShootFX()
+    protected void Rpc_ShootFX()
     {
         sfxPlayer.PlaySFX(shootSound);
         muzzleParticle.Emit(10);
@@ -335,21 +292,19 @@ public class RangedWeapon : EquipmentItem, IImpacter
             OnImpact?.Invoke(recoil);
         }
     }
-    private void ImpactShake(float amount)
+    protected void ImpactShake(float amount)
     {
         transform.DOPunchPosition(new Vector3(0f, 0f, -0.1f), 0.1f, 10, 1f);
         transform.DOPunchRotation(new Vector3(-2f, 0f, UnityEngine.Random.Range(-10f, 10f)), 0.1f, 10, 1f);
-        //transform.DOShakePosition(0.1f, new Vector3(0f, 0f, 100f), 10, 0.02f, false, true);
-        //transform.DOShakeRotation(0.1f, 1, 10, 0.02f);
     }
 
     [ClientRpc]
-    private void Rpc_EmptySFX()
+    protected void Rpc_EmptySFX()
     {
         sfxPlayer.PlaySFX(emptySound);
     }
     [ClientRpc]
-    private void Rpc_ChangeFireModeSFX()
+    protected void Rpc_ChangeFireModeSFX()
     {
         sfxPlayer.PlaySFX(emptySound);
     }
