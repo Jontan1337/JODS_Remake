@@ -140,6 +140,8 @@ MonoBehaviour:
   survivorSO: {fileID: 11400000, guid: 01e3a2fd5de2ca54093550f70bd3b953, type: 2}
   hasSelectedACharacter: 0
   playerColor: {r: 1, g: 0, b: 0, a: 1}
+  masterClass: 
+  masterIndex: 0
   playerID: 0
   playerIndexOnServer: 0
   lobbyCamera: {fileID: 0}
@@ -165,6 +167,9 @@ MonoBehaviour:
   light: {fileID: 7036281528284490026}
   nameTag: {fileID: 7797823669808190293}
   characterRenderer: {fileID: 2883081086282330492}
+  defaultMaterial: {fileID: 2100000, guid: 43f27927626f42b45bc5df5566ca6255, type: 2}
+  defaultMesh: {fileID: -5495902117074765545, guid: 7bb1d8c8e3f5af44da90341b57b8640c,
+    type: 3}
 --- !u!114 &7094402608037262178
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5631,7 +5636,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2e656cb10fd80fc4c90d406fde283a56, type: 2}
+  - {fileID: 2100000, guid: 43f27927626f42b45bc5df5566ca6255, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5656,7 +5661,7 @@ SkinnedMeshRenderer:
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
   m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: -5495902117074765545, guid: c7b8f2d275870694b8beaf344f85cb11, type: 3}
+  m_Mesh: {fileID: -5495902117074765545, guid: 7bb1d8c8e3f5af44da90341b57b8640c, type: 3}
   m_Bones:
   - {fileID: 3528597266125078158}
   - {fileID: 6684569767600255602}

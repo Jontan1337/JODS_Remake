@@ -47,7 +47,7 @@ public class UnitMaster : NetworkBehaviour
     [Header("Units")]
     [SerializeField] private List<UnitList> unitList = new List<UnitList>();
     [Space]
-    [SerializeField] private int chosenUnitIndex = 0;
+    [SerializeField, SyncVar] private int chosenUnitIndex = 0;
     [SerializeField] private bool hasChosenAUnit = false;
     [SerializeField] private UnitBase selectedUnit = null;
     [SerializeField] private GameObject unitDestinationMarker = null;
@@ -132,14 +132,16 @@ public class UnitMaster : NetworkBehaviour
 
     public void Initialize()
     {
+        name += $" ({masterSO.masterName})";
+        
+        SetMasterUnits();
+
+
         if (!hasAuthority) return;
 
         AddBinds();
 
-        //Add (MASTER to end of name)
-        name += $" ({masterSO.masterName})";
 
-        SetMasterUnits();
         InitializeUnitButtons();
 
         //Setup the different camera modes
@@ -644,6 +646,7 @@ public class UnitMaster : NetworkBehaviour
 
         //Then choose the new unit
         chosenUnitIndex = indexNum;
+        Cmd_SetChosenUnitIndex(indexNum);
         hasChosenAUnit = true;
         unit.chosen = true;
 
@@ -657,6 +660,12 @@ public class UnitMaster : NetworkBehaviour
             //This will enable the marker for the flying camera, which is mostly a visual aid
             EnableFlyingMarker(true);
         }
+    }
+
+    [Command]
+    void Cmd_SetChosenUnitIndex(int indexNum)
+    {
+        chosenUnitIndex = indexNum;
     }
 
     private void UnchooseUnit()

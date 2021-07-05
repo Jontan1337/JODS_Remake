@@ -14,6 +14,10 @@ public class LobbyCharacters : NetworkBehaviour
     [Space]
     [SerializeField] private SkinnedMeshRenderer characterRenderer = null;
 
+    [Header("Default Character")]
+    [SerializeField] private Material defaultMaterial = null;
+    [SerializeField] private Mesh defaultMesh = null;
+
     private ParticleSystem charSmoke;
 
     private List<SurvivorSO> survivorSOList = new List<SurvivorSO>();
@@ -42,6 +46,12 @@ public class LobbyCharacters : NetworkBehaviour
     [ClientRpc]
     public void Rpc_ChangeCharacter(string survivorName)
     {
+        if (survivorName == null)
+        {
+            ChangeToDefaultCharacter();
+            return;
+        }
+
         foreach(SurvivorSO survivor in survivorSOList)
         {
             if (survivor.name == survivorName)
@@ -51,6 +61,12 @@ public class LobbyCharacters : NetworkBehaviour
                 break;
             }
         }
+    }
+
+    private void ChangeToDefaultCharacter()
+    {
+        characterRenderer.material = defaultMaterial;
+        characterRenderer.sharedMesh = defaultMesh;
     }
 
     [Server]

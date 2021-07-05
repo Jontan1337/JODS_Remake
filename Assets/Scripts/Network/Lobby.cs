@@ -335,7 +335,7 @@ public class Lobby : NetworkManager
             }
         }
 
-        StartCoroutine(InvokeOnServerReady(conn, player.isMaster ? LobbySettings.instance.masterName : player.survivorSO.name, player.isMaster));
+        StartCoroutine(InvokeOnServerReady(conn, player.isMaster ? MasterSelection.instance.GetMasterName : player.survivorSO.name, player.isMaster));
     }
 
     private IEnumerator InvokeOnServerReady(NetworkConnection conn, string _class, bool isMaster)
