@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 public class RocketLauncher : EquipmentItem
 {
 	public GameObject rocket;
-	private int rocketSpeed = 5000;
+	private int rocketSpeed = 500;
 
 	[Command]
 	private void CmdRocketLaunch()

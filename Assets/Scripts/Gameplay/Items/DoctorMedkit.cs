@@ -25,7 +25,7 @@ public class DoctorMedkit : EquipmentItem
 			GameObject newMedKit = Instantiate(medKit, transform.position, transform.rotation);
 			NetworkServer.Spawn(newMedKit);
 			//newMedKit.GetComponent<EquipmentItem>().Svr_Pickup(playerEquipment.playerHands, interacter.GetComponent<NetworkIdentity>().connectionToClient);
-			playerEquipment?.Svr_Equip(newMedKit, EquipmentType.Meds);
+			playerEquipment?.Svr_Equip(newMedKit, EquipmentType.None);
 			uses--;
 		}
 

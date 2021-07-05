@@ -3,9 +3,9 @@ using Mirror;
 using UnityEngine.InputSystem;
 using System.Collections;
 using System;
+using DG.Tweening;
 
-
-public class RangedWeapon : EquipmentItem
+public class RangedWeapon : EquipmentItem, IImpacter
 {
     [Header("Settings")]
     [SerializeField] private LayerMask ignoreLayer;
@@ -26,12 +26,16 @@ public class RangedWeapon : EquipmentItem
 
     [Header("Game details")]
     [SerializeField, SyncVar] private string player = "Player name";
+    [SerializeField] private float recoil = 1f;
 
     [Header("References")]
     [SerializeField] private Animator weaponAnimator = null;
     [SerializeField] private Transform bulletRayOrigin = null;
     [SerializeField] private GameObject muzzleFlash = null;
     [SerializeField] private SFXPlayer sfxPlayer = null;
+
+    private const string projectileTag = "Bullet";
+    [SerializeField] private bool useProjectile;
 
     [Header("Audio Settings")]
     [SerializeField] private AudioClip shootSound = null;
@@ -46,6 +50,23 @@ public class RangedWeapon : EquipmentItem
     private bool canShoot = true;
 
     private int fireModeIndex = 0;
+
+    private Action shootAction;
+
+    public Action<float> OnImpact { get; set; }
+
+    private void Awake()
+    {
+        OnImpact += ImpactShake;
+        if (useProjectile)
+        {
+            shootAction += ShootProjectile;
+        }
+        else
+        {
+            shootAction += ShootRay;
+        }
+    }
 
     private void OnValidate()
     {
@@ -156,7 +177,6 @@ public class RangedWeapon : EquipmentItem
                 if (currentAmmunition == 0)
                 {
                     Rpc_EmptySFX();
-                    StartCooldown();
                 }
                 return;
             }
@@ -239,24 +259,30 @@ public class RangedWeapon : EquipmentItem
         canShoot = true;
     }
 
-    private void ShotShell()
+    private void Shoot()
     {
+        shootAction?.Invoke();
 
+        currentAmmunition -= 1;
     }
 
     // Main shoot method.
-    private void Shoot()
+    private void ShootRay()
     {
-
-        Rpc_ShootSFX();
+        Rpc_ShootFX();
         Ray shootRay = new Ray(bulletRayOrigin.position, transform.forward);
         RaycastHit rayHit;
         if (Physics.Raycast(shootRay, out rayHit, range, ~ignoreLayer))
         {
             rayHit.collider.GetComponent<IDamagable>()?.Svr_Damage(damage);
         }
+    }
 
-        currentAmmunition -= 1;
+    private void ShootProjectile()
+    {
+        Rpc_ShootFX();
+        GameObject projectile = ObjectPool.Instance.SpawnFromPool(projectileTag, bulletRayOrigin.position, bulletRayOrigin.rotation, 5f);
+        projectile.GetComponent<Rigidbody>().AddForce(bulletRayOrigin.forward * 50, ForceMode.Impulse);
     }
 
 
@@ -300,23 +326,32 @@ public class RangedWeapon : EquipmentItem
     #region Clients
 
     [ClientRpc]
-    private void Rpc_ShootSFX()
+    private void Rpc_ShootFX()
     {
         sfxPlayer.PlaySFX(shootSound);
         muzzleParticle.Emit(10);
-        // Implement partyicle efect.
+        if (hasAuthority)
+        {
+            OnImpact?.Invoke(recoil);
+        }
     }
+    private void ImpactShake(float amount)
+    {
+        transform.DOPunchPosition(new Vector3(0f, 0f, -0.1f), 0.1f, 10, 1f);
+        transform.DOPunchRotation(new Vector3(-2f, 0f, UnityEngine.Random.Range(-10f, 10f)), 0.1f, 10, 1f);
+        //transform.DOShakePosition(0.1f, new Vector3(0f, 0f, 100f), 10, 0.02f, false, true);
+        //transform.DOShakeRotation(0.1f, 1, 10, 0.02f);
+    }
+
     [ClientRpc]
     private void Rpc_EmptySFX()
     {
         sfxPlayer.PlaySFX(emptySound);
-        // Implement partyicle efect.
     }
     [ClientRpc]
     private void Rpc_ChangeFireModeSFX()
     {
         sfxPlayer.PlaySFX(emptySound);
-        // Implement partyicle efect.
     }
 
     #endregion

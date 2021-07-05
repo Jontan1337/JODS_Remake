@@ -12,11 +12,11 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     [Space]
     public Transform playerHands;
 
-    [SerializeField]
+    [SerializeField, SyncVar]
     private GameObject itemInHands;
-    [SerializeField]
+    [SerializeField, SyncVar]
     private EquipmentItem equipmentItem;
-    [SerializeField]
+    [SerializeField, SyncVar]
     private EquipmentSlot selectedEquipmentSlot;
     // Maybe change to SyncList?
     [SerializeField]
@@ -44,14 +44,15 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
 
     #region ServerOnly Fields
 
-    public Action<GameObject, GameObject> onServerEquippedItemChange;
     private Action<GameObject> onServerItemPickedUp;
+    public Action<GameObject, GameObject> onServerEquippedItemChange;
 
     #endregion
 
     #region ClientOnly Fields
 
     private Action<GameObject> onClientItemPickedUp; // Not used remove perhaps?
+    public Action<GameObject, GameObject> onClientEquippedItemChange;
 
     #endregion
 
@@ -422,6 +423,12 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     private void Svr_InvokeEquippedItemChange(GameObject oldItem, GameObject newItem)
     {
         onServerEquippedItemChange?.Invoke(oldItem, newItem);
+        Rpc_InvokeEquippedItemChange(connectionToClient, oldItem, newItem);
+    }
+    [TargetRpc]
+    private void Rpc_InvokeEquippedItemChange(NetworkConnection target, GameObject oldItem, GameObject newItem)
+    {
+        onClientEquippedItemChange?.Invoke(oldItem, newItem);
     }
 
     [Server]
