@@ -24,10 +24,19 @@ public class DoctorMedkit : EquipmentItem
 		{
 			GameObject newMedKit = Instantiate(medKit, transform.position, transform.rotation);
 			NetworkServer.Spawn(newMedKit);
-			//newMedKit.GetComponent<EquipmentItem>().Svr_Pickup(playerEquipment.playerHands, interacter.GetComponent<NetworkIdentity>().connectionToClient);
-			playerEquipment?.Svr_Equip(newMedKit, EquipmentType.None);
+			playerEquipment?.Svr_Equip(newMedKit, EquipmentType.Meds);
 			uses--;
-		}
+			if (uses == 0)
+			{
+				Svr_DestroyGameObject();
 
+			}
+		}
+	}
+
+	[Server]
+	private void Svr_DestroyGameObject()
+	{
+		NetworkServer.Destroy(gameObject);
 	}
 }

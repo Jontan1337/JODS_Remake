@@ -166,7 +166,11 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 			armor -= Mathf.RoundToInt(damage * 0.6f);
 			armor = Mathf.Clamp(armor, 0, 100);
 		}
-		else health -= damage;
+		else
+		{
+			health -= damage;
+		}
+		health = Mathf.Clamp(health, 0, 100);
 		if (health <= 0)
 		{
 			isDead = true;

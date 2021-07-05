@@ -33,7 +33,6 @@ public class Medkit : EquipmentItem
 	{
 		Unbind();
 		Cmd_InvokeOnDrop();
-		//Invoke(nameof(Cmd_DestroyGameObject), 0.01f);
 		Cmd_DestroyGameObject();
 	}
 
