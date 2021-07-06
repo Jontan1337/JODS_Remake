@@ -18,9 +18,9 @@ public struct DynamicItem {
     public GameObject prefab;
     public Vector3 position;
     [Tooltip("Choose how the item should spawn. " +
-            "\nLocal: Called on server only." +
-            "\nClientRPC: Called on all clients." +
-            "\nTargetRPC: Called on the player that owns this object.")] public ActiveType activeType;
+            "\nOnlyLocal: Only active on the player that owns this object." +
+            "\nOnlyOthers: Active on everyone except this player." +
+            "\nAll: Active on all clients.")] public ActiveType activeType;
     public List<DynamicItem> children;
 }
 

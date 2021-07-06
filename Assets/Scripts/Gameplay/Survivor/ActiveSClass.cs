@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ActiveSClass : NetworkBehaviour, IDamagable
 {
@@ -12,7 +13,8 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	[SerializeField] private SkinnedMeshRenderer survivorRenderer = null;
 	[Space]
 	[Header("Stats")]
-	[SerializeField] public int health = 100;
+	[SerializeField] private int health = 100;
+	[SerializeField] private int maxHealth = 100;
 	[SerializeField] private int armor = 0;
 	[SerializeField] private float abilityCooldown = 0;
 	[SerializeField] private float abilityCooldownCount = 0;
@@ -24,10 +26,27 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	[SerializeField] private float accuracy = 0;
 	[SerializeField] private float ammoCapacity = 0;
 
+	[Header("Weapon Stats")]
+	[SerializeField] private Transform healthBar;
+
 	private bool abilityIsReady = true;
 	private bool isDead;
 
 	public bool test;
+
+	public int GetHealth => health;
+	public bool IsDead => isDead;
+	public int Health
+    {
+		get => health;
+		private set
+        {
+			float difference = (float)health - value;
+			float diffPercentOfHealth = difference / 100 / ((float)maxHealth / 100);
+			healthBar.localScale = new Vector3(healthBar.localScale.x - diffPercentOfHealth, healthBar.localScale.y);
+			health = value;
+        }
+    }
 
 	#region Serialization
 	//public override bool OnSerialize(NetworkWriter writer, bool initialState)
@@ -54,8 +73,6 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	//	}
 	//}
 	#endregion
-
-
 
 	public override void OnStartAuthority()
 	{
@@ -124,6 +141,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 
 		armor = survivorSO.armor;
 		health = survivorSO.health;
+		maxHealth = health;
 		accuracy = survivorSO.accuracy;
 		reloadSpeed = survivorSO.reloadSpeed;
 		ammoCapacity = survivorSO.ammoCapacity;
@@ -162,16 +180,16 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	{
 		if (armor > 0)
 		{
-			health -= Mathf.RoundToInt(damage * 0.4f);
+			Health -= Mathf.RoundToInt(damage * 0.4f);
 			armor -= Mathf.RoundToInt(damage * 0.6f);
 			armor = Mathf.Clamp(armor, 0, 100);
 		}
 		else
 		{
-			health -= damage;
+			Health -= damage;
 		}
-		health = Mathf.Clamp(health, 0, 100);
-		if (health <= 0)
+		Health = Mathf.Clamp(Health, 0, maxHealth);
+		if (Health <= 0)
 		{
 			isDead = true;
 			Die();
@@ -187,8 +205,4 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	{
 		NetworkServer.Destroy(gameObject);
 	}
-
-	public int GetHealth() => health;
-
-	public bool IsDead() => isDead;
 }
