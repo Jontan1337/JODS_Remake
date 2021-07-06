@@ -7,17 +7,15 @@ using System.Collections;
 public class LobbyPlayer : NetworkBehaviour
 {
     public bool isMe;
+    [SyncVar] public bool isHost = false;
     [Space]
     [SyncVar] public bool isMaster;
     [SyncVar] public bool wantsToBeMaster;
-    [SyncVar] public bool isHost = false;
+    [Space]
+    [SyncVar(hook = nameof(EnableReadyMarker))] public bool isReady = false;
 
     [SyncVar(hook = nameof(ChangeName))] private string playerName;
     public string PlayerName => playerName;
-
-
-    [SyncVar] public bool gameOn;
-    [SyncVar] public bool setupInGameScene;
 
     [Header("Character")]
     public SurvivorSO survivorSO = null;
@@ -39,6 +37,7 @@ public class LobbyPlayer : NetworkBehaviour
     private LobbyCharacters lobbyCharacters;
     private MasterSelection masterSelection;
     private LobbyPlayer host;
+    [SerializeField] private GameObject readyMark = null;
 
     private bool launcherLogin = false;
     private string userName = null;
@@ -46,7 +45,7 @@ public class LobbyPlayer : NetworkBehaviour
     private void Awake()
     {
         DontDestroyOnLoad(this);
-
+        readyMark.SetActive(false);
 
         #region Environment setup
         if (Environment.GetCommandLineArgs().Length > 1)
@@ -114,10 +113,13 @@ public class LobbyPlayer : NetworkBehaviour
 
             Cmd_ChangeName(newName);
 
+            name += " (ME)"; //This just makes it easier to identify yourself in the editor inspector.
+
             SurvivorSelection.instance.LoadSelection();
 
             GetMasterToggle();
 
+            GetReadyButton();
         }
     }
 
@@ -150,9 +152,43 @@ public class LobbyPlayer : NetworkBehaviour
         lobbyCharacters.Svr_GetChoice(wantsToBeMaster);
     }
 
+    #region Ready
+    void GetReadyButton()
+    {
+        Button toggle = Lobby.Instance.readyToggle;
+        if (toggle == null)
+        {
+            Debug.LogError("ReadyToggle was not found. Is the reference set? (On Lobby Manager)");
+            return;
+        }
+        toggle.onClick.AddListener(SetReady);
+    }
+
+    void SetReady()
+    {
+        Cmd_SetReady(!isReady);
+    }
+
+    [Command]
+    public void Cmd_SetReady(bool ready)
+    {
+        isReady = ready;
+
+        //Tell the server to check if everyone is ready.
+        //If everyone is ready, then a countdown to begin the game will start.
+        Lobby.Instance.ReadyCheck();
+    }
+
+    void EnableReadyMarker(bool oldVal, bool newVal)
+    {
+        readyMark.SetActive(newVal);
+    }
+
+    #endregion
+
     #region ChangeName
 
-    
+
     public void ChangeName(string old,string newName)
     {
         if (!isServer)
@@ -184,7 +220,7 @@ public class LobbyPlayer : NetworkBehaviour
         Button toggle = Lobby.Instance.masterToggle;
         if (toggle == null)
         {
-            Debug.LogError("MasterToggle was not found. Is the reference set? (On Lobby)");
+            Debug.LogError("MasterToggle was not found. Is the reference set? (On Lobby Manager)");
             return;
         }
         toggle.onClick.AddListener(TogglePreference);
@@ -221,4 +257,6 @@ public class LobbyPlayer : NetworkBehaviour
     }
 
     #endregion
+
+
 }

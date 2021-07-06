@@ -23,17 +23,27 @@ public class Lobby : NetworkManager
 {
     [Header("References")]
     public Transform matchListContent;
+    [Space]
     public InputField matchNameInputField;
     public InputField ipAddressInputField;
-    public GameObject startButton;
-    public GameObject disconnectButton;
+    [Space]
     public GameObject MMPanel;
     public GameObject LobbyPanel;
     public GameObject MainMenuPanel;
     public GameObject mainCamera;
+    [Space]
     public LobbySeat[] playerSeats;
-    public GameObject loadingScreen;
-    public Button masterToggle;
+    [Space]
+    public Button masterToggle; //This is used by other scripts
+    public Button readyToggle; //This is used by other scripts
+    [SerializeField] private GameObject survivorSelectionButton = null;
+    [SerializeField] private GameObject disconnectButton = null;
+    [Space]
+    [SerializeField] private LobbyCountdown countdown = null;
+    [Space]
+    [SerializeField] private LobbyFade lobbyFade = null;
+    [SerializeField] private float fadeTime = 3f;
+
     [Header("Prefabs")]
     public GameObject playerSpawner;
     public GameObject MatchManager;
@@ -46,7 +56,7 @@ public class Lobby : NetworkManager
     public MatchListing MatchListing;
     [Scene] public string gameplayScene;
 
-    //private bool quickJoin = false;
+    [Space]
     public bool mustHaveMaster;
 
     private bool isInitialized = false;
@@ -80,8 +90,6 @@ public class Lobby : NetworkManager
         MMPanel.SetActive(false);
         LobbyPanel.SetActive(false);
         MainMenuPanel.SetActive(true);
-        DontDestroyOnLoad(loadingScreen);
-        loadingScreen.SetActive(false);
     }
     //Match list join
     public void MMJoinMatch(Uri uri)
@@ -137,12 +145,6 @@ public class Lobby : NetworkManager
             return;
         }
 
-        // Is the connection id 0 (host).
-        if (conn.connectionId == 0)
-        {
-            startButton.SetActive(true);
-        }
-
         base.OnServerConnect(conn);
     }
 
@@ -170,6 +172,8 @@ public class Lobby : NetworkManager
         // doesn't increment relative to player count.
         //LobbySync.Instance.Svr_AddPlayerLabel(Instance.roomPlayers.Count - 1);
         LobbySync.Instance.Svr_AddPlayer(Instance.roomPlayers.Count - 1);
+
+        ReadyCheck();
     }
 
     // Called on server when anyone disconnects.
@@ -198,16 +202,9 @@ public class Lobby : NetworkManager
 
     public override void OnClientSceneChanged(NetworkConnection conn)
     {
-        loadingScreen.SetActive(false);
+        LoadingScreenManager.Instance.ShowLoadingScreen(false);
 
         base.OnClientSceneChanged(conn);
-    }
-
-    public override void OnServerChangeScene(string newSceneName)
-    {
-        loadingScreen.SetActive(true);
-
-        base.OnServerChangeScene(newSceneName);
     }
 
     public override void OnServerError(NetworkConnection conn, int errorCode)
@@ -230,7 +227,6 @@ public class Lobby : NetworkManager
             //}
             MatchListing.StopDiscovery();
             Shutdown();
-            print("Shutdown");
         }
         else
         {
@@ -241,8 +237,6 @@ public class Lobby : NetworkManager
     public override void OnStopServer()
     {
         base.OnStopServer();
-
-        print("OnStopServer");
 
         Destroy(LobbySync.Instance.gameObject);
         Destroy(gameObject);
@@ -255,9 +249,31 @@ public class Lobby : NetworkManager
         Shutdown();
     }
 
-    public void StartGame()
+    public IEnumerator StartGame()
+    {
+        PickMaster();
+
+        AssignSurvivors();
+
+        yield return new WaitForSeconds(1);
+
+        lobbyFade.BeginFade(fadeTime);
+
+        yield return new WaitForSeconds(fadeTime + 1);
+
+        SwitchScene();
+    }
+
+    void SwitchScene()
+    {
+        LoadingScreenManager.Instance.Svr_ShowLoadingScreen(true);
+        ServerChangeScene(gameplayScene);
+    }
+
+    void PickMaster()
     {
         List<GameObject> masters = new List<GameObject>();
+
         //Pick a random player (who wants to be master) to become master
         foreach (var p in Instance.roomPlayers)
         {
@@ -283,36 +299,73 @@ public class Lobby : NetworkManager
                 }
             }
         }
-        foreach(var m in masters) { print(m); }
+
         // PICK RANDOM PLAYER TO BECOME MASTER (FROM THE MASTERS LIST)
         if (masters.Count != 0)
         {
-            PickMaster(masters[UnityEngine.Random.Range(0, masters.Count)]);
+            GameObject who = masters[UnityEngine.Random.Range(0, masters.Count)];
+
+            //Make player the master
+            who.GetComponent<LobbyPlayer>().isMaster = true;
+
+            //Change their name
+            who.name = who.name + " (Master)";
         }
-        startButton.SetActive(false);
-        Invoke(nameof(SwitchScene), 1f);
+
+
     }
 
-    void SwitchScene()
+    void AssignSurvivors()
     {
-        ServerChangeScene(gameplayScene);
+        Debug.Log("TODO: AssignSurvivors. \n Make a list of all players in a random order, then assign their survivors.");
+        Debug.Log("Players who have not chosen any survivor will be at the bottom of the list, and will be assigned a random non-picked survivor.");
     }
 
-    void PickMaster(GameObject who)
+    #region Ready System
+
+    public void ReadyCheck()
     {
-        //Make player the master
-        who.GetComponent<LobbyPlayer>().isMaster = true;
-        Debug.Log(who.name + " has been chosen as the master");
-        //Change his name
-        who.name = who.name + " (Master)";
+        //Check if everyone is ready
+        if (IsEveryoneReady())
+        {
+            countdown.StartCountdown();
+        }
+        else
+        {
+            countdown.StopCountdown();
+        }
+    }
+    private bool IsEveryoneReady()
+    {
+        //Iterate through each player and check if they have readied up.
+        foreach (LobbyPlayer lobbyPlayer in roomPlayers)
+        {
+            print(lobbyPlayer);
+            //If a player has not readied up, return false.
+            if (!lobbyPlayer.isReady) return false;
+        }
+        //If all are ready, return true.
+        return true;
     }
 
-    // TODO: Implement.
-    //public void QuickJoin()
-    //{
-    //    quickJoin = true;
-    //    MatchList();
-    //}
+    public void ServerCountdownCompleted()
+    {
+        StartCoroutine(StartGame());
+    }
+
+    public void ClientCountdownCompleted()
+    {
+        //Disable the ready button for everyone
+        readyToggle.gameObject.SetActive(false);
+        //Disable the master toggle for everyone
+        masterToggle.gameObject.SetActive(false);
+        //Disable the survivor selection button for everyone
+        survivorSelectionButton.gameObject.SetActive(false);
+        //Disable the disconnect button for everyone
+        disconnectButton.SetActive(false);
+    }
+
+    #endregion
 
     #region New
 
