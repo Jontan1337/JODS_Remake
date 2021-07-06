@@ -48,8 +48,6 @@ public class MeleeWeapon : EquipmentItem
     private const string AttackTrigger = "Attack";
     private const string BloodAmount = "_BloodAmount";
 
-    public Collider testCol;
-
     public float SplatterAmount
     {
         get => splatterAmount;
@@ -195,7 +193,6 @@ public class MeleeWeapon : EquipmentItem
     [ClientRpc]
     private void Rpc_Detach(GameObject part)
     {
-        //GameObject objectPart = NetworkIdentity.spawned[id].gameObject;
         if (part.TryGetComponent(out IDetachable detachable))
         {
             detachable.Detach(damageType);
@@ -251,13 +248,4 @@ public class MeleeWeapon : EquipmentItem
     }
 
     #endregion
-
-    private void OnDrawGizmosSelected()
-    {
-        if (testCol != null)
-        {
-            Vector3 vec3 = new Vector3(transform.position.x, transform.position.y, transform.position.z + col.bounds.size.z / 1.5f);
-            Debug.DrawLine(vec3, testCol.ClosestPoint(vec3));
-        }
-    }
 }

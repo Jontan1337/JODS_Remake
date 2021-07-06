@@ -121,7 +121,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7975996375599606865}
-  - component: {fileID: 3282980378501304356}
+  - component: {fileID: 9067807588292461614}
   - component: {fileID: 7884664084252250766}
   - component: {fileID: 6558930254057764929}
   - component: {fileID: 708324484507987019}
@@ -156,7 +156,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3282980378501304356
+--- !u!114 &9067807588292461614
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -165,43 +165,40 @@ MonoBehaviour:
   m_GameObject: {fileID: 6407276093970849346}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 43e1c144121ecb7419ed7e7af4e0e499, type: 3}
+  m_Script: {fileID: 11500000, guid: 5a4ff023a987e1243b8016492a9b1431, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  itemName: AA-12
+  itemName: Item name
   equipmentType: 1
   unequippedLayer: 14
   equippedLayer: 15
   isInteractable: 1
-  authController: {fileID: 0}
-  objectVisuals: {fileID: 0}
-  rb: {fileID: 0}
-  outline: {fileID: 0}
-  ignoreLayer:
-    serializedVersion: 2
-    m_Bits: 8192
-  damage: 8
-  range: 1000
+  authController: {fileID: 4154279188608874658}
+  objectVisuals: {fileID: 3340783163131840089}
+  rb: {fileID: 708324484507987019}
+  outline: {fileID: 2345228393594716439}
+  damage: 10
   fireMode: 2
   fireModes: 02000000
   burstBulletAmount: 3
-  fireRate: 300
-  fireInterval: 0.2
-  bulletsPerShot: 5
-  currentAmmunition: 12
-  maxCurrentAmmunition: 12
-  extraAmmunition: 48
-  maxExtraAmmunition: 20
-  player: Player name
-  weaponAnimator: {fileID: 0}
-  bulletRayOrigin: {fileID: 7403599430842215513}
+  fireRate: 600
+  fireInterval: 0.1
+  bulletsPerShot: 1
+  currentAmmunition: 10
+  maxCurrentAmmunition: 10
+  extraAmmunition: 20
+  recoil: 2
+  shootOrigin: {fileID: 7403599430842215513}
   muzzleFlash: {fileID: 9078682435858770314}
   sfxPlayer: {fileID: 4005420340618086769}
   shootSound: {fileID: 8300000, guid: 97993f933f24ef84188d173b66a2e596, type: 3}
   emptySound: {fileID: 8300000, guid: 6e8772b49f34d402a90016ed445d8a2f, type: 3}
-  volume: 1
+  range: 1000
+  ignoreLayer:
+    serializedVersion: 2
+    m_Bits: 13
 --- !u!114 &7884664084252250766
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -260,8 +257,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 0.2, y: 0.3, z: 0.8}
+  m_Center: {x: 0, y: 0, z: 0.05}
 --- !u!114 &4154279188608874658
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -297,8 +294,6 @@ MonoBehaviour:
   syncParent: 0
   syncPosition: 0
   syncRotation: 0
-  syncVisibility: 0
-  objectRenderer: {fileID: 0}
 --- !u!114 &2345228393594716439
 MonoBehaviour:
   m_ObjectHideFlags: 0

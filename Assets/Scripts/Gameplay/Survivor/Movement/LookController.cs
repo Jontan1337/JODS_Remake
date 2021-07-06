@@ -75,19 +75,10 @@ public class LookController : NetworkBehaviour
 		canLook = false;
 	}
 
-	private float shakeAmount;
 	private void CameraShake(float amount)
     {
-		shakeAmount = amount;
-		//playerCamera.DOFieldOfView(cameraSettings.FieldOfView + amount, 0.05f).OnComplete(ResetShake);
-		//playerItemCamera.DOFieldOfView(cameraSettings.FieldOfView + amount, 0.05f);
-		playerCamera.DOShakeRotation(0.1f, 0.2f, 1, 90f);
+		//playerCamera.DOShakeRotation(0.1f, 0.2f, 1, 90f);
     }
-	private void ResetShake()
-    {
-		//playerCamera.DOFieldOfView(cameraSettings.FieldOfView - shakeAmount, 0.05f);
-		//playerItemCamera.DOFieldOfView(cameraSettings.FieldOfView - shakeAmount, 0.05f);
-	}
 
 	private void GetImpacter(GameObject oldObject, GameObject newObject)
     {

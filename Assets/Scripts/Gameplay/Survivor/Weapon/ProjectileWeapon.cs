@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ProjectileWeapon : RangedWeapon
 {
+    [Header("Projectile Settings")]
     [SerializeField] private int projectileSpeed = 30;
     [SerializeField] private float timeToLive = 5f;
     [SerializeField] private string projectileTag = "Bullet";

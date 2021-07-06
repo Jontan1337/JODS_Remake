@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 6684747236854656919}
   - component: {fileID: 1062048407519519742}
   - component: {fileID: 7670592048999142384}
-  - component: {fileID: 6746553116915813524}
+  - component: {fileID: 2473641767622227848}
   - component: {fileID: 608700618524033809}
   - component: {fileID: 4609404701648697094}
   - component: {fileID: 4923435655667672491}
@@ -76,6 +76,7 @@ MonoBehaviour:
   damage: 30
   damageType: 0
   attackInterval: 0.2
+  slashPower: 2
   splatterAmount: 0
   maxSplatterAmount: 0.35
   splatterAmountOnHit: 0.04
@@ -218,7 +219,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.030275524, y: 0.95341665, z: 0.1225792}
   m_Center: {x: 0.000000008381903, y: 0.357945, z: -0.0243662}
---- !u!65 &6746553116915813524
+--- !u!65 &2473641767622227848
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -792,8 +793,6 @@ MonoBehaviour:
   syncParent: 1
   syncPosition: 1
   syncRotation: 1
-  syncVisibility: 0
-  objectRenderer: {fileID: 6484964077650548063}
 --- !u!114 &3598007620588689026
 MonoBehaviour:
   m_ObjectHideFlags: 0
