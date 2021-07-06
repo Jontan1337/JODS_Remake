@@ -12,7 +12,7 @@ public class LobbyPlayer : NetworkBehaviour
     [SyncVar] public bool isMaster;
     [SyncVar] public bool wantsToBeMaster;
     [Space]
-    [SyncVar] public bool isReady = false;
+    [SyncVar(hook = nameof(EnableReadyMarker))] public bool isReady = false;
 
     [SyncVar(hook = nameof(ChangeName))] private string playerName;
     public string PlayerName => playerName;
@@ -37,6 +37,7 @@ public class LobbyPlayer : NetworkBehaviour
     private LobbyCharacters lobbyCharacters;
     private MasterSelection masterSelection;
     private LobbyPlayer host;
+    [SerializeField] private GameObject readyMark = null;
 
     private bool launcherLogin = false;
     private string userName = null;
@@ -44,7 +45,7 @@ public class LobbyPlayer : NetworkBehaviour
     private void Awake()
     {
         DontDestroyOnLoad(this);
-
+        readyMark.SetActive(false);
 
         #region Environment setup
         if (Environment.GetCommandLineArgs().Length > 1)
@@ -177,6 +178,12 @@ public class LobbyPlayer : NetworkBehaviour
         //If everyone is ready, then a countdown to begin the game will start.
         Lobby.Instance.ReadyCheck();
     }
+
+    void EnableReadyMarker(bool oldVal, bool newVal)
+    {
+        readyMark.SetActive(newVal);
+    }
+
     #endregion
 
     #region ChangeName
