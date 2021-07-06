@@ -51,8 +51,8 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 
     public LayerMask zombiePartLayer = 0;
 
-
-    // -- LOCAL PLAYER METHODS --
+    public int GetHealth => health;
+    public bool IsDead => isDead;
 
     public int Health { get => health; private set => health = value; }
     public int MaxHealth { get => maxHealth; private set => maxHealth = value; }
@@ -314,10 +314,5 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
             Gizmos.DrawWireSphere(transform.position, explosionRadius);
         }
     }
-
-    public int GetHealth() => health;
-
-    public bool IsDead() => isDead;
-
 	#endregion
 }

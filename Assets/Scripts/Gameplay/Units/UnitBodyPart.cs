@@ -27,6 +27,9 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEff
     public GameObject childBloodEmitter;
     public GameObject bodyBloodEmitter;
 
+    public int GetHealth => unitBase.Health;
+    public bool IsDead => unitBase.isDead;
+
     #endregion
 
 
@@ -52,16 +55,6 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEff
     {
         unitBase.Svr_Damage(Mathf.RoundToInt(damage * multiplier), target);
     }
-
-	int IDamagable.GetHealth()
-	{
-        return unitBase.GetHealth();
-	}
-
-	bool IDamagable.IsDead()
-	{
-        return unitBase.IsDead();
-	}
 
 	void Start()
     {

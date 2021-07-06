@@ -267,6 +267,9 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     #endregion
 
+    public int GetHealth => health;
+    public bool IsDead => isDead;
+
     #endregion
 
     #region Start / Initial
@@ -818,7 +821,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
             if (currentTarget.TryGetComponent(out IDamagable idmg))
             {
-                if (idmg.IsDead())
+                if (idmg.IsDead)
                 {
                     LoseTarget();
                 }
@@ -1044,7 +1047,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     [Server]
     public bool Svr_Dismember(DamageTypes damageType, GameObject oldPart, Vector3 partPosition, Quaternion partRotation)
     {
-        if (IsDead()) { 
+        if (IsDead) { 
             switch (damageType)
             {
                 case DamageTypes.Blunt:
@@ -1400,16 +1403,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         Health -= damage;
 
         animator.SetTrigger("Hit");
-    }
-
-    public int GetHealth()
-    {
-        return Health;
-    }
-
-    public bool IsDead()
-    {
-        return isDead;
     }
 
     #endregion

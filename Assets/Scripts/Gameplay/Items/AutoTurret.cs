@@ -142,7 +142,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		didHit.GetComponent<IDamagable>()?.Svr_Damage(damage, transform);
 
 		// If the target is dead after the shot, the target is lost.
-		if (target.GetComponent<IDamagable>().IsDead())
+		if (target.GetComponent<IDamagable>().IsDead)
 		{
 			Svr_LostTarget();
 		}
@@ -377,7 +377,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	[Server]
 	public void Svr_Damage(int damage, Transform target = null)
 	{
-		if (IsDead()) return;
+		if (IsDead) return;
 		health -= damage;
 		if (health <= 0)
 		{
@@ -386,12 +386,8 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		}
 	}
 
-	public int GetHealth()
-	{
-		throw new System.NotImplementedException();
-	}
-
-	public bool IsDead() => isDead;
+	public int GetHealth => health;
+	public bool IsDead => isDead;
 
 
 
