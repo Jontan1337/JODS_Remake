@@ -1658,6 +1658,7 @@ GameObject:
   - component: {fileID: 341159186}
   - component: {fileID: 341159185}
   - component: {fileID: 341159187}
+  - component: {fileID: 341159188}
   m_Layer: 0
   m_Name: Lobby Countdown
   m_TagString: Untagged
@@ -1680,9 +1681,9 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   countdownIsActive: 0
-  countdownDuration: 5
+  countdownDuration: 0
   countdownText: {fileID: 183202593}
-  countdownSound: {fileID: 0}
+  countdownSound: {fileID: 8300000, guid: 32d4b1811dda14a6cb9e059ee8ad17d2, type: 3}
 --- !u!4 &341159186
 Transform:
   m_ObjectHideFlags: 0
@@ -1713,6 +1714,102 @@ MonoBehaviour:
   serverOnly: 0
   m_AssetId: 
   hasSpawned: 0
+--- !u!82 &341159188
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 341159184}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &348546113
 GameObject:
   m_ObjectHideFlags: 0
@@ -18808,6 +18905,8 @@ MonoBehaviour:
   lobbyFade: {fileID: 1745276553}
   fadeTime: 2
   playerSpawner: {fileID: 5901868888868006191, guid: beb0addc19fd1164292abe6eec0ee73c,
+    type: 3}
+  preGameRoom: {fileID: 5048213772917307544, guid: 5ba49680bfe199a48ae5cd1b438a1442,
     type: 3}
   MatchManager: {fileID: 2738986692823353731, guid: f3eedd9e42a3eef4f9b80f3e04a3efa6,
     type: 3}

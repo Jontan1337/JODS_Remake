@@ -46,6 +46,7 @@ public class Lobby : NetworkManager
 
     [Header("Prefabs")]
     public GameObject playerSpawner;
+    public GameObject preGameRoom;
     public GameObject MatchManager;
     public GameObject lobbyPlayer;
     public GameObject GOLobbySync;
@@ -124,10 +125,7 @@ public class Lobby : NetworkManager
         EnterLobby();
     }
     #endregion
-    private void EnterLobby()
-    {
-        MenuCamera.instance.ChangePosition("Lobby");
-    }
+
        
     public override void OnServerConnect(NetworkConnection conn)
     {
@@ -193,8 +191,16 @@ public class Lobby : NetworkManager
 
     public override void OnServerSceneChanged(string sceneName)
     {
+        //This happens on the server
+
         if (SceneManager.GetActiveScene().path == gameplayScene)
         {
+            //Spawn the Pre Game Waiting Room
+            GameObject preGameInstance = Instantiate(preGameRoom);
+            preGameInstance.GetComponent<PreGameWaitingRoom>().playersToWaitFor = roomPlayers.Count;
+            NetworkServer.Spawn(preGameInstance);
+
+            //Spawn the Player Spawner
             GameObject playerSpawnerInstance = Instantiate(playerSpawner);
             NetworkServer.Spawn(playerSpawnerInstance);
         }
@@ -202,7 +208,13 @@ public class Lobby : NetworkManager
 
     public override void OnClientSceneChanged(NetworkConnection conn)
     {
+        //This happens locally on the client
+
+        //Disable the loading screen for this client
         LoadingScreenManager.Instance.ShowLoadingScreen(false);
+
+        //Tell the server that this client has finished loading the gameplay scene.
+        PreGameWaitingRoom.Instance.SpawnPreGamePlayer(conn.identity.GetComponent<LobbyPlayer>().PlayerName);
 
         base.OnClientSceneChanged(conn);
     }
@@ -247,6 +259,21 @@ public class Lobby : NetworkManager
         base.OnDestroy();
 
         Shutdown();
+    }
+
+    #region Gameplay Scene specific
+
+    public void AllPlayersHaveLoaded()
+    {
+        print("BOM");
+    }
+
+    #endregion
+
+    #region Lobby specific
+    private void EnterLobby()
+    {
+        MenuCamera.instance.ChangePosition("Lobby");
     }
 
     public IEnumerator StartGame()
@@ -320,6 +347,8 @@ public class Lobby : NetworkManager
         Debug.Log("TODO: AssignSurvivors. \n Make a list of all players in a random order, then assign their survivors.");
         Debug.Log("Players who have not chosen any survivor will be at the bottom of the list, and will be assigned a random non-picked survivor.");
     }
+
+    #endregion
 
     #region Ready System
 

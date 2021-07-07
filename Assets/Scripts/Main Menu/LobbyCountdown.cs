@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Mirror;
 
+[RequireComponent(typeof(AudioSource))]
 public class LobbyCountdown : NetworkBehaviour
 {
     [Header("Countdown")]
@@ -35,16 +36,18 @@ public class LobbyCountdown : NetworkBehaviour
         int countdown = countdownDuration;
         countdownIsActive = true;
 
+        AudioSource AS = GetComponent<AudioSource>();
+
         Rpc_EnableCountdownText(true);
-        Rpc_ChangeCountdownText(countdown.ToString());
 
         while (countdown > 0)
         {
+            Rpc_CountdownTick(countdown.ToString());
+
             yield return new WaitForSeconds(1);
 
             countdown -= 1;
 
-            Rpc_ChangeCountdownText(countdown.ToString());
 
             //TODO : Add sound for each second passing.
         }
@@ -79,8 +82,9 @@ public class LobbyCountdown : NetworkBehaviour
 
     [ClientRpc]
 
-    private void Rpc_ChangeCountdownText(string newText)
+    private void Rpc_CountdownTick(string newText)
     {
         countdownText.text = newText;
+        GetComponent<AudioSource>().PlayOneShot(countdownSound);
     }
 }
