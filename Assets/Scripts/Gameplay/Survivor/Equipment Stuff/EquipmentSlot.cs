@@ -183,7 +183,6 @@ public class EquipmentSlot : NetworkBehaviour
     public void Svr_RemoveItem()
     {
         if (EquipmentItem)
-            
 
         EquipmentItem = null;
     }

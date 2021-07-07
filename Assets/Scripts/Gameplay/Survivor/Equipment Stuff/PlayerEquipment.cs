@@ -585,6 +585,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
         {
             if (item.EquipmentItem == null) continue;
 
+            item.EquipmentItem.GetComponent<EquipmentItem>().Svr_Equip();
             item.EquipmentItem.GetComponent<EquipmentItem>().Svr_Drop();
             Svr_OnItemDropped(item.EquipmentItem);
             item.Svr_RemoveItem();

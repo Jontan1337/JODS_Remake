@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class ActiveSClass : NetworkBehaviour, IDamagable
@@ -26,8 +27,11 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	[SerializeField] private float accuracy = 0;
 	[SerializeField] private float ammoCapacity = 0;
 
-	[Header("Weapon Stats")]
+	[Header("UI References")]
 	[SerializeField] private Transform healthBar;
+
+	[Header("Events")]
+	[SerializeField] private UnityEvent<float> onChangedHealth;
 
 	private bool abilityIsReady = true;
 	private bool isDead;
@@ -42,9 +46,8 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 		private set
         {
 			float difference = (float)health - value;
-			float diffPercentOfHealth = difference / 100 / ((float)maxHealth / 100);
-			healthBar.localScale = new Vector3(healthBar.localScale.x - diffPercentOfHealth, healthBar.localScale.y);
-			health = value;
+            health = value;
+			Rpc_InvokeOnChangedHealth(connectionToClient, difference);
         }
     }
 
@@ -78,8 +81,22 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	{
 		if (test) SetSurvivorClass(survivorSO);
 		JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => Cmd_Ability();
-
 	}
+
+	#region ViewModel
+	[TargetRpc]
+	private void Rpc_InvokeOnChangedHealth(NetworkConnection target, float healthDifference)
+    {
+		print("invoek");
+		onChangedHealth?.Invoke(healthDifference);
+	}
+
+	public void UpdateHealthBar(float healthDifference)
+    {
+		float diffPercentOfHealth = healthDifference / 100 / ((float)maxHealth / 100);
+		healthBar.localScale = new Vector3(healthBar.localScale.x - diffPercentOfHealth, healthBar.localScale.y);
+	}
+	#endregion
 
 	[Command]
 	void Cmd_Ability()
@@ -134,7 +151,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 
 	private void SetSurvivorClassSettings(SurvivorClass oldValue, SurvivorClass newValue)
 	{
-		if (survivorSO.abilityObject)
+		if (survivorSO.abilityObject && newValue)
 		{
 			newValue.abilityObject = survivorSO.abilityObject;
 		}

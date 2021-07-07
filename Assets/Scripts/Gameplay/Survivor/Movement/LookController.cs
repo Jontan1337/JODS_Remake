@@ -32,7 +32,7 @@ public class LookController : NetworkBehaviour
 	{
         if (hasAuthority)
         {
-			JODSInput.Controls.Survivor.Camera.performed += Look;
+			
         }
 	}
 	public override void OnStopAuthority()
@@ -111,6 +111,7 @@ public class LookController : NetworkBehaviour
 					playerCamera = item.GetComponent<Camera>();
 					playerItemCamera = item.GetComponentInChildren<Camera>();
 					cameraSettings = playerCamera.GetComponent<CameraSettings>();
+					JODSInput.Controls.Survivor.Camera.performed += Look;
 					break;
 				case ItemNames.Equipment:
 					playerEquipment = item.GetComponent<PlayerEquipment>();
