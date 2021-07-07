@@ -563,6 +563,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
         }
         SelectedEquipmentSlot.Svr_EquipItem(item);
     }
+
     [Command]
     private void Cmd_RemoveItem(GameObject item)
     {
@@ -577,6 +578,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
             EquipmentItem = null;
         }
     }
+
     [Server]
     public void Svr_DropAllItems()
     {
@@ -584,8 +586,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
         foreach (EquipmentSlot item in equipmentSlots)
         {
             if (item.EquipmentItem == null) continue;
-
-            item.EquipmentItem.GetComponent<EquipmentItem>().Svr_Equip();
+            // Doesn't always drop currently equipped weapon... Need fix.
             item.EquipmentItem.GetComponent<EquipmentItem>().Svr_Drop();
             Svr_OnItemDropped(item.EquipmentItem);
             item.Svr_RemoveItem();
