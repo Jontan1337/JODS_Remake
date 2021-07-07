@@ -8,6 +8,11 @@ public class LobbyFade : NetworkBehaviour
 {
     [SerializeField] private Image fadeImage = null;
 
+    private void Start()
+    {
+        DontDestroyOnLoad(this);
+    }
+
     public void BeginFade(float time)
     {
         RpcBeginFade(time);
