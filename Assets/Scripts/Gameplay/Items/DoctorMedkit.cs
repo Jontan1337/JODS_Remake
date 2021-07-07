@@ -7,7 +7,7 @@ public class DoctorMedkit : EquipmentItem
 {
 
 	[SyncVar] private int uses = 4;
-	[SerializeField] private GameObject medKit;
+	[SerializeField] private GameObject medKit = null;
 
 	//public override void Svr_Drop()
 	//{

@@ -10,15 +10,21 @@ public class ZombieSpit : Projectile
     [SerializeField] private ParticleSystem trailParticles = null;
     [SerializeField] private ParticleSystem[] hitParticles = null;
 
-    public override void OnHit(Collider objectHit)
+	public override void Start()
+	{
+        base.Start();
+        objectPoolTag = "Spit";
+	}
+
+	public override void OnHit(Collision objectHit)
     {
         if (!piercing && !hasHit)
         {
             hasHit = true;
 
-            Damage(objectHit.gameObject); //Damage the object hit
+            Damage(objectHit.collider.gameObject); //Damage the object hit
 
-            objectHit.GetComponent<StatusEffectManager>()?.ApplyStatusEffect(statusEffectToApply.ApplyEffect(objectHit.gameObject), amount); //apply DOT effect
+            objectHit.collider.GetComponent<StatusEffectManager>()?.ApplyStatusEffect(statusEffectToApply.ApplyEffect(objectHit.collider.gameObject), amount); //apply DOT effect
 
             SpitEffects(); //Apply visual effects
 
@@ -52,6 +58,6 @@ public class ZombieSpit : Projectile
         yield return new WaitForSeconds(time);
 
         //Destroy the object when all the spit trails are gone (time)
-        Destroy();
+        ReturnObjectToPool(0);
     }
 }

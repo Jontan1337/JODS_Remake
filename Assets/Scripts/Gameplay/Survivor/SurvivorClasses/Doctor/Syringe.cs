@@ -1,23 +1,31 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
 public class Syringe : Projectile
 {
 	public override void Start()
 	{
 		base.Start();
+		objectPoolTag = "Syringe";
 		transform.Rotate(new Vector3(90, 0, 0));
 	}
-
-	public override void OnHit(Collider hit)
+	[Server]
+	public override void OnHit(Collision hit)
 	{
-		if (!hasHit)
+
+		base.OnHit(hit);
+		IDamagable idmg = hit.collider.GetComponent<IDamagable>();
+		if (idmg?.Team == Teams.Player)
 		{
-			hasHit = true; //Prevents the projectile from hitting multiple times
-			hit.transform.root.gameObject.GetComponent<StatusEffectManager>()?.ApplyStatusEffect(statusEffectToApply.ApplyEffect(hit.transform.root.gameObject));
-			transform.SetParent(hit.transform);
-			rb.isKinematic = true;
+			hit.collider.transform.root.gameObject.GetComponent<StatusEffectManager>()?.ApplyStatusEffect(statusEffectToApply.ApplyEffect(hit.collider.transform.root.gameObject));
 		}
+		else
+		{
+			idmg?.Svr_Damage(2);
+		}
+
 	}
 }
+

@@ -37,7 +37,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     private Coroutine COShootLoop;
     private Coroutine COStopShootLoop;
 
-    private ParticleSystem muzzleParticle;
+    [SerializeField] private ParticleSystem muzzleParticle;
 
     private bool canShoot = true;
 
@@ -58,10 +58,13 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         }
         if (muzzleFlash != null)
         {
+
             if (muzzleFlash.TryGetComponent(out ParticleSystem particle))
             {
                 muzzleParticle = particle;
+
             }
+            print(particle);
         }
     }
 

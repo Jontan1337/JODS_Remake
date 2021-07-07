@@ -70,7 +70,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 5406519
+    m_Bits: 5472055
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -139,7 +139,7 @@ MonoBehaviour:
   - {fileID: 5179075239126234421}
   universalCamData: {fileID: 6222407410909346245}
   mainCamera: 1
-  playerCamFOV: 60
+  fieldOfView: 60
 --- !u!114 &3617518231194323222
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -161,8 +161,6 @@ MonoBehaviour:
   syncParent: 1
   syncPosition: 1
   syncRotation: 1
-  syncVisibility: 0
-  objectRenderer: {fileID: 0}
 --- !u!114 &7628148484119422582
 MonoBehaviour:
   m_ObjectHideFlags: 0
