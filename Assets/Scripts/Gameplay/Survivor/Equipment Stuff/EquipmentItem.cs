@@ -146,7 +146,10 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	[Server]
 	public virtual void Svr_Drop()
 	{
-		Rpc_SetLayer(connectionToClient, false);
+        if (connectionToClient != null)
+        {
+			Rpc_SetLayer(connectionToClient, false);
+        }
 		Svr_InvokeOnDrop();
 		Svr_ShowItem();
 		Svr_EnablePhysics();

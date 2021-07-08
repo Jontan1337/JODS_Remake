@@ -59,10 +59,6 @@ public class NetworkTest : NetworkManager
 
         networkBufferList.Remove(bufferItem);
     }
-    private static void InvokeBuffer()
-    {
-        
-    }
 
     // This is only called on the server.
     public override void OnServerAddPlayer(NetworkConnection conn)

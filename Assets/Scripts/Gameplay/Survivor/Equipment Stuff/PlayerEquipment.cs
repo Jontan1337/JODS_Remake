@@ -457,10 +457,6 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     {
         OnItemDropped(item);
         Rpc_OnItemDropped(item);
-        if (SelectedEquipmentSlot)
-        {
-            Svr_ClearHotbarSlot(SelectedEquipmentSlot);
-        }
     }
     [ClientRpc]
     private void Rpc_OnItemDropped(GameObject item)
@@ -583,13 +579,13 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     public void Svr_DropAllItems()
     {
         print("Svr_DropAllItems");
-        foreach (EquipmentSlot item in equipmentSlots)
+        foreach (EquipmentSlot slot in equipmentSlots)
         {
-            if (item.EquipmentItem == null) continue;
+            if (slot.EquipmentItem == null) continue;
             // Doesn't always drop currently equipped weapon... Need fix.
-            item.EquipmentItem.GetComponent<EquipmentItem>().Svr_Drop();
-            Svr_OnItemDropped(item.EquipmentItem);
-            item.Svr_RemoveItem();
+            slot.EquipmentItem.GetComponent<EquipmentItem>().Svr_Drop();
+            //Svr_OnItemDropped(slot.EquipmentItem);
+            //Svr_ClearHotbarSlot(slot);
         }
     }
 
