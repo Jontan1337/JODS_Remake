@@ -262,7 +262,16 @@ public class Lobby : NetworkManager
 
     public void AllPlayersHaveLoaded()
     {
-        print("BOM");
+        StartCoroutine(PreGameCo());
+    }
+
+    public static event Action OnPlayersLoaded;
+
+    private IEnumerator PreGameCo()
+    {
+        yield return new WaitForSeconds(1.5f);
+        OnPlayersLoaded?.Invoke();
+        NetworkServer.Destroy(PreGameWaitingRoom.Instance.gameObject);
     }
 
     #endregion
@@ -419,8 +428,7 @@ public class Lobby : NetworkManager
 
     private IEnumerator InvokeOnServerReady(NetworkConnection conn, string _class, bool isMaster)
     {
-        Debug.Log($"Readying {conn.identity.name} : class = {_class} : isMaster = " + isMaster);
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.2f); //Delay cause server slow
         OnServerReadied?.Invoke(conn, _class, isMaster);
         yield return new WaitForSeconds(0.3f);
         if (conn.connectionId != 0)

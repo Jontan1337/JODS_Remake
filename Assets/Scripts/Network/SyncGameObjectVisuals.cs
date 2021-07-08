@@ -129,7 +129,7 @@ public class SyncGameObjectVisuals : NetworkBehaviour
     private void Rpc_UpdateParent(NetworkConnection target, Transform newParentData)
     {
         parentData = newParentData;
-        transform.parent = newParentData;
+        transform.SetParent(newParentData);
     }
     [TargetRpc]
     private void Rpc_UpdatePosition(NetworkConnection target, Vector3 newPositionData)
@@ -151,7 +151,7 @@ public class SyncGameObjectVisuals : NetworkBehaviour
     {
         if (oldParentData == newParentData) return;
 
-        transform.parent = newParentData;
+        transform.SetParent(newParentData);
     }
     private void UpdatePosition(Vector3 oldPositionData, Vector3 newPositionData)
     {
