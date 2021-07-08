@@ -28,8 +28,10 @@ public class PreGameWaitingRoom : NetworkBehaviour
         Lobby.OnServerReadied += SpawnPreGamePlayer; //This method puts the player's info into a list, which will be used when spawning the player.
     }
 
-    public void SpawnPreGamePlayer(string playerName)
+    public void SpawnPreGamePlayer(NetworkConnection conn, string _class, bool _isMaster)
     {
+        string playerName = conn.identity.GetComponent<LobbyPlayer>().PlayerName;
+
         //Just an error catcher. This should theoretically never happen though.
         if (playersLoaded == playersToWaitFor)
         {

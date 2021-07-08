@@ -213,9 +213,6 @@ public class Lobby : NetworkManager
         //Disable the loading screen for this client
         LoadingScreenManager.Instance.ShowLoadingScreen(false);
 
-        //Tell the server that this client has finished loading the gameplay scene.
-        PreGameWaitingRoom.Instance.SpawnPreGamePlayer(conn.identity.GetComponent<LobbyPlayer>().PlayerName);
-
         base.OnClientSceneChanged(conn);
     }
 
