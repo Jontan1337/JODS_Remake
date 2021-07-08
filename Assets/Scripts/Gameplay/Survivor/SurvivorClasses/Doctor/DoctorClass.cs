@@ -7,13 +7,13 @@ using Mirror;
 public class DoctorClass : SurvivorClass
 {
 	private PlayerEquipment playerEquipment;
-	private GameObject medKit;
+	private GameObject item;
 
 	public override void ActiveAbility()
 	{
-		EquipMedKit();
-		if (!medKit)
+		if (!item)
 		{
+			EquipSyringeGun();
 		}
 
 		// Equipment slot 4 empty?
@@ -23,14 +23,13 @@ public class DoctorClass : SurvivorClass
 	}
 
 	[Server]
-	private void EquipMedKit()
+	private void EquipSyringeGun()
 	{
-		medKit = Instantiate(abilityObject, transform.position, transform.rotation);
-		NetworkServer.Spawn(medKit);
+		item = Instantiate(abilityObject, transform.position, transform.rotation);
+		NetworkServer.Spawn(item);
 		playerEquipment = transform.parent.GetComponentInChildren<PlayerEquipment>();
 
-		medKit.GetComponent<EquipmentItem>().Svr_Pickup(playerEquipment.playerHands, connectionToClient);
-		playerEquipment?.Svr_Equip(medKit, EquipmentType.Meds);
-		GetComponentInParent<ActiveSClass>().StartAbilityCooldownCo();
+		item.GetComponent<EquipmentItem>().Svr_Pickup(playerEquipment.playerHands, connectionToClient);
+		playerEquipment?.Svr_Equip(item, EquipmentType.Meds);
 	}
 }

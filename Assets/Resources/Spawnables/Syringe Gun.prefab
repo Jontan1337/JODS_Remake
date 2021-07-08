@@ -49,9 +49,9 @@ GameObject:
   - component: {fileID: 5195480059619443402}
   - component: {fileID: 4284894509513182366}
   - component: {fileID: 4278652487267233328}
-  - component: {fileID: 1663268239476263206}
   - component: {fileID: 4446387069009768207}
   - component: {fileID: 1826734668806866363}
+  - component: {fileID: 3676678348086090635}
   m_Layer: 0
   m_Name: Syringe Gun
   m_TagString: Untagged
@@ -1380,49 +1380,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.25260928, y: 0.38143873, z: 1.5803077}
   m_Center: {x: 0.000000044703484, y: -0.0007613227, z: -0.12779376}
---- !u!114 &1663268239476263206
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6487308696307582406}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ebe34756c5e5cb347a9369e2055c9135, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  itemName: Item name
-  equipmentType: 1
-  unequippedLayer: 14
-  equippedLayer: 15
-  isInteractable: 1
-  authController: {fileID: 1433574980823963295}
-  objectVisuals: {fileID: 7395952788218079930}
-  rb: {fileID: 4284894509513182366}
-  outline: {fileID: 0}
-  damage: 0
-  fireMode: 0
-  fireModes: 
-  burstBulletAmount: 3
-  fireRate: 600
-  fireInterval: 0.1
-  bulletsPerShot: 1
-  currentAmmunition: 10
-  maxCurrentAmmunition: 10
-  extraAmmunition: 20
-  recoil: 1
-  shootOrigin: {fileID: 7304677472618358485}
-  muzzleFlash: {fileID: 775901656272951577}
-  sfxPlayer: {fileID: 1826734668806866363}
-  shootSound: {fileID: 8300000, guid: 59033cce093954c4e968552b47b09c6a, type: 3}
-  emptySound: {fileID: 8300000, guid: 6e8772b49f34d402a90016ed445d8a2f, type: 3}
-  muzzleParticle: {fileID: 775901656291655801}
-  projectileSpeed: 30
-  timeToLive: 10
-  projectileTag: Syringe
 --- !u!82 &4446387069009768207
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1540,6 +1497,50 @@ MonoBehaviour:
   playOnAwake: 0
   playAmountOfTimes: 0
   amountOfPlays: 2
+--- !u!114 &3676678348086090635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6487308696307582406}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f30d11617654004c9083e7c7861f248, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  itemName: Item name
+  equipmentType: 1
+  unequippedLayer: 14
+  equippedLayer: 15
+  isInteractable: 1
+  destroyOnDrop: 1
+  authController: {fileID: 1433574980823963295}
+  objectVisuals: {fileID: 7395952788218079930}
+  rb: {fileID: 4284894509513182366}
+  outline: {fileID: 0}
+  damage: 10
+  fireMode: 0
+  fireModes: 
+  burstBulletAmount: 3
+  fireRate: 600
+  fireInterval: 0.1
+  bulletsPerShot: 1
+  currentAmmunition: 10
+  maxCurrentAmmunition: 10
+  extraAmmunition: 0
+  recoil: 1
+  shootOrigin: {fileID: 7304677472618358485}
+  muzzleFlash: {fileID: 775901656272951577}
+  sfxPlayer: {fileID: 1826734668806866363}
+  shootSound: {fileID: 8300000, guid: 59033cce093954c4e968552b47b09c6a, type: 3}
+  emptySound: {fileID: 8300000, guid: 6e8772b49f34d402a90016ed445d8a2f, type: 3}
+  muzzleParticle: {fileID: 775901656291655801}
+  projectileSpeed: 30
+  timeToLive: 5
+  projectileTag: Syringe
 --- !u!1001 &4053757513337929203
 PrefabInstance:
   m_ObjectHideFlags: 0

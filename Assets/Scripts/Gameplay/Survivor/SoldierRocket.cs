@@ -9,7 +9,7 @@ public class SoldierRocket : NetworkBehaviour
 	{
 		if (!isServer) return;
 
-		if (collision.gameObject.tag != "Player")
+		if (collision.gameObject.GetComponent<IDamagable>()?.Team != Teams.Player)
 		{
 			Rpc_Explode();
 		}

@@ -62,9 +62,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
             if (muzzleFlash.TryGetComponent(out ParticleSystem particle))
             {
                 muzzleParticle = particle;
-
             }
-            print(particle);
         }
     }
 

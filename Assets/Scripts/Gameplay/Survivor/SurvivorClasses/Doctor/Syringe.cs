@@ -14,7 +14,6 @@ public class Syringe : Projectile
 	[Server]
 	public override void OnHit(Collision hit)
 	{
-
 		base.OnHit(hit);
 		IDamagable idmg = hit.collider.GetComponent<IDamagable>();
 		if (idmg?.Team == Teams.Player)
@@ -25,7 +24,6 @@ public class Syringe : Projectile
 		{
 			idmg?.Svr_Damage(2);
 		}
-
 	}
 }
 

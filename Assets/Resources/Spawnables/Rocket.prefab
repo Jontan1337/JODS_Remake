@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 7068715810846515424}
   - component: {fileID: -5787199836997570594}
   - component: {fileID: 8977616527943871417}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: Rocket
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -178,6 +178,8 @@ MonoBehaviour:
   singleBrokenObject: {fileID: 0}
   wallDestruction: {fileID: 0}
   destroySelf: 0
+  objectPoolTag: Rocket
+  objectPooled: 1
   isBurning: 0
   destroyed: 0
   zombiePartLayer:
