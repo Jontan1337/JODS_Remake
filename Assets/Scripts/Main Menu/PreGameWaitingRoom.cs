@@ -2,16 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using UnityEngine.UI;
 
 public class PreGameWaitingRoom : NetworkBehaviour
 {
     [SerializeField] private GameObject PreGamePlayerPrefab = null;
     [SerializeField] private Transform PreGamePlayerContainer = null;
     [Space]
-    [SerializeField] private GameObject notReadyText = null;
-    [SerializeField] private GameObject readyText = null;
+    [SerializeField] private Text statusText = null;
     [Space]
-
+    [SerializeField] private string waitingText = "Waiting for all players";
+    [SerializeField] private string doneText = "All players are ready. Starting game...";
+    [Space]
     public int playersToWaitFor = 0;
     [SerializeField] private int playersLoaded = 0;
 
@@ -25,10 +27,11 @@ public class PreGameWaitingRoom : NetworkBehaviour
     public override void OnStartServer()
     {
         //When a player connects to the new scene, then invoke the ReadyPlayer method
-        Lobby.OnServerReadied += SpawnPreGamePlayer; //This method puts the player's info into a list, which will be used when spawning the player.
+        Lobby.OnServerReadied += Svr_SpawnPreGamePlayer; //This method puts the player's info into a list, which will be used when spawning the player.
     }
 
-    public void SpawnPreGamePlayer(NetworkConnection conn, string _class, bool _isMaster)
+    [Server]
+    public void Svr_SpawnPreGamePlayer(NetworkConnection conn, string _class, bool _isMaster)
     {
         string playerName = conn.identity.GetComponent<LobbyPlayer>().PlayerName;
 
@@ -40,8 +43,10 @@ public class PreGameWaitingRoom : NetworkBehaviour
         }
 
         //Spawn a preGamePlayer with the name of the new player.
-        GameObject playerInstance = Instantiate(PreGamePlayerPrefab, PreGamePlayerContainer);
+        GameObject playerInstance = Instantiate(PreGamePlayerPrefab);
         NetworkServer.Spawn(playerInstance); //Spawn it on the server.
+
+        Rpc_SetParent(playerInstance);
 
         //Set the name of the new object.
         playerInstance.GetComponent<PreGamePlayer>().Svr_SetName(playerName);
@@ -50,6 +55,12 @@ public class PreGameWaitingRoom : NetworkBehaviour
         playersLoaded++;
 
         HasEveryoneLoadedCheck();
+    }
+
+    [ClientRpc]
+    private void Rpc_SetParent(GameObject instan)
+    {
+        instan.transform.SetParent(PreGamePlayerContainer);
     }
 
     private void HasEveryoneLoadedCheck()
@@ -77,7 +88,6 @@ public class PreGameWaitingRoom : NetworkBehaviour
     [ClientRpc]
     private void Rpc_Ready(bool ready)
     {
-        notReadyText.SetActive(!ready);
-        readyText.SetActive(ready);
+        statusText.text = ready ? doneText : waitingText;
     }
 }

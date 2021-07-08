@@ -27,10 +27,16 @@ public class PlayerSpawner : NetworkBehaviour
 
         //When a player connects to the new scene, then invoke the ReadyPlayer method
         Lobby.OnServerReadied += Svr_ReadyPlayer; //This method puts the player's info into a list, which will be used when spawning the player.
+
+        Lobby.OnPlayersLoaded += Svr_SpawnAllPlayers;
     }
 
     [ServerCallback]
-    public void OnDestroy() => Lobby.OnServerReadied -= Svr_ReadyPlayer;
+    public void OnDestroy()
+    {
+        Lobby.OnServerReadied -= Svr_ReadyPlayer;
+        Lobby.OnPlayersLoaded -= Svr_SpawnAllPlayers;
+    }
 
     [Server]
     private void Svr_ReadyPlayer(NetworkConnection conn, string _class, bool _isMaster)
