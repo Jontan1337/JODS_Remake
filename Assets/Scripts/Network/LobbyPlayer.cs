@@ -113,8 +113,6 @@ public class LobbyPlayer : NetworkBehaviour
 
             Cmd_ChangeName(newName);
 
-            name += " (ME)"; //This just makes it easier to identify yourself in the editor inspector.
-
             SurvivorSelection.instance.LoadSelection();
 
             GetMasterToggle();

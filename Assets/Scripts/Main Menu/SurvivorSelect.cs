@@ -11,6 +11,7 @@ public class SurvivorSelect : NetworkBehaviour
     [SyncVar] public int playerIndex;
     [Header("Visual")]
     [SerializeField] private GameObject selectedVisual = null;
+    public bool Selected => selected;
 
     public void Select(bool value, bool removeSO = true)
     {
@@ -54,6 +55,7 @@ public class SurvivorSelect : NetworkBehaviour
         return false;
     }
 
+
     private void SetPlayerSurvivorSO(int index)
     {
         NetworkIdentity player = NetworkIdentity.spawned[(uint)index];
@@ -74,5 +76,15 @@ public class SurvivorSelect : NetworkBehaviour
     {
         selectedVisual.SetActive(newVal);
     }
+            
+    [Server]    //This method is called by the server (lobby manager)
+    public void Svr_OverrideSelection()
+    {
+        //This will simply override any changes made to this, resetting it to the default state of Not Selected.
+        //Meaning that no player has chosen this survivor, making it available to be chosen.
+        //Only the server will see this though, so no need to call RemovePlayerSurvivorSO, 
+        //as only the server will use this script after this method has been called.
 
+        selected = false;
+    }
 }

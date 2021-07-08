@@ -43,6 +43,8 @@ public class Lobby : NetworkManager
     [Space]
     [SerializeField] private LobbyFade lobbyFade = null;
     [SerializeField] private float fadeTime = 3f;
+    [Space]
+    [SerializeField] private SurvivorSelection survivorSelection = null;
 
     [Header("Prefabs")]
     public GameObject playerSpawner;
@@ -284,26 +286,41 @@ public class Lobby : NetworkManager
 
     public IEnumerator StartGame()
     {
-        PickMaster();
+        //First pick a master
+        bool pickMaster = PickMaster();
 
-        AssignSurvivors();
+        //Do not go further if no master was chosen.
+        if (!pickMaster) yield break;
 
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0.5f);
 
+        //Then assign survivors to the players who have not selected a character
+        bool assignSurvivors = AssignSurvivors();
+
+        //Do not go further if AssignSurvivors failed.
+        if (!assignSurvivors) yield break;
+
+        yield return new WaitForSeconds(0.5f);
+
+        //Begin a fade to black
         lobbyFade.BeginFade(fadeTime);
 
         yield return new WaitForSeconds(fadeTime + 1);
 
+        //Tell the server to switch scene to the game scene
         SwitchScene();
     }
 
     void SwitchScene()
     {
+        //Tell the server to enable the loading screen for everyone
         LoadingScreenManager.Instance.Svr_ShowLoadingScreen(true);
+
+        //Switch to the gameplay scene
         ServerChangeScene(gameplayScene);
     }
 
-    void PickMaster()
+    private bool PickMaster()
     {
         List<GameObject> masters = new List<GameObject>();
 
@@ -338,20 +355,98 @@ public class Lobby : NetworkManager
         {
             GameObject who = masters[UnityEngine.Random.Range(0, masters.Count)];
 
+            LobbyPlayer player = who.GetComponent<LobbyPlayer>();
+
             //Make player the master
-            who.GetComponent<LobbyPlayer>().isMaster = true;
+            player.isMaster = true;
 
-            //Change their name
-            who.name = who.name + " (Master)";
+            //Now we need to make sure that whatever the player has chosen as survivor (if any) will be reset, making it available for others to use.
+            if (player.hasSelectedACharacter)
+            {
+                //First iterate through all the Available Survivors and find the one that the player has chosen
+                foreach(SurvivorSelect survivor in survivorSelection.availableSurvivors)
+                {
+                    if (survivor.survivor == player.survivorSO)
+                    {
+                        //Override that survivor, making it available again.
+                        survivor.Svr_OverrideSelection();
+                    }
+                }
+            }
+
+            //Change their name (Only in the editor inspector. Won't affect gameplay or players)
+            who.name += " (Master)";
+
+            //Master has been successfully chosen 
+            return true;
         }
-
-
+        else
+        {
+            if (mustHaveMaster)
+            {
+                //If a master is required, but no master was chosen
+                //Something went wrong
+                Debug.LogError("No master was chosen! Something went wrong.");
+                return false;
+            }
+            else return true; //If no master is required, then there is no issue if no master has been chosen.
+        }
     }
 
-    void AssignSurvivors()
+    //This method assigns all remaining survivors to non-master players (who have not chosen a survivor already)
+    private bool AssignSurvivors()
     {
-        Debug.Log("TODO: AssignSurvivors. \n Make a list of all players in a random order, then assign their survivors.");
-        Debug.Log("Players who have not chosen any survivor will be at the bottom of the list, and will be assigned a random non-picked survivor.");
+        List<LobbyPlayer> eligiblePlayers = new List<LobbyPlayer>();
+
+        //Iterate through all players in the lobby
+        foreach(LobbyPlayer lobbyPlayer in roomPlayers)
+        {
+            //Only add the player to the eligiblePlayers list if they're not the master and have not chosen a survivor
+            if (!lobbyPlayer.isMaster && !lobbyPlayer.hasSelectedACharacter)
+            {
+                eligiblePlayers.Add(lobbyPlayer);
+            }
+        }
+
+        //Now that we have the list of eligible players, we need to assign the remaining survivors to each player
+        
+        //First we make a list of the remaining survivors
+        List<SurvivorSO> remainingSurvivors = new List<SurvivorSO>();
+
+        //Then iterate through all the Available Survivors and find those that have not been chosen
+        foreach (SurvivorSelect survivor in survivorSelection.availableSurvivors)
+        {
+            //If the survivor has not been chosen
+            if (!survivor.Selected)
+            {
+                //Add it to the list
+                remainingSurvivors.Add(survivor.survivor);
+            }
+        }
+        print(remainingSurvivors.Count + " : " + eligiblePlayers.Count);
+        //Now do a check to see if the amount of remaining survivors matches the amount of eligible players
+        //If not, then something went wrong
+        if (remainingSurvivors.Count < eligiblePlayers.Count)
+        {
+            Debug.LogError("Amount of Remaining Survivors is less than amount of Eligible Players. Something went wrong.");
+            return false;
+        }
+
+        foreach(LobbyPlayer playerToAssignSurvivor in eligiblePlayers)
+        {
+            //First we get the index of a random survivor from the list of remaining survivors
+            int randomSurvivorIndex = UnityEngine.Random.Range(0, remainingSurvivors.Count);
+            SurvivorSO randomSurvivor = remainingSurvivors[randomSurvivorIndex]; //Then a reference to that randomly chosen survivor
+            //Then we remove the survivor from the list of remaining survivors, as it is no longer available
+            remainingSurvivors.RemoveAt(randomSurvivorIndex);
+
+            //Assign the survivor to the player
+            playerToAssignSurvivor.SetSurvivorSO(randomSurvivor);
+
+            print(playerToAssignSurvivor + ": bew : " + randomSurvivor);
+        }
+
+        return true;
     }
 
     #endregion

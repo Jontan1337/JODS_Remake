@@ -29,8 +29,6 @@ public class LoadingScreenManager : NetworkBehaviour
     [ClientRpc]
     public void Rpc_ShowLoadingScreen(bool enable)
     {
-        print("Rpc_ShowLoadingScreen");
-
         loadingScreen.SetActive(enable);
     }
 
@@ -43,7 +41,6 @@ public class LoadingScreenManager : NetworkBehaviour
     [Server]
     public void Svr_ShowLoadingScreen(bool enable)
     {
-        print("Svr_ShowLoadingScreen");
         Rpc_ShowLoadingScreen(enable);
     }
 }
