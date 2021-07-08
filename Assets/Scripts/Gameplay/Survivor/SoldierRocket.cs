@@ -2,21 +2,23 @@
 using Mirror;
 using UnityEngine.AI;
 
-public class SoldierRocket : NetworkBehaviour
+public class SoldierRocket : Projectile
 {
 	[Server]
-	private void OnCollisionEnter(Collision collision)
+	public override void OnHit(Collision collision)
 	{
 		if (!isServer) return;
 
-		if (collision.gameObject.GetComponent<IDamagable>()?.Team != Teams.Player)
-		{
-			Rpc_Explode();
-		}
+		//if (collision.gameObject.GetComponent<IDamagable>()?.Team != Teams.Player)
+		//{
+		//}
+		Svr_Explode();
 	}
-	[ClientRpc]
-	private void Rpc_Explode()
+	[Server]
+	private void Svr_Explode()
 	{
+		print(4);
+
 		GetComponent<LiveEntity>()?.DestroyEntity(transform);
 	}
 }

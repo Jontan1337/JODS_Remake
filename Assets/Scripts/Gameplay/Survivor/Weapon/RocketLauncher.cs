@@ -4,42 +4,16 @@ using UnityEngine;
 using Mirror;
 using UnityEngine.InputSystem;
 
-public class RocketLauncher : EquipmentItem
+public class RocketLauncher : ProjectileWeapon
 {
-	public GameObject rocket;
-	private int rocketSpeed = 500;
-
-	[Command]
-	private void CmdRocketLaunch()
+	protected override void Shoot()
 	{
-		GameObject currentRocket = Instantiate(rocket, transform.position, transform.rotation);
-		NetworkServer.Spawn(currentRocket);
-		RpcRocketLaunch(currentRocket);
-	}
-
-	[ClientRpc]
-	private void RpcRocketLaunch(GameObject currentRocket)
-	{
-		Rigidbody rb = currentRocket.GetComponent<Rigidbody>();
-		rb.AddForce(transform.forward * rocketSpeed);
-	}
-
-	protected override void OnLMBPerformed(InputAction.CallbackContext obj)
-	{
-		CmdRocketLaunch();
-		GetComponentInParent<ActiveSClass>()?.StartAbilityCooldownCo();
-		Unbind();
-		Invoke("Cmd_DestroyGameObject", 1f);
-	}
-	protected override void OnDropPerformed(InputAction.CallbackContext obj)
-	{
-		Unbind();
-		Cmd_DestroyGameObject();
-	}
-
-	[Command]
-	private void Cmd_DestroyGameObject()
-	{
-		NetworkServer.Destroy(gameObject);
+		base.Shoot();
+		if (currentAmmunition == 0 && extraAmmunition == 0)
+		{
+			GetComponentInParent<ActiveSClass>().StartAbilityCooldownCo();
+			Unbind();
+			base.Svr_Drop();
+		}
 	}
 }
