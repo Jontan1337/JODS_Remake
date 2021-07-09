@@ -149,7 +149,6 @@ public class LobbySync : NetworkBehaviour
             );
     }
 
-
     [ClientRpc]
     public void Rpc_EnableControls()
     {

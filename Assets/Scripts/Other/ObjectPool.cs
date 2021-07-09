@@ -32,15 +32,13 @@ public class ObjectPool : NetworkBehaviour
 	public Dictionary<string, Queue<GameObject>> poolDictionary;
 
 
-
-	private void Start()
-	{
+    public override void OnStartClient()
+    {
 		poolDictionary = new Dictionary<string, Queue<GameObject>>();
-
 		InitializePools(pools);
-	}
+    }
 
-	public void InitializePools(List<Pool> poolsToAdd)
+    public void InitializePools(List<Pool> poolsToAdd)
 	{
 		//For each pool of objects (Prop Group, Obstacles, etc)
 		foreach (Pool pool in poolsToAdd)
@@ -59,25 +57,46 @@ public class ObjectPool : NetworkBehaviour
 			//For each object in the pool
 			for (int i = 0; i < pool.prefab.Length * pool.amount; i++)
 			{
+				int randomInt = Random.Range(0, pool.prefab.Length);
 				//Create the object, and add it to the queue
-				GameObject obj = Instantiate(pool.prefab[Random.Range(0, pool.prefab.Length)], transform);
-				if (obj.GetComponent<NetworkIdentity>() && isServer)
+				GameObject obj = null;
+				if (pool.prefab[randomInt].GetComponent<NetworkIdentity>())
 				{
-					NetworkServer.Spawn(obj);
+                    if (isServer)
+                    {
+						obj = Instantiate(pool.prefab[randomInt], transform);
+						NetworkServer.Spawn(obj);
+                    }
 				}
+                else
+                {
+					obj = Instantiate(pool.prefab[randomInt], transform);
+                }
 
-				obj.name = "(" + pool.tag + ") " + obj.name; //Give it a name to represent which pool it is from.
-															 //RE: Stop seperating the strings you cringeboi, use ${}.
-				obj.SetActive(false);
-				objectPool.Enqueue(obj);
+                if (obj)
+                {
+					obj.name = "(" + pool.tag + ") " + obj.name; //Give it a name to represent which pool it is from.
+																 //RE: Stop seperating the strings you cringeboi, use ${}.
+					obj.SetActive(false);
+					objectPool.Enqueue(obj);
+                }
 			}
 			//Add the queue to the dictionary
 			poolDictionary.Add(pool.tag, objectPool);
 		}
 	}
 
+    //[ClientRpc]
+    //private void Rpc_AddObject(GameObject obj, string tag)
+    //{
+    //    obj.name = "(" + tag + ") " + obj.name; //Give it a name to represent which pool it is from.
+    //                                                 //RE: Stop seperating the strings you cringeboi, use ${}.
+    //    obj.SetActive(false);
+    //    objectPool.Enqueue(obj);
+    //}
 
-	public GameObject SpawnFromPool(string tag, Vector3 position, Quaternion rotation, float? time = null)
+
+    public GameObject SpawnFromPool(string tag, Vector3 position, Quaternion rotation, float? time = null)
 	{
 		//If the tag does not exist within the pool dictionary, return nothing.
 		if (!poolDictionary.ContainsKey(tag))

@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 538350748458415292}
   - component: {fileID: 538350748458415293}
+  - component: {fileID: 5389183070632612933}
   m_Layer: 0
   m_Name: ObjectPool
   m_TagString: Untagged
@@ -43,6 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b50c75f16cc98ab46a379f289adbf43f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   pools:
   - tag: Explosion Big
     prefab:
@@ -59,16 +62,32 @@ MonoBehaviour:
   - tag: Blood Splatter
     prefab:
     - {fileID: 6593017465037746565, guid: f74d66cde6c53454faa4388302f395a5, type: 3}
-    amount: 200
+    amount: 100
   - tag: Body Part
     prefab:
     - {fileID: 4539810607498361216, guid: 42cec309daebc2644935577b10f0089c, type: 3}
-    amount: 300
+    amount: 50
   - tag: Syringe
     prefab:
     - {fileID: 3668033450558484208, guid: 91c995c6987471b4c82209267e7c9782, type: 3}
-    amount: 300
+    amount: 20
   - tag: Rocket
     prefab:
     - {fileID: 3668033450558484208, guid: 688023c254216764891da7115d73253e, type: 3}
     amount: 20
+--- !u!114 &5389183070632612933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 538350748458415290}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  serverOnly: 0
+  m_AssetId: 
+  hasSpawned: 0
