@@ -1193,7 +1193,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     }
     #endregion
 
-    public Teams Team => throw new System.NotImplementedException();
+    public Teams Team => Teams.Unit;
 
     #endregion
 
