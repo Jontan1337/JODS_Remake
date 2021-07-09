@@ -133,7 +133,7 @@ public class PlaceItem : EquipmentItem
 				Cmd_DestroyGameObject();
 				break;
 			case EquipmentType.Special:
-				Cmd_Drop();
+				Cmd_Drop(); // Placeitem dropped when changing equipment - FIX
 				break;
 			default:
 				break;
