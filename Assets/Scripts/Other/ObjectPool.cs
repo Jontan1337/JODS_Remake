@@ -25,6 +25,7 @@ public class ObjectPool : NetworkBehaviour
 	#endregion
 
 	public List<Pool> pools;
+	[SerializeField] private bool test = false;
 
 	[Space]
 
@@ -32,7 +33,12 @@ public class ObjectPool : NetworkBehaviour
 	public Dictionary<string, Queue<GameObject>> localPoolDictionary;
 	public Dictionary<string, Queue<GameObject>> networkedPoolDictionary;
 
-	[Server]
+    private void Start()
+    {
+		if (test) InitializePools();
+    }
+
+    [Server]
     public void InitializePools()
 	{
 		InitializeLocalPool();
