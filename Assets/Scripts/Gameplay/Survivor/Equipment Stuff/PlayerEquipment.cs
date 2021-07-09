@@ -456,7 +456,8 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     private void Svr_OnItemDropped(GameObject item)
     {
         OnItemDropped(item);
-        Rpc_OnItemDropped(item);
+        Rpc_OnItemDropped(item);   
+        SelectedEquipmentSlot.Svr_RemoveItem();
     }
     [ClientRpc]
     private void Rpc_OnItemDropped(GameObject item)
@@ -585,7 +586,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
             // Doesn't always drop currently equipped weapon... Need fix.
             slot.EquipmentItem.GetComponent<EquipmentItem>().Svr_Drop();
             //Svr_OnItemDropped(slot.EquipmentItem);
-            //Svr_ClearHotbarSlot(slot);
+            Svr_ClearHotbarSlot(slot);
         }
     }
 
