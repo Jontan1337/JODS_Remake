@@ -36,7 +36,6 @@ public class LobbySync : NetworkBehaviour
         DontDestroyOnLoad(this);
     }
 
-
     [Server]
     public void Svr_AddPlayer(int playerID)
     {
@@ -118,9 +117,6 @@ public class LobbySync : NetworkBehaviour
         playerCharacter.transform.rotation = playerSeat.transform.rotation;
     }
 
-
-
-
     private IEnumerator RotateNameTag(GameObject player, GameObject character)
     {
         // Wait for a small amount of time because the network is delayed or something?
@@ -154,27 +150,14 @@ public class LobbySync : NetworkBehaviour
     }
 
 
-    [Server]
-    public void Svr_PlayerSmoke(GameObject chara)
+    [ClientRpc]
+    public void Rpc_EnableControls()
     {
-        chara.GetComponentInParent<LobbyCharacters>().Svr_GetChoice();
+        JODSInput.Controls.Enable();
     }
-
-    [Server]
-    public void Svr_RemovePlayerLabel(int playerID)
+    [ClientRpc]
+    public void Rpc_DisableControls()
     {
-        NetworkServer.Destroy(PlayerLabels[playerID].gameObject);
-        PlayerLabels.RemoveAt(playerID);
-        sound.PlaySound("Leave");
-    }
-    [Server]
-    // When a player disconnects, remove that character and reset that player seat.
-    public void Svr_RemovePlayer(int playerID)
-    {
-        playersInLobby[playerID] = null;
-        lobbySeats[playerID].player = null;
-        lobbySeats[playerID].isTaken = false;
-        NetworkServer.Destroy(playersInLobby[playerID]);
-        sound.PlaySound("Leave");
+        JODSInput.Controls.Disable();
     }
 }

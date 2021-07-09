@@ -65,6 +65,7 @@ public class Lobby : NetworkManager
     private bool isInitialized = false;
 
     private static Action<NetworkConnection> RelayOnServerPlayerReady;
+    public static Action<NetworkConnection> RelayOnServerGameStarted;
 
     #region Singleton
     public static Lobby Instance;
@@ -271,10 +272,14 @@ public class Lobby : NetworkManager
 
     private IEnumerator PreGameCo()
     {
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(0.1f);
+        LobbySync.Instance.Rpc_DisableControls();
         OnPlayersLoaded?.Invoke();
+        yield return new WaitForSeconds(1.5f);
         NetworkServer.Destroy(PreGameWaitingRoom.Instance.gameObject);
+        LobbySync.Instance.Rpc_EnableControls();
     }
+
 
     #endregion
 
@@ -525,7 +530,11 @@ public class Lobby : NetworkManager
     {
         yield return new WaitForSeconds(0.2f); //Delay cause server slow
         OnServerReadied?.Invoke(conn, _class, isMaster);
-        yield return new WaitForSeconds(0.3f);
+    }
+
+    public static void InvokeRelayOnServerSynchronize(NetworkConnection conn)
+    {
+        // Don't synchronize the host player since they have all data already.
         if (conn.connectionId != 0)
         {
             RelayOnServerSynchronize?.Invoke(conn);

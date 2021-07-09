@@ -2,6 +2,7 @@
 using UnityEngine;
 using Mirror;
 using System.Collections.Generic;
+using System;
 
 public struct PlayerToSpawn
 {
@@ -93,5 +94,14 @@ public class PlayerSpawner : NetworkBehaviour
             //When the new player instance is all set and ready, then destroy the old one, as it is no longer needed.
             NetworkServer.Destroy(oldPlayerInstance);
         }
+
+        // Call Lobby method which invokes RelayOnServerSynchronize.
+        StartCoroutine(DelaySynchronize(conn));
+    }
+
+    private IEnumerator DelaySynchronize(NetworkConnection conn)
+    {
+        yield return new WaitForSeconds(0.2f);
+        Lobby.InvokeRelayOnServerSynchronize(conn);
     }
 }
