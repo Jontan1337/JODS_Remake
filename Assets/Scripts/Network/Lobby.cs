@@ -49,6 +49,7 @@ public class Lobby : NetworkManager
     [Header("Prefabs")]
     public GameObject playerSpawner;
     public GameObject preGameRoom;
+    public GameObject objectPool;
     public GameObject MatchManager;
     public GameObject lobbyPlayer;
     public GameObject GOLobbySync;
@@ -206,6 +207,11 @@ public class Lobby : NetworkManager
             //Spawn the Player Spawner
             GameObject playerSpawnerInstance = Instantiate(playerSpawner);
             NetworkServer.Spawn(playerSpawnerInstance);
+
+            //Spawn the Object Pool
+            GameObject objectPoolInstance = Instantiate(objectPool);
+            NetworkServer.Spawn(objectPoolInstance);
+            objectPool = objectPoolInstance;
         }
     }
 
@@ -272,11 +278,28 @@ public class Lobby : NetworkManager
 
     private IEnumerator PreGameCo()
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.1f); //Network delay
+
+        //Disable player controls, because the players have been spawned at this point. But the pre-game waiting room is still active.
         LobbySync.Instance.Rpc_DisableControls();
+
+        //Invoke this, which tells other objects that all players have loaded and allows them to do their thing.
         OnPlayersLoaded?.Invoke();
-        yield return new WaitForSeconds(1.5f);
+
+        //Object Pool
+
+        //TODO: Give object pools more objects to spawn 
+        //      Master units
+        //      Survivor specific objects
+
+        //Then we tell the object pool to initialize it's pools, which will spawn all of the objects.
+        objectPool.GetComponent<ObjectPool>().InitializePools();
+
+        yield return new WaitForSeconds(1.5f); //This delay is mostly to hide all of the game initialization going on.
+        
+        //Destroy the pre game waiting room.
         NetworkServer.Destroy(PreGameWaitingRoom.Instance.gameObject);
+        //Enable player controls.
         LobbySync.Instance.Rpc_EnableControls();
     }
 
@@ -428,7 +451,7 @@ public class Lobby : NetworkManager
                 remainingSurvivors.Add(survivor.survivor);
             }
         }
-        print(remainingSurvivors.Count + " : " + eligiblePlayers.Count);
+
         //Now do a check to see if the amount of remaining survivors matches the amount of eligible players
         //If not, then something went wrong
         if (remainingSurvivors.Count < eligiblePlayers.Count)
@@ -447,8 +470,6 @@ public class Lobby : NetworkManager
 
             //Assign the survivor to the player
             playerToAssignSurvivor.SetSurvivorSO(randomSurvivor);
-
-            print(playerToAssignSurvivor + ": bew : " + randomSurvivor);
         }
 
         return true;
@@ -475,7 +496,6 @@ public class Lobby : NetworkManager
         //Iterate through each player and check if they have readied up.
         foreach (LobbyPlayer lobbyPlayer in roomPlayers)
         {
-            print(lobbyPlayer);
             //If a player has not readied up, return false.
             if (!lobbyPlayer.isReady) return false;
         }

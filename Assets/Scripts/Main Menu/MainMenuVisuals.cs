@@ -35,8 +35,6 @@ public class MainMenuVisuals : MonoBehaviour
     {
         int value = MasterSelection.instance.GetMasterIndex;
 
-        Debug.Log("Loading world visuals with index " + value);
-
         bool worldLoaded = false;
         foreach(var world in worldVisuals)
         {
