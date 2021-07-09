@@ -4,7 +4,6 @@ using UnityEngine.AI;
 
 public class SoldierRocket : Projectile
 {
-	[Server]
 	public override void OnHit(Collision collision)
 	{
 		if (!isServer) return;

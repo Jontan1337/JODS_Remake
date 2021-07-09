@@ -104,7 +104,7 @@ public abstract class Projectile : NetworkBehaviour
 
 	public virtual void ReturnObjectToPool(float time)
 	{
-		ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject, time);
+		ObjectPool.Instance.ReturnToNetworkedPool(objectPoolTag, gameObject, time);
 	}
 
 

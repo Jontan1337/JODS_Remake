@@ -211,11 +211,11 @@ public class MeleeWeapon : EquipmentItem
     [ClientRpc]
     private void Rpc_EmitParticle(Vector3 objectPos, Color color)
     {
-        GameObject pooledParticleObject = ObjectPool.Instance.SpawnFromPool("Blood Splatter", objectPos, transform.rotation);
+        GameObject pooledParticleObject = ObjectPool.Instance.SpawnFromLocalPool("Blood Splatter", objectPos, transform.rotation);
         ParticleSystem pooledParticle = pooledParticleObject.GetComponent<ParticleSystem>();
         ParticleSystem.MainModule mainMod = pooledParticle.main;
         mainMod.startColor = color;
-        ObjectPool.Instance.ReturnToPool("Blood Splatter", pooledParticleObject, pooledParticle.main.duration);
+        ObjectPool.Instance.ReturnToLocalPool("Blood Splatter", pooledParticleObject, pooledParticle.main.duration);
     }
 
     private IEnumerator IESplatterShader()

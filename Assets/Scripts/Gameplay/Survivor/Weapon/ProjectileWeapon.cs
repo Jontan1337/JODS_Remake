@@ -9,11 +9,13 @@ public class ProjectileWeapon : RangedWeapon
     [SerializeField] private float timeToLive = 5f;
     [SerializeField] private string projectileTag = "Bullet";
 
+
     protected override void Shoot()
     {
         base.Shoot();
         Rpc_ShootFX();
-        GameObject projectile = ObjectPool.Instance.SpawnFromPool(projectileTag, shootOrigin.position, shootOrigin.rotation, timeToLive);
+        GameObject projectile = ObjectPool.Instance.SpawnFromNetworkedPool(projectileTag, shootOrigin.position, shootOrigin.rotation, timeToLive);
+        //GameObject projectile = ObjectPool.Instance.SpawnFromPool(projectileTag, shootOrigin.position, shootOrigin.rotation, timeToLive);
         projectile.GetComponent<Rigidbody>().AddForce(shootOrigin.forward * projectileSpeed, ForceMode.Impulse);
     }
 }

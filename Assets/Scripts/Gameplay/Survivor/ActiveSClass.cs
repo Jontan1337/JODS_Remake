@@ -87,7 +87,6 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	[TargetRpc]
 	private void Rpc_InvokeOnChangedHealth(NetworkConnection target, float healthDifference)
     {
-		print("invoek");
 		onChangedHealth?.Invoke(healthDifference);
 	}
 

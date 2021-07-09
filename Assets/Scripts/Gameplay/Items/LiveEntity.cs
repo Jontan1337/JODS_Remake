@@ -285,7 +285,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 		{
 			if (objectPooled)
 			{
-				ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject, 0);
+				ObjectPool.Instance.ReturnToNetworkedPool(objectPoolTag, gameObject, 0);
 			}
 			else
 			{
@@ -297,6 +297,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 	[ClientRpc]
 	private void Rpc_StartExplosionEffect()
 	{
+		print("WTFFFFFFF");
 		explosionEffect.Play();
 		explosionEffect.gameObject.transform.parent = null;
 		explosionEffect.GetComponent<SFXPlayer>()?.PlaySFX();

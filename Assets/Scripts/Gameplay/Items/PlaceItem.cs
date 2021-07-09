@@ -116,11 +116,23 @@ public class PlaceItem : EquipmentItem
 	protected override void OnDropPerformed(InputAction.CallbackContext obj)
 	{
 		Unbind();
+		Drop();
 	}
 	public override void Unbind()
 	{
 		base.Unbind();
-		Drop();
+	}
+
+	public override void Svr_Unequip()
+	{
+		base.Svr_Unequip();
+	}
+
+	public override void Svr_Equip()
+	{
+		print(1);
+		base.Svr_Equip();
+		Equipped(connectionToClient, gameObject);
 	}
 
 	public void Drop()
