@@ -228,6 +228,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
         {
             print("Not Initial state");
             writer.WriteGameObject(itemInHands);
+            //writer.WriteE
             writer.WriteEquipmentSlot(selectedEquipmentSlot);
             return true;
         }

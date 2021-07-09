@@ -36,7 +36,6 @@ public static class CustomReadWrite
         }
         return identity.GetComponent<PlayerEquipment>();
     }
-
     public static void WriteEquipmentSlot(this NetworkWriter writer, EquipmentSlot value)
     {
         ILogger logger = LogFactory.GetLogger<NetworkWriter>();
@@ -63,6 +62,60 @@ public static class CustomReadWrite
             return null;
         }
         return identity.GetComponent<EquipmentSlot>();
+    }
+    public static void WriteRaycastWeapon(this NetworkWriter writer, RaycastWeapon value)
+    {
+        ILogger logger = LogFactory.GetLogger<NetworkWriter>();
+        if (value == null)
+        {
+            return;
+        }
+        NetworkIdentity networkIdentity = value.GetComponent<NetworkIdentity>();
+        if (networkIdentity != null)
+        {
+            writer.WriteNetworkIdentity(networkIdentity);
+        }
+        else
+        {
+            logger.LogWarning("NetworkWriter " + value + " has no NetworkIdentity");
+            writer.WriteNetworkIdentity(null);
+        }
+    }
+    public static RaycastWeapon ReadRaycastWeapon(this NetworkReader reader)
+    {
+        NetworkIdentity identity = reader.ReadNetworkIdentity();
+        if (identity == null)
+        {
+            return null;
+        }
+        return identity.GetComponent<RaycastWeapon>();
+    }
+    public static void WriteProjectileWeapon(this NetworkWriter writer, ProjectileWeapon value)
+    {
+        ILogger logger = LogFactory.GetLogger<NetworkWriter>();
+        if (value == null)
+        {
+            return;
+        }
+        NetworkIdentity networkIdentity = value.GetComponent<NetworkIdentity>();
+        if (networkIdentity != null)
+        {
+            writer.WriteNetworkIdentity(networkIdentity);
+        }
+        else
+        {
+            logger.LogWarning("NetworkWriter " + value + " has no NetworkIdentity");
+            writer.WriteNetworkIdentity(null);
+        }
+    }
+    public static ProjectileWeapon ReadProjectileWeapon(this NetworkReader reader)
+    {
+        NetworkIdentity identity = reader.ReadNetworkIdentity();
+        if (identity == null)
+        {
+            return null;
+        }
+        return identity.GetComponent<ProjectileWeapon>();
     }
     #endregion
 
