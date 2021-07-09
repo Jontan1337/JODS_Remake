@@ -184,7 +184,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 			fromPosBottom = new Vector3(transform.position.x, transform.position.y, transform.position.z);
 
 			// Play the explosion particle system effect.
-			StartExplosionEffect();
+			Rpc_StartExplosionEffect();
 			// Save all Colliders from the gameobjects the OverlapSphere hits.
 			Collider[] tempHitObjects = Physics.OverlapSphere(transform.position, explosionRadius, ~zombiePartLayer); // Ignore individual zombie parts.
 																													  // Run through each collider the OverlapSphere hit.
@@ -294,7 +294,8 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 		}
 	}
 
-	private void StartExplosionEffect()
+	[ClientRpc]
+	private void Rpc_StartExplosionEffect()
 	{
 		explosionEffect.Play();
 		explosionEffect.gameObject.transform.parent = null;

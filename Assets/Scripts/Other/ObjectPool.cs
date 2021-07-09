@@ -61,7 +61,7 @@ public class ObjectPool : NetworkBehaviour
 			{
 				//Create the object, and add it to the queue
 				GameObject obj = Instantiate(pool.prefab[Random.Range(0, pool.prefab.Length)], transform);
-				if (obj.GetComponent<NetworkIdentity>())
+				if (obj.GetComponent<NetworkIdentity>() && isServer)
 				{
 					NetworkServer.Spawn(obj);
 				}
