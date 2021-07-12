@@ -62,6 +62,7 @@ MonoBehaviour:
   unequippedLayer: 14
   equippedLayer: 15
   isInteractable: 1
+  destroyOnDrop: 0
   authController: {fileID: 8296172669356463415}
   objectVisuals: {fileID: 2721683097890432565}
   rb: {fileID: 8677567993216096716}
@@ -82,6 +83,7 @@ MonoBehaviour:
   sfxPlayer: {fileID: 8677567993216096715}
   shootSound: {fileID: 8300000, guid: 209b5b9f5033ab3448abedb2a7ccbeff, type: 3}
   emptySound: {fileID: 8300000, guid: 6e8772b49f34d402a90016ed445d8a2f, type: 3}
+  muzzleParticle: {fileID: 3376664394316608598}
   range: 1000
   ignoreLayer:
     serializedVersion: 2
@@ -1628,6 +1630,12 @@ GameObject:
 --- !u!4 &1986087315752044268 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6816969815331322754, guid: 8d15c98a7ed32a3449f4464fbf71ebf8,
+    type: 3}
+  m_PrefabInstance: {fileID: 4977957572958846318}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &3376664394316608598 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 7766757078216870200, guid: 8d15c98a7ed32a3449f4464fbf71ebf8,
     type: 3}
   m_PrefabInstance: {fileID: 4977957572958846318}
   m_PrefabAsset: {fileID: 0}
