@@ -294,10 +294,9 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 		}
 	}
 
-	[ClientRpc]
+	[ClientRpc] 
 	private void Rpc_StartExplosionEffect()
 	{
-		print("WTFFFFFFF");
 		explosionEffect.Play();
 		explosionEffect.gameObject.transform.parent = null;
 		explosionEffect.GetComponent<SFXPlayer>()?.PlaySFX();
