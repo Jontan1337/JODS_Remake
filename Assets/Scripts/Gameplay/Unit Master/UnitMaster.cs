@@ -136,6 +136,7 @@ public class UnitMaster : NetworkBehaviour
         
         SetMasterUnits();
 
+        globalAudio = GetComponent<AudioSource>();
 
         if (!hasAuthority) return;
 
@@ -194,8 +195,7 @@ public class UnitMaster : NetworkBehaviour
         //Misc
         spawnSmokeAudio = spawnSmokeEffect.GetComponent<AudioSource>();
         spawnSmokeAudio.clip = masterSO.spawnSound;
-
-        globalAudio = GetComponent<AudioSource>();
+                
         globalAudio.clip = masterSO.globalSound;
 
         //Attach the master's custom script to the gameobject.
@@ -372,7 +372,7 @@ public class UnitMaster : NetworkBehaviour
         ActivateUpgradeDecisions(false);
 
         //Play a sound
-        CmdPlayGlobalSound(true);
+        Cmd_PlayGlobalSound(true);
 
         //Start the coroutine again
         StartCoroutine(UpgradeCoroutine(stats.timeUntillNextUpgrade));
@@ -793,7 +793,7 @@ public class UnitMaster : NetworkBehaviour
         IncreaseXp(-unit.unit.xpToUpgrade);
 
         //Play spooky sound
-        CmdPlayGlobalSound(true);
+        Cmd_PlayGlobalSound(true);
     }
 
     public void UnlockNewUnit(int which)
@@ -814,7 +814,7 @@ public class UnitMaster : NetworkBehaviour
         IncreaseXp(-unit.unit.xpToUnlock);
 
         //Play spooky sound
-        CmdPlayGlobalSound(true);
+        Cmd_PlayGlobalSound(true);
     }
     #endregion
 
@@ -1131,7 +1131,7 @@ public class UnitMaster : NetworkBehaviour
         NetworkServer.Destroy(unitToRefund);
     }
     [Command]
-    void CmdPlayGlobalSound(bool randomPitch)
+    void Cmd_PlayGlobalSound(bool randomPitch)
     {
         //Assign a random pitch to the audio source
         globalAudio.pitch = randomPitch ? Random.Range(0.95f, 1.05f) : 1;

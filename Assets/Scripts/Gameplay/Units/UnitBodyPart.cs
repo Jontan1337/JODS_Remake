@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEffect
+public class UnitBodyPart : NetworkBehaviour, IDamagable, IDetachable, IParticleEffect
 {
     private readonly float[] multiplierArray = new float[]
     {
@@ -21,6 +22,8 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEff
 
     public bool detachable = false;
     [Space]
+    public bool onlyDetachOnDeath = false;
+    [Space]
     public GameObject attachedPart;
     public Transform partTransform;
     [Space]
@@ -32,12 +35,21 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEff
 
     #endregion
 
-
-    public bool Detach(DamageTypes damageType)
+    [Server]
+    public void Detach(DamageTypes damageType)
     {
-        if (!detachable) return false;
-        if (unitBase.Svr_Dismember(damageType, attachedPart, partTransform.position, partTransform.rotation))
+        if (!detachable) return;
+        Rpc_Detach(damageType);
+    }
+
+    [ClientRpc]
+    void Rpc_Detach(DamageTypes damageType)
+    {
+        print("Rpc_Detach");
+        if (unitBase.Dismember(damageType, attachedPart, partTransform.position, partTransform.rotation, onlyDetachOnDeath))
         {
+            print("Rpc_Detach SUCCESS");
+
             Collider[] cols = GetComponents<Collider>();
             foreach (Collider col in cols)
             {
@@ -46,9 +58,7 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEff
 
             //childBloodEmitter.SetActive(true);
             bodyBloodEmitter.SetActive(true);
-            return true;
         }
-        return false;
     }
 
     public void Svr_Damage(int damage, Transform target = null)

@@ -18,8 +18,11 @@ public class UnitBodyPartEditor : Editor
 
         if (script.detachable)
         {
+            serializedObject.FindProperty("onlyDetachOnDeath").boolValue = EditorGUILayout.Toggle("Only Detach On Death", script.onlyDetachOnDeath);
+            EditorGUILayout.Space();
             serializedObject.FindProperty("attachedPart").objectReferenceValue = EditorGUILayout.ObjectField("Attached Part", script.attachedPart, typeof(GameObject), true) as GameObject;
             serializedObject.FindProperty("partTransform").objectReferenceValue = EditorGUILayout.ObjectField("Part Transform", script.partTransform, typeof(Transform), true) as Transform;
+            EditorGUILayout.Space();
             serializedObject.FindProperty("childBloodEmitter").objectReferenceValue = EditorGUILayout.ObjectField("Child Blood Emitter", script.childBloodEmitter, typeof(GameObject), true) as GameObject;
             serializedObject.FindProperty("bodyBloodEmitter").objectReferenceValue = EditorGUILayout.ObjectField("Body Blood Emitter", script.bodyBloodEmitter, typeof(GameObject), true) as GameObject;
         }

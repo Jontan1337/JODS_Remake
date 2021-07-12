@@ -1044,25 +1044,25 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     #region Dismemberment
 
-    [Server]
-    public bool Svr_Dismember(DamageTypes damageType, GameObject oldPart, Vector3 partPosition, Quaternion partRotation)
+    public bool Dismember(DamageTypes damageType, GameObject oldPart, Vector3 partPosition, Quaternion partRotation, bool onlyDetachOnDeath)
     {
-        if (IsDead) { 
+        print(IsDead);
+        if (onlyDetachOnDeath && IsDead || !onlyDetachOnDeath) { 
             switch (damageType)
             {
                 case DamageTypes.Blunt:
 
-                    Svr_Dismember_BodyPart(oldPart, partPosition, partRotation);
+                    Dismember_BodyPart(oldPart, partPosition, partRotation);
 
                     break;
                 case DamageTypes.Slash:
 
-                    Svr_Dismember_BodyPart(oldPart, partPosition, partRotation);
+                    Dismember_BodyPart(oldPart, partPosition, partRotation);
 
                     break;
                 case DamageTypes.Pierce:
 
-                    Svr_Dismember_BodyPart(oldPart, partPosition, partRotation);
+                    Dismember_BodyPart(oldPart, partPosition, partRotation);
 
                     break;
             }
@@ -1071,20 +1071,12 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         return false;
     }
 
-    [Server]
-    private void Svr_Dismember_BodyPart(GameObject oldPart, Vector3 partPosition, Quaternion partRotation)
+    private void Dismember_BodyPart(GameObject oldPart, Vector3 partPosition, Quaternion partRotation)
     {
+        print("altso hallo");
+
         Vector3 randomForce = new Vector3(Random.Range(-50, 50), Random.Range(-20, 20), Random.Range(-50, 50));
 
-        Rpc_Dismember_BodyPart(oldPart, partPosition, partRotation, randomForce);
-    }
-    [ClientRpc]
-    private void Rpc_Dismember_BodyPart(GameObject oldPart, Vector3 partPosition, Quaternion partRotation, Vector3 randomForce)
-    {
-        Dismember_BodyPart(oldPart, partPosition, partRotation, randomForce);
-    }
-    private void Dismember_BodyPart(GameObject oldPart, Vector3 partPosition, Quaternion partRotation, Vector3 randomForce)
-    {
         SkinnedMeshRenderer oldSkinMeshRenderer = oldPart.GetComponent<SkinnedMeshRenderer>();
 
         GameObject newPart = ObjectPool.Instance.SpawnFromLocalPool("Body Part", partPosition, partRotation, 8f);
