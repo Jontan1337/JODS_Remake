@@ -14,7 +14,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	[SerializeField] private SkinnedMeshRenderer survivorRenderer = null;
 	[Space]
 	[Header("Stats")]
-	[SerializeField] private int health = 100;
+	[SerializeField] private int currentHealth = 100;
 	[SerializeField] private int maxHealth = 100;
 	[SerializeField] private int armor = 0;
 	[SerializeField] private float abilityCooldown = 0;
@@ -28,7 +28,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	[SerializeField] private float ammoCapacity = 0;
 
 	[Header("UI References")]
-	[SerializeField] private Transform healthBar;
+	[SerializeField] private Slider healthBar;
 
 	[Header("Events")]
 	[SerializeField] private UnityEvent<float> onChangedHealth;
@@ -38,16 +38,15 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 
 	public bool test;
 
-	public int GetHealth => health;
+	public int GetHealth => currentHealth;
 	public bool IsDead => isDead;
 	public int Health
     {
-		get => health;
+		get => currentHealth;
 		private set
         {
-			float difference = (float)health - value;
-            health = value;
-			Rpc_InvokeOnChangedHealth(connectionToClient, difference);
+            currentHealth = value;
+			healthBar.value = currentHealth;
         }
     }
 
@@ -90,11 +89,6 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 		onChangedHealth?.Invoke(healthDifference);
 	}
 
-	public void UpdateHealthBar(float healthDifference)
-    {
-		float diffPercentOfHealth = healthDifference / 100 / ((float)maxHealth / 100);
-		healthBar.localScale = new Vector3(healthBar.localScale.x - diffPercentOfHealth, healthBar.localScale.y);
-	}
 	#endregion
 
 	[Command]
@@ -155,21 +149,26 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 			newValue.abilityObject = survivorSO.abilityObject;
 		}
 
-		armor = survivorSO.armor;
-		health = survivorSO.health;
-		maxHealth = health;
+		maxHealth = survivorSO.maxHealth;
+		currentHealth = maxHealth;
+		armor = survivorSO.startingArmor;
+
 		accuracy = survivorSO.accuracy;
 		reloadSpeed = survivorSO.reloadSpeed;
 		ammoCapacity = survivorSO.ammoCapacity;
+		
+		sController = GetComponent<SurvivorController>();
 		movementSpeed = survivorSO.movementSpeed;
+		sController.speed *= movementSpeed;
+		
 		abilityCooldown = survivorSO.abilityCooldown;
+		abilityCooldownCount = abilityCooldown;
+		
 		survivorRenderer.material = survivorSO.survivorMaterial;
 		survivorRenderer.sharedMesh = survivorSO.survivorMesh;
 
-		abilityCooldownCount = abilityCooldown;
-
-		sController = GetComponent<SurvivorController>();
-		sController.speed *= movementSpeed;
+		healthBar.maxValue = maxHealth;
+		healthBar.value = currentHealth;
 	}
 
 	[Command]
