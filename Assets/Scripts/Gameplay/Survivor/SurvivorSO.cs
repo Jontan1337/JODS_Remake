@@ -7,8 +7,8 @@ public class SurvivorSO : ScriptableObject
     public string survivorName = "Default Survivor";
 
     [Header("Stats")]
-    public int health;
-    public int armor;
+    public int maxHealth;
+    public int startingArmor;
     public float movementSpeed;
     public float abilityCooldown;
 

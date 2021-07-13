@@ -34,8 +34,8 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	private List<Collider> enemiesInSight = new List<Collider>();
 	[SyncVar] private bool isDead;
 
-	// The turret tries to shoot at a fixed interval. The value of fireRate should be the desired rounds per minute (RPM).
 	#region Coroutines
+	// The turret tries to shoot at a fixed interval. The value of fireRate should be the desired rounds per minute (RPM).
 	IEnumerator ShootIntervalCo;
 	IEnumerator ShootInterval()
 	{
