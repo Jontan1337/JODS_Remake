@@ -45,11 +45,10 @@ public class UnitBodyPart : NetworkBehaviour, IDamagable, IDetachable, IParticle
     [ClientRpc]
     void Rpc_Detach(DamageTypes damageType)
     {
-        print("Rpc_Detach");
+        if (attachedPart == null || partTransform == null) return;
+
         if (unitBase.Dismember(damageType, attachedPart, partTransform.position, partTransform.rotation, onlyDetachOnDeath))
         {
-            print("Rpc_Detach SUCCESS");
-
             Collider[] cols = GetComponents<Collider>();
             foreach (Collider col in cols)
             {
@@ -76,8 +75,6 @@ public class UnitBodyPart : NetworkBehaviour, IDamagable, IDetachable, IParticle
         {
             //Dismemberment default states
             attachedPart.SetActive(true);
-            //detachedPart.GetComponent<Rigidbody>().isKinematic = true;
-            //detachedPart.gameObject.SetActive(false);
             bodyBloodEmitter.SetActive(false);
         }
     }
