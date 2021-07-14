@@ -29,6 +29,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 
 	[Header("UI References")]
 	[SerializeField] private Slider healthBar;
+	[SerializeField] private Slider armorBar;
 
 	[Header("Events")]
 	[SerializeField] private UnityEvent<float> onChangedHealth;
@@ -49,6 +50,15 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 			healthBar.value = currentHealth;
         }
     }
+	public int Armor
+	{
+		get => armor;
+		private set
+		{
+			armor = value;
+			armorBar.value = armor;
+		}
+	}
 
 	#region Serialization
 	//public override bool OnSerialize(NetworkWriter writer, bool initialState)
@@ -169,6 +179,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 
 		healthBar.maxValue = maxHealth;
 		healthBar.value = currentHealth;
+		armorBar.value = armor;
 	}
 
 	[Command]
@@ -196,8 +207,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 		if (armor > 0)
 		{
 			Health -= Mathf.RoundToInt(damage * 0.4f);
-			armor -= Mathf.RoundToInt(damage * 0.6f);
-			armor = Mathf.Clamp(armor, 0, 100);
+			Armor = Mathf.Clamp(Armor -= Mathf.RoundToInt(damage * 0.6f), 0, 100);
 		}
 		else
 		{
