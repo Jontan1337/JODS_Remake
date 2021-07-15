@@ -29,6 +29,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 
 	[Header("UI References")]
 	[SerializeField] private Slider healthBar;
+	[SerializeField] private Slider healthLossBar;
 	[SerializeField] private Slider armorBar;
 
 	[Header("Events")]
@@ -42,14 +43,20 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	public int GetHealth => currentHealth;
 	public bool IsDead => isDead;
 	public int Health
-    {
+	{
 		get => currentHealth;
 		private set
-        {
-            currentHealth = value;
+		{
+			int prevHealth = currentHealth;
+			currentHealth = value;
 			healthBar.value = currentHealth;
-        }
-    }
+			if (!healthLossBool)
+			{
+				StartCoroutine(HealthLossCo(prevHealth));
+			}
+
+		}
+	}
 	public int Armor
 	{
 		get => armor;
@@ -95,7 +102,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	#region ViewModel
 	[TargetRpc]
 	private void Rpc_InvokeOnChangedHealth(NetworkConnection target, float healthDifference)
-    {
+	{
 		onChangedHealth?.Invoke(healthDifference);
 	}
 
@@ -166,19 +173,20 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 		accuracy = survivorSO.accuracy;
 		reloadSpeed = survivorSO.reloadSpeed;
 		ammoCapacity = survivorSO.ammoCapacity;
-		
+
 		sController = GetComponent<SurvivorController>();
 		movementSpeed = survivorSO.movementSpeed;
 		sController.speed *= movementSpeed;
-		
+
 		abilityCooldown = survivorSO.abilityCooldown;
 		abilityCooldownCount = abilityCooldown;
-		
+
 		survivorRenderer.material = survivorSO.survivorMaterial;
 		survivorRenderer.sharedMesh = survivorSO.survivorMesh;
 
 		healthBar.maxValue = maxHealth;
 		healthBar.value = currentHealth;
+		healthLossBar.maxValue = maxHealth;
 		armorBar.value = armor;
 	}
 
@@ -199,6 +207,23 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 		sClass = selectedClass.GetComponent<SurvivorClass>();
 	}
 
+	private bool healthLossBool = false;
+
+	private IEnumerator HealthLossCo(int prevHealth)
+	{
+		healthLossBool = true;
+		healthLossBar.value = prevHealth;
+		print(healthLossBar.value);
+		yield return new WaitForSeconds(1);
+		while (healthLossBar.value > Health)
+		{
+			healthLossBar.value -= Time.deltaTime * 15;
+			print(healthLossBar.value);
+			yield return null;
+		}
+		healthLossBool = false;
+	}
+
 
 	public Teams Team => Teams.Player;
 	[Server]
@@ -206,8 +231,16 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	{
 		if (armor > 0)
 		{
-			Health -= Mathf.RoundToInt(damage * 0.4f);
-			Armor = Mathf.Clamp(Armor -= Mathf.RoundToInt(damage * 0.6f), 0, 100);
+			//Health -= Mathf.RoundToInt(damage * 0.4f);
+			//Armor = Mathf.Clamp(Armor -= Mathf.RoundToInt(damage * 0.6f), 0, 100);
+
+			float armorPercent = (float)armor / 100;
+
+			int armorLoss = Mathf.Clamp(Mathf.RoundToInt(damage * armorPercent), 1, 100);
+			int healthLoss = damage - armorLoss;
+
+			Health -= healthLoss;
+			Armor = Mathf.Clamp(Armor -= armorLoss, 0, 100);
 		}
 		else
 		{
