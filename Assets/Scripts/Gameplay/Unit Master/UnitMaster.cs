@@ -871,6 +871,9 @@ public class UnitMaster : NetworkBehaviour
     }
     private void TryToCommandUnit()
     {
+        Debug.LogError("Command Unit is not networked. Only the master will see the unit move to the location." +
+            " For others, it will stand still at the spawned position until someone moves close to it.");
+
         //If I don't have a unit currently selected, then return
         if (!selectedUnit) return;
 
