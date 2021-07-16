@@ -130,7 +130,6 @@ public class PlaceItem : EquipmentItem
 
 	public override void Svr_Equip()
 	{
-		print(1);
 		base.Svr_Equip();
 		Equipped(connectionToClient, gameObject);
 	}
