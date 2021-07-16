@@ -84,7 +84,9 @@ public class UnitMaster_FlyingController : MonoBehaviour
         transform.Rotate(Vector3.right * -r_vertical * Time.deltaTime, Space.Self);
         transform.Rotate(Vector3.up * r_horizontal * Time.deltaTime, Space.World);
 
-
+        float maxy = maxRotY;
+        float miny = minRotY;//This is just to remove the  fkn warning
+        
         //Raycast Marker
         if (showMarker) //If the master has selected a unit, this bool will be true
         {

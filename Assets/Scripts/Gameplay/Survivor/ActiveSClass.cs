@@ -28,12 +28,12 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	[SerializeField] private float ammoCapacity = 0;
 
 	[Header("UI References")]
-	[SerializeField] private Slider healthBar;
-	[SerializeField] private Slider healthLossBar;
-	[SerializeField] private Slider armorBar;
+	[SerializeField] private Slider healthBar = null;
+	[SerializeField] private Slider healthLossBar = null;
+	[SerializeField] private Slider armorBar = null;
 
 	[Header("Events")]
-	[SerializeField] private UnityEvent<float> onChangedHealth;
+	[SerializeField] private UnityEvent<float> onChangedHealth = null;
 
 	private bool abilityIsReady = true;
 	private bool isDead;
