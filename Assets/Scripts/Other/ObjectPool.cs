@@ -106,6 +106,9 @@ public class ObjectPool : NetworkBehaviour
 
 	public GameObject SpawnFromLocalPool(string tag, Vector3 position, Quaternion rotation, float? time = null)
 	{
+		Debug.LogError("TODO : make pools enqueue the object spawned immediately, putting it at the back of the queue." +
+			" This will make it possible to spawn objects even if all objects are used. It will just use an already spawned object.");
+
 		//If the tag does not exist within the pool dictionary, return nothing.
 		if (!localPoolDictionary.ContainsKey(tag))
 		{
@@ -244,6 +247,9 @@ public class ObjectPool : NetworkBehaviour
 	[Server]
 	public GameObject SpawnFromNetworkedPool(string tag, Vector3 position, Quaternion rotation, float? time = null)
 	{
+		Debug.LogError("TODO : make pools enqueue the object spawned immediately, putting it at the back of the queue." +
+					" This will make it possible to spawn objects even if all objects are used. It will just use an already spawned object.");
+
 		//If the tag does not exist within the pool dictionary, return nothing.
 		if (!networkedPoolDictionary.ContainsKey(tag))
 		{

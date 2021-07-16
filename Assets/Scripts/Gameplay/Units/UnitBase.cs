@@ -1046,7 +1046,9 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     public bool Dismember(DamageTypes damageType, GameObject oldPart, Vector3 partPosition, Quaternion partRotation, bool onlyDetachOnDeath)
     {
-        print(IsDead);
+        Debug.LogError("On Clients: unit is not dead when this part is reached? " +
+            "It is supposed to be dead, but I guess the server just hasnt told the clients yet.");
+
         if (onlyDetachOnDeath && IsDead || !onlyDetachOnDeath) { 
             switch (damageType)
             {
@@ -1073,8 +1075,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     private void Dismember_BodyPart(GameObject oldPart, Vector3 partPosition, Quaternion partRotation)
     {
-        print("altso hallo");
-
         Vector3 randomForce = new Vector3(Random.Range(-50, 50), Random.Range(-20, 20), Random.Range(-50, 50));
 
         SkinnedMeshRenderer oldSkinMeshRenderer = oldPart.GetComponent<SkinnedMeshRenderer>();
