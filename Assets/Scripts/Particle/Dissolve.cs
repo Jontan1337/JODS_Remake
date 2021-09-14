@@ -41,6 +41,7 @@ public class Dissolve : Timer
     {
         foreach (Material material in materials)
         {
+            if (material == null) continue;
             material.SetInt("_Dissolve", 1);
             material.SetFloat("_DissolveAmount", 0);
         }
