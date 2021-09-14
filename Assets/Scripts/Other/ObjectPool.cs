@@ -123,6 +123,9 @@ public class ObjectPool : NetworkBehaviour
 
 		//Take the next object out of the queue
 		GameObject objectToSpawn = localPoolDictionary[tag].Dequeue();
+		//Immediately put it at the back of the queue
+		//This ensures that there is always an available object to spawn, even if the object is already being used.
+		localPoolDictionary[tag].Enqueue(objectToSpawn);
 
 		//Activate it and put it where it needs to be
 		objectToSpawn.SetActive(true);
@@ -155,13 +158,12 @@ public class ObjectPool : NetworkBehaviour
 	{
 		if (!localPoolDictionary.ContainsKey(tag))
 		{
-			Debug.LogWarning($"Pool with tag ({tag}) doesn't exist. Could not enqueue {objectToEnqueue.name}");
+			Debug.LogWarning($"Pool with tag ({tag}) doesn't exist. Could not reset {objectToEnqueue.name}");
 			yield break;
 		}
 
 		yield return new WaitForSeconds(time);
 
-		localPoolDictionary[tag].Enqueue(objectToEnqueue);
 		ResetLocalObject(objectToEnqueue);
 	}
 
@@ -266,6 +268,9 @@ public class ObjectPool : NetworkBehaviour
 
 		//Take the next object out of the queue
 		GameObject objectToSpawn = networkedPoolDictionary[tag].Dequeue();
+		//Immediately put it at the back of the queue
+		//This ensures that there is always an available object to spawn, even if the object is already being used.
+		networkedPoolDictionary[tag].Enqueue(objectToSpawn);
 
 		//Activate it and put it where it needs to be
 		objectToSpawn.SetActive(true);
@@ -299,13 +304,12 @@ public class ObjectPool : NetworkBehaviour
 	{
 		if (!networkedPoolDictionary.ContainsKey(tag))
 		{
-			Debug.LogWarning($"Pool with tag ({tag}) doesn't exist. Could not enqueue {objectToEnqueue.name}");
+			Debug.LogWarning($"Pool with tag ({tag}) doesn't exist. Could not reset {objectToEnqueue.name}");
 			yield break;
 		}
 
 		yield return new WaitForSeconds(time);
 
-		networkedPoolDictionary[tag].Enqueue(objectToEnqueue);
 		ResetNetworkedObject(objectToEnqueue);
 	}
 
