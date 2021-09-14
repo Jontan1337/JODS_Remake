@@ -213,12 +213,11 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	{
 		healthLossBool = true;
 		healthLossBar.value = prevHealth;
-		print(healthLossBar.value);
 		yield return new WaitForSeconds(1);
 		while (healthLossBar.value > Health)
 		{
 			healthLossBar.value -= Time.deltaTime * 15;
-			print(healthLossBar.value);
+
 			yield return null;
 		}
 		healthLossBool = false;

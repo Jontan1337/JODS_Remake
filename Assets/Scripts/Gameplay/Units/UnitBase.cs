@@ -447,7 +447,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         select.bodyPartsRenderers = new SkinnedMeshRenderer[4];
 
         //Body --- INDEX : 0
-        if (unitSO.unitAppearanceVariations.bodyVariations.Length != 0)
+        if (unitSO.unitAppearanceVariations.bodyVariations.Length != 0 && bodyRenderer != null)
         {
             Mesh newAppearance = unitSO.unitAppearanceVariations.bodyVariations[
                 Random.Range(0, unitSO.unitAppearanceVariations.bodyVariations.Length)];
@@ -457,7 +457,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         }
 
         //Head --- INDEX : 1
-        if (unitSO.unitAppearanceVariations.headVariations.Length != 0)
+        if (unitSO.unitAppearanceVariations.headVariations.Length != 0 && headRenderer != null)
         {
             Mesh newAppearance = unitSO.unitAppearanceVariations.headVariations[
                 Random.Range(0, unitSO.unitAppearanceVariations.headVariations.Length)];
@@ -467,7 +467,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         }
 
         //Left Arm --- INDEX : 2
-        if (unitSO.unitAppearanceVariations.leftArmVariations.Length != 0)
+        if (unitSO.unitAppearanceVariations.leftArmVariations.Length != 0 && leftArmRenderer != null)
         {
             Mesh newAppearance = unitSO.unitAppearanceVariations.leftArmVariations[
                 Random.Range(0, unitSO.unitAppearanceVariations.leftArmVariations.Length)];
@@ -477,7 +477,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         }
 
         //Right Arm --- INDEX : 3
-        if (unitSO.unitAppearanceVariations.rightArmVariations.Length != 0)
+        if (unitSO.unitAppearanceVariations.rightArmVariations.Length != 0 && rightArmRenderer != null)
         {
             Mesh newAppearance = unitSO.unitAppearanceVariations.rightArmVariations[
                 Random.Range(0, unitSO.unitAppearanceVariations.rightArmVariations.Length)];
@@ -1080,6 +1080,11 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         SkinnedMeshRenderer oldSkinMeshRenderer = oldPart.GetComponent<SkinnedMeshRenderer>();
 
         GameObject newPart = ObjectPool.Instance.SpawnFromLocalPool("Body Part", partPosition, partRotation, 8f);
+        if (newPart == null)
+        {
+            Debug.LogError("No body part obtained from local pool");
+            return;
+        }
         newPart.transform.SetParent(null);
         newPart.GetComponent<MeshRenderer>().material = new Material(oldSkinMeshRenderer.sharedMaterial);
         newPart.GetComponent<MeshFilter>().mesh = oldSkinMeshRenderer.sharedMesh;
