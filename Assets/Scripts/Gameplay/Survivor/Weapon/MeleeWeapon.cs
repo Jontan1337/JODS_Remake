@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using UnityEngine.InputSystem;
+using System;
 
-public class MeleeWeapon : EquipmentItem
+public class MeleeWeapon : EquipmentItem, IImpacter
 {
     [Header("Settings")]
     [SerializeField] private LayerMask ignoreLayer;
@@ -44,6 +45,8 @@ public class MeleeWeapon : EquipmentItem
     private Transform previousHitColliderParent;
 
     private NetworkAnimator networkAnimator;
+
+    public Action<float> OnImpact { get; set; }
 
     private const string AttackTrigger = "Attack";
     private const string BloodAmount = "_BloodAmount";
@@ -86,6 +89,8 @@ public class MeleeWeapon : EquipmentItem
     {
         if (!isServer) return;
         if (!isAttacking) return;
+        // Wack animation.
+        OnImpact?.Invoke(10);
         if (other.transform.root != previousHitColliderParent)
         {
             if (other.TryGetComponent(out IDamagable damagable))

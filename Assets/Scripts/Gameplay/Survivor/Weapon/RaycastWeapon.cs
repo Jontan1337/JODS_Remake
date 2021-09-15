@@ -18,6 +18,11 @@ public class RaycastWeapon : RangedWeapon
         if (Physics.Raycast(shootRay, out rayHit, range, ~ignoreLayer))
         {
             rayHit.collider.GetComponent<IDamagable>()?.Svr_Damage(damage);
+
+            //bullet hole
+
+            GameObject bulletHole = ObjectPool.Instance.SpawnFromNetworkedPool("BulletHole", rayHit.point + rayHit.normal * 0.01f, Quaternion.identity, 5);
+            bulletHole.transform.LookAt(rayHit.point + rayHit.normal);
         }
     }
 }

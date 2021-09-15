@@ -56,8 +56,8 @@ public class LookController : NetworkBehaviour
 		{
 			return;
 		}
-		rotX += mouseDelta.x * sensitivity * Time.deltaTime;
-		rotY += mouseDelta.y * sensitivity * Time.deltaTime;
+		rotX += mouseDelta.x * sensitivity;
+		rotY += mouseDelta.y * sensitivity;
 		rotY = Mathf.Clamp(rotY, minRotY, maxRotY);
 		//transform.Rotate(0, rotX, 0);
 		rotateHorizontal.rotation = Quaternion.Euler(0, rotX, 0);
@@ -77,7 +77,8 @@ public class LookController : NetworkBehaviour
 
 	private void CameraShake(float amount)
     {
-		//playerCamera.DOShakeRotation(0.1f, 0.2f, 1, 90f);
+		playerCamera.DOComplete();
+        playerCamera.DOShakeRotation(0.1f, 0.2f * amount, 1, 0f, true);
     }
 
 	private void GetImpacter(GameObject oldObject, GameObject newObject)
