@@ -8,9 +8,11 @@ public class ObjectPool : NetworkBehaviour
 	[System.Serializable]
 	public class Pool
 	{
-		public string tag;
+		public string tagName;
+		public Tags tag;
 		public GameObject[] prefab;
 		public int amount;
+		public bool networked;
 	}
 
 	#region Singleton
@@ -25,8 +27,9 @@ public class ObjectPool : NetworkBehaviour
 	#endregion
 
 	public List<Pool> pools;
-	[SerializeField] private bool test = false;
 
+	[Space]
+	[SerializeField] private bool test = false;
 	[Space]
 
 	//The dictionary is used to keep all the objects, enemies, decals and whatever else, all seperated by their tags
@@ -60,7 +63,7 @@ public class ObjectPool : NetworkBehaviour
 		//For each pool of objects (Prop Group, Obstacles, etc)
 		foreach (Pool pool in pools)
 		{
-			string tag = pool.tag;
+			string tag = pool.tag.ToString();
 
 			//If the tag already exists within the pool dictionary, do not add this pool.
 			if (localPoolDictionary.ContainsKey(tag))
@@ -188,7 +191,7 @@ public class ObjectPool : NetworkBehaviour
 		//For each pool of objects (Prop Group, Obstacles, etc)
 		foreach (Pool pool in pools)
 		{
-			string tag = pool.tag;
+			string tag = pool.tag.ToString();
 
 			//If the tag already exists within the pool dictionary, do not add this pool.
 			if (networkedPoolDictionary.ContainsKey(tag))
@@ -321,5 +324,17 @@ public class ObjectPool : NetworkBehaviour
 		obj.transform.SetParent(transform);
 	}
 
-	#endregion
+    #endregion
+
+
+    private void OnValidate()
+    {
+        foreach (Pool pool in pools)
+        {
+			pool.tagName = pool.tag.ToString();
+
+			pool.networked = pool.prefab[0].GetComponent<NetworkIdentity>();
+
+		}
+    }
 }
