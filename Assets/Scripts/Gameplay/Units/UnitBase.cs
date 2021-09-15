@@ -1079,7 +1079,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
         SkinnedMeshRenderer oldSkinMeshRenderer = oldPart.GetComponent<SkinnedMeshRenderer>();
 
-        GameObject newPart = ObjectPool.Instance.SpawnFromLocalPool("Body Part", partPosition, partRotation, 8f);
+        GameObject newPart = ObjectPool.Instance.SpawnFromLocalPool(Tags.BodyPart, partPosition, partRotation, 8f);
         if (newPart == null)
         {
             Debug.LogError("No body part obtained from local pool");

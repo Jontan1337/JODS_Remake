@@ -21,7 +21,7 @@ public class RaycastWeapon : RangedWeapon
 
             //bullet hole
 
-            GameObject bulletHole = ObjectPool.Instance.SpawnFromNetworkedPool("BulletHole", rayHit.point + rayHit.normal * 0.01f, Quaternion.identity, 5);
+            GameObject bulletHole = ObjectPool.Instance.SpawnFromNetworkedPool(Tags.BulletHole, rayHit.point + rayHit.normal * 0.01f, Quaternion.identity, 5);
             bulletHole.transform.LookAt(rayHit.point + rayHit.normal);
         }
     }
