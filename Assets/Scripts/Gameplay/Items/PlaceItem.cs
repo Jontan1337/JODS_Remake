@@ -87,7 +87,7 @@ public class PlaceItem : EquipmentItem
 			transform.position = placeholderPos;
 			transform.rotation = placeholderRot;
 			transform.parent = null;
-			Rpc_Place(connectionToClient);
+			Rpc_Cleanup(connectionToClient);
 			OnPlaced?.Invoke();
 			Svr_InvokeOnDrop();
 
@@ -99,7 +99,7 @@ public class PlaceItem : EquipmentItem
 	}
 
 	[TargetRpc]
-	private void Rpc_Place(NetworkConnection target)
+	private void Rpc_Cleanup(NetworkConnection target)
 	{
 		StopCoroutine(PlaceHolderActiveCo);
 		Unbind();
@@ -126,12 +126,17 @@ public class PlaceItem : EquipmentItem
 	public override void Svr_Unequip()
 	{
 		base.Svr_Unequip();
+		Rpc_Cleanup(connectionToClient);
+		if (equipmentType == EquipmentType.None)
+		{
+			Cmd_DestroyGameObject();
+		}
 	}
 
 	public override void Svr_Equip()
 	{
 		base.Svr_Equip();
-		Equipped(connectionToClient, gameObject);
+		Equipped(connectionToClient, transform.root.gameObject);
 	}
 
 	public void Drop()
@@ -162,7 +167,7 @@ public class PlaceItem : EquipmentItem
 	public override void Svr_Interact(GameObject interacter)
 	{
 		base.Svr_Interact(interacter);
-		Equipped(connectionToClient, interacter);
+		//Equipped(connectionToClient, interacter);
 	}
 
 
