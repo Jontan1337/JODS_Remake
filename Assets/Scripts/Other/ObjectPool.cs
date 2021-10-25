@@ -261,7 +261,7 @@ public class ObjectPool : NetworkBehaviour
 	[Server]
 	public GameObject SpawnFromNetworkedPool(Tags Tag, Vector3 position, Quaternion rotation, float? time = null)
 	{
-		Debug.LogError("TODO : make pools enqueue the object spawned immediately, putting it at the back of the queue." +
+		Debug.LogWarning("TODO : make pools enqueue the object spawned immediately, putting it at the back of the queue." +
 					" This will make it possible to spawn objects even if all objects are used. It will just use an already spawned object.");
 
 		string tag = Tag.ToString();
