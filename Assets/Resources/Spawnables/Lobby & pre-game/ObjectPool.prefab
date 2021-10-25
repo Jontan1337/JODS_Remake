@@ -65,7 +65,7 @@ MonoBehaviour:
     - {fileID: 6798459583282562993, guid: 1fad6ce93e3bcea4ea0cc6a43ba690e1, type: 3}
     amount: 1
     networked: 0
-  - tagName: BloodSplatter
+  - tagName: Rocket
     tag: 7
     prefab:
     - {fileID: 6593017465037746565, guid: f74d66cde6c53454faa4388302f395a5, type: 3}
@@ -77,20 +77,26 @@ MonoBehaviour:
     - {fileID: 4539810607498361216, guid: 42cec309daebc2644935577b10f0089c, type: 3}
     amount: 50
     networked: 0
-  - tagName: Syringe
+  - tagName: Spit
     tag: 5
     prefab:
     - {fileID: 3668033450558484208, guid: 91c995c6987471b4c82209267e7c9782, type: 3}
     amount: 1
     networked: 1
-  - tagName: Rocket
+  - tagName: Syringe
     tag: 6
     prefab:
     - {fileID: 3668033450558484208, guid: 688023c254216764891da7115d73253e, type: 3}
     amount: 1
     networked: 1
-  - tagName: BulletHole
+  - tagName: BloodSplatter
     tag: 8
+    prefab:
+    - {fileID: 6593017465037746565, guid: f74d66cde6c53454faa4388302f395a5, type: 3}
+    amount: 50
+    networked: 0
+  - tagName: BulletHole
+    tag: 9
     prefab:
     - {fileID: 6769152677893134217, guid: 592c00ff53a4e844fa0dc2b729653521, type: 3}
     amount: 120
