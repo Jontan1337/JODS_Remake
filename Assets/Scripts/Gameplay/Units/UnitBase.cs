@@ -1046,7 +1046,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     public bool Dismember(DamageTypes damageType, GameObject oldPart, Vector3 partPosition, Quaternion partRotation, bool onlyDetachOnDeath)
     {
-        Debug.LogError("On Clients: unit is not dead when this part is reached? " +
+        Debug.LogWarning("On Clients: unit is not dead when this part is reached? " +
             "It is supposed to be dead, but I guess the server just hasnt told the clients yet.");
 
         if (onlyDetachOnDeath && IsDead || !onlyDetachOnDeath) { 
@@ -1091,7 +1091,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         newPart.GetComponent<MeshCollider>().sharedMesh = oldSkinMeshRenderer.sharedMesh;
 
         oldPart.SetActive(false);
-        newPart.GetComponent<Dissolve>().StartTimer(true, 5, 3);
+        //newPart.GetComponent<Dissolve>().StartTimer(true, 5, 3);
 
         if (newPart.TryGetComponent(out Rigidbody rb))
         {

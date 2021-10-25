@@ -128,7 +128,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerType: 2
-  startTimerOnAwake: 0
+  startTimerOnAwake: 1
   startOnAwakeDelay: 3
   stopTime: 5
   tickRate: 0.1
@@ -136,6 +136,7 @@ MonoBehaviour:
   timerProgress: 0
   materials: []
   getObjectMaterial: 1
+  destroyOnFinish: 0
 --- !u!1001 &7766052244418238820
 PrefabInstance:
   m_ObjectHideFlags: 0

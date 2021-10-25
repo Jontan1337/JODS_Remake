@@ -11,7 +11,7 @@ public abstract class Projectile : NetworkBehaviour
 	[SerializeField] protected int lifetime = 5;
 	[SerializeField] private bool destroyAfterLiftime = false;
 	[SerializeField] private bool sticky = false;
-	[SerializeField] protected string objectPoolTag = "";
+	[SerializeField] protected Tags objectPoolTag;
 	[Space]
 	[SerializeField] protected bool hasDropoff = true;
 	[SerializeField] protected int timeBeforeDropoff = 3;

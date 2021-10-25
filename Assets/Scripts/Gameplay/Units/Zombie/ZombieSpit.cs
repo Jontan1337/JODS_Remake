@@ -13,7 +13,7 @@ public class ZombieSpit : Projectile
 	public override void Start()
 	{
         base.Start();
-        objectPoolTag = "Spit";
+        objectPoolTag = Tags.Spit;
 	}
 
 	public override void OnHit(Collision objectHit)

@@ -8,7 +8,7 @@ public class Syringe : Projectile
 	public override void Start()
 	{
 		base.Start();
-		objectPoolTag = "Syringe";
+		objectPoolTag = Tags.Syringe;
 		transform.Rotate(new Vector3(90, 0, 0));
 	}
 	[Server]
