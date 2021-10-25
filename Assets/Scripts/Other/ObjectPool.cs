@@ -110,11 +110,13 @@ public class ObjectPool : NetworkBehaviour
 			}
 			else continue;
 		}
-	}
+		foreach (KeyValuePair<string, Queue<GameObject>> kvp in localPoolDictionary)
+			Debug.Log($"Local pool: " + kvp.Key);
+		}
 
 	public GameObject SpawnFromLocalPool(Tags Tag, Vector3 position, Quaternion rotation, float? time = null)
 	{
-		Debug.LogError("TODO : make pools enqueue the object spawned immediately, putting it at the back of the queue." +
+		Debug.LogWarning("TODO : make pools enqueue the object spawned immediately, putting it at the back of the queue." +
 			" This will make it possible to spawn objects even if all objects are used. It will just use an already spawned object.");
 
 		string tag = Tag.ToString();
@@ -153,9 +155,9 @@ public class ObjectPool : NetworkBehaviour
 		return objectToSpawn;
 	}
 
-	public void ReturnToLocalPool(string tag, GameObject objectToEnqueue, float time)
+	public void ReturnToLocalPool(Tags tag, GameObject objectToEnqueue, float time)
 	{
-		StartCoroutine(LocalDespawnTimer(tag, objectToEnqueue, (float)time));
+		StartCoroutine(LocalDespawnTimer(tag.ToString(), objectToEnqueue, (float)time));
 	}
 
 
@@ -246,6 +248,8 @@ public class ObjectPool : NetworkBehaviour
 			}
 			else continue;
 		}
+		foreach (KeyValuePair<string, Queue<GameObject>> kvp in networkedPoolDictionary)
+			Debug.Log($"Networked pool: " + kvp.Key);
 	}
 
 	[ClientRpc]
@@ -301,9 +305,9 @@ public class ObjectPool : NetworkBehaviour
 	}
 
 	[Server]
-	public void ReturnToNetworkedPool(string tag, GameObject objectToEnqueue, float time)
+	public void ReturnToNetworkedPool(Tags tag, GameObject objectToEnqueue, float time)
 	{
-		StartCoroutine(NetworkedDespawnTimer(tag, objectToEnqueue, (float)time));
+		StartCoroutine(NetworkedDespawnTimer(tag.ToString(), objectToEnqueue, (float)time));
 	}
 
 

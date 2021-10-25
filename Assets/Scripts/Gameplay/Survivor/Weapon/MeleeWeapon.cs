@@ -220,7 +220,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
         ParticleSystem pooledParticle = pooledParticleObject.GetComponent<ParticleSystem>();
         ParticleSystem.MainModule mainMod = pooledParticle.main;
         mainMod.startColor = color;
-        ObjectPool.Instance.ReturnToLocalPool("Blood Splatter", pooledParticleObject, pooledParticle.main.duration);
+        ObjectPool.Instance.ReturnToLocalPool(Tags.BloodSplatter, pooledParticleObject, pooledParticle.main.duration);
     }
 
     private IEnumerator IESplatterShader()
