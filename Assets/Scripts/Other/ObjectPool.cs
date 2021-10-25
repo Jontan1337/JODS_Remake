@@ -110,9 +110,7 @@ public class ObjectPool : NetworkBehaviour
 			}
 			else continue;
 		}
-		foreach (KeyValuePair<string, Queue<GameObject>> kvp in localPoolDictionary)
-			Debug.Log($"Local pool: " + kvp.Key);
-		}
+	}
 
 	public GameObject SpawnFromLocalPool(Tags Tag, Vector3 position, Quaternion rotation, float? time = null)
 	{
@@ -248,8 +246,6 @@ public class ObjectPool : NetworkBehaviour
 			}
 			else continue;
 		}
-		foreach (KeyValuePair<string, Queue<GameObject>> kvp in networkedPoolDictionary)
-			Debug.Log($"Networked pool: " + kvp.Key);
 	}
 
 	[ClientRpc]
