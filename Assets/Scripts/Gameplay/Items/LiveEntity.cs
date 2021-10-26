@@ -294,7 +294,9 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 		}
 	}
 
-	//[ClientRpc] 
+
+	// Doesn't work properly... Test as client
+	[ClientRpc]
 	private void Rpc_StartExplosionEffect()
 	{
 		explosionEffect.Play();

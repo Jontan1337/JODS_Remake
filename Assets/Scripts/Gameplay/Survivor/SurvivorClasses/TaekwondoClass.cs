@@ -86,6 +86,7 @@ public class TaekwondoClass : SurvivorClass, IHitter
 		while (flyingKickStart < flyingKickEnd)
 		{
 			flyingKickStart += Time.deltaTime;
+			print(flyingKick);
 
 			MoveForward();
 			yield return null;
@@ -135,7 +136,9 @@ public class TaekwondoClass : SurvivorClass, IHitter
 	public void OnHit(ControllerColliderHit hit)
 	{
 		if (!hasAuthority) return;
-		if (hit.gameObject.layer == 9 && flyingKick || hit.gameObject.layer == 10 && flyingKick)
+		print(flyingKick);
+
+		if (hit.gameObject.layer == 9 && flyingKick)
 		{
 			unitsHit.Add(hit.collider);
 			Physics.IgnoreCollision(hit.collider, cController);
