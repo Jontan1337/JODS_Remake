@@ -17,6 +17,11 @@
     Rocket,
 
     //Weapon FX
-    BloodSplatter,
-    BulletHole
+    BulletHole,
+
+
+
+    //Blood FX
+    MeleeBloodSplatter,
+    HeadExplosionBloodSplatter
 }

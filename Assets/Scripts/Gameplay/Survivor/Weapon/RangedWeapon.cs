@@ -18,6 +18,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [SerializeField, SyncVar] protected int currentAmmunition = 10;
     [SerializeField] protected int maxCurrentAmmunition = 10;
     [SerializeField, SyncVar] protected int extraAmmunition = 20;
+    [Space]
+    [SerializeField] protected bool highPower = false;
     //[SerializeField] protected int maxExtraAmmunition = 20;
 
     [Header("Game details")]
