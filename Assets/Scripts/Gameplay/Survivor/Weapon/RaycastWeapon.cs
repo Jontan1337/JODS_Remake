@@ -9,6 +9,8 @@ public class RaycastWeapon : RangedWeapon
     [SerializeField] private float range = 1000f;
     [Header("Settings")]
     [SerializeField] private LayerMask ignoreLayer = 13;
+    [Header("References")]
+    [SerializeField] private Transform playerHead;
 
     protected override void Shoot()
     {
@@ -38,6 +40,12 @@ public class RaycastWeapon : RangedWeapon
                 }
             }
         }
+    }
+
+    public override void Svr_Interact(GameObject interacter)
+    {
+        base.Svr_Interact(interacter);
+        playerHead = interacter.GetComponent<LookController>().playerItemCamera.transform;
     }
 
     [ClientRpc]
