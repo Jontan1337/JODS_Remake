@@ -30,9 +30,9 @@ public class PlaceItem : EquipmentItem
 	IEnumerator PlaceHolderActiveCo;
 	public IEnumerator PlaceHolderActive()
 	{
-
-		while (true)
-		{
+		placeholder.GetComponent<ItemPlaceholder>().Obstructed(false);
+		while (true)		{
+			
 			// Raycast pointing forward relative to the players camera.
 			if (Physics.Raycast(look.playerCamera.transform.position, look.playerCamera.transform.forward, out RaycastHit hit, maxPlaceRange, ~ignoreLayer))
 			{

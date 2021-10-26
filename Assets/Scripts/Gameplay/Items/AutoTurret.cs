@@ -11,7 +11,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	[Header("Stats")]
 	[SerializeField] private float range = 30;
 	[SerializeField] private float fireRate = 50f;
-	[SerializeField] private float rotateSpeed = 0.2f;
+	[SerializeField] private float rotateSpeed = 0.4f;
 	[SerializeField] private float searchInterval = 1f;
 	[SerializeField] private int damage = 20;
 	[SerializeField, SyncVar] private int duration = 20;
@@ -117,7 +117,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		barrel.transform.localPosition = new Vector3(0, barrel.transform.localPosition.y, 0.2f);
 
 		// Barrel position is incremently increased as long as its not in its standard position and its pointing at a damagable target.
-		while (barrel.transform.localPosition != ogPosition && hit.TryGetComponent(out IDamagable a))
+		while (barrel.transform.localPosition.z < ogPosition.z && hit.TryGetComponent(out IDamagable a))
 		{
 			yield return new WaitForSeconds(0.01f);
 			barrel.transform.localPosition = new Vector3(0, barrel.transform.localPosition.y, barrel.transform.localPosition.z + 0.005f);
@@ -154,6 +154,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		if (barrelAnimation)
 		{
 			StopCoroutine(BarrelCo);
+			barrelAnimation = false;
 		}
 		StartCoroutine(BarrelCo);
 		muzzleFlash.Emit(50);
