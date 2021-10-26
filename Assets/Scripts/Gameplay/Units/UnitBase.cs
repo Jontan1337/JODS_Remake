@@ -1059,17 +1059,17 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         {
             //Head
             case 1:
-                head.Detach(DamageTypes.Slash);
+                head.Wtf(DamageTypes.Slash);
                 break;
 
             //Left Arm
             case 2:
-                leftArm.Detach(DamageTypes.Slash);
+                leftArm.Wtf(DamageTypes.Slash);
                 break;
 
             //Right Arm
             case 3:
-                rightArm.Detach(DamageTypes.Slash);
+                rightArm.Wtf(DamageTypes.Slash);
                 break;
         }
     }

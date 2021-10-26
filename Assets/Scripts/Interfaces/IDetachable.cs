@@ -4,6 +4,6 @@ using UnityEngine;
 
 public interface IDetachable
 {
-    void Detach(DamageTypes damageType);
-    GameObject GetUnitBase();
+    void Detach();
+
 }

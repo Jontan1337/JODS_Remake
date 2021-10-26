@@ -35,14 +35,7 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEff
 
     #endregion
 
-    public void Wtf()
-    {
-        if (CanDetach())
-        {
-            unitBase.Dismember_BodyPart((int)bodyPart);
-        }
-    }
-    public void Detach(DamageTypes damageType)
+    public void Wtf(DamageTypes damageType)
     {
         if (!detachable) return;
         if (attachedPart == null || partTransform == null) return;
@@ -70,7 +63,7 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEff
         newPart.GetComponent<MeshRenderer>().material = new Material(oldSkinMeshRenderer.sharedMaterial);
         newPart.GetComponent<MeshFilter>().mesh = oldSkinMeshRenderer.sharedMesh;
         newPart.GetComponent<MeshCollider>().sharedMesh = oldSkinMeshRenderer.sharedMesh;
-            
+
         //newPart.GetComponent<Dissolve>().StartTimer(true, 5, 3);
 
         if (newPart.TryGetComponent(out Rigidbody rb))
@@ -80,13 +73,19 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEff
             rb.AddTorque(randomForce);
         }
     }
+    public void Detach()
+    {
+        if (CanDetach())
+        {
+            unitBase.Dismember_BodyPart((int)bodyPart);
+        }
+    }
 
     private bool CanDetach()
     {
         return (onlyDetachOnDeath && IsDead || !onlyDetachOnDeath);
     }
 
-    public GameObject GetUnitBase() => unitBase.gameObject;
 
     public void Svr_Damage(int damage, Transform target = null)
     {
