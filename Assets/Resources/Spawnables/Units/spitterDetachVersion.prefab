@@ -1606,6 +1606,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6448276477708033258}
+  - component: {fileID: 7239471583926548076}
+  - component: {fileID: 7239471583926548075}
   m_Layer: 10
   m_Name: R.LowerLeg_end
   m_TagString: Untagged
@@ -1627,6 +1629,37 @@ Transform:
   m_Father: {fileID: 5909504926650911121}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -0.00000042688706, y: -0.000000831248, z: 0.0000009049987}
+--- !u!65 &7239471583926548076
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3098188102790882446}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.001, y: 0.001, z: 0.003}
+  m_Center: {x: 0, y: 0.0005, z: -0.001}
+--- !u!114 &7239471583926548075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3098188102790882446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45e735460c148e14ab7bae6ff397fe32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bodyPart: 4
+  detachable: 0
+  onlyDetachOnDeath: 0
+  attachedPart: {fileID: 0}
+  partTransform: {fileID: 0}
+  bodyBloodEmitter: {fileID: 0}
 --- !u!1 &3125537210927582386
 GameObject:
   m_ObjectHideFlags: 0
@@ -1915,6 +1948,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4674560081217127007}
+  - component: {fileID: 7239471583926548078}
+  - component: {fileID: 7239471583926548077}
   m_Layer: 10
   m_Name: L:LowerLeg_end
   m_TagString: Untagged
@@ -1936,6 +1971,37 @@ Transform:
   m_Father: {fileID: 6793715317112734121}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0.0000002134435, y: 1.4884996e-12, z: 1.5266662e-13}
+--- !u!65 &7239471583926548078
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5846698399928808468}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.001, y: 0.001, z: 0.003}
+  m_Center: {x: 0, y: 0.0005, z: -0.001}
+--- !u!114 &7239471583926548077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5846698399928808468}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45e735460c148e14ab7bae6ff397fe32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bodyPart: 4
+  detachable: 0
+  onlyDetachOnDeath: 0
+  attachedPart: {fileID: 0}
+  partTransform: {fileID: 0}
+  bodyBloodEmitter: {fileID: 0}
 --- !u!1 &6021783073917271837
 GameObject:
   m_ObjectHideFlags: 0
