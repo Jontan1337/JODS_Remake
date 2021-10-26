@@ -16,26 +16,29 @@ public class RaycastWeapon : RangedWeapon
     {
         base.Shoot();
         Rpc_ShootFX();
-        Ray shootRay = new Ray(shootOrigin.position, transform.forward);
-        RaycastHit rayHit;
-        if (Physics.Raycast(shootRay, out rayHit, range, ~ignoreLayer))
+        
+        Ray aimRay = new Ray(playerHead.position, playerHead.forward);
+
+        if (Physics.Raycast(aimRay, out RaycastHit aimHit, range, ~ignoreLayer))
         {
-            rayHit.collider.GetComponent<IDamagable>()?.Svr_Damage(damage);
+            Vector3 targetPoint = aimHit.point;
+            Ray shootRay = new Ray(shootOrigin.position, targetPoint - shootOrigin.position);
 
-            //bullet hole
-
-            Rpc_Bullethole(rayHit.point, rayHit.normal);
-
-            IDamagable damagable = null;
-
-            if (rayHit.collider.TryGetComponent(out damagable))
+            if (Physics.Raycast(shootRay, out RaycastHit shootHit, range, ~ignoreLayer))
             {
-                damagable?.Svr_Damage(damage);
-                if (highPower)
+                shootHit.collider.GetComponent<IDamagable>()?.Svr_Damage(damage);
+
+                Rpc_Bullethole(shootHit.point, shootHit.normal);
+
+                if (shootHit.collider.TryGetComponent(out IDamagable damagable))
                 {
-                    if (rayHit.collider.TryGetComponent(out IDetachable detachable))
+                    damagable?.Svr_Damage(damage);
+                    if (highPower)
                     {
-                        detachable.Detach((int)DamageTypes.Pierce);
+                        if (shootHit.collider.TryGetComponent(out IDetachable detachable))
+                        {
+                            detachable.Detach((int)DamageTypes.Pierce);
+                        }
                     }
                 }
             }
