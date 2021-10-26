@@ -120,7 +120,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
                     {
                         if (other.TryGetComponent(out IDetachable detachable))
                         {
-                            detachable.Detach();
+                            detachable.Detach((int)damageType);
                         }
                         if (amountSlashed == slashPower)
                         {
@@ -213,14 +213,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
 
     #region Client
 
-    [ClientRpc]
-    private void Rpc_Detach(GameObject part)
-    {
-        if (part.TryGetComponent(out IDetachable detachable))
-        {
-            detachable.Detach();
-        }
-    }
+
     [ClientRpc]
     private void Rpc_SwingSFX()
     {
@@ -234,11 +227,11 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     [ClientRpc]
     private void Rpc_EmitParticle(Vector3 objectPos, Color color)
     {
-        GameObject pooledParticleObject = ObjectPool.Instance.SpawnFromLocalPool(Tags.BloodSplatter, objectPos, transform.rotation);
+        GameObject pooledParticleObject = ObjectPool.Instance.SpawnFromLocalPool(Tags.MeleeBloodSplatter, objectPos, transform.rotation);
         ParticleSystem pooledParticle = pooledParticleObject.GetComponent<ParticleSystem>();
         ParticleSystem.MainModule mainMod = pooledParticle.main;
         mainMod.startColor = color;
-        ObjectPool.Instance.ReturnToLocalPool(Tags.BloodSplatter, pooledParticleObject, pooledParticle.main.duration);
+        ObjectPool.Instance.ReturnToLocalPool(Tags.MeleeBloodSplatter, pooledParticleObject, pooledParticle.main.duration);
     }
 
     private IEnumerator IESplatterShader()

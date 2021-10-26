@@ -35,10 +35,12 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEff
 
     #endregion
 
-    public void Wtf(DamageTypes damageType)
+    public void Wtf(int damageTypeInt)
     {
         if (!detachable) return;
         if (attachedPart == null || partTransform == null) return;
+
+        DamageTypes damageType = (DamageTypes)damageTypeInt;
 
         Collider[] cols = GetComponents<Collider>();
         foreach (Collider col in cols)
@@ -53,31 +55,54 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEff
 
         attachedPart.SetActive(false);
 
-        GameObject newPart = ObjectPool.Instance.SpawnFromLocalPool(Tags.BodyPart, partTransform.position, partTransform.rotation, 8f);
-        if (newPart == null)
+        switch (damageType)
         {
-            Debug.LogError("No body part obtained from local pool");
-            return;
-        }
-        newPart.transform.SetParent(null);
-        newPart.GetComponent<MeshRenderer>().material = new Material(oldSkinMeshRenderer.sharedMaterial);
-        newPart.GetComponent<MeshFilter>().mesh = oldSkinMeshRenderer.sharedMesh;
-        newPart.GetComponent<MeshCollider>().sharedMesh = oldSkinMeshRenderer.sharedMesh;
+            case DamageTypes.Blunt:
+                GameObject bloodSplatter = ObjectPool.Instance.SpawnFromLocalPool(Tags.HeadExplosionBloodSplatter, partTransform.position, partTransform.rotation, 8f);
+                if (bloodSplatter == null)
+                {
+                    Debug.LogError("No blood splatter obtained from local pool");
+                    return;
+                }
+                break;
+            case DamageTypes.Pierce:
+                bloodSplatter = ObjectPool.Instance.SpawnFromLocalPool(Tags.HeadExplosionBloodSplatter, partTransform.position, partTransform.rotation, 8f);
+                if (bloodSplatter == null)
+                {
+                    Debug.LogError("No blood splatter obtained from local pool");
+                    return;
+                }
+                break;
+            case DamageTypes.Slash:
+                GameObject newPart = ObjectPool.Instance.SpawnFromLocalPool(Tags.BodyPart, partTransform.position, partTransform.rotation, 8f);
+                if (newPart == null)
+                {
+                    Debug.LogError("No body part obtained from local pool");
+                    return;
+                }
+                newPart.transform.SetParent(null);
+                newPart.GetComponent<MeshRenderer>().material = new Material(oldSkinMeshRenderer.sharedMaterial);
+                newPart.GetComponent<MeshFilter>().mesh = oldSkinMeshRenderer.sharedMesh;
+                newPart.GetComponent<MeshCollider>().sharedMesh = oldSkinMeshRenderer.sharedMesh;
 
-        //newPart.GetComponent<Dissolve>().StartTimer(true, 5, 3);
+                //newPart.GetComponent<Dissolve>().StartTimer(true, 5, 3);
 
-        if (newPart.TryGetComponent(out Rigidbody rb))
-        {
-            rb.isKinematic = false;
-            rb.AddForce(randomForce / 2);
-            rb.AddTorque(randomForce);
+                if (newPart.TryGetComponent(out Rigidbody rb))
+                {
+                    rb.isKinematic = false;
+                    rb.AddForce(randomForce / 2);
+                    rb.AddTorque(randomForce);
+                }
+                break;
         }
+
+
     }
-    public void Detach()
+    public void Detach(int damageType)
     {
         if (CanDetach())
         {
-            unitBase.Dismember_BodyPart((int)bodyPart);
+            unitBase.Dismember_BodyPart((int)bodyPart, damageType);
         }
     }
 

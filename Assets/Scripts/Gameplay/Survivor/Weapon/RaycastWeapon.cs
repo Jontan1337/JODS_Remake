@@ -23,6 +23,20 @@ public class RaycastWeapon : RangedWeapon
             //bullet hole
 
             Rpc_Bullethole(rayHit.point, rayHit.normal);
+
+            IDamagable damagable = null;
+
+            if (rayHit.collider.TryGetComponent(out damagable))
+            {
+                damagable?.Svr_Damage(damage);
+                if (highPower)
+                {
+                    if (rayHit.collider.TryGetComponent(out IDetachable detachable))
+                    {
+                        detachable.Detach((int)DamageTypes.Pierce);
+                    }
+                }
+            }
         }
     }
 

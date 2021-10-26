@@ -1053,28 +1053,28 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     #region Dismemberment
 
-    public void Dismember_BodyPart(int bodyPartIndex)
+    public void Dismember_BodyPart(int bodyPartIndex, int damageType)
     {
-        Rpc_Dismember_BodyPart(bodyPartIndex);
+        Rpc_Dismember_BodyPart(bodyPartIndex, damageType);
     }
     [ClientRpc]
-    public void Rpc_Dismember_BodyPart(int bodyPartIndex)
+    public void Rpc_Dismember_BodyPart(int bodyPartIndex, int damageType)
     {
         switch (bodyPartIndex)
         {
             //Head
             case 1:
-                head.Wtf(DamageTypes.Slash);
+                head.Wtf(damageType);
                 break;
 
             //Left Arm
             case 2:
-                leftArm.Wtf(DamageTypes.Slash);
+                leftArm.Wtf(damageType);
                 break;
 
             //Right Arm
             case 3:
-                rightArm.Wtf(DamageTypes.Slash);
+                rightArm.Wtf(damageType);
                 break;
         }
     }
