@@ -87,50 +87,70 @@ public class MeleeWeapon : EquipmentItem, IImpacter
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!isServer) return;
         if (!isAttacking) return;
-        // Wack animation.
-        OnImpact?.Invoke(10);
-        if (other.transform.root != previousHitColliderParent)
+
+        // Wack animation played on local client.
+        if (isLocalPlayer)
+        {
+            OnImpact?.Invoke(10);
+        }
+
+        if (isServer)
+        {
+            IDamagable damagable = null;
+            if (other.transform.root != previousHitColliderParent)
+            {
+                if (other.TryGetComponent(out damagable))
+                {
+                    previousHitColliderParent = other.transform.root;
+                    damagable?.Svr_Damage(damage);
+                }
+                amountSlashed++;
+            }
+            if (other.TryGetComponent(out IParticleEffect particleEffect))
+            {
+                Vector3 weaponPos = new Vector3(transform.position.x, transform.position.y, transform.position.z + col.bounds.size.z / 1.5f);
+                Rpc_EmitParticle(other.ClosestPoint(weaponPos), particleEffect.ParticleColor);
+                Rpc_ApplySplatter(splatterAmountOnHit);
+            }
+            switch (damageType)
+            {
+                case DamageTypes.Slash:
+                    if (damagable != null)
+                    {
+                        if (other.TryGetComponent(out IDetachable detachable))
+                        {
+                            detachable.Detach(damageType);
+                            //Rpc_Detach(other.GetComponent<NetworkIdentity>().netId);
+                            //Rpc_Detach(other.gameObject);
+                        }
+                        if (amountSlashed == slashPower)
+                        {
+                            weaponAnimator.CrossFadeInFixedTime("Idle", 0.1f);
+                            amountSlashed = 0;
+                        }
+                    }
+                    break;
+                case DamageTypes.Blunt:
+                    weaponAnimator.CrossFadeInFixedTime("Idle", 0.1f);
+                    break;
+                case DamageTypes.Pierce:
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        // All clients
+        if (isClient)
         {
             if (other.TryGetComponent(out IDamagable damagable))
             {
-                previousHitColliderParent = other.transform.root;
-                damagable?.Svr_Damage(damage);
-            }
-            amountSlashed++;
-        }
-        if (other.TryGetComponent(out IParticleEffect particleEffect))
-        {
-            Vector3 weaponPos = new Vector3(transform.position.x, transform.position.y, transform.position.z + col.bounds.size.z / 1.5f);
-            Rpc_EmitParticle(other.ClosestPoint(weaponPos), particleEffect.ParticleColor);
-            Rpc_ApplySplatter(splatterAmountOnHit);
-        }
-        switch (damageType)
-        {
-            case DamageTypes.Slash:
-                if (other.TryGetComponent(out IDamagable damagable))
+                if (other.TryGetComponent(out IDetachable detachable))
                 {
-                    if (other.TryGetComponent(out IDetachable detachable))
-                    {
-                        detachable.Detach(damageType);
-                        //Rpc_Detach(other.GetComponent<NetworkIdentity>().netId);
-                        //Rpc_Detach(other.gameObject);
-                    }
-                    if (amountSlashed == slashPower)
-                    {
-                        weaponAnimator.CrossFadeInFixedTime("Idle", 0.1f);
-                        amountSlashed = 0;
-                    }
+                    detachable.Detach(damageType);
                 }
-                break;
-            case DamageTypes.Blunt:
-                weaponAnimator.CrossFadeInFixedTime("Idle", 0.1f);
-                break;
-            case DamageTypes.Pierce:
-                break;
-            default:
-                break;
+            }
         }
     }
 
