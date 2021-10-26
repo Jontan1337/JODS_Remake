@@ -1051,25 +1051,27 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     public void Dismember_BodyPart(int bodyPartIndex)
     {
-        /*
+        Rpc_Dismember_BodyPart(bodyPartIndex);
+    }
+    public void Rpc_Dismember_BodyPart(int bodyPartIndex)
+    {
         switch (bodyPartIndex)
         {
             //Head
             case 1:
-                head.Detach();
+                head.Detach(DamageTypes.Slash);
                 break;
 
             //Left Arm
             case 2:
-                leftArm.Detach();
+                leftArm.Detach(DamageTypes.Slash);
                 break;
 
             //Right Arm
             case 3:
-                rightArm.Detach();
+                rightArm.Detach(DamageTypes.Slash);
                 break;
         }
-        */
     }
 
     #endregion
