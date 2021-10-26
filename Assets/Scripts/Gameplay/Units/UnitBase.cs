@@ -1069,12 +1069,17 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
             //Left Arm
             case 2:
-                leftArm.Wtf(damageType);
+                if ((DamageTypes)damageType != DamageTypes.Pierce) { 
+                    leftArm.Wtf(damageType);
+                }
                 break;
 
             //Right Arm
             case 3:
-                rightArm.Wtf(damageType);
+                if ((DamageTypes)damageType != DamageTypes.Pierce)
+                {
+                    rightArm.Wtf(damageType);
+                }
                 break;
         }
     }
