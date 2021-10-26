@@ -8,6 +8,7 @@ public class SoldierRocket : Projectile
 	{
 		if (!isServer) return;
 		Svr_Explode();
+		base.OnHit(collision);
 	}
 	[Server]
 	private void Svr_Explode()

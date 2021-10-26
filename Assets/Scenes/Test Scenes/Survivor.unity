@@ -2358,28 +2358,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
---- !u!1 &977268925 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 538350748458415290, guid: a50ce089f14b44241b73d7315b6cf36e,
-    type: 3}
-  m_PrefabInstance: {fileID: 1548254269}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &977268928
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 977268925}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sceneId: 4124962175
-  serverOnly: 0
-  m_AssetId: a50ce089f14b44241b73d7315b6cf36e
-  hasSpawned: 0
 --- !u!1 &995813725
 GameObject:
   m_ObjectHideFlags: 0
@@ -4479,6 +4457,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 977268928, guid: a50ce089f14b44241b73d7315b6cf36e, type: 3}
+      propertyPath: sceneId
+      value: 4124962175
+      objectReference: {fileID: 0}
+    - target: {fileID: 977268928, guid: a50ce089f14b44241b73d7315b6cf36e, type: 3}
+      propertyPath: m_AssetId
+      value: a50ce089f14b44241b73d7315b6cf36e
+      objectReference: {fileID: 0}
     - target: {fileID: 538350748458415290, guid: a50ce089f14b44241b73d7315b6cf36e,
         type: 3}
       propertyPath: m_Name
@@ -4541,54 +4527,30 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 538350748458415293, guid: a50ce089f14b44241b73d7315b6cf36e,
         type: 3}
-      propertyPath: pools.Array.size
-      value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 538350748458415293, guid: a50ce089f14b44241b73d7315b6cf36e,
-        type: 3}
-      propertyPath: pools.Array.data[8].prefab.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 538350748458415293, guid: a50ce089f14b44241b73d7315b6cf36e,
-        type: 3}
-      propertyPath: test
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 538350748458415293, guid: a50ce089f14b44241b73d7315b6cf36e,
-        type: 3}
-      propertyPath: pools.Array.data[5].amount
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 538350748458415293, guid: a50ce089f14b44241b73d7315b6cf36e,
-        type: 3}
-      propertyPath: pools.Array.data[8].tagName
-      value: BulletHole
-      objectReference: {fileID: 0}
-    - target: {fileID: 538350748458415293, guid: a50ce089f14b44241b73d7315b6cf36e,
-        type: 3}
-      propertyPath: pools.Array.data[8].tag
-      value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 538350748458415293, guid: a50ce089f14b44241b73d7315b6cf36e,
-        type: 3}
-      propertyPath: pools.Array.data[8].prefab.Array.data[0]
+      propertyPath: pools.Array.data[3].prefab.Array.data[0]
       value: 
-      objectReference: {fileID: 6769152677893134217, guid: 592c00ff53a4e844fa0dc2b729653521,
+      objectReference: {fileID: 3668033450558484208, guid: 688023c254216764891da7115d73253e,
         type: 3}
     - target: {fileID: 538350748458415293, guid: a50ce089f14b44241b73d7315b6cf36e,
         type: 3}
-      propertyPath: pools.Array.data[8].amount
-      value: 120
-      objectReference: {fileID: 0}
-    - target: {fileID: 538350748458415293, guid: a50ce089f14b44241b73d7315b6cf36e,
-        type: 3}
-      propertyPath: pools.Array.data[8].networked
+      propertyPath: pools.Array.data[3].networked
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 538350748458415293, guid: a50ce089f14b44241b73d7315b6cf36e,
+        type: 3}
+      propertyPath: pools.Array.data[6].prefab.Array.data[0]
+      value: 
+      objectReference: {fileID: 3668033450558484208, guid: 91c995c6987471b4c82209267e7c9782,
+        type: 3}
     - target: {fileID: 5389183070632612933, guid: a50ce089f14b44241b73d7315b6cf36e,
         type: 3}
       propertyPath: sceneId
       value: 900957113
+      objectReference: {fileID: 0}
+    - target: {fileID: 5389183070632612933, guid: a50ce089f14b44241b73d7315b6cf36e,
+        type: 3}
+      propertyPath: m_AssetId
+      value: a50ce089f14b44241b73d7315b6cf36e
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a50ce089f14b44241b73d7315b6cf36e, type: 3}
