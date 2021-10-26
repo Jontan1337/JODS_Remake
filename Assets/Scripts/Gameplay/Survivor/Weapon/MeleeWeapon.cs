@@ -120,9 +120,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
                     {
                         if (other.TryGetComponent(out IDetachable detachable))
                         {
-                            detachable.Detach(damageType);
-                            //Rpc_Detach(other.GetComponent<NetworkIdentity>().netId);
-                            //Rpc_Detach(other.gameObject);
+                            detachable.Detach();
                         }
                         if (amountSlashed == slashPower)
                         {
@@ -142,16 +140,16 @@ public class MeleeWeapon : EquipmentItem, IImpacter
         }
 
         // All clients
-        if (isClient)
-        {
-            if (other.TryGetComponent(out IDamagable damagable))
-            {
-                if (other.TryGetComponent(out IDetachable detachable))
-                {
-                    detachable.Detach(damageType);
-                }
-            }
-        }
+        //if (isClient)
+        //{
+        //    if (other.TryGetComponent(out IDamagable damagable))
+        //    {
+        //        if (other.TryGetComponent(out IDetachable detachable))
+        //        {
+        //            detachable.Detach(damageType);
+        //        }
+        //    }
+        //}
     }
 
     #region Server
@@ -220,7 +218,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     {
         if (part.TryGetComponent(out IDetachable detachable))
         {
-            detachable.Detach(damageType);
+            detachable.Detach();
         }
     }
     [ClientRpc]

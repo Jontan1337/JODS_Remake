@@ -38,15 +38,22 @@ public class ObjectPool : NetworkBehaviour
 
     private void Start()
     {
-		if (test) InitializePools();
+		if (test)
+		{
+            if (isServer)
+            {
+				Svr_InitializePools();
+            }
+			InitializeLocalPool();
+		}
     }
 
     [Server]
-    public void InitializePools()
+    public void Svr_InitializePools()
 	{	
 		InitializeNetworkedPool();
-		Rpc_InitializePools();
 	}
+	[ClientRpc]
 	public void Rpc_InitializePools()
     {
 		InitializeLocalPool();

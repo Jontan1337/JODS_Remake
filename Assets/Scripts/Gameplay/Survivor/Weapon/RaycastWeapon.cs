@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
 public class RaycastWeapon : RangedWeapon
 {
@@ -21,8 +22,14 @@ public class RaycastWeapon : RangedWeapon
 
             //bullet hole
 
-            GameObject bulletHole = ObjectPool.Instance.SpawnFromNetworkedPool(Tags.BulletHole, rayHit.point + rayHit.normal * 0.01f, Quaternion.identity, 5);
-            bulletHole.transform.LookAt(rayHit.point + rayHit.normal);
+            Rpc_Bullethole(rayHit.point, rayHit.normal);
         }
+    }
+
+    [ClientRpc]
+    private void Rpc_Bullethole(Vector3 point, Vector3 normal)
+    {
+        GameObject bulletHole = ObjectPool.Instance.SpawnFromLocalPool(Tags.BulletHole, point + normal * 0.01f, Quaternion.identity, 5);
+        bulletHole.transform.LookAt(point + normal);
     }
 }

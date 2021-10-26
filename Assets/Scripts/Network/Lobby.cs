@@ -293,7 +293,7 @@ public class Lobby : NetworkManager
         //      Survivor specific objects
 
         //Then we tell the object pool to initialize it's pools, which will spawn all of the objects.
-        objectPool.GetComponent<ObjectPool>().InitializePools();
+        objectPool.GetComponent<ObjectPool>().Svr_InitializePools();
 
         yield return new WaitForSeconds(1.5f); //This delay is mostly to hide all of the game initialization going on.
         

@@ -893,8 +893,11 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         float distance = Vector3.Distance(currentTarget.position, transform.position);
         return distance <= melee.meleeRange;
     }
+    // Called by animation event.
     public virtual void MeleeAttack() 
     {
+        if (!isServer) return;
+
         AttackMelee = false;
         ResumeMovement();
 
@@ -930,6 +933,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         float distance = Vector3.Distance(currentTarget.position, transform.position);
         return distance <= ranged.maxRange && distance >= ranged.minRange;
     }
+    // Called by animation event.
     public virtual void RangedShoot()
     {
         AttackRange = false;
@@ -1053,6 +1057,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     {
         Rpc_Dismember_BodyPart(bodyPartIndex);
     }
+    [ClientRpc]
     public void Rpc_Dismember_BodyPart(int bodyPartIndex)
     {
         switch (bodyPartIndex)
