@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-public class UnitBodyPart : NetworkBehaviour, IDamagable, IDetachable, IParticleEffect
+public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEffect
 {
     private readonly float[] multiplierArray = new float[]
     {
@@ -27,7 +27,6 @@ public class UnitBodyPart : NetworkBehaviour, IDamagable, IDetachable, IParticle
     public GameObject attachedPart;
     public Transform partTransform;
     [Space]
-    public GameObject childBloodEmitter;
     public GameObject bodyBloodEmitter;
 
     public int GetHealth => unitBase.Health;
@@ -35,30 +34,54 @@ public class UnitBodyPart : NetworkBehaviour, IDamagable, IDetachable, IParticle
 
     #endregion
 
-    [Server]
     public void Detach(DamageTypes damageType)
     {
         if (!detachable) return;
-        Rpc_Detach(damageType);
-    }
-
-    [ClientRpc]
-    void Rpc_Detach(DamageTypes damageType)
-    {
         if (attachedPart == null || partTransform == null) return;
 
-        if (unitBase.Dismember(damageType, attachedPart, partTransform.position, partTransform.rotation, onlyDetachOnDeath))
+        if (CanDetach())
         {
             Collider[] cols = GetComponents<Collider>();
             foreach (Collider col in cols)
             {
                 col.enabled = false;
             }
-
-            //childBloodEmitter.SetActive(true);
             bodyBloodEmitter.SetActive(true);
+
+            Vector3 randomForce = new Vector3(Random.Range(-50, 50), Random.Range(-20, 20), Random.Range(-50, 50));
+
+            SkinnedMeshRenderer oldSkinMeshRenderer = attachedPart.GetComponent<SkinnedMeshRenderer>();
+
+            attachedPart.SetActive(false);
+
+            GameObject newPart = ObjectPool.Instance.SpawnFromLocalPool(Tags.BodyPart, partTransform.position, partTransform.rotation, 8f);
+            if (newPart == null)
+            {
+                Debug.LogError("No body part obtained from local pool");
+                return;
+            }
+            newPart.transform.SetParent(null);
+            newPart.GetComponent<MeshRenderer>().material = new Material(oldSkinMeshRenderer.sharedMaterial);
+            newPart.GetComponent<MeshFilter>().mesh = oldSkinMeshRenderer.sharedMesh;
+            newPart.GetComponent<MeshCollider>().sharedMesh = oldSkinMeshRenderer.sharedMesh;
+            
+            //newPart.GetComponent<Dissolve>().StartTimer(true, 5, 3);
+
+            if (newPart.TryGetComponent(out Rigidbody rb))
+            {
+                rb.isKinematic = false;
+                rb.AddForce(randomForce / 2);
+                rb.AddTorque(randomForce);
+            }
         }
     }
+
+    private bool CanDetach()
+    {
+        return (onlyDetachOnDeath && IsDead || !onlyDetachOnDeath);
+    }
+
+    public GameObject GetUnitBase() => unitBase.gameObject;
 
     public void Svr_Damage(int damage, Transform target = null)
     {
@@ -78,6 +101,7 @@ public class UnitBodyPart : NetworkBehaviour, IDamagable, IDetachable, IParticle
             bodyBloodEmitter.SetActive(false);
         }
     }
+
     public Teams Team => throw new System.NotImplementedException();
 
     public Color ParticleColor => unitBase.ParticleColor;

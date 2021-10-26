@@ -4,8 +4,10 @@ using UnityEngine;
 
 public enum BodyParts
 {
-    Torso,
-    Head,
-    Arm,
-    Leg
+    //Name      Index
+    Torso       = 0,
+    Head        = 1,
+    LeftArm     = 2,
+    RightArm    = 3,
+    Leg         = 4
 }

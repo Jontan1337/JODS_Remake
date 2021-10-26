@@ -122,6 +122,11 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     [SerializeField] private SkinnedMeshRenderer leftArmRenderer = null;
     [SerializeField] private SkinnedMeshRenderer rightArmRenderer = null;
 
+    [Header("Detatchable References")]
+    [SerializeField] private UnitBodyPart leftArm = null;
+    [SerializeField] private UnitBodyPart rightArm = null;
+    [SerializeField] private UnitBodyPart head = null;
+
     [System.Serializable]
     public class Sounds
     {
@@ -1044,61 +1049,27 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     #region Dismemberment
 
-    public bool Dismember(DamageTypes damageType, GameObject oldPart, Vector3 partPosition, Quaternion partRotation, bool onlyDetachOnDeath)
+    public void Dismember_BodyPart(int bodyPartIndex)
     {
-        Debug.LogWarning("On Clients: unit is not dead when this part is reached? " +
-            "It is supposed to be dead, but I guess the server just hasnt told the clients yet.");
-
-        if (onlyDetachOnDeath && IsDead || !onlyDetachOnDeath) { 
-            switch (damageType)
-            {
-                case DamageTypes.Blunt:
-
-                    Dismember_BodyPart(oldPart, partPosition, partRotation);
-
-                    break;
-                case DamageTypes.Slash:
-
-                    Dismember_BodyPart(oldPart, partPosition, partRotation);
-
-                    break;
-                case DamageTypes.Pierce:
-
-                    Dismember_BodyPart(oldPart, partPosition, partRotation);
-
-                    break;
-            }
-            return true;
-        }
-        return false;
-    }
-
-    private void Dismember_BodyPart(GameObject oldPart, Vector3 partPosition, Quaternion partRotation)
-    {
-        Vector3 randomForce = new Vector3(Random.Range(-50, 50), Random.Range(-20, 20), Random.Range(-50, 50));
-
-        SkinnedMeshRenderer oldSkinMeshRenderer = oldPart.GetComponent<SkinnedMeshRenderer>();
-
-        GameObject newPart = ObjectPool.Instance.SpawnFromLocalPool(Tags.BodyPart, partPosition, partRotation, 8f);
-        if (newPart == null)
+        /*
+        switch (bodyPartIndex)
         {
-            Debug.LogError("No body part obtained from local pool");
-            return;
-        }
-        newPart.transform.SetParent(null);
-        newPart.GetComponent<MeshRenderer>().material = new Material(oldSkinMeshRenderer.sharedMaterial);
-        newPart.GetComponent<MeshFilter>().mesh = oldSkinMeshRenderer.sharedMesh;
-        newPart.GetComponent<MeshCollider>().sharedMesh = oldSkinMeshRenderer.sharedMesh;
+            //Head
+            case 1:
+                head.Detach();
+                break;
 
-        oldPart.SetActive(false);
-        //newPart.GetComponent<Dissolve>().StartTimer(true, 5, 3);
+            //Left Arm
+            case 2:
+                leftArm.Detach();
+                break;
 
-        if (newPart.TryGetComponent(out Rigidbody rb))
-        {
-            rb.isKinematic = false;
-            rb.AddForce(randomForce / 2);
-            rb.AddTorque(randomForce);
+            //Right Arm
+            case 3:
+                rightArm.Detach();
+                break;
         }
+        */
     }
 
     #endregion
