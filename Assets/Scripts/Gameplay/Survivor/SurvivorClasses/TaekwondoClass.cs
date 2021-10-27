@@ -136,7 +136,7 @@ public class TaekwondoClass : SurvivorClass, IHitter
 	public void OnHit(ControllerColliderHit hit)
 	{
 		if (!hasAuthority) return;
-		print(flyingKick);
+		//print(flyingKick);
 
 		if (hit.gameObject.layer == 9 && flyingKick)
 		{
