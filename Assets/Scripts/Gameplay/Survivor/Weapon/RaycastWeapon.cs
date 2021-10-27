@@ -50,12 +50,7 @@ public class RaycastWeapon : RangedWeapon
     public override void Svr_Interact(GameObject interacter)
     {
         base.Svr_Interact(interacter);
-        playerHead = interacter.GetComponent<LookController>().playerItemCamera.transform;
-    }
-    [TargetRpc]
-    public override void Rpc_Interact(NetworkConnection target, GameObject interacter)
-    {
-        playerHead = interacter.GetComponent<LookController>().playerItemCamera.transform;
+        playerHead = interacter.GetComponent<LookController>().RotateVertical;
     }
 
     [ClientRpc]
