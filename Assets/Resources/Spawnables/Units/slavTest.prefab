@@ -645,7 +645,7 @@ MonoBehaviour:
     maxRange: 0
     rangedCooldown: 0
     preferredRange: 15
-    projectile: {fileID: 0}
+    projectileTag: 0
     projectileSpeed: 0
     projectileSpawnLocation: {x: 0, y: 0, z: 0}
     standStill: 1
@@ -814,7 +814,7 @@ MonoBehaviour:
   detachable: 1
   onlyDetachOnDeath: 0
   attachedPart: {fileID: 3962601496194099232}
-  partTransform: {fileID: 7076092767361554127}
+  partTransform: {fileID: 8394595183633086932}
   bodyBloodEmitter: {fileID: 5206641715504011335}
 --- !u!1 &2605536334375305676
 GameObject:
@@ -1212,7 +1212,7 @@ MonoBehaviour:
   detachable: 1
   onlyDetachOnDeath: 0
   attachedPart: {fileID: 3962601496194099232}
-  partTransform: {fileID: 7076092767361554127}
+  partTransform: {fileID: 8394595183633086932}
   bodyBloodEmitter: {fileID: 5206641715504011335}
 --- !u!1 &3200756047967158856
 GameObject:
@@ -2096,7 +2096,7 @@ MonoBehaviour:
   detachable: 1
   onlyDetachOnDeath: 0
   attachedPart: {fileID: 130414591725894782}
-  partTransform: {fileID: 9072144355097854628}
+  partTransform: {fileID: 3260373691308829008}
   bodyBloodEmitter: {fileID: 578555549454352605}
 --- !u!1 &5574598970329192603
 GameObject:
@@ -2193,7 +2193,7 @@ MonoBehaviour:
   detachable: 1
   onlyDetachOnDeath: 0
   attachedPart: {fileID: 130414591725894782}
-  partTransform: {fileID: 9072144355097854628}
+  partTransform: {fileID: 3260373691308829008}
   bodyBloodEmitter: {fileID: 578555549454352605}
 --- !u!1 &5808859524254454152
 GameObject:
@@ -2661,6 +2661,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: BodyBloodSplatter
       objectReference: {fileID: 0}
+    - target: {fileID: 6687541496331228464, guid: 3ea27c5d12465714da4bd863f34a1ad6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8683244817245602927, guid: 3ea27c5d12465714da4bd863f34a1ad6,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2797,6 +2802,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ArmBloodSplatter
       objectReference: {fileID: 0}
+    - target: {fileID: 3610836937551029365, guid: 47f46eb35d857c34fb1b1ccd121d07fc,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 47f46eb35d857c34fb1b1ccd121d07fc, type: 3}
 --- !u!4 &3190958237111423362 stripped
@@ -2877,6 +2887,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: ArmBloodSplatter
+      objectReference: {fileID: 0}
+    - target: {fileID: 3610836937551029365, guid: 47f46eb35d857c34fb1b1ccd121d07fc,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 47f46eb35d857c34fb1b1ccd121d07fc, type: 3}
