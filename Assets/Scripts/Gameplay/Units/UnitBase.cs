@@ -162,6 +162,9 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     [Space]
     public Selectable select;
 
+    [Header("Ragdoll")]
+    [SerializeField] private bool canRagdoll = true;
+
     #region Coroutine references
 
     private IEnumerator CoSearch;
@@ -1041,9 +1044,9 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
             Svr_StopNavAgent();
 
-            Svr_SetDeathAnimation();
-
             Svr_DisableCollider();
+
+            Svr_SetDeathAnimation();
 
             Svr_PostDeath();
         }
@@ -1103,15 +1106,40 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     [Server]
     private void Svr_SetDeathAnimation()
     {
-        animator.SetTrigger("Die");
-        //Activate Ragdoll effect, or death animation
-        Rpc_SetDeathAnimation();
+        if (canRagdoll)
+        {
+            animator.enabled = false;
+            Rigidbody[] rbs = GetComponentsInChildren<Rigidbody>();
+            foreach(Rigidbody rb in rbs)
+            {
+                rb.isKinematic = false;
+                rb.useGravity = true;
+            }
+            Rpc_Ragdoll();
+        }
+        else
+        {
+            animator.SetTrigger("Die");
+            //Activate Ragdoll effect, or death animation
+            Rpc_SetDeathAnimation();
+        }
     }
     [ClientRpc]
     private void Rpc_SetDeathAnimation()
     {
         //Activate Ragdoll effect, or death animation
         animator.SetTrigger("Die");
+    }
+    [ClientRpc]
+    private void Rpc_Ragdoll()
+    {
+        animator.enabled = false;
+        Rigidbody[] rbs = GetComponentsInChildren<Rigidbody>();
+        foreach (Rigidbody rb in rbs)
+        {
+            rb.isKinematic = false;
+            rb.useGravity = true;
+        }
     }
     [Server]
     private void Svr_DisableCollider()
@@ -1120,7 +1148,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         Collider[] colliders = GetComponentsInChildren<Collider>();
         foreach(Collider c in colliders)
         {
-            c.enabled = false;
+            c.gameObject.layer = 30;
+            //c.enabled = false;
         }
         Rpc_DisableCollider();
     }
@@ -1131,7 +1160,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         Collider[] colliders = GetComponentsInChildren<Collider>();
         foreach (Collider c in colliders)
         {
-            c.enabled = false;
+            c.gameObject.layer = 30;
+            //c.enabled = false;
         }
     }
     [Server]
