@@ -17,10 +17,7 @@ public class Medkit : EquipmentItem
 		ActiveSClass activeSClass = GetComponentInParent<ActiveSClass>();
 		if (activeSClass.Health != 100)
 		{
-			float healy = healAmount;
-
-			// Change to heal method things.
-			//activeSClass.Health = Mathf.Clamp(activeSClass.Health + healAmount, 0, 100);
+			GetComponentInParent<ActiveSClass>().Svr_Damage(-healAmount);
 
 			uses--;
 			if (uses == 0)
