@@ -15,7 +15,6 @@ public class ProjectileWeapon : RangedWeapon
         base.Shoot();
         Rpc_ShootFX();
         GameObject projectile = ObjectPool.Instance.SpawnFromNetworkedPool(bulletTag, shootOrigin.position, shootOrigin.rotation, timeToLive);
-        //GameObject projectile = ObjectPool.Instance.SpawnFromPool(projectileTag, shootOrigin.position, shootOrigin.rotation, timeToLive);
         projectile.GetComponent<Rigidbody>().AddForce(shootOrigin.forward * projectileSpeed, ForceMode.Impulse);
     }
 }
