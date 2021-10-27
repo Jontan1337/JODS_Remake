@@ -958,8 +958,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             return;
         }
         //Spawn the projectile
-        GameObject projectile = ObjectPool.Instance.SpawnFromNetworkedPool(ranged.projectileTag, ranged.projectileSpawnLocation, Quaternion.identity);
-        projectile.transform.position = transform.TransformPoint(ranged.projectileSpawnLocation);
+        GameObject projectile = ObjectPool.Instance.SpawnFromNetworkedPool(ranged.projectileTag, transform.TransformPoint(ranged.projectileSpawnLocation), Quaternion.identity);
 
         //Aim the projectile at the current target.
         projectile.transform.LookAt(new Vector3(currentTarget.position.x, projectile.transform.position.y, currentTarget.position.z));
