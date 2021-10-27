@@ -26,6 +26,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	[SerializeField] private float reloadSpeed = 0;
 	[SerializeField] private float accuracy = 0;
 	[SerializeField] private float ammoCapacity = 0;
+	[SerializeField] private GameObject starterWeapon;
 
 	[Header("UI References")]
 	[SerializeField] private Slider healthBar = null;
@@ -205,6 +206,14 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 		selectedClass.transform.SetParent(gameObject.transform);
 
 		sClass = selectedClass.GetComponent<SurvivorClass>();
+
+		if (survivorSO.starterWeapon)
+		{
+			starterWeapon = Instantiate(survivorSO.starterWeapon, transform.position, transform.rotation);
+			NetworkServer.Spawn(starterWeapon);
+			yield return new WaitForSeconds(0.2f);
+			GetComponentInChildren<PlayerEquipment>()?.Svr_Equip(starterWeapon, EquipmentType.Weapon);
+		}
 	}
 
 	private bool healthLossBool = false;

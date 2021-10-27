@@ -66,6 +66,7 @@ MonoBehaviour:
   unequippedLayer: 14
   equippedLayer: 15
   isInteractable: 1
+  destroyOnDrop: 0
   authController: {fileID: 7169297317481562601}
   objectVisuals: {fileID: 4923435655667672491}
   rb: {fileID: 3113723153773427216}
@@ -88,7 +89,6 @@ MonoBehaviour:
   col: {fileID: 7670592048999142384}
   swingSound: {fileID: 0}
   hitSound: {fileID: 0}
-  testCol: {fileID: 0}
 --- !u!114 &6768451046035223808
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -341,7 +341,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   outlineMode: 1
-  outlineColor: {r: 0.18431373, g: 0.7921569, b: 0.3019608, a: 1}
+  outlineColor: {r: 0.18431373, g: 0.79215693, b: 0.3019608, a: 1}
   outlineWidth: 0
   precomputeOutline: 1
   bakeKeys:
