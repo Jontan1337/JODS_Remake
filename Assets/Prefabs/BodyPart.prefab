@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8061674689327299339}
   - component: {fileID: 4796567676415216297}
   - component: {fileID: 1633856476396981676}
-  m_Layer: 10
+  m_Layer: 30
   m_Name: BodyPart
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -207,7 +207,22 @@ PrefabInstance:
     - target: {fileID: 4163846602098608398, guid: 757d7a9e1b29e5248aac2c27ca67e86a,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4163846602098608398, guid: 757d7a9e1b29e5248aac2c27ca67e86a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 4299392983748766308, guid: 757d7a9e1b29e5248aac2c27ca67e86a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 7152822990729422458, guid: 757d7a9e1b29e5248aac2c27ca67e86a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 30
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 757d7a9e1b29e5248aac2c27ca67e86a, type: 3}
