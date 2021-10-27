@@ -26,6 +26,7 @@ public class RaycastWeapon : RangedWeapon
 
             if (Physics.Raycast(shootRay, out RaycastHit shootHit, range, ~ignoreLayer))
             {
+                Debug.DrawRay(shootOrigin.position, targetPoint - shootOrigin.position, Color.green, 2f);
                 shootHit.collider.GetComponent<IDamagable>()?.Svr_Damage(damage);
 
                 Rpc_Bullethole(shootHit.point, shootHit.normal);

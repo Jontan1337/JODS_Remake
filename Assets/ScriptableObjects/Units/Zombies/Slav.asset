@@ -15,7 +15,19 @@ MonoBehaviour:
   name: Slav
   unitPrefab: {fileID: 4822200308357666784, guid: f33f7bcd52f58a74a8464c420917e26f,
     type: 3}
-  unitMeshes: []
+  unitAppearanceVariations:
+    bodyVariations:
+    - {fileID: 2959467708922500008, guid: 5a5f2e6df8bd4d446997dd98a633f107, type: 3}
+    headVariations:
+    - {fileID: -8839368762345780380, guid: 5a5f2e6df8bd4d446997dd98a633f107, type: 3}
+    leftArmVariations:
+    - {fileID: -1296976969852645106, guid: 5a5f2e6df8bd4d446997dd98a633f107, type: 3}
+    rightArmVariations:
+    - {fileID: 3487192314196417999, guid: 5a5f2e6df8bd4d446997dd98a633f107, type: 3}
+  unitMaterialVariations:
+  - {fileID: 2100000, guid: 8760746d7012eb04c827ea0efd4549ed, type: 2}
+  - {fileID: 2100000, guid: 734eff90c0542f642ae33e2a816e5a72, type: 2}
+  - {fileID: 2100000, guid: d87b98e8e0ba4da45b8c5247976db824, type: 2}
   unitSprite: {fileID: 21300000, guid: 4cfccc8d4a655cc4a9b1196962ea0e28, type: 3}
   energyCost: 15
   refundAmount: 7
@@ -65,6 +77,7 @@ MonoBehaviour:
   viewAngle: 90
   alertRadius: 25
   canAlert: 1
+  bloodColor: {r: 1, g: 0, b: 0, a: 1}
   sounds:
     headHeight: 2
     idleSounds: []
@@ -82,10 +95,6 @@ MonoBehaviour:
     footstepVolume: 0.1
   select:
     canSelect: 1
-  unitMaterials:
-  - {fileID: 2100000, guid: 8760746d7012eb04c827ea0efd4549ed, type: 2}
-  - {fileID: 2100000, guid: 734eff90c0542f642ae33e2a816e5a72, type: 2}
-  - {fileID: 2100000, guid: d87b98e8e0ba4da45b8c5247976db824, type: 2}
   unitAnimator: {fileID: 9100000, guid: 0d03a7c9ce482164cbbf48eeaf8cce33, type: 2}
   description: The slav zombie is fast and can be deadly in numbers.
   powerStat: 4
