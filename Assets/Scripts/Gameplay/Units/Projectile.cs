@@ -30,6 +30,10 @@ public abstract class Projectile : NetworkBehaviour
 	public virtual void Start()
 	{
 		rb = GetComponent<Rigidbody>();
+	}
+
+    private void OnEnable()
+    {
 		if (hasDropoff)
 		{
 			StartCoroutine(DropoffEnumerator());
@@ -38,8 +42,9 @@ public abstract class Projectile : NetworkBehaviour
 		StartCoroutine(LifetimeEnumerator());
 	}
 
-	public virtual IEnumerator DropoffEnumerator()
+    public virtual IEnumerator DropoffEnumerator()
 	{
+		print("Drpooff");
 		yield return new WaitForSeconds(timeBeforeDropoff);
 
 		rb.useGravity = true;

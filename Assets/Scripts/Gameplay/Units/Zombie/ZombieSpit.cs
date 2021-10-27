@@ -57,7 +57,18 @@ public class ZombieSpit : Projectile
 
         yield return new WaitForSeconds(time);
 
-        //Destroy the object when all the spit trails are gone (time)
+
+        spitBall.SetActive(true);
+
+        //Do this
+        GetComponent<SphereCollider>().enabled = true;
+        GetComponent<Rigidbody>().isKinematic = false;
+
+        hasHit = false;
+
+        rb.useGravity = false;
+
+        //Return the object when all the spit trails are gone (time)
         ReturnObjectToPool(0);
     }
 }
