@@ -13,9 +13,20 @@ MonoBehaviour:
   m_Name: Tentacle
   m_EditorClassIdentifier: 
   name: Tentacle
-  unitPrefab: {fileID: 567846408501026953, guid: 739aff00d977ca3459fd5a0d2e0f87e8,
+  unitPrefab: {fileID: 2334045856554427847, guid: 802bb2b379e46804a90467f24a380768,
     type: 3}
-  unitMeshes: []
+  unitAppearanceVariations:
+    bodyVariations:
+    - {fileID: 2959467708922500008, guid: 646752dfe7d086e428f678432135d462, type: 3}
+    headVariations:
+    - {fileID: -8839368762345780380, guid: 646752dfe7d086e428f678432135d462, type: 3}
+    leftArmVariations: []
+    rightArmVariations:
+    - {fileID: 3487192314196417999, guid: 646752dfe7d086e428f678432135d462, type: 3}
+  unitMaterialVariations:
+  - {fileID: 2100000, guid: 8760746d7012eb04c827ea0efd4549ed, type: 2}
+  - {fileID: 2100000, guid: 734eff90c0542f642ae33e2a816e5a72, type: 2}
+  - {fileID: 2100000, guid: d87b98e8e0ba4da45b8c5247976db824, type: 2}
   unitSprite: {fileID: 21300000, guid: 46ab4058c0156eb488d847000d8c33e7, type: 3}
   energyCost: 10
   refundAmount: 5
@@ -42,7 +53,7 @@ MonoBehaviour:
     maxRange: 20
     rangedCooldown: 5
     preferredRange: 15
-    projectile: {fileID: 0}
+    projectileTag: 0
     projectileSpeed: 0
     projectileSpawnLocation: {x: 0, y: 0, z: 0}
     standStill: 1
@@ -66,6 +77,7 @@ MonoBehaviour:
   viewAngle: 90
   alertRadius: 20
   canAlert: 1
+  bloodColor: {r: 1, g: 0, b: 0, a: 1}
   sounds:
     headHeight: 2
     idleSounds: []
@@ -83,10 +95,6 @@ MonoBehaviour:
     footstepVolume: 0.1
   select:
     canSelect: 1
-  unitMaterials:
-  - {fileID: 2100000, guid: 8760746d7012eb04c827ea0efd4549ed, type: 2}
-  - {fileID: 2100000, guid: 734eff90c0542f642ae33e2a816e5a72, type: 2}
-  - {fileID: 2100000, guid: d87b98e8e0ba4da45b8c5247976db824, type: 2}
   unitAnimator: {fileID: 9100000, guid: 97d4f1c96b0601f4ea43d958986889ba, type: 2}
   description: Able to grab survivors and disarm them temporarily, the Tentacle zombie
     is a dangerous support unit.
