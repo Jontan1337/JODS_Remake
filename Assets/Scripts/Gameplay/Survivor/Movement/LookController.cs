@@ -21,6 +21,8 @@ public class LookController : NetworkBehaviour
 
 	private PlayerEquipment playerEquipment;
 
+	public Transform RotateVertical => rotateVertical;
+
 	#region NetworkBehaviour Callbacks
 
 	public override void OnStartAuthority()
@@ -113,6 +115,7 @@ public class LookController : NetworkBehaviour
 					playerItemCamera = item.GetComponentInChildren<Camera>();
 					cameraSettings = playerCamera.GetComponent<CameraSettings>();
 					JODSInput.Controls.Survivor.Camera.performed += Look;
+					Cmd_SetVirtualHead(rotateVertical);
 					break;
 				case ItemNames.Equipment:
 					playerEquipment = item.GetComponent<PlayerEquipment>();
@@ -123,4 +126,10 @@ public class LookController : NetworkBehaviour
 			}
 		}
 	}
+
+	[Command]
+	private void Cmd_SetVirtualHead(Transform virtualHead)
+    {
+		rotateVertical = virtualHead;
+    }
 }
