@@ -29,6 +29,7 @@ public class Interactor : NetworkBehaviour
         private set
         {
             playerCamera = value;
+            // Start the coroutine that outlines interactable objects.
             if (COCreateOutlines == null)
             {
                 COCreateOutlines = StartCoroutine(CreateOutlines());
@@ -71,9 +72,11 @@ public class Interactor : NetworkBehaviour
     {
         while (true)
         {
-            boxHit = Physics.BoxCastAll(new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z) + transform.forward,
+            boxHit = Physics.BoxCastAll(
+                new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z) + transform.forward,
                 new Vector3(0.45f, 0.45f, interactionRange / 2),
-                transform.forward, playerCamera.rotation, interactionRange, ~layerMask);
+                transform.forward, playerCamera.rotation, interactionRange, ~layerMask
+            );
 
             if (rayHit.collider)
             {
@@ -89,9 +92,9 @@ public class Interactor : NetworkBehaviour
                     if (item.collider == rayHit.collider)
                         continue;
 
-                if (item.collider.TryGetComponent(out Outline outline2))
+                if (item.collider.TryGetComponent(out Outline outline))
                 {
-                    outline2.ShowOutline(0.1f, inRangeOutline);
+                    outline.ShowOutline(0.1f, inRangeOutline);
                 }
             }
 

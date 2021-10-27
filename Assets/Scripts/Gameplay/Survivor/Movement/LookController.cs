@@ -52,6 +52,7 @@ public class LookController : NetworkBehaviour
 	void Look(InputAction.CallbackContext context)
 	{
 		Vector2 mouseDelta = context.ReadValue<Vector2>();
+		// This is pointless since JODSInput is meant for toggling controls.
 		if (!canLook)
 		{
 			return;
@@ -59,7 +60,6 @@ public class LookController : NetworkBehaviour
 		rotX += mouseDelta.x * sensitivity;
 		rotY += mouseDelta.y * sensitivity;
 		rotY = Mathf.Clamp(rotY, minRotY, maxRotY);
-		//transform.Rotate(0, rotX, 0);
 		rotateHorizontal.rotation = Quaternion.Euler(0, rotX, 0);
 		rotateVertical.rotation = Quaternion.Euler(-rotY, rotX, 0f);
 	}
