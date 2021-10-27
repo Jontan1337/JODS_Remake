@@ -12,12 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e89c3c3a10cc3b446800946c17aaec15, type: 3}
   m_Name: Stronk
   m_EditorClassIdentifier: 
-  name: Stronk
-  unitPrefab: {fileID: 6575891413262923461, guid: 942f2240b45c03d4683367bc664cb995,
+  name: stronkDetachVersion
+  unitPrefab: {fileID: 1289923740817093828, guid: c39b0f148cfc729429b4f50b3ed3aeda,
     type: 3}
-  unitMeshes:
-  - {fileID: -5495902117074765545, guid: bd6fa0fac0699ac41837263f5187c341, type: 3}
-  - {fileID: -5495902117074765545, guid: db9332ab292b4684b86d4b03550d9073, type: 3}
+  unitAppearanceVariations:
+    bodyVariations:
+    - {fileID: 2959467708922500008, guid: 7df0c696008910240accd30d94c1dee1, type: 3}
+    headVariations:
+    - {fileID: -8839368762345780380, guid: 7df0c696008910240accd30d94c1dee1, type: 3}
+    leftArmVariations: []
+    rightArmVariations: []
+  unitMaterialVariations:
+  - {fileID: 2100000, guid: 8760746d7012eb04c827ea0efd4549ed, type: 2}
+  - {fileID: 2100000, guid: 734eff90c0542f642ae33e2a816e5a72, type: 2}
+  - {fileID: 2100000, guid: d87b98e8e0ba4da45b8c5247976db824, type: 2}
   unitSprite: {fileID: 21300000, guid: a46026a0b488d384eb23aa19b122beb7, type: 3}
   energyCost: 10
   refundAmount: 5
@@ -26,7 +34,7 @@ MonoBehaviour:
   xpToUpgrade: 100
   upgradeMultiplier: 0.2
   starterUnit: 1
-  health: 1500
+  health: 1
   isMelee: 1
   isRanged: 0
   hasSpecial: 1
@@ -44,7 +52,7 @@ MonoBehaviour:
     maxRange: 20
     rangedCooldown: 5
     preferredRange: 15
-    projectile: {fileID: 0}
+    projectileTag: 0
     projectileSpeed: 0
     projectileSpawnLocation: {x: 0, y: 0, z: 0}
     standStill: 1
@@ -67,6 +75,7 @@ MonoBehaviour:
   viewAngle: 90
   alertRadius: 20
   canAlert: 1
+  bloodColor: {r: 1, g: 0, b: 0, a: 1}
   sounds:
     headHeight: 2
     idleSounds: []
@@ -84,10 +93,6 @@ MonoBehaviour:
     footstepVolume: 0.5
   select:
     canSelect: 1
-  unitMaterials:
-  - {fileID: 2100000, guid: 8760746d7012eb04c827ea0efd4549ed, type: 2}
-  - {fileID: 2100000, guid: 734eff90c0542f642ae33e2a816e5a72, type: 2}
-  - {fileID: 2100000, guid: d87b98e8e0ba4da45b8c5247976db824, type: 2}
   unitAnimator: {fileID: 9100000, guid: d43df37e2bfd1854487c80651d8b21da, type: 2}
   description: The ultimate zombie, with huge amounts of health and strong attacks,
     this will surely end the life of all living still in the area.

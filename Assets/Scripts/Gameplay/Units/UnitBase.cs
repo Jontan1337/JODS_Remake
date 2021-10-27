@@ -448,7 +448,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     private void SetMaterialsAndMeshes()
     {
         //Assign a random appearance to each of the body parts
-
         select.bodyPartsRenderers = new SkinnedMeshRenderer[4];
 
         //Body --- INDEX : 0
