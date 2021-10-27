@@ -56,7 +56,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         public int rangedCooldown = 0;
         public int preferredRange = 0;
         [Space]
-        public GameObject projectile;
+        public Tags projectileTag;
         public int projectileSpeed;
         public Vector3 projectileSpawnLocation;
         public bool standStill = true;
@@ -327,7 +327,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         ranged.minRange = unitSO.ranged.minRange;
         ranged.maxRange = unitSO.ranged.maxRange;
         ranged.rangedCooldown = unitSO.ranged.rangedCooldown;
-        ranged.projectile = unitSO.ranged.projectile;
+        ranged.projectileTag = unitSO.ranged.projectileTag;
         ranged.projectileSpawnLocation = unitSO.ranged.projectileSpawnLocation;
         ranged.projectileSpeed = unitSO.ranged.projectileSpeed;
         ranged.standStill = unitSO.ranged.standStill;
@@ -958,8 +958,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             return;
         }
         //Spawn the projectile
-        GameObject projectile = Instantiate(ranged.projectile, transform);
-        projectile.transform.localPosition = ranged.projectileSpawnLocation;
+        GameObject projectile = ObjectPool.Instance.SpawnFromNetworkedPool(ranged.projectileTag, ranged.projectileSpawnLocation, Quaternion.identity);
+        projectile.transform.position = transform.TransformPoint(ranged.projectileSpawnLocation);
 
         //Aim the projectile at the current target.
         projectile.transform.LookAt(new Vector3(currentTarget.position.x, projectile.transform.position.y, currentTarget.position.z));
@@ -1064,13 +1064,13 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         {
             //Head
             case 1:
-                head.Wtf(damageType);
+                head.OnDetach(damageType);
                 break;
 
             //Left Arm
             case 2:
                 if ((DamageTypes)damageType != DamageTypes.Pierce) { 
-                    leftArm.Wtf(damageType);
+                    leftArm.OnDetach(damageType);
                 }
                 break;
 
@@ -1078,7 +1078,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             case 3:
                 if ((DamageTypes)damageType != DamageTypes.Pierce)
                 {
-                    rightArm.Wtf(damageType);
+                    rightArm.OnDetach(damageType);
                 }
                 break;
         }
@@ -1162,7 +1162,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
         GetComponent<Timer>()?.StartTimer(true, 2.5f, 3f, select.unitMats);
 
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(5.5f);
         //After 3 seconds, tell the server to destroy the object/unit
         Svr_Destroy();
     }

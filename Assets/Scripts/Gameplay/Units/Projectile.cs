@@ -9,7 +9,7 @@ public abstract class Projectile : NetworkBehaviour
 	[Header("Projectile Stats")]
 	public int damage = 0;
 	[SerializeField] protected int lifetime = 5;
-	[SerializeField] private bool destroyAfterLiftime = false;
+	[SerializeField] private bool destroyAfterLifetime = false;
 	[SerializeField] private bool sticky = false;
 	[SerializeField] protected Tags objectPoolTag;
 	[Space]
@@ -47,9 +47,9 @@ public abstract class Projectile : NetworkBehaviour
 
 	public virtual IEnumerator LifetimeEnumerator()
 	{
-		yield return new WaitForSeconds(lifetime);
-		if (destroyAfterLiftime)
+		if (destroyAfterLifetime)
 		{
+			yield return new WaitForSeconds(lifetime);
 			ReturnObjectToPool(0);
 		}
 	}

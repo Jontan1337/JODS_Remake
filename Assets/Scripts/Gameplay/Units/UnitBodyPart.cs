@@ -35,7 +35,7 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEff
 
     #endregion
 
-    public void Wtf(int damageTypeInt)
+    public void OnDetach(int damageTypeInt)
     {
         if (!detachable) return;
         if (attachedPart == null || partTransform == null) return;

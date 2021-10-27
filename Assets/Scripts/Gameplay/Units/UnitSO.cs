@@ -67,7 +67,7 @@ public class UnitSO : ScriptableObject
         public int rangedCooldown = 5;
         public int preferredRange = 15;
         [Space]
-        public GameObject projectile;
+        public Tags projectileTag;
         public int projectileSpeed;
         public Vector3 projectileSpawnLocation;
         public bool standStill = true;
