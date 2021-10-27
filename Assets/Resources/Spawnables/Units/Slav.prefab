@@ -373,6 +373,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3131104800568394319}
+  - component: {fileID: 812747047345917551}
   - component: {fileID: 3322040119633613309}
   - component: {fileID: 8222293829245532414}
   - component: {fileID: 8032634094665668173}
@@ -380,7 +381,6 @@ GameObject:
   - component: {fileID: 6918567846936792575}
   - component: {fileID: 8370575622715206263}
   - component: {fileID: 37049988539904414}
-  - component: {fileID: 812747047345917551}
   - component: {fileID: 1459050832591957856}
   - component: {fileID: 149134755480444006}
   m_Layer: 9
@@ -409,6 +409,114 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &812747047345917551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2321671125669910773}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 338d3d35321307d469b7fa48ff748950, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  unitSO: {fileID: 11400000, guid: 746c20bacaa906a419ba0951252abddd, type: 2}
+  health: 80
+  isDead: 0
+  unitLevel: 1
+  isMelee: 1
+  isRanged: 0
+  hasSpecial: 0
+  melee:
+    meleeDamageMin: 5
+    meleeDamageMax: 10
+    meleeRange: 1.75
+    meleeCooldown: 2
+    canMelee: 1
+    statusEffectToApply: {fileID: 11400000, guid: 6499d90d213f8aa4db7fae68321bec63,
+      type: 2}
+    amount: 5
+  ranged:
+    rangedDamage: 0
+    minRange: 0
+    maxRange: 0
+    rangedCooldown: 0
+    preferredRange: 15
+    projectileTag: 0
+    projectileSpeed: 0
+    projectileSpawnLocation: {x: 0, y: 0, z: 0}
+    standStill: 1
+    directRangedAttack: 0
+    canRanged: 0
+    statusEffectToApply: {fileID: 0}
+    amount: 0
+  special:
+    specialCooldown: 0
+    specialDamage: 0
+    specialRange: 5
+    standStill: 1
+    lookAtTarget: 1
+    availableFromStart: 1
+    canSpecial: 0
+    statusEffectToApply: {fileID: 0}
+    amount: 0
+  movementSpeed: 4
+  chaseTime: 15
+  stoppedMoving: 0
+  sightDistance: 20
+  eyeHeight: 1.2
+  viewAngle: 90
+  ignoreOnRaycast:
+    serializedVersion: 2
+    m_Bits: 4197892
+  survivorLayer:
+    serializedVersion: 2
+    m_Bits: 8192
+  alertRadius: 25
+  canAlert: 1
+  alertMask:
+    serializedVersion: 2
+    m_Bits: 512
+  particleColor: {r: 1, g: 0, b: 0, a: 1}
+  currentTarget: {fileID: 0}
+  navAgent: {fileID: 0}
+  hasTarget: 0
+  permanentTarget: 1
+  animator: {fileID: 3322040119633613309}
+  bodyRenderer: {fileID: 4204370992101718262}
+  headRenderer: {fileID: 7927091249043350507}
+  leftArmRenderer: {fileID: 904433484185758468}
+  rightArmRenderer: {fileID: 7770150599907901216}
+  leftArm: {fileID: 1096788079084153170}
+  rightArm: {fileID: 2510058891436493088}
+  head: {fileID: 2951808367577369948}
+  sounds:
+    headHeight: 2
+    idleSounds: []
+    idleVolume: 0.3
+    meleeSounds: []
+    meleeVolume: 0.4
+    rangedSound: {fileID: 0}
+    rangedVolume: 0.4
+    specialSound: {fileID: 0}
+    specialVolume: 0.4
+    footstepSounds:
+    - {fileID: 8300000, guid: 5ed1edcdc7500a94b964e4a81775d306, type: 3}
+    - {fileID: 8300000, guid: c550417728b224f4b8b9ea0daec14ad4, type: 3}
+    - {fileID: 8300000, guid: ce3c151af270618448b607dff84848e5, type: 3}
+    footstepVolume: 0.1
+  select:
+    canSelect: 1
+    bodyPartsRenderers:
+    - {fileID: 4204370992101718262}
+    - {fileID: 7927091249043350507}
+    - {fileID: 904433484185758468}
+    - {fileID: 7770150599907901216}
+    unitMats: []
+    isSelected: 0
 --- !u!95 &3322040119633613309
 Animator:
   serializedVersion: 3
@@ -609,114 +717,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &812747047345917551
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2321671125669910773}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 338d3d35321307d469b7fa48ff748950, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  unitSO: {fileID: 11400000, guid: 746c20bacaa906a419ba0951252abddd, type: 2}
-  health: 80
-  isDead: 0
-  unitLevel: 1
-  isMelee: 1
-  isRanged: 0
-  hasSpecial: 0
-  melee:
-    meleeDamageMin: 5
-    meleeDamageMax: 10
-    meleeRange: 1.75
-    meleeCooldown: 2
-    canMelee: 1
-    statusEffectToApply: {fileID: 11400000, guid: 6499d90d213f8aa4db7fae68321bec63,
-      type: 2}
-    amount: 5
-  ranged:
-    rangedDamage: 0
-    minRange: 0
-    maxRange: 0
-    rangedCooldown: 0
-    preferredRange: 15
-    projectileTag: 0
-    projectileSpeed: 0
-    projectileSpawnLocation: {x: 0, y: 0, z: 0}
-    standStill: 1
-    directRangedAttack: 0
-    canRanged: 0
-    statusEffectToApply: {fileID: 0}
-    amount: 0
-  special:
-    specialCooldown: 0
-    specialDamage: 0
-    specialRange: 5
-    standStill: 1
-    lookAtTarget: 1
-    availableFromStart: 1
-    canSpecial: 0
-    statusEffectToApply: {fileID: 0}
-    amount: 0
-  movementSpeed: 4
-  chaseTime: 15
-  stoppedMoving: 0
-  sightDistance: 20
-  eyeHeight: 1.2
-  viewAngle: 90
-  ignoreOnRaycast:
-    serializedVersion: 2
-    m_Bits: 4197892
-  survivorLayer:
-    serializedVersion: 2
-    m_Bits: 8192
-  alertRadius: 25
-  canAlert: 1
-  alertMask:
-    serializedVersion: 2
-    m_Bits: 512
-  particleColor: {r: 1, g: 0, b: 0, a: 1}
-  currentTarget: {fileID: 0}
-  navAgent: {fileID: 0}
-  hasTarget: 0
-  permanentTarget: 1
-  animator: {fileID: 3322040119633613309}
-  bodyRenderer: {fileID: 4204370992101718262}
-  headRenderer: {fileID: 7927091249043350507}
-  leftArmRenderer: {fileID: 904433484185758468}
-  rightArmRenderer: {fileID: 7770150599907901216}
-  leftArm: {fileID: 1096788079084153170}
-  rightArm: {fileID: 2510058891436493088}
-  head: {fileID: 2951808367577369948}
-  sounds:
-    headHeight: 2
-    idleSounds: []
-    idleVolume: 0.3
-    meleeSounds: []
-    meleeVolume: 0.4
-    rangedSound: {fileID: 0}
-    rangedVolume: 0.4
-    specialSound: {fileID: 0}
-    specialVolume: 0.4
-    footstepSounds:
-    - {fileID: 8300000, guid: 5ed1edcdc7500a94b964e4a81775d306, type: 3}
-    - {fileID: 8300000, guid: c550417728b224f4b8b9ea0daec14ad4, type: 3}
-    - {fileID: 8300000, guid: ce3c151af270618448b607dff84848e5, type: 3}
-    footstepVolume: 0.1
-  select:
-    canSelect: 1
-    bodyPartsRenderers:
-    - {fileID: 4204370992101718262}
-    - {fileID: 7927091249043350507}
-    - {fileID: 904433484185758468}
-    - {fileID: 7770150599907901216}
-    unitMats: []
-    isSelected: 0
 --- !u!114 &1459050832591957856
 MonoBehaviour:
   m_ObjectHideFlags: 0
