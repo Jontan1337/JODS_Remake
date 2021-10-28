@@ -18,16 +18,13 @@ public class RaycastWeapon : RangedWeapon
         Rpc_ShootFX();
         
         Ray aimRay = new Ray(playerHead.position + new Vector3(0f, 0.1f), playerHead.forward);
-
+        
         if (Physics.Raycast(aimRay, out RaycastHit aimHit, range, ~ignoreLayer))
         {
             Vector3 targetPoint = aimHit.point;
             Ray shootRay = new Ray(shootOrigin.position, targetPoint - shootOrigin.position);
 
-            //Bullet Trail FX           This is only happening on server! make rpc for it or something
-            GameObject fx = ObjectPool.Instance.SpawnFromLocalPool(Tags.BulletTrail, shootOrigin.position, Quaternion.identity, 1);
-            fx.transform.forward = targetPoint - shootOrigin.position;
-            //-----------------------------------------------------------------------------------------------------------------
+            Rpc_BulletTrail(targetPoint);
 
             if (Physics.Raycast(shootRay, out RaycastHit shootHit, range, ~ignoreLayer))
             {
@@ -52,6 +49,10 @@ public class RaycastWeapon : RangedWeapon
                 
             }
         }
+        else
+        {
+            Rpc_BulletTrail(playerHead.forward * range);
+        }
     }
 
     [Server]
@@ -66,5 +67,12 @@ public class RaycastWeapon : RangedWeapon
     {
         GameObject bulletHole = ObjectPool.Instance.SpawnFromLocalPool(Tags.BulletHole, point + normal * 0.01f, Quaternion.identity, 5);
         bulletHole.transform.LookAt(point + normal);
+    }
+
+    [ClientRpc]
+    private void Rpc_BulletTrail(Vector3 direction)
+    {
+        GameObject fx = ObjectPool.Instance.SpawnFromLocalPool(Tags.BulletTrail, shootOrigin.position, Quaternion.identity, 1);
+        fx.transform.forward = direction - shootOrigin.position;
     }
 }
