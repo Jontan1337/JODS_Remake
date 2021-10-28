@@ -30,6 +30,9 @@ public class RaycastWeapon : RangedWeapon
             {
                 Debug.DrawRay(shootOrigin.position, targetPoint - shootOrigin.position, Color.green, 2f);
 
+                PhysicMaterial phyMat = shootHit.collider.sharedMaterial;
+                Rpc_Bullethole(shootHit.point, shootHit.normal, phyMat ? phyMat.name : "");
+
                 if (shootHit.collider.TryGetComponent(out IDamagable damagable))
                 {
                     damagable?.Svr_Damage(damage, owner);
@@ -40,13 +43,7 @@ public class RaycastWeapon : RangedWeapon
                             detachable.Detach((int)DamageTypes.Pierce);
                         }
                     }
-                }
-                else
-                {
-                    // Only bulletholes on things that can't take damage for now.
-                    Rpc_Bullethole(shootHit.point, shootHit.normal);
-                }
-                
+                }                
             }
         }
         else
@@ -63,10 +60,13 @@ public class RaycastWeapon : RangedWeapon
     }
 
     [ClientRpc]
-    private void Rpc_Bullethole(Vector3 point, Vector3 normal)
+    private void Rpc_Bullethole(Vector3 point, Vector3 normal, string phyMatName)
     {
-        GameObject bulletHole = ObjectPool.Instance.SpawnFromLocalPool(Tags.BulletHole, point + normal * 0.01f, Quaternion.identity, 5);
-        bulletHole.transform.LookAt(point + normal);
+        if (GlobalVariables.hallo.TryGetValue(phyMatName, out Tags fxTag))
+        {
+            GameObject bulletHole = ObjectPool.Instance.SpawnFromLocalPool(fxTag, point + normal * 0.01f, Quaternion.identity, 5);
+            bulletHole.transform.LookAt(point + normal);
+        }
     }
 
     [ClientRpc]

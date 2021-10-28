@@ -345,4 +345,12 @@ public class ObjectPool : NetworkBehaviour
 
 		}
     }
+
+	private void OnGUI()
+	{
+		if (test)
+		{
+			GUI.TextField(new Rect(20, 40, 150, 20), "Object Pool Test ON");
+		}
+	}
 }

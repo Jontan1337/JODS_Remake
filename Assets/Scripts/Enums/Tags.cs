@@ -19,8 +19,8 @@
     //Weapon FX
     BulletHole,
     BulletTrail,
-
-
+    BulletMetalImpact,
+    BulletFleshImpact,
 
     //Blood FX
     MeleeBloodSplatter,
