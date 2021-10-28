@@ -15,15 +15,14 @@ public class RocketLauncher : ProjectileWeapon
 			base.Svr_Drop();
 		}
 	}
-	public override void Svr_Unequip()
-	{		
-		Cmd_DestroyGameObject();
+    public override void Svr_Unequip()
+    {
+        base.Svr_Drop();
 	}
 
 	[Command]
 	private void Cmd_DestroyGameObject()
 	{
 		NetworkServer.Destroy(gameObject);
-
 	}
 }
