@@ -41,8 +41,8 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 
 	public bool test;
 
-	public int GetHealth => currentHealth;
 	public bool IsDead => isDead;
+	public int GetHealth => currentHealth;
 	public int Health
 	{
 		get => currentHealth;
@@ -109,6 +109,8 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 
 	#endregion
 
+	#region Ability Stuff
+
 	[Command]
 	void Cmd_Ability()
 	{
@@ -134,6 +136,11 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	{
 		StartCoroutine(AbilityCooldown());
 	}
+
+	#endregion
+
+	#region Class Stuff
+
 
 	[ClientRpc]
 	public void Rpc_SetSurvivorClass(string _class)
@@ -194,10 +201,10 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	[Command]
 	private void Cmd_SpawnClass()
 	{
-		StartCoroutine(Spawnshit());
+		StartCoroutine(SpawnClassObjects());
 	}
 
-	IEnumerator Spawnshit()
+	IEnumerator SpawnClassObjects()
 	{
 		yield return new WaitForSeconds(0.2f);
 
@@ -212,9 +219,12 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 			starterWeapon = Instantiate(survivorSO.starterWeapon, transform.position, transform.rotation);
 			NetworkServer.Spawn(starterWeapon);
 			yield return new WaitForSeconds(0.2f);
-			GetComponentInChildren<PlayerEquipment>()?.Svr_Equip(starterWeapon, EquipmentType.Weapon);
+			starterWeapon.GetComponent<EquipmentItem>().Svr_Interact(gameObject);			
 		}
 	}
+	#endregion
+
+	#region Health Stuff
 
 	private bool healthLossBool = false;
 
@@ -258,6 +268,9 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 			Die();
 		}
 	}
+
+	#endregion
+
 
 	private void OnControllerColliderHit(ControllerColliderHit hit)
 	{
