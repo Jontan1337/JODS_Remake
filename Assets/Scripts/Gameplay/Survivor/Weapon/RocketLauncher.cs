@@ -19,10 +19,4 @@ public class RocketLauncher : ProjectileWeapon
     {
         base.Svr_Drop();
 	}
-
-	[Command]
-	private void Cmd_DestroyGameObject()
-	{
-		NetworkServer.Destroy(gameObject);
-	}
 }
