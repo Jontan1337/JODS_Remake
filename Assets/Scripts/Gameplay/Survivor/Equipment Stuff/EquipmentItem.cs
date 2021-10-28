@@ -11,6 +11,10 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	[SerializeField] protected string itemName = "Item name";
 	[SerializeField] protected EquipmentType equipmentType = EquipmentType.None;
 
+	[Header("Settings")]
+	[SerializeField] private bool enablePhysicsOnDrop = true;
+	[SerializeField] private bool disablePhysicsOnPickup = true;
+
 	[Header("Other info")]
 	[SerializeField] private int unequippedLayer = 14;
 	[SerializeField] private int equippedLayer = 15;
@@ -69,6 +73,7 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 
 	public virtual void Bind()
 	{
+		// This method is the last thing that happens when equipping an item.
 		JODSInput.Controls.Survivor.LMB.performed += OnLMBPerformed;
 		JODSInput.Controls.Survivor.LMB.canceled += OnLMBCanceled;
 		JODSInput.Controls.Survivor.RMB.performed += OnRMBPerformed;
@@ -77,6 +82,7 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	}
 	public virtual void Unbind()
 	{
+		// This method is the last thing that happens when dropping an item.
 		JODSInput.Controls.Survivor.LMB.performed -= OnLMBPerformed;
 		JODSInput.Controls.Survivor.LMB.canceled -= OnLMBCanceled;
 		JODSInput.Controls.Survivor.RMB.performed -= OnRMBPerformed;
@@ -157,17 +163,11 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 		}
 		Svr_InvokeOnDrop();
 		Svr_ShowItem();
-		Svr_EnablePhysics();
-		transform.parent = null;
+		Svr_Throw();
 		IsInteractable = true;
 		if (outline != null)
 		{
 			Rpc_ToggleOutline(true);
-		}
-		if (rb != null)
-		{
-			Svr_Push(1.5f);
-			Svr_Spin(2);
 		}
 		authController.Svr_RemoveAuthority();
 		Rpc_Drop();
@@ -190,6 +190,18 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	{
 		Rpc_SetLayer(connectionToClient, false);
 		Svr_HideItem();
+	}
+
+	[Server]
+	public void Svr_Throw()
+    {
+		Svr_EnablePhysics();
+		transform.parent = null;
+		if (rb != null)
+		{
+			Svr_Push(1.5f);
+			Svr_Spin(2);
+		}
 	}
 
 	#region Physics
