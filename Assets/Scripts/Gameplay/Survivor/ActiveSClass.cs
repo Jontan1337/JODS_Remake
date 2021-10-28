@@ -281,4 +281,12 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	{
 		NetworkServer.Destroy(gameObject);
 	}
+
+	private void OnGUI()
+	{
+		if (test)
+		{
+			GUI.TextField(new Rect(20, 20, 100, 20), "TEST");
+		}
+	}
 }
