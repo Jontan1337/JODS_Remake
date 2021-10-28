@@ -18,6 +18,7 @@
 
     //Weapon FX
     BulletHole,
+    BulletTrail,
 
 
 

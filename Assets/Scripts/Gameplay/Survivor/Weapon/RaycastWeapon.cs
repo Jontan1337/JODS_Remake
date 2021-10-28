@@ -23,6 +23,8 @@ public class RaycastWeapon : RangedWeapon
         {
             Vector3 targetPoint = aimHit.point;
             Ray shootRay = new Ray(shootOrigin.position, targetPoint - shootOrigin.position);
+            GameObject fx = ObjectPool.Instance.SpawnFromLocalPool(Tags.BulletTrail, shootOrigin.position, Quaternion.identity, 1);
+            fx.transform.forward = targetPoint - shootOrigin.position;
 
             if (Physics.Raycast(shootRay, out RaycastHit shootHit, range, ~ignoreLayer))
             {
