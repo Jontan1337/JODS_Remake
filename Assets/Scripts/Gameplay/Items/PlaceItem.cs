@@ -118,10 +118,6 @@ public class PlaceItem : EquipmentItem
 		Unbind();
 		Drop();
 	}
-	public override void Unbind()
-	{
-		base.Unbind();
-	}
 
 	public override void Svr_Unequip()
 	{
@@ -141,8 +137,9 @@ public class PlaceItem : EquipmentItem
 
 	public void Drop()
 	{
-		StopAllCoroutines();
-		placeholder.SetActive(false);
+		//StopAllCoroutines();
+		//placeholder.SetActive(false);
+		Rpc_Cleanup(connectionToClient);
 		switch (equipmentType)
 		{
 			case EquipmentType.None:
