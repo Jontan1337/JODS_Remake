@@ -23,8 +23,11 @@ public class RaycastWeapon : RangedWeapon
         {
             Vector3 targetPoint = aimHit.point;
             Ray shootRay = new Ray(shootOrigin.position, targetPoint - shootOrigin.position);
+
+            //Bullet Trail FX           This is only happening on server! make rpc for it or something
             GameObject fx = ObjectPool.Instance.SpawnFromLocalPool(Tags.BulletTrail, shootOrigin.position, Quaternion.identity, 1);
             fx.transform.forward = targetPoint - shootOrigin.position;
+            //-----------------------------------------------------------------------------------------------------------------
 
             if (Physics.Raycast(shootRay, out RaycastHit shootHit, range, ~ignoreLayer))
             {
