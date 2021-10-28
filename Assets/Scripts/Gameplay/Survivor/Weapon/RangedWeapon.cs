@@ -227,7 +227,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         }
     }
 
-
     private void StartCooldown()
     {
         StartCoroutine(IEShootCooldown());

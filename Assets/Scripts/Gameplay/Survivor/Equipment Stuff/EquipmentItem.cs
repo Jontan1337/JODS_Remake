@@ -20,6 +20,7 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	[SerializeField] private bool destroyOnDrop = false;
 	[SerializeField] protected AuthorityController authController = null;
 	[SerializeField] protected SyncGameObjectVisuals objectVisuals = null;
+	[SerializeField] protected Transform owner;
 	[SerializeField] private Rigidbody rb;
 	[SerializeField] private Outline outline;
 
@@ -50,7 +51,7 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 		Rpc_Interact(interacter.GetComponent<NetworkIdentity>().connectionToClient, interacter);
 		// Equipment should be on a child object of the player.
 		PlayerEquipment equipment = interacter.GetComponentInChildren<PlayerEquipment>();
-
+		owner = interacter.transform;
 		if (equipment != null)
 		{
 			equipment?.Svr_Equip(gameObject, equipmentType);

@@ -8,6 +8,6 @@ public interface IDamagable
     bool IsDead { get; }
 
     [Server]
-    void Svr_Damage(int damage, Transform target = null);
+    void Svr_Damage(int damage, Transform source = null);
 
 }

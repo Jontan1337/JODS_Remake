@@ -17,7 +17,7 @@ public class RaycastWeapon : RangedWeapon
         base.Shoot();
         Rpc_ShootFX();
         
-        Ray aimRay = new Ray(playerHead.position, playerHead.forward);
+        Ray aimRay = new Ray(playerHead.position + new Vector3(0f, 0.1f), playerHead.forward);
 
         if (Physics.Raycast(aimRay, out RaycastHit aimHit, range, ~ignoreLayer))
         {
@@ -27,13 +27,10 @@ public class RaycastWeapon : RangedWeapon
             if (Physics.Raycast(shootRay, out RaycastHit shootHit, range, ~ignoreLayer))
             {
                 Debug.DrawRay(shootOrigin.position, targetPoint - shootOrigin.position, Color.green, 2f);
-                shootHit.collider.GetComponent<IDamagable>()?.Svr_Damage(damage);
-
-                Rpc_Bullethole(shootHit.point, shootHit.normal);
 
                 if (shootHit.collider.TryGetComponent(out IDamagable damagable))
                 {
-                    damagable?.Svr_Damage(damage);
+                    damagable?.Svr_Damage(damage, owner);
                     if (highPower)
                     {
                         if (shootHit.collider.TryGetComponent(out IDetachable detachable))
@@ -42,6 +39,12 @@ public class RaycastWeapon : RangedWeapon
                         }
                     }
                 }
+                else
+                {
+                    // Only bulletholes on things that can't take damage for now.
+                    Rpc_Bullethole(shootHit.point, shootHit.normal);
+                }
+                
             }
         }
     }
