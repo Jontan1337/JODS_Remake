@@ -31,8 +31,9 @@ public class PlaceItem : EquipmentItem
 	public IEnumerator PlaceHolderActive()
 	{
 		placeholder.GetComponent<ItemPlaceholder>().Obstructed(false);
-		while (true)		{
-			
+		while (true)
+		{
+
 			// Raycast pointing forward relative to the players camera.
 			if (Physics.Raycast(look.playerCamera.transform.position, look.playerCamera.transform.forward, out RaycastHit hit, maxPlaceRange, ~ignoreLayer))
 			{
@@ -53,7 +54,7 @@ public class PlaceItem : EquipmentItem
 			}
 			else
 			{
-				 // if the raycast doesn't hit anything, obstructed is set to false here since it doesn't do OnTriggerExit.
+				// if the raycast doesn't hit anything, obstructed is set to false here since it doesn't do OnTriggerExit.
 				placeholder.GetComponent<ItemPlaceholder>().Obstructed(false);
 			}
 			// If downwards facing raycast doesn't hit anything, the placeholder is inactive.
@@ -112,21 +113,15 @@ public class PlaceItem : EquipmentItem
 		Cmd_Place(placeholder.GetComponent<ItemPlaceholder>().obstructed, placeholder.activeSelf, placeholder.transform.position, placeholder.transform.rotation);
 	}
 
-	// When the turret is dropped, all coroutines are stopped, the placeholder is deactivated and depending on the equipment type, the item is destroyed or dropped.
+	// When the item is dropped, all coroutines are stopped, the placeholder is deactivated and the item is destroyed or dropped, depending on a bool in EquipmentItem.
 	protected override void OnDropPerformed(InputAction.CallbackContext obj)
 	{
-		Unbind();
 		Drop();
 	}
 
 	public override void Svr_Unequip()
 	{
-		base.Svr_Unequip();
-		Rpc_Cleanup(connectionToClient);
-		if (equipmentType == EquipmentType.None)
-		{
-			Cmd_DestroyGameObject();
-		}
+		Drop();
 	}
 
 	public override void Svr_Equip()
@@ -137,27 +132,9 @@ public class PlaceItem : EquipmentItem
 
 	public void Drop()
 	{
-		//StopAllCoroutines();
-		//placeholder.SetActive(false);
+		Unbind();
 		Rpc_Cleanup(connectionToClient);
-		switch (equipmentType)
-		{
-			case EquipmentType.None:
-				Cmd_DestroyGameObject();
-				break;
-			case EquipmentType.Special:
-				Cmd_Drop(); // Placeitem dropped when changing equipment - FIX
-				break;
-			default:
-				break;
-		}
-	}
-
-	[Command]
-	private void Cmd_DestroyGameObject()
-	{
-		NetworkServer.Destroy(gameObject);
-
+		Cmd_Drop();
 	}
 
 	[Server]

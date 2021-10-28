@@ -63,9 +63,9 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 
 	[TargetRpc]
 	public virtual void Rpc_Interact(NetworkConnection target, GameObject interacter)
-    {
+	{
 
-    }
+	}
 
 	public virtual void Bind()
 	{
@@ -151,10 +151,10 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	[Server]
 	public virtual void Svr_Drop()
 	{
-        if (connectionToClient != null)
-        {
+		if (connectionToClient != null)
+		{
 			Rpc_SetLayer(connectionToClient, false);
-        }
+		}
 		Svr_InvokeOnDrop();
 		Svr_ShowItem();
 		Svr_EnablePhysics();
@@ -169,15 +169,8 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 			Svr_Push(1.5f);
 			Svr_Spin(2);
 		}
-		if (destroyOnDrop)
-		{
-			NetworkServer.Destroy(gameObject);
-		}
-		else
-		{
-			authController.Svr_RemoveAuthority();
-			Rpc_Drop();
-		}
+		authController.Svr_RemoveAuthority();
+		Rpc_Drop();
 	}
 	[ClientRpc]
 	public virtual void Rpc_Drop()

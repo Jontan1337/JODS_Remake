@@ -12,11 +12,21 @@ public class RocketLauncher : ProjectileWeapon
 		{
 			GetComponentInParent<ActiveSClass>().StartAbilityCooldownCo();
 			Unbind();
-			base.Svr_Drop();
+			Cmd_Drop();
 		}
 	}
-    public override void Svr_Unequip()
+
+	
+    public override void Unbind()
     {
-        base.Svr_Drop();
+		base.Unbind();
+		Cmd_Destroy();
+        //Cmd_Drop();
 	}
+	[Command]
+	public void Cmd_Destroy()
+	{
+		NetworkServer.Destroy(gameObject);
+	}
+
 }
