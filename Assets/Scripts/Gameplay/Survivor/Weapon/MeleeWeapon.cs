@@ -91,7 +91,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
         if (!isAttacking) return;
 
         // Wack animation played on local client.
-        if (isLocalPlayer)
+        if (hasAuthority)
         {
             OnImpact?.Invoke(10);
         }

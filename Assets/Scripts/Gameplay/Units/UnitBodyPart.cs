@@ -131,7 +131,7 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEff
         }
     }
 
-    public Teams Team => throw new System.NotImplementedException();
+    public Teams Team => Teams.Unit;
 
     public Color ParticleColor => unitBase.ParticleColor;
 }

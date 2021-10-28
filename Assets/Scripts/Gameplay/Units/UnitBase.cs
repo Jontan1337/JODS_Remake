@@ -597,7 +597,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
                 if (!CloserThanTarget(newTarget)) return;
             }
         }
-
         SetTarget(newTarget);
 
         NewTarget();
@@ -1401,10 +1400,17 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         if (isDead) return;
         if (target != null)
         {
-            if (CloserThanTarget(target))
+            if (HasTarget())
             {
-                Debug.Log("I got shot by someone closer than my target");
-                AcquireTarget(target, false, true);
+                if (CloserThanTarget(target))
+                {
+                    Debug.Log("I got shot by someone closer than my target");
+                    AcquireTarget(target, false, true);
+                }
+            }
+            else
+            {
+                AcquireTarget(target, false, false);
             }
         }
 
