@@ -115,11 +115,13 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
             {
                 selectedEquipmentSlot.onServerItemChange -= Svr_SelectedSlotItemChange;
             }
-            // Listen if the new selected slot's item changes.
-            value.onServerItemChange += Svr_SelectedSlotItemChange;
-
             selectedEquipmentSlot = value;
-            ItemInHands = selectedEquipmentSlot.EquipmentItem; // NO: Causes weird command when no authority. No understand hlep. but work no problem.
+            if (selectedEquipmentSlot)
+            {
+                // Listen if the new selected slot's item changes.
+                selectedEquipmentSlot.onServerItemChange += Svr_SelectedSlotItemChange;
+                ItemInHands = selectedEquipmentSlot.EquipmentItem; // NO: Causes weird command when no authority. No understand hlep. but work no problem.
+            }
         }
     }
     public List<EquipmentSlot> EquipmentSlots
@@ -318,7 +320,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
             if (newSelectedSlot != null)
             {
                 // If newSelectedSlot is not null, then select it.
-                // If newSelectedSlot is null, then use the one that's already selected.
+                // otherwise use the one that's already selected.
                 switch (itemPickupBehaviour)
                 {
                     case ItemPickupBehaviour.EquipAny:
@@ -340,7 +342,6 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
             }
         }
 
-
         if (SelectedEquipmentSlot.EquipmentType == equipmentType)
         {
             if (SelectedEquipmentSlot.EquipmentItem)
@@ -356,11 +357,13 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
         {
             if (equipment.TryGetComponent(out IEquippable equippable))
             {
-                if (ItemInHands)
-                {
-                    equipmentItem.Svr_Unequip();
-                }
+                // Unequip current item and put the new item in hands.
+                // Unbind current weapon
+                // Unequip current weapon
+                // Deselect item slot
+
                 ItemInHands = equipment;
+                Svr_DeselectSlot();
             }
         }
         Svr_InvokeItemPickedUp(ItemInHands);
@@ -457,8 +460,15 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     private void Svr_OnItemDropped(GameObject item)
     {
         OnItemDropped(item);
-        Rpc_OnItemDropped(item);   
-        SelectedEquipmentSlot.Svr_RemoveItem();
+        Rpc_OnItemDropped(item);
+        if (SelectedEquipmentSlot)
+        {
+            SelectedEquipmentSlot.Svr_RemoveItem();
+        }
+        else
+        {
+            Svr_SelectSlot(0);
+        }
     }
     [ClientRpc]
     private void Rpc_OnItemDropped(GameObject item)
