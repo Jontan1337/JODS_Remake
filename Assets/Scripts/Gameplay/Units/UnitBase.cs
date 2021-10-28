@@ -289,6 +289,15 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     public virtual void Start()
     {
+        if (canRagdoll)
+        {
+            Rigidbody[] rbs = GetComponentsInChildren<Rigidbody>();
+            foreach (Rigidbody rb in rbs)
+            {
+                rb.isKinematic = true;
+                rb.useGravity = false;
+            }
+        }
         CoSearch = SearchCoroutine();
         InitialUnitSetup();
         if (!searching) { StartCoroutine(CoSearch); searching = true; }

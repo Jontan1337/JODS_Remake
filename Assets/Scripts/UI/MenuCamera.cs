@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.PostProcessing;
 
 [System.Serializable]
 public class CameraPosition
@@ -17,33 +16,7 @@ public class MenuCamera : MonoBehaviour
         instance = this;
     }
 
-    private void OnEnable()
-    {
-        JODSInput.Controls.MainMenu.Space.performed += ctx => ColorChange();
-    }
-
     [SerializeField] private List<CameraPosition> cameraPositions = new List<CameraPosition>();
-
-    [Header("Post Processing")]
-    private PostProcessingProfile PP;
-    void Start()
-    {
-        GetComponent<PostProcessingBehaviour>().enabled = true;
-        PP = GetComponent<PostProcessingBehaviour>().profile;
-        ColorGradingModel.Settings col = PP.colorGrading.settings;
-        col.basic.hueShift = 0;
-        PP.colorGrading.settings = col;
-
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-    }
-    private void ColorChange()
-    {
-        print("ASS");
-        ColorGradingModel.Settings col = PP.colorGrading.settings;
-        col.basic.hueShift = Random.Range(-180, 180);
-        PP.colorGrading.settings = col;
-    }
 
 
     #region Camera Position Changes

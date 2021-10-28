@@ -44,7 +44,6 @@ public abstract class Projectile : NetworkBehaviour
 
     public virtual IEnumerator DropoffEnumerator()
 	{
-		print("Drpooff");
 		yield return new WaitForSeconds(timeBeforeDropoff);
 
 		rb.useGravity = true;
