@@ -597,7 +597,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
                 if (!CloserThanTarget(newTarget)) return;
             }
         }
-
         SetTarget(newTarget);
 
         NewTarget();
@@ -1411,7 +1410,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             }
             else
             {
-                AcquireTarget(target, false, true);
+                AcquireTarget(target, false, false);
             }
         }
 
