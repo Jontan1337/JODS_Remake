@@ -131,15 +131,17 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	[Server]
 	private void Svr_Shoot()
 	{
-		Ray(out Transform didHit, out bool lineOfSightCheck);
+		Ray(out RaycastHit didHit, out bool lineOfSightCheck);
 		Debug.DrawRay(barrel.position, barrel.forward * 10, Color.red, 0.1f);
 
 		// A shooting animation coroutine is played.
-		Rpc_Shoot(didHit);
-
+		Rpc_Shoot(didHit.transform);
+		PhysicMaterial phyMat = didHit.collider.sharedMaterial;
+		Rpc_Bullethole(didHit.point, didHit.normal, phyMat ? phyMat.name : "");
+		Rpc_BulletTrail(didHit.point);
 		// The turret uses a raycast to check if a damagable unit is in front of its barrel.
 		// The turret will shoot at any unit that can be damaged, even if it's not the target.
-		didHit.GetComponent<IDamagable>()?.Svr_Damage(damage, transform);
+		didHit.transform.GetComponent<IDamagable>()?.Svr_Damage(damage, transform);
 
 		// If the target is dead after the shot, the target is lost.
 		if (target.GetComponent<IDamagable>().IsDead)
@@ -161,7 +163,21 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		bulletShell.Emit(1);
 
 	}
-
+	[ClientRpc]
+	private void Rpc_Bullethole(Vector3 point, Vector3 normal, string phyMatName)
+	{
+		if (GlobalVariables.hallo.TryGetValue(phyMatName, out Tags fxTag))
+		{
+			GameObject bulletHole = ObjectPool.Instance.SpawnFromLocalPool(fxTag, point + normal * 0.01f, Quaternion.identity, 5);
+			bulletHole.transform.LookAt(point + normal);
+		}
+	}
+	[ClientRpc]
+	private void Rpc_BulletTrail(Vector3 direction)
+	{
+		GameObject fx = ObjectPool.Instance.SpawnFromLocalPool(Tags.BulletTrail, barrel.position, Quaternion.identity, 1);
+		fx.transform.forward = direction - barrel.position;
+	}
 
 	[Server]
 	private void Svr_FindTarget()
@@ -289,10 +305,10 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	[Server]
 	private bool CanShoot()
 	{
-		Ray(out Transform didHit, out bool lineOfSightCheck);
-		if (didHit)
+		Ray(out RaycastHit didHit, out bool lineOfSightCheck);
+		if (didHit.transform)
 		{
-			if (didHit.TryGetComponent(out IDamagable a))
+			if (didHit.transform.TryGetComponent(out IDamagable a))
 			{
 				return true;
 			}
@@ -305,15 +321,15 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	}
 
 	// Sends out two variables that can be used if the method is called.
-	private void Ray(out Transform didHit, out bool lineOfSightCheck)
+	private void Ray(out RaycastHit didHit, out bool lineOfSightCheck)
 	{
 		// A bool that is determined by a raycast that checks if there is a straight line between the turret and the target, without any structures in between.
 		Physics.Raycast(transform.position, ((target.position + target.GetComponent<BoxCollider>().center) - transform.position), out RaycastHit hitLOS, LOSLayer);
-		lineOfSightCheck = hitLOS.transform == target;
+		lineOfSightCheck = hitLOS.transform.root == target;
 
 		// A transform that is determined by a raycast that points forward relative to the pivot.
 		Physics.Raycast(pivot.position, pivot.forward, out RaycastHit hit, range, LOSLayer);
-		didHit = hit.transform;
+		didHit = hit;
 	}
 
 

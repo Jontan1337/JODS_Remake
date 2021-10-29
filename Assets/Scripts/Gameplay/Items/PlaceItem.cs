@@ -119,15 +119,8 @@ public class PlaceItem : EquipmentItem
 
 	public override void Unbind()
 	{
-		//Rpc_Cleanup(connectionToClient);
 		base.Unbind();
 		Drop();
-	}
-
-	public override void Svr_Equip()
-	{
-		base.Svr_Equip();
-		Equipped(connectionToClient, transform.root.gameObject);
 	}
 
 	public void Drop()
@@ -151,13 +144,11 @@ public class PlaceItem : EquipmentItem
 	{
 		NetworkServer.Destroy(gameObject);
 	}
-
-	[Server]
-	public override void Svr_Interact(GameObject interacter)
+	public override void Svr_Equip()
 	{
-		base.Svr_Interact(interacter);
+		base.Svr_Equip();
+		Equipped(connectionToClient, transform.root.gameObject);
 	}
-
 
 	// Makes a child object with identical appearance. 
 	[ContextMenu("Create Placeholder")]
