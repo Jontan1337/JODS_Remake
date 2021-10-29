@@ -73,6 +73,10 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 		{
 			armor = value;
 			armorBar.value = armor;
+			if (isServer)
+			{
+				Rpc_SyncStats(connectionToClient, currentHealth, armor);
+			}
 		}
 	}
 
