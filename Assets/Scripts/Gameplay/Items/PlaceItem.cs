@@ -103,9 +103,7 @@ public class PlaceItem : EquipmentItem
 	private void Rpc_Cleanup(NetworkConnection target)
 	{
 		StopCoroutine(PlaceHolderActiveCo);
-		Unbind();
 		placeholder.SetActive(false);
-
 	}
 
 	protected override void OnLMBPerformed(InputAction.CallbackContext obj)
@@ -116,11 +114,13 @@ public class PlaceItem : EquipmentItem
 	// When the item is dropped, all coroutines are stopped, the placeholder is deactivated and the item is destroyed or dropped, depending on a bool in EquipmentItem.
 	protected override void OnDropPerformed(InputAction.CallbackContext obj)
 	{
-		Drop();
+		Unbind();
 	}
 
-	public override void Svr_Unequip()
+	public override void Unbind()
 	{
+		//Rpc_Cleanup(connectionToClient);
+		base.Unbind();
 		Drop();
 	}
 
@@ -131,18 +131,15 @@ public class PlaceItem : EquipmentItem
 	}
 
 	public void Drop()
-	{
-		//StopAllCoroutines();
-		//placeholder.SetActive(false);
-		Unbind();
-		Rpc_Cleanup(connectionToClient);
+	{		
+		//Cmd_Drop();
 		switch (equipmentType)
 		{
 			case EquipmentType.None:
 				Cmd_DestroyGameObject();
 				break;
 			case EquipmentType.Special:
-				Cmd_Drop(); // Placeitem dropped when changing equipment - FIX
+				Cmd_Drop();
 				break;
 			default:
 				break;
@@ -159,7 +156,6 @@ public class PlaceItem : EquipmentItem
 	public override void Svr_Interact(GameObject interacter)
 	{
 		base.Svr_Interact(interacter);
-		//Equipped(connectionToClient, interacter);
 	}
 
 
