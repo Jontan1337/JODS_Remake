@@ -295,6 +295,8 @@ public class ObjectPool : NetworkBehaviour
 			pooledObj.OnObjectSpawn();
 		}
 
+		NetworkServer.Spawn(objectToSpawn);
+
 		//Put the object back in the queue after 'time' has passed (putting it at the back of the queue)
 		if (time != null)
 		{
