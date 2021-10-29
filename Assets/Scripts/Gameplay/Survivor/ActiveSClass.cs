@@ -286,7 +286,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	{
 		if (test)
 		{
-			GUI.TextField(new Rect(20, 20, 100, 20), "TEST");
+			GUI.TextField(new Rect(20, 20, 150, 20), "Active S Class Test ON");
 		}
 	}
 }
