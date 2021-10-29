@@ -132,9 +132,27 @@ public class PlaceItem : EquipmentItem
 
 	public void Drop()
 	{
+		//StopAllCoroutines();
+		//placeholder.SetActive(false);
 		Unbind();
 		Rpc_Cleanup(connectionToClient);
-		Cmd_Drop();
+		switch (equipmentType)
+		{
+			case EquipmentType.None:
+				Cmd_DestroyGameObject();
+				break;
+			case EquipmentType.Special:
+				Cmd_Drop(); // Placeitem dropped when changing equipment - FIX
+				break;
+			default:
+				break;
+		}
+	}
+
+	[Command]
+	private void Cmd_DestroyGameObject()
+	{
+		NetworkServer.Destroy(gameObject);
 	}
 
 	[Server]

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using UnityEngine.InputSystem;
 
 public class RocketLauncher : ProjectileWeapon
 {
@@ -12,16 +13,18 @@ public class RocketLauncher : ProjectileWeapon
 		{
 			GetComponentInParent<ActiveSClass>().StartAbilityCooldownCo();
 			Unbind();
-			Cmd_Drop();
 		}
 	}
 
-	
-    public override void Unbind()
-    {
+	protected override void OnDropPerformed(InputAction.CallbackContext obj)
+	{
+		Unbind();
+	}
+
+	public override void Unbind()
+	{
 		base.Unbind();
 		Cmd_Destroy();
-        //Cmd_Drop();
 	}
 	[Command]
 	public void Cmd_Destroy()
