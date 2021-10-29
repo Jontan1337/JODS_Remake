@@ -49,13 +49,21 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 		private set
 		{
 			int prevHealth = currentHealth;
-			currentHealth = value;
+			currentHealth = Mathf.Clamp(value, 0, maxHealth);
 			healthBar.value = currentHealth;
 			if (!healthLossBool)
 			{
 				StartCoroutine(HealthLossCo(prevHealth));
 			}
-
+			if (currentHealth <= 0)
+			{
+				isDead = true;
+				Die();
+			}
+			if (isServer)
+            {
+				Rpc_SyncStats(connectionToClient, currentHealth, armor);
+            }
 		}
 	}
 	public int Armor
@@ -261,13 +269,15 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 		{
 			Health -= damage;
 		}
-		Health = Mathf.Clamp(Health, 0, maxHealth);
-		if (Health <= 0)
-		{
-			isDead = true;
-			Die();
-		}
 	}
+
+	[TargetRpc]
+	public void Rpc_SyncStats(NetworkConnection target, int newHealth, int newArmor)
+    {
+		if (isServer) return;
+		Health = newHealth;
+		Armor = newArmor;
+    }
 
 	#endregion
 
