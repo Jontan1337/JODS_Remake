@@ -565,6 +565,6 @@ public class Lobby : NetworkManager
 
     private void OnGUI()
     {
-        GUI.TextField(new Rect(20, 40, 200, 20), "Must Have Master: " + (mustHaveMaster ? "On" : "Off"));
+        GUI.TextField(new Rect(20, 60, 150, 20), "Must Have Master: " + (mustHaveMaster ? "On" : "Off"));
     }
 }
