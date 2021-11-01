@@ -674,5 +674,11 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     private void Cmd_SetPlayerHands(Transform playerHands)
     {
         this.playerHands = playerHands;
+        Rpc_SetPlayerHands(playerHands);
+    }
+    [ClientRpc]
+    private void Rpc_SetPlayerHands(Transform playerHands)
+    {
+        this.playerHands = playerHands;
     }
 }
