@@ -312,6 +312,11 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     [Server]
     public void Svr_Equip(GameObject equipment, EquipmentType equipmentType)
     {
+        if (!SelectedEquipmentSlot)
+        {
+            Svr_SelectSlot(0);
+        }
+
         // If selected equipment hotbar slot is empty, equip item in that hotbar slot,
         // else look for an available hotbar slot.
         if (SelectedEquipmentSlot.EquipmentType != equipmentType || SelectedEquipmentSlot.EquipmentItem != null)
@@ -546,6 +551,11 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
             newItem.transform.rotation = Quaternion.Lerp(newItem.transform.rotation, playerHands.rotation, Time.deltaTime * 20);
 
             yield return null;
+
+            if (!newItem)
+            {
+                yield break;
+            }
 
             if (Vector3.Distance(newItem.transform.position, playerHands.position) < 0.08f
                 && Vector3.Distance(newItem.transform.eulerAngles, playerHands.eulerAngles) < 0.08f)
