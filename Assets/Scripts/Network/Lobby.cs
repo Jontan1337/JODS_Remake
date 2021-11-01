@@ -271,7 +271,7 @@ public class Lobby : NetworkManager
 
     public void AllPlayersHaveLoaded()
     {
-        //StartCoroutine(PreGameCo());
+        StartCoroutine(PreGameCo());
     }
 
     public static event Action OnPlayersLoaded;
@@ -286,6 +286,9 @@ public class Lobby : NetworkManager
         //Invoke this, which tells other objects that all players have loaded and allows them to do their thing.
         OnPlayersLoaded?.Invoke();
 
+        //Destroy the pre game waiting room.
+        NetworkServer.Destroy(PreGameWaitingRoom.Instance.gameObject);
+
         //Object Pool
 
         //TODO: Give object pools more objects to spawn 
@@ -297,8 +300,6 @@ public class Lobby : NetworkManager
 
         yield return new WaitForSeconds(1.5f); //This delay is mostly to hide all of the game initialization going on.
         
-        //Destroy the pre game waiting room.
-        NetworkServer.Destroy(PreGameWaitingRoom.Instance.gameObject);
         //Enable player controls.
         LobbySync.Instance.Rpc_EnableControls();
     }
