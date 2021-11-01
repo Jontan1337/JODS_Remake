@@ -893,7 +893,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             AttackMelee = true;
             LookAtTarget();
         }
-        else Debug.LogWarning($"{name} can't see it's target. Is it's ignoreOnLayer mask set properly?" +
+        else Debug.Log($"{name} can't see it's target. Is it's ignoreOnLayer mask set properly?" +
             $"Or maybe the unit is too close/inside the target?");
     }
     protected bool CanMeleeAttack => WithinMeleeRange() && melee.canMelee;

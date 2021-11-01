@@ -12,9 +12,7 @@ GameObject:
   - component: {fileID: 6222407410909346247}
   - component: {fileID: 6222407410909346245}
   - component: {fileID: 7676655563438057699}
-  - component: {fileID: 3617518231194323222}
   - component: {fileID: 7628148484119422582}
-  - component: {fileID: 2016954922835176079}
   m_Layer: 13
   m_Name: ItemCamera
   m_TagString: Untagged
@@ -125,30 +123,7 @@ MonoBehaviour:
   playerCameras: []
   universalCamData: {fileID: 6222407410909346245}
   mainCamera: 0
-  playerCamFOV: 60
---- !u!114 &3617518231194323222
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6222407410909346251}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f48d9adfb06982e49a79b02c970de21f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  parentData: {fileID: 0}
-  positionData: {x: 0, y: 0, z: 0}
-  localPositionData: {x: 0, y: 0, z: 0}
-  rotationData: {x: 0, y: 0, z: 0, w: 0}
-  syncParent: 1
-  syncPosition: 1
-  syncRotation: 1
-  syncVisibility: 0
-  objectRenderer: {fileID: 0}
+  fieldOfView: 60
 --- !u!114 &7628148484119422582
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -162,19 +137,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: 2
---- !u!114 &2016954922835176079
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6222407410909346251}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sceneId: 0
-  serverOnly: 0
-  m_AssetId: 
-  hasSpawned: 0
