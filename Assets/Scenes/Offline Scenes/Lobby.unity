@@ -1681,7 +1681,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   countdownIsActive: 0
-  countdownDuration: 5
+  countdownDuration: 0
   countdownText: {fileID: 183202593}
   countdownSound: {fileID: 8300000, guid: 32d4b1811dda14a6cb9e059ee8ad17d2, type: 3}
 --- !u!4 &341159186
@@ -3821,7 +3821,6 @@ GameObject:
   - component: {fileID: 630011242}
   - component: {fileID: 630011241}
   - component: {fileID: 630011240}
-  - component: {fileID: 630011243}
   - component: {fileID: 630011244}
   - component: {fileID: 630011246}
   m_Layer: 0
@@ -3896,19 +3895,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 30, z: 0}
---- !u!114 &630011243
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 630011239}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff26db721962cdf4a8edcdfa9a767d2a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  profile: {fileID: 11400000, guid: 46f4ac16da7d24349bb30cfac880fa71, type: 2}
 --- !u!114 &630011244
 MonoBehaviour:
   m_ObjectHideFlags: 0
