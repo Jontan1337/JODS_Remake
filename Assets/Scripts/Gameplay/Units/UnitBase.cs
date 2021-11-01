@@ -24,13 +24,22 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     [SyncVar, SerializeField] private int health = 100; //Upgradeable
     [SyncVar] public bool isDead = false;
     private int maxHealth = 0;
-    private float upgradeMultiplier = 0f;
     private int refundAmount = 0;
-    [SyncVar, SerializeField] private int unitLevel = 1;
+    [SyncVar, SerializeField] protected int unitLevel = 1;
     [Space]
     [SerializeField] private bool isMelee;
     [SerializeField] private bool isRanged;
     [SerializeField] private bool hasSpecial;
+    [System.Serializable]
+    public class Upgrades
+    {
+        public float upgradeMultiplier = 0f;
+        public bool upgradeMovementSpeed = true;
+        public float movementSpeedUpgradeIncrease = 0.1f;
+        public float movementSpeedUpgradeMax = 3f;
+    }
+    [Space]
+    public Upgrades upgrades;
     [System.Serializable]
     public class Melee
     {
@@ -319,7 +328,10 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         maxHealth = unitSO.health;
 
         //Upgrade
-        upgradeMultiplier = unitSO.upgradeMultiplier;
+        upgrades.upgradeMovementSpeed = unitSO.upgrades.upgradeMovementSpeed;
+        upgrades.upgradeMultiplier = unitSO.upgrades.upgradeMultiplier;
+        upgrades.movementSpeedUpgradeIncrease = unitSO.upgrades.movementSpeedUpgradeIncrease;
+        upgrades.movementSpeedUpgradeMax = unitSO.upgrades.movementSpeedUpgradeMax;
 
         //Attack bools
         isMelee = unitSO.isMelee;
@@ -524,10 +536,32 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     //This is called by the Master, who sets the unit's level, which increases it's stats.
     public void SetLevel(int level) => unitLevel = Mathf.Clamp(level,1,100);
-    private void IncreaseStats()
+
+
+    protected virtual void IncreaseStats()
     {
-        float multiplier = 1 + (upgradeMultiplier * (unitLevel - 1));
-        print("Stats multiplier not implemented (" + multiplier + ")");
+        float multiplier = upgrades.upgradeMultiplier * (unitLevel - 1);
+
+        Health = Mathf.RoundToInt(Health + (unitSO.health * multiplier));
+
+        if (isMelee)
+        {
+            melee.meleeDamageMax = Mathf.RoundToInt(melee.meleeDamageMax + (unitSO.melee.meleeDamageMax * multiplier));
+            melee.meleeDamageMin = Mathf.RoundToInt(melee.meleeDamageMin + (unitSO.melee.meleeDamageMin * multiplier));
+        }
+        if (isRanged)
+        {
+            ranged.rangedDamage = Mathf.RoundToInt(ranged.rangedDamage + (unitSO.ranged.rangedDamage * multiplier));
+        }
+        if (hasSpecial)
+        {
+            if (special.specialDamage != 0) special.specialDamage = Mathf.RoundToInt(special.specialDamage + (unitSO.special.specialDamage * multiplier));
+        }
+
+
+        if (upgrades.upgradeMovementSpeed) movementSpeed = Mathf.Clamp(movementSpeed + (upgrades.movementSpeedUpgradeIncrease * (unitLevel - 1)), 0, upgrades.movementSpeedUpgradeMax);
+
+        //print("Stats multiplier not implemented (" + multiplier + ")");
     }
 
     #endregion

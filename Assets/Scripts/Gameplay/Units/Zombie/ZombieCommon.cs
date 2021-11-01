@@ -27,6 +27,15 @@ public class ZombieCommon : UnitBase, IZombie, IControllable
         //throw new System.NotImplementedException();
     }
 
+    protected override void IncreaseStats()
+    {
+        base.IncreaseStats();
+        if (unitLevel == 10)
+        {
+            //RUN! dududududududududu
+        }
+    }
+
     #region Interface Functions
     public void TakeControl()
     {

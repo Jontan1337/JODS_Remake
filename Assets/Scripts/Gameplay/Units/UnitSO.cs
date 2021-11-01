@@ -32,8 +32,6 @@ public class UnitSO : ScriptableObject
     public int xpToUnlock = 100;
     public int xpToUpgrade = 100;
     [Space]
-    public float upgradeMultiplier = 0.2f;
-    [Space]
     public bool starterUnit;
 
     [Header("Stats")]
@@ -44,6 +42,15 @@ public class UnitSO : ScriptableObject
     public bool isRanged = false;
     public bool hasSpecial = false;
 
+    [System.Serializable]
+    public class Upgrades
+    {
+        public float upgradeMultiplier = 0.1f;
+        public bool upgradeMovementSpeed = true;
+        public float movementSpeedUpgradeIncrease = 0.1f;
+        public float movementSpeedUpgradeMax = 3f;
+    }
+    public Upgrades upgrades;
     [System.Serializable]
     public class Melee
     {
