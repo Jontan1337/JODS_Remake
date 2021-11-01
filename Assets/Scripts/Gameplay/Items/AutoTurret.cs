@@ -41,7 +41,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	{
 		while (true)
 		{
-			if (CanShoot()) Svr_Shoot();
+			TryShoot();
 			yield return new WaitForSeconds(1 / (fireRate / 60));
 		}
 	}
@@ -109,7 +109,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	// Shooting animation. Played once per shot.
 	bool barrelAnimation = false;
 	IEnumerator BarrelCo;
-	IEnumerator BarrelAnimation(Transform hit)
+	IEnumerator BarrelAnimation()
 	{
 		barrelAnimation = true;
 		// Barrel standard position and post-shooting position is saved.
@@ -117,7 +117,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		barrel.transform.localPosition = new Vector3(0, barrel.transform.localPosition.y, 0.2f);
 
 		// Barrel position is incremently increased as long as its not in its standard position and its pointing at a damagable target.
-		while (barrel.transform.localPosition.z < ogPosition.z && hit.TryGetComponent(out IDamagable a))
+		while (barrel.transform.localPosition.z < ogPosition.z)
 		{
 			yield return new WaitForSeconds(0.01f);
 			barrel.transform.localPosition = new Vector3(0, barrel.transform.localPosition.y, barrel.transform.localPosition.z + 0.005f);
@@ -129,13 +129,12 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	#region Methods
 
 	[Server]
-	private void Svr_Shoot()
+	private void Svr_Shoot(RaycastHit didHit)
 	{
-		Ray(out RaycastHit didHit, out bool lineOfSightCheck);
 		Debug.DrawRay(barrel.position, barrel.forward * 10, Color.red, 0.1f);
 
 		// A shooting animation coroutine is played.
-		Rpc_Shoot(didHit.transform);
+		Rpc_Shoot();
 		PhysicMaterial phyMat = didHit.collider.sharedMaterial;
 		Rpc_Bullethole(didHit.point, didHit.normal, phyMat ? phyMat.name : "");
 		Rpc_BulletTrail(didHit.point);
@@ -150,9 +149,9 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		}
 	}
 	[ClientRpc]
-	private void Rpc_Shoot(Transform didHit)
+	private void Rpc_Shoot()
 	{
-		BarrelCo = BarrelAnimation(didHit);
+		BarrelCo = BarrelAnimation();
 		if (barrelAnimation)
 		{
 			StopCoroutine(BarrelCo);
@@ -219,7 +218,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 
 		RotateYCo = RotateY();
 		RotateXCo = RotateX();
-		
+
 
 		StartCoroutine(RotateXCo);
 		StartCoroutine(RotateYCo);
@@ -231,7 +230,6 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		Rpc_NewTarget(newTarget);
 
 		StopCoroutine(SearchingCo);
-
 		ShootIntervalCo = ShootInterval();
 		StartCoroutine(ShootIntervalCo);
 
@@ -265,6 +263,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 
 		Rpc_LostTarget();
 		StopCoroutine(ShootIntervalCo);
+
 		Svr_StartSearching();
 
 
@@ -273,7 +272,11 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	[ClientRpc]
 	private void Rpc_LostTarget()
 	{
-		StopCoroutine(BarrelCo);
+		if (barrelAnimation)
+		{
+			StopCoroutine(BarrelCo);
+			barrelAnimation = false;
+		}
 		StopCoroutine(RotateYCo);
 		StopCoroutine(RotateXCo);
 	}
@@ -282,11 +285,20 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	[Server]
 	private void Svr_StartSearching()
 	{
+		//Rpc_StartRotating();
+
+		//SearchingCo = Searching();
+		//StartCoroutine(SearchingCo);
+		StartCoroutine(Wait());
+
+	}
+	IEnumerator Wait()
+	{
+		yield return new WaitForSeconds(0.1f);
 		Rpc_StartRotating();
 
 		SearchingCo = Searching();
 		StartCoroutine(SearchingCo);
-
 	}
 
 	[ClientRpc]
@@ -303,17 +315,19 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	// This is to make sure that the turret doesn't lose its target just because it isn't currently hitting it or pointing at it.
 	// Even if another unit is standing in front of the target, the turret will still try to hit the target, damaging the unit in front of it instead.
 	[Server]
-	private bool CanShoot()
+	private bool TryShoot()
 	{
 		Ray(out RaycastHit didHit, out bool lineOfSightCheck);
 		if (didHit.transform)
 		{
 			if (didHit.transform.TryGetComponent(out IDamagable a))
 			{
+				Svr_Shoot(didHit);
 				return true;
 			}
 			else if (!lineOfSightCheck)
 			{
+				Debug.LogError(didHit.transform.name);
 				Svr_LostTarget();
 			}
 		}
@@ -378,7 +392,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	{
 		if (target)
 		{
-			Gizmos.color = CanShoot() ? Color.green : Color.red;
+			//Gizmos.color = TryShoot() ? Color.green : Color.red;
 			Gizmos.DrawSphere(new Vector3(target.position.x, target.position.y + 4, target.position.z), 1);
 		}
 	}

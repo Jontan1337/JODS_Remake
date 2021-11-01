@@ -114,6 +114,7 @@ public class PlaceItem : EquipmentItem
 	// When the item is dropped, all coroutines are stopped, the placeholder is deactivated and the item is destroyed or dropped, depending on a bool in EquipmentItem.
 	protected override void OnDropPerformed(InputAction.CallbackContext obj)
 	{
+		Rpc_Cleanup(connectionToClient);
 		Unbind();
 	}
 
