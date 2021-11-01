@@ -271,7 +271,7 @@ public class Lobby : NetworkManager
 
     public void AllPlayersHaveLoaded()
     {
-        StartCoroutine(PreGameCo());
+        //StartCoroutine(PreGameCo());
     }
 
     public static event Action OnPlayersLoaded;
@@ -562,4 +562,9 @@ public class Lobby : NetworkManager
     }
 
     #endregion
+
+    private void OnGUI()
+    {
+        GUI.TextField(new Rect(20, 40, 200, 20), "Must Have Master: " + (mustHaveMaster ? "On" : "Off"));
+    }
 }

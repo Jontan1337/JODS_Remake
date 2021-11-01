@@ -242,7 +242,6 @@ public class LobbyPlayer : NetworkBehaviour
             if (lobbyPlayer.isHost)
             {
                 host = lobbyPlayer;
-                print(host.name);
             }
         }
     }
