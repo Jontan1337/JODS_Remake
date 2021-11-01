@@ -25,8 +25,6 @@ public class Medkit : EquipmentItem
 				UsedUp();
 			}
 		}
-
-		print(uses);
 	}
 
 	private void UsedUp()

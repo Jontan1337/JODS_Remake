@@ -87,7 +87,6 @@ public class MeleeWeapon : EquipmentItem, IImpacter
 
     private void OnTriggerEnter(Collider other)
     {
-        print(other.name);
         if (!isAttacking) return;
 
         // Wack animation played on local client.

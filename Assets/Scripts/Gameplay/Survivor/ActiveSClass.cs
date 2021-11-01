@@ -158,12 +158,10 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	public void Rpc_SetSurvivorClass(string _class)
 	{
 		List<SurvivorSO> survivorSOList = PlayableCharactersManager.instance.GetAllSurvivors();
-		print("Rpc_SetSurvivorClass");
 		foreach (SurvivorSO survivor in survivorSOList)
 		{
 			if (survivor.name == _class)
 			{
-				print(survivor.name);
 				SetSurvivorClass(survivor);
 				break;
 			}

@@ -65,10 +65,6 @@ public class TaekwondoClass : SurvivorClass, IHitter
 			cController = GetComponentInParent<CharacterController>();
 			sController = GetComponentInParent<SurvivorController>();
 			lController = GetComponentInParent<LookController>();
-			print(cController);
-			print(sController);
-			print(lController);
-			print(GetComponentInParent<LookController>());
 		}
 	}
 

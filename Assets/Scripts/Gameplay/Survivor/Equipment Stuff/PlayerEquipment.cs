@@ -228,7 +228,6 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     {
         if (!initialState)
         {
-            print("Not Initial state");
             writer.WriteGameObject(itemInHands);
             //writer.WriteE
             writer.WriteEquipmentSlot(selectedEquipmentSlot);
@@ -236,7 +235,6 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
         }
         else
         {
-            print("Initial state");
             writer.WriteList(equipmentSlotsTypes);
             writer.WriteTransform(playerHands);
             writer.WriteGameObject(itemInHands);
@@ -256,13 +254,11 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     {
         if (!initialState)
         {
-            print("Not Initial state");
             itemInHands = reader.ReadGameObject();
             selectedEquipmentSlot = reader.ReadEquipmentSlot();
         }
         else
         {
-            print("Initial state");
             equipmentSlotsTypes = reader.ReadList<EquipmentType>();
             playerHands = reader.ReadTransform();
             itemInHands = reader.ReadGameObject();
@@ -600,7 +596,6 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     [Server]
     public void Svr_DropAllItems()
     {
-        print("Svr_DropAllItems");
         foreach (EquipmentSlot slot in equipmentSlots)
         {
             if (slot.EquipmentItem == null) continue;

@@ -249,7 +249,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [Command]
     private void Cmd_Reload()
     {
-        Debug.Log("Reload!", this);
         if (extraAmmunition > (maxCurrentAmmunition - currentAmmunition))
         {
             extraAmmunition = extraAmmunition - (maxCurrentAmmunition - currentAmmunition);
