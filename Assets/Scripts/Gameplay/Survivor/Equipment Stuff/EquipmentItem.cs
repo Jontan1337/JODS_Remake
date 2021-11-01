@@ -12,14 +12,14 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	[SerializeField] protected EquipmentType equipmentType = EquipmentType.None;
 
 	[Header("Settings")]
-	[SerializeField] private bool enablePhysicsOnDrop = true;
-	[SerializeField] private bool disablePhysicsOnPickup = true;
+	//[SerializeField] private bool enablePhysicsOnDrop = true;
+	//[SerializeField] private bool disablePhysicsOnPickup = true;
 
 	[Header("Other info")]
 	[SerializeField] private int unequippedLayer = 14;
 	[SerializeField] private int equippedLayer = 15;
 	[SerializeField, SyncVar] protected bool isInteractable = true;
-	[SerializeField] private bool destroyOnDrop = false;
+
 	[SerializeField] protected AuthorityController authController = null;
 	[SerializeField] protected SyncGameObjectVisuals objectVisuals = null;
 	[SerializeField] protected Transform owner;

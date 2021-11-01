@@ -32,7 +32,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 	[SerializeField] private bool destroySelf = false;
 	
 	[Header("Other entity settings")]
-	[SerializeField] private Tags objectPoolTag;
+	[SerializeField] private Tags objectPoolTag = Tags.ExplosionMedium;
 	[SerializeField] private bool objectPooled = false;
 	[SyncVar] public bool isBurning = false;
 	public bool destroyed = false;

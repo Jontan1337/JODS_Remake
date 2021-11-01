@@ -7,7 +7,7 @@ public class ProjectileWeapon : RangedWeapon
     [Header("Projectile Settings")]
     [SerializeField] private int projectileSpeed = 30;
     [SerializeField] private float timeToLive = 5f;
-    [SerializeField] private Tags bulletTag;
+    [SerializeField] private Tags bulletTag = Tags.Rocket;
 
 
     protected override void Shoot()
