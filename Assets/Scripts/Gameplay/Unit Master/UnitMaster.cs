@@ -115,6 +115,10 @@ public class UnitMaster : NetworkBehaviour
     [Header("Network")]
     [SerializeField] private GameObject[] disableForOthers = null;
 
+    [Header("Debug")]
+    [SerializeField] private bool test = false;
+    [SerializeField] private UnitMasterSO testSO = null;
+
     #endregion
 
     #region Start / Awake / Setup
@@ -127,6 +131,10 @@ public class UnitMaster : NetworkBehaviour
             {
                 _gameObject.SetActive(false);
             }
+        }
+        if (test)
+        {
+            SetMasterClass(testSO);
         }
     }
 
@@ -214,6 +222,8 @@ public class UnitMaster : NetworkBehaviour
     {
         // Left Mouse Input
         JODSInput.Controls.Master.LMB.performed += ctx => LMB();
+        JODSInput.Controls.Master.LMB.performed += ctx => StartContinuousSpawn();
+        JODSInput.Controls.Master.LMB.canceled += ctx => StopContinuousSpawn();
 
         // Right Mouse Input
         JODSInput.Controls.Master.RMB.performed += ctx => RMB();
@@ -241,6 +251,8 @@ public class UnitMaster : NetworkBehaviour
     {
         // Left Mouse Input
         JODSInput.Controls.Master.LMB.performed -= ctx => LMB();
+        JODSInput.Controls.Master.LMB.performed -= ctx => StartContinuousSpawn();
+        JODSInput.Controls.Master.LMB.canceled -= ctx => StopContinuousSpawn();
 
         // Right Mouse Input
         JODSInput.Controls.Master.RMB.performed -= ctx => RMB();
@@ -344,6 +356,27 @@ public class UnitMaster : NetworkBehaviour
 
         //Unchoose the current unit type
         UnchooseUnit();
+    }
+    private Coroutine continuousSpawnCo;
+    private IEnumerator IEContinuousSpawn()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(0.1f);
+
+            TryToSpawnUnit();
+        }
+    }
+    private void StartContinuousSpawn()
+    {
+        if (alt || shift || ctrl) return;
+        if (EventSystem.current.IsPointerOverGameObject()) { return; }
+
+        continuousSpawnCo = StartCoroutine(IEContinuousSpawn());
+    }
+    private void StopContinuousSpawn()
+    {
+        StopCoroutine(continuousSpawnCo);
     }
     #endregion
     #region Shift Mouse
@@ -1144,4 +1177,12 @@ public class UnitMaster : NetworkBehaviour
     }
 
     #endregion
+
+    private void OnGUI()
+    {
+        if (test)
+        {
+            GUI.TextField(new Rect(20, 80, 150, 20), "Master Test ON");
+        }
+    }
 }

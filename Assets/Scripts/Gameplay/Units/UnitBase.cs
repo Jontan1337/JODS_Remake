@@ -1200,7 +1200,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
         yield return new WaitForSeconds(5.5f);
         //After 3 seconds, tell the server to destroy the object/unit
-        Svr_Destroy();
+        if(isServer)
+            Svr_Destroy();
     }
     [Server]
     private void Svr_Destroy()
