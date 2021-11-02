@@ -228,12 +228,12 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     {
         if (!initialState)
         {
-            writer.WriteGameObject(itemInHands ?? null);
-            //writer.WriteE
-            if (selectedEquipmentSlot)
-            {
-                writer.WriteEquipmentSlot(selectedEquipmentSlot);
-            }
+            writer.WriteGameObject(itemInHands);
+            writer.WriteEquipmentItem(equipmentItem);
+            writer.WriteEquipmentSlot(selectedEquipmentSlot);
+            //if (selectedEquipmentSlot)
+            //{
+            //}
             return true;
         }
         else
@@ -258,11 +258,8 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
         if (!initialState)
         {
             itemInHands = reader.ReadGameObject() ?? null;
-            // If no equipmentslot was written, the length is 9 ??.
-            if (reader.Length != 9)
-            {
-                selectedEquipmentSlot = reader.ReadEquipmentSlot();
-            }
+            equipmentItem = reader.ReadEquipmentItem() ?? null;
+            selectedEquipmentSlot = reader.ReadEquipmentSlot() ?? null;
         }
         else
         {
