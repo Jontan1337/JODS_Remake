@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using Mirror;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class SyringeGun : ProjectileWeapon
 {
@@ -11,17 +13,25 @@ public class SyringeGun : ProjectileWeapon
 		{
 			GetComponentInParent<ActiveSClass>().StartAbilityCooldownCo();
 			Unbind();
-			base.Svr_Drop();
 		}
 	}
+	protected override void OnDropPerformed(InputAction.CallbackContext obj)
+	{
+		Unbind();
+	}
 
-	public override void Svr_Drop()
+	public override void Unbind()
 	{
 		if (currentAmmunition < maxCurrentAmmunition)
 		{
 			GetComponentInParent<ActiveSClass>().StartAbilityCooldownCo();
 		}
-		Unbind();
-		base.Svr_Drop();
+		base.Unbind();
+		Cmd_Destroy();
+	}
+	[Command]
+	public void Cmd_Destroy()
+	{
+		NetworkServer.Destroy(gameObject);
 	}
 }
