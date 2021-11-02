@@ -233,11 +233,6 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
             if (selectedEquipmentSlot)
             {
                 writer.WriteEquipmentSlot(selectedEquipmentSlot);
-                print(writer.Length);
-            }
-            else
-            {
-                print(writer.Length);
             }
             return true;
         }
@@ -262,7 +257,6 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     {
         if (!initialState)
         {
-            print(reader.Length);
             itemInHands = reader.ReadGameObject() ?? null;
             // If no equipmentslot was written, the length is 9 ??.
             if (reader.Length != 9)
