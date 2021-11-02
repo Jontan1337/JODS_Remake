@@ -114,26 +114,36 @@ public class PlaceItem : EquipmentItem
 	// When the item is dropped, all coroutines are stopped, the placeholder is deactivated and the item is destroyed or dropped, depending on a bool in EquipmentItem.
 	protected override void OnDropPerformed(InputAction.CallbackContext obj)
 	{
-		Rpc_Cleanup(connectionToClient);
-		Unbind();
+		// Kalder Cmd_Drop, som kalder Svr_Unequip. Det resulterer i at 'Special' bliver kørt 2 gange... Skulle blive fixet via ændring i equipment
+		Drop(true);
 	}
 
-	public override void Unbind()
+	
+	public override void Svr_Unequip()
 	{
-		base.Unbind();
-		Drop();
+		Drop(false);
 	}
 
-	public void Drop()
-	{		
-		//Cmd_Drop();
+	public void Drop(bool drop)
+	{
+		Rpc_Cleanup(connectionToClient);
 		switch (equipmentType)
 		{
 			case EquipmentType.None:
+				print("none");
+				base.Unbind();
 				Cmd_DestroyGameObject();
 				break;
 			case EquipmentType.Special:
-				Cmd_Drop();
+				print("special");
+				if (drop)
+				{
+					Cmd_Drop();
+				}
+				else
+				{
+					base.Svr_Unequip();
+				}
 				break;
 			default:
 				break;

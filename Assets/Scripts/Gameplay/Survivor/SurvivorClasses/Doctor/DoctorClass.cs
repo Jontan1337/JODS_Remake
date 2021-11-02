@@ -15,11 +15,6 @@ public class DoctorClass : SurvivorClass
 		{
 			EquipSyringeGun();
 		}
-
-		// Equipment slot 4 empty?
-		//if ()
-		//{
-		//}
 	}
 
 	[Server]
@@ -30,6 +25,6 @@ public class DoctorClass : SurvivorClass
 		playerEquipment = transform.parent.GetComponentInChildren<PlayerEquipment>();
 
 		item.GetComponent<EquipmentItem>().Svr_Pickup(playerEquipment.playerHands, connectionToClient);
-		playerEquipment?.Svr_Equip(item, EquipmentType.Meds);
+		playerEquipment?.Svr_Equip(item, EquipmentType.None);
 	}
 }
