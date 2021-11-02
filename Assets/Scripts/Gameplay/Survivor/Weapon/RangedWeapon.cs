@@ -295,8 +295,9 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     }
     protected void ImpactShake(float amount)
     {
-        transform.DOPunchPosition(new Vector3(0f, 0f, -0.1f), 0.1f, 10, 1f);
-        transform.DOPunchRotation(new Vector3(-2f, 0f, UnityEngine.Random.Range(-10f, 10f)), 0.1f, 10, 1f);
+        transform.DOComplete();
+        transform.DOPunchPosition(new Vector3(0f, 0f, -0.1f), 0.15f, 12, 1f);
+        transform.DOPunchRotation(new Vector3(-2f, 0f, UnityEngine.Random.Range(-5f, 5f)), 0.28f, 12, 1f);
     }
 
     [ClientRpc]

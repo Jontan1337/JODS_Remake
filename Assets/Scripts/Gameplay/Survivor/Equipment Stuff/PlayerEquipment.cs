@@ -120,7 +120,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
             {
                 // Listen if the new selected slot's item changes.
                 selectedEquipmentSlot.onServerItemChange += Svr_SelectedSlotItemChange;
-                ItemInHands = selectedEquipmentSlot.EquipmentItem; // NO: Causes weird command when no authority. No understand hlep. but work no problem.
+                ItemInHands = selectedEquipmentSlot.EquipmentItem;
             }
         }
     }
@@ -295,12 +295,12 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     [TargetRpc]
     private void Rpc_UpdateSelectedSlot(NetworkConnection target, EquipmentSlot value)
     {
-        SelectedEquipmentSlot = value;
+        selectedEquipmentSlot = value;
     }
     [TargetRpc]
     private void Rpc_UpdateEquippedItem(NetworkConnection target, GameObject value)
     {
-        ItemInHands = value;
+        itemInHands = value;
     }
     [TargetRpc]
     private void Rpc_UpdatePlayerHands(NetworkConnection target, Transform value)
@@ -593,7 +593,6 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
         if (item)
         {
             EquipmentItem.Svr_Drop();
-            EquipmentItem = null;
         }
     }
 

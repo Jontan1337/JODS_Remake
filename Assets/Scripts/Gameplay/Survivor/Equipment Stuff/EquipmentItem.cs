@@ -163,7 +163,7 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 		}
 		Svr_InvokeOnDrop();
 		Svr_ShowItem();
-		Svr_Throw();
+		Svr_Release();
 		IsInteractable = true;
 		if (outline != null)
 		{
@@ -193,26 +193,26 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	}
 
 	[Server]
-	public void Svr_Throw()
+	public void Svr_Release()
     {
 		Svr_EnablePhysics();
 		transform.parent = null;
 		if (rb != null)
 		{
-			Svr_Push(1.5f);
+			Svr_Throw(1.5f);
 			Svr_Spin(2);
 		}
 	}
 
 	#region Physics
 	[Server]
-	private void Svr_Push(float force)
+	private void Svr_Throw(float force)
 	{
 		rb.AddForce(transform.forward * force, ForceMode.Impulse);
-		Rpc_Push(force);
+		Rpc_Throw(force);
 	}
 	[ClientRpc]
-	private void Rpc_Push(float force)
+	private void Rpc_Throw(float force)
 	{
 		rb.AddForce(transform.forward * force, ForceMode.Impulse);
 	}
