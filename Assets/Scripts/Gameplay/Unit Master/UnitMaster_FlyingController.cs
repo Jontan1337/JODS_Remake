@@ -4,17 +4,18 @@ using UnityEngine;
 
 public class UnitMaster_FlyingController : MonoBehaviour
 {
-    private Camera cam = null;
-    private Rigidbody rb = null;
+    public Camera cam = null;
+    private CharacterController cc = null;
     public UnitMaster master;
+    Vector3 moveDirection = Vector3.zero;
 
-    [SerializeField] private float movementSpeed = 50f;
-    [SerializeField] private float speedModifier = 1.8f;
+    [SerializeField] private float movementSpeed = 10f;
+    [SerializeField] private float gravity = 20f;
     [Space]
     [SerializeField] private float minRotY = -60f;
     [SerializeField] private float maxRotY = 60f;
     [Space]
-    [SerializeField] [Range(1, 20)] private float sensitivity = 10f;
+    [SerializeField] [Range(0.1f, 2f)] private float sensitivity = 1f;
     [Space]
     [SerializeField] private Transform cursorMarker = null;
     [SerializeField] private bool showMarker = false;    
@@ -24,19 +25,13 @@ public class UnitMaster_FlyingController : MonoBehaviour
     private float m_vertical; // They store the player's input values.
 
     //Camera variables
-    private float r_horizontal; // These variables are used to move the player. 
-    private float r_vertical; // They store the player's input values.
+    private Vector2 rotation; // This variables are used to rotate the player. 
 
     private void Start()
     {
-        cam = GetComponent<Camera>();
-        rb = GetComponent<Rigidbody>();
+        cc = GetComponent<CharacterController>();
 
         //Input stuff
-
-        // Shift Input
-        JODSInput.Controls.Master.Shift.started += ctx => ShiftButton(true);
-        JODSInput.Controls.Master.Shift.canceled += ctx => ShiftButton(false);
 
         // Movement Input
         JODSInput.Controls.Master.Movement.performed += ctx => Move(ctx.ReadValue<Vector2>());
@@ -45,47 +40,36 @@ public class UnitMaster_FlyingController : MonoBehaviour
         JODSInput.Controls.Master.Camera.performed += ctx => Rotate(ctx.ReadValue<Vector2>());
     }
 
-    [Space]
-    [SerializeField] private bool shift = false;
-    private void ShiftButton(bool down)
-    {
-        shift = down;
-    }
-
-    #region Movement
-    private void FixedUpdate()
-    {
-        Vector3 forwardForce = transform.forward * m_vertical * 
-            (movementSpeed * (shift ? speedModifier : 1f));
-        Vector3 sideForce = transform.right * m_horizontal * 
-            (movementSpeed * (shift ? speedModifier : 1f));
-
-        //Movement
-        rb.AddForce(forwardForce);
-        rb.AddForce(sideForce);
-    }
     private void Move(Vector2 moveValues)
     {
         m_horizontal = moveValues.x;
         m_vertical = moveValues.y;
     }
-    #endregion
 
     private void Rotate(Vector2 rotateValues)
     {
-        r_horizontal = rotateValues.x * sensitivity;
-        r_vertical = rotateValues.y * sensitivity;
+
+        rotation.x = rotateValues.x * (sensitivity * 100);
+        rotation.y = rotateValues.y * (sensitivity * 100);
+    }
+    
+    private void LateUpdate()
+    {
+        //Rotation
+        //This does not clamp the rotation
+        cam.transform.Rotate(Vector3.right * -rotation.y * Time.deltaTime, Space.Self);
+        transform.Rotate(Vector3.up * rotation.x * Time.deltaTime, Space.World);
+
     }
     private void Update()
     {
-        //Rotation
-
-        //This does not clamp the rotation
-        transform.Rotate(Vector3.right * -r_vertical * Time.deltaTime, Space.Self);
-        transform.Rotate(Vector3.up * r_horizontal * Time.deltaTime, Space.World);
-
-        float maxy = maxRotY;
-        float miny = minRotY;//This is just to remove the  fkn warning
+        //Movement
+        if (cc.isGrounded)
+        {
+            moveDirection = transform.TransformDirection(new Vector3(m_horizontal, 0.00f, m_vertical)) * movementSpeed;
+        }
+        moveDirection.y -= gravity * Time.deltaTime;
+        cc.Move(moveDirection * Time.deltaTime);
         
         //Raycast Marker
         if (showMarker) //If the master has selected a unit, this bool will be true
