@@ -62,9 +62,9 @@ MonoBehaviour:
   unequippedLayer: 14
   equippedLayer: 15
   isInteractable: 1
-  destroyOnDrop: 0
   authController: {fileID: 8082692978506899871}
   objectVisuals: {fileID: 4205471886713475442}
+  owner: {fileID: 0}
   rb: {fileID: 1239462214569360422}
   outline: {fileID: 7710725455544763732}
   damage: 10
@@ -231,9 +231,9 @@ MonoBehaviour:
   positionData: {x: 0, y: 0, z: 0}
   localPositionData: {x: 0, y: 0, z: 0}
   rotationData: {x: 0, y: 0, z: 0, w: 0}
-  syncParent: 0
-  syncPosition: 0
-  syncRotation: 0
+  syncParent: 1
+  syncPosition: 1
+  syncRotation: 1
 --- !u!114 &7710725455544763732
 MonoBehaviour:
   m_ObjectHideFlags: 0

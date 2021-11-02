@@ -5,31 +5,29 @@ using UnityEngine;
 
 public static class CustomReadWrite
 {
+    private static readonly ILogger logger = LogFactory.GetLogger<NetworkWriter>();
     #region Equipment
     public static void WriteEquipment(this NetworkWriter writer, PlayerEquipment value)
     {
-        ILogger logger = LogFactory.GetLogger<NetworkWriter>();
         if (value == null)
         {
+            writer.WriteUInt32(0);
             return;
         }
-        NetworkIdentity networkIdentity = value.GetComponent<NetworkIdentity>();
-        logger.Log($"Writing {networkIdentity}");
-        if (networkIdentity != null)
+        NetworkIdentity identity = value.GetComponent<NetworkIdentity>();
+        if (identity != null)
         {
-            writer.WriteNetworkIdentity(networkIdentity);
+            writer.WriteUInt32(identity.netId);
         }
         else
         {
             logger.LogWarning("NetworkWriter " + value + " has no NetworkIdentity");
-            writer.WriteNetworkIdentity(null);
+            writer.WriteUInt32(0);
         }
     }
     public static PlayerEquipment ReadEquipment(this NetworkReader reader)
     {
-        ILogger logger = LogFactory.GetLogger<NetworkReader>();
         NetworkIdentity identity = reader.ReadNetworkIdentity();
-        logger.Log($"Reading {identity}");
         if (identity == null)
         {
             return null;
@@ -38,20 +36,20 @@ public static class CustomReadWrite
     }
     public static void WriteEquipmentSlot(this NetworkWriter writer, EquipmentSlot value)
     {
-        ILogger logger = LogFactory.GetLogger<NetworkWriter>();
         if (value == null)
         {
+            writer.WriteUInt32(0);
             return;
         }
-        NetworkIdentity networkIdentity = value.GetComponent<NetworkIdentity>();
-        if (networkIdentity != null)
+        NetworkIdentity identity = value.GetComponent<NetworkIdentity>();
+        if (identity != null)
         {
-            writer.WriteNetworkIdentity(networkIdentity);
+            writer.WriteUInt32(identity.netId);
         }
         else
         {
             logger.LogWarning("NetworkWriter " + value + " has no NetworkIdentity");
-            writer.WriteNetworkIdentity(null);
+            writer.WriteUInt32(0);
         }
     }
     public static EquipmentSlot ReadEquipmentSlot(this NetworkReader reader)
@@ -63,22 +61,49 @@ public static class CustomReadWrite
         }
         return identity.GetComponent<EquipmentSlot>();
     }
-    public static void WriteRaycastWeapon(this NetworkWriter writer, RaycastWeapon value)
+    public static void WriteEquipmentItem(this NetworkWriter writer, EquipmentItem value)
     {
-        ILogger logger = LogFactory.GetLogger<NetworkWriter>();
         if (value == null)
         {
+            writer.WriteUInt32(0);
             return;
         }
-        NetworkIdentity networkIdentity = value.GetComponent<NetworkIdentity>();
-        if (networkIdentity != null)
+        NetworkIdentity identity = value.GetComponent<NetworkIdentity>();
+        if (identity != null)
         {
-            writer.WriteNetworkIdentity(networkIdentity);
+            writer.WriteUInt32(identity.netId);
         }
         else
         {
             logger.LogWarning("NetworkWriter " + value + " has no NetworkIdentity");
-            writer.WriteNetworkIdentity(null);
+            writer.WriteUInt32(0);
+        }
+    }
+    public static EquipmentItem ReadEquipmentItem(this NetworkReader reader)
+    {
+        NetworkIdentity identity = reader.ReadNetworkIdentity();
+        if (identity == null)
+        {
+            return null;
+        }
+        return identity.GetComponent<RaycastWeapon>();
+    }
+    public static void WriteRaycastWeapon(this NetworkWriter writer, RaycastWeapon value)
+    {
+        if (value == null)
+        {
+            writer.WriteUInt32(0);
+            return;
+        }
+        NetworkIdentity identity = value.GetComponent<NetworkIdentity>();
+        if (identity != null)
+        {
+            writer.WriteUInt32(identity.netId);
+        }
+        else
+        {
+            logger.LogWarning("NetworkWriter " + value + " has no NetworkIdentity");
+            writer.WriteUInt32(0);
         }
     }
     public static RaycastWeapon ReadRaycastWeapon(this NetworkReader reader)
@@ -92,20 +117,20 @@ public static class CustomReadWrite
     }
     public static void WriteProjectileWeapon(this NetworkWriter writer, ProjectileWeapon value)
     {
-        ILogger logger = LogFactory.GetLogger<NetworkWriter>();
         if (value == null)
         {
+            writer.WriteUInt32(0);
             return;
         }
-        NetworkIdentity networkIdentity = value.GetComponent<NetworkIdentity>();
-        if (networkIdentity != null)
+        NetworkIdentity identity = value.GetComponent<NetworkIdentity>();
+        if (identity != null)
         {
-            writer.WriteNetworkIdentity(networkIdentity);
+            writer.WriteUInt32(identity.netId);
         }
         else
         {
             logger.LogWarning("NetworkWriter " + value + " has no NetworkIdentity");
-            writer.WriteNetworkIdentity(null);
+            writer.WriteUInt32(0);
         }
     }
     public static ProjectileWeapon ReadProjectileWeapon(this NetworkReader reader)
@@ -122,20 +147,20 @@ public static class CustomReadWrite
     #region Survivor Classes
     public static void WriteTaekwondoClass(this NetworkWriter writer, TaekwondoClass value)
     {
-        ILogger logger = LogFactory.GetLogger<NetworkWriter>();
         if (value == null)
         {
+            writer.WriteUInt32(0);
             return;
         }
-        NetworkIdentity networkIdentity = value.GetComponent<NetworkIdentity>();
-        if (networkIdentity != null)
+        NetworkIdentity identity = value.GetComponent<NetworkIdentity>();
+        if (identity != null)
         {
-            writer.WriteNetworkIdentity(networkIdentity);
+            writer.WriteUInt32(identity.netId);
         }
         else
         {
             logger.LogWarning("NetworkWriter " + value + " has no NetworkIdentity");
-            writer.WriteNetworkIdentity(null);
+            writer.WriteUInt32(0);
         }
     }
     public static TaekwondoClass ReadTaekwondoClass(this NetworkReader reader)
@@ -150,20 +175,20 @@ public static class CustomReadWrite
 
     public static void WriteSoldierClass(this NetworkWriter writer, SoldierClass value)
     {
-        ILogger logger = LogFactory.GetLogger<NetworkWriter>();
         if (value == null)
         {
+            writer.WriteUInt32(0);
             return;
         }
-        NetworkIdentity networkIdentity = value.GetComponent<NetworkIdentity>();
-        if (networkIdentity != null)
+        NetworkIdentity identity = value.GetComponent<NetworkIdentity>();
+        if (identity != null)
         {
-            writer.WriteNetworkIdentity(networkIdentity);
+            writer.WriteUInt32(identity.netId);
         }
         else
         {
             logger.LogWarning("NetworkWriter " + value + " has no NetworkIdentity");
-            writer.WriteNetworkIdentity(null);
+            writer.WriteUInt32(0);
         }
     }
     public static SoldierClass ReadSoldierClass(this NetworkReader reader)
@@ -178,20 +203,20 @@ public static class CustomReadWrite
 
     public static void WriteEngineerClass(this NetworkWriter writer, EngineerClass value)
     {
-        ILogger logger = LogFactory.GetLogger<NetworkWriter>();
         if (value == null)
         {
+            writer.WriteUInt32(0);
             return;
         }
-        NetworkIdentity networkIdentity = value.GetComponent<NetworkIdentity>();
-        if (networkIdentity != null)
+        NetworkIdentity identity = value.GetComponent<NetworkIdentity>();
+        if (identity != null)
         {
-            writer.WriteNetworkIdentity(networkIdentity);
+            writer.WriteUInt32(identity.netId);
         }
         else
         {
             logger.LogWarning("NetworkWriter " + value + " has no NetworkIdentity");
-            writer.WriteNetworkIdentity(null);
+            writer.WriteUInt32(0);
         }
     }
     public static EngineerClass ReadEngineerClass(this NetworkReader reader)
