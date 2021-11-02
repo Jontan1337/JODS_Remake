@@ -92,7 +92,6 @@ public class UnitMaster : NetworkBehaviour
     [System.Serializable]
     public class FlyingMaster
     {
-        public Camera camera = null;
         public UnitMaster_FlyingController flyingController;
     }
     [Space]
@@ -154,7 +153,7 @@ public class UnitMaster : NetworkBehaviour
         InitializeUnitButtons();
 
         //Setup the different camera modes
-        flying.flyingController = flying.camera.GetComponent<UnitMaster_FlyingController>();
+        flying.flyingController = flying.flyingController.GetComponent<UnitMaster_FlyingController>();
         flying.flyingController.master = this; //Assign the reference.
         inTopdownView = false; //This bool is simply to stop a raycast from being performed.
             //The bool will be set to true in this function.
@@ -965,7 +964,7 @@ public class UnitMaster : NetworkBehaviour
         else
         {
             //Send the ray from the flying camera
-            ray = flying.camera.ScreenPointToRay(Input.mousePosition);
+            ray = flying.flyingController.cam.ScreenPointToRay(Input.mousePosition);
 
             distance = 20; //Decrease the distance of the raycast.
         }
@@ -1103,7 +1102,7 @@ public class UnitMaster : NetworkBehaviour
 
             if (didHit)
             {
-                flying.camera.transform.position = new Vector3(hit.point.x,
+                flying.flyingController.transform.position = new Vector3(hit.point.x,
                     hit.point.y + 3,
                     hit.point.z);
             }
@@ -1114,7 +1113,7 @@ public class UnitMaster : NetworkBehaviour
 
         //Deactivate / Activate the cameras based on the bool
         topdown.camera.gameObject.SetActive(top);
-        flying.camera.gameObject.SetActive(!top);
+        flying.flyingController.gameObject.SetActive(!top);
 
         //Change the cursor settings to be either visible or not visible
         Cursor.lockState = top ? CursorLockMode.None : CursorLockMode.Locked;
