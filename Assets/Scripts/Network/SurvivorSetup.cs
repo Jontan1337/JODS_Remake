@@ -26,18 +26,20 @@ public struct DynamicItem {
 
 public class SurvivorSetup : NetworkBehaviour
 {
+    [Header("Settings")]
     public List<DynamicItem> dynamicItems;
-
+    [SerializeField, Tooltip("A list of the equipment types, the player should start with.")]
+    public List<EquipmentType> equipmentSlotsTypes = new List<EquipmentType>();
     public Action<GameObject> onSpawnItem;
     public Action onDestroyPlayer;
 
     [Space]
     [SyncVar] public string playerName;
+    [SerializeField] private TextMesh playerNameText = null; // Change to something else??
 
-    [Header("Prefabs for player setup")]
-    [SerializeField] private TextMesh playerNameText = null;
-    [SerializeField, Tooltip("A list of the equipment types, the player should start with.")]
-    public List<EquipmentType> equipmentSlotsTypes = new List<EquipmentType>();
+    [Header("First person setup")]
+    [SerializeField] private Transform headTransform = null;
+    [SerializeField] private Transform bodyTransform = null;
 
     [Header("References")]
     [SerializeField] private GameObject[] prefabDisableIfPlayer = null;
@@ -131,6 +133,9 @@ public class SurvivorSetup : NetworkBehaviour
         yield return new WaitForSeconds(0.1f);
         if (hasAuthority)
         {
+            headTransform.gameObject.SetActive(false);
+            bodyTransform.localPosition += new Vector3(0f, 0f, -0.2f);
+
             foreach (GameObject g in disableIfPlayer) { g.SetActive(false); }
             foreach (GameObject g in enableIfPlayer) { g.SetActive(true); }
             foreach (GameObject g in prefabDisableIfPlayer) { g.SetActive(false); }

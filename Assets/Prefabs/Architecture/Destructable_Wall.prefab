@@ -1574,7 +1574,6 @@ MonoBehaviour:
   upwardExplosionForce: 1
   criticalEffectDamage: 3
   criticalDamageInterval: 0.8
-  friendlyFireReduction: 16
   pieces:
   - {fileID: 8794637732046967453}
   - {fileID: 6569776570167679345}
@@ -1609,8 +1608,9 @@ MonoBehaviour:
   removeDebris: 1
   singleBrokenObject: {fileID: 0}
   wallDestruction: {fileID: 4337177920459961552}
-  wallIcon: {fileID: 0}
   destroySelf: 0
+  objectPoolTag: 1
+  objectPooled: 0
   isBurning: 0
   destroyed: 0
   zombiePartLayer:

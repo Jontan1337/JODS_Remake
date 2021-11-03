@@ -1983,26 +1983,23 @@ MonoBehaviour:
     position: {x: 0, y: 0, z: 0}
     activeType: 2
     children: []
+  equipmentSlotsTypes: 01000000010000000200000003000000
   playerName: 
   playerNameText: {fileID: 0}
-  equipmentSlotsTypes: 01000000010000000200000003000000
-  disableIfPlayer: []
-  disableIfNotPlayer: []
-  enableIfPlayer: []
-  enableIfNotPlayer: []
-  prefabDisableIfPlayer:
-  - {fileID: 5922127114707202530}
-  - {fileID: 5922127114707202528}
+  headTransform: {fileID: 1735939669978907520}
+  bodyTransform: {fileID: 5922127114707103170}
+  prefabDisableIfPlayer: []
   prefabDisableIfNotPlayer:
   - {fileID: 8050693953223198890}
   prefabEnableIfPlayer: []
   prefabEnableIfNotPlayer:
   - {fileID: 5922127114707202530}
   - {fileID: 5922127114707202528}
+  disableIfPlayer: []
+  disableIfNotPlayer: []
+  enableIfPlayer: []
+  enableIfNotPlayer: []
   dynamicallySpawnedItems: []
-  Survivor: 0
-  isMe: 0
-  points: 0
 --- !u!114 &8458703505067804603
 MonoBehaviour:
   m_ObjectHideFlags: 0

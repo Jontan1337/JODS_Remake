@@ -127,10 +127,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerType: 2
+  startTimerOnAwake: 0
+  startOnAwakeDelay: 1.5
   stopTime: 5
   tickRate: 0.05
   timerEnabled: 0
   timerProgress: 0
+  materials: []
+  getObjectMaterial: 0
+  destroyOnFinish: 0
 --- !u!1 &3078227257828337737
 GameObject:
   m_ObjectHideFlags: 0
@@ -258,10 +263,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerType: 2
+  startTimerOnAwake: 0
+  startOnAwakeDelay: 1.5
   stopTime: 5
   tickRate: 0.05
   timerEnabled: 0
   timerProgress: 0
+  materials: []
+  getObjectMaterial: 0
+  destroyOnFinish: 0
 --- !u!1 &3196844981813655164
 GameObject:
   m_ObjectHideFlags: 0
@@ -389,10 +399,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerType: 2
+  startTimerOnAwake: 0
+  startOnAwakeDelay: 1.5
   stopTime: 5
   tickRate: 0.05
   timerEnabled: 0
   timerProgress: 0
+  materials: []
+  getObjectMaterial: 0
+  destroyOnFinish: 0
 --- !u!1 &4015191627328636243
 GameObject:
   m_ObjectHideFlags: 0
@@ -520,10 +535,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerType: 2
+  startTimerOnAwake: 0
+  startOnAwakeDelay: 1.5
   stopTime: 5
   tickRate: 0.05
   timerEnabled: 0
   timerProgress: 0
+  materials: []
+  getObjectMaterial: 0
+  destroyOnFinish: 0
 --- !u!1 &4247750947049416658
 GameObject:
   m_ObjectHideFlags: 0
@@ -651,10 +671,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerType: 2
+  startTimerOnAwake: 0
+  startOnAwakeDelay: 1.5
   stopTime: 5
   tickRate: 0.05
   timerEnabled: 0
   timerProgress: 0
+  materials: []
+  getObjectMaterial: 0
+  destroyOnFinish: 0
 --- !u!1 &4297061628598174886
 GameObject:
   m_ObjectHideFlags: 0
@@ -782,10 +807,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerType: 2
+  startTimerOnAwake: 0
+  startOnAwakeDelay: 1.5
   stopTime: 5
   tickRate: 0.05
   timerEnabled: 0
   timerProgress: 0
+  materials: []
+  getObjectMaterial: 0
+  destroyOnFinish: 0
 --- !u!1 &4498712029445924645
 GameObject:
   m_ObjectHideFlags: 0
@@ -913,10 +943,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerType: 2
+  startTimerOnAwake: 0
+  startOnAwakeDelay: 1.5
   stopTime: 5
   tickRate: 0.05
   timerEnabled: 0
   timerProgress: 0
+  materials: []
+  getObjectMaterial: 0
+  destroyOnFinish: 0
 --- !u!1 &4655898987185143905
 GameObject:
   m_ObjectHideFlags: 0
@@ -1044,10 +1079,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerType: 2
+  startTimerOnAwake: 0
+  startOnAwakeDelay: 1.5
   stopTime: 5
   tickRate: 0.05
   timerEnabled: 0
   timerProgress: 0
+  materials: []
+  getObjectMaterial: 0
+  destroyOnFinish: 0
 --- !u!1 &5257999578683881170
 GameObject:
   m_ObjectHideFlags: 0
@@ -1175,10 +1215,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerType: 2
+  startTimerOnAwake: 0
+  startOnAwakeDelay: 1.5
   stopTime: 5
   tickRate: 0.05
   timerEnabled: 0
   timerProgress: 0
+  materials: []
+  getObjectMaterial: 0
+  destroyOnFinish: 0
 --- !u!1 &5743532770761914855
 GameObject:
   m_ObjectHideFlags: 0
@@ -1197,7 +1242,7 @@ GameObject:
   - component: {fileID: 919132149096579319}
   - component: {fileID: 919132149096579320}
   - component: {fileID: 919132149096579321}
-  m_Layer: 17
+  m_Layer: 0
   m_Name: Destructible_Barricade1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1256,7 +1301,6 @@ MonoBehaviour:
   upwardExplosionForce: 1
   criticalEffectDamage: 3
   criticalDamageInterval: 0.8
-  friendlyFireReduction: 16
   pieces:
   - {fileID: 5257999578683881170}
   - {fileID: 4297061628598174886}
@@ -1275,6 +1319,8 @@ MonoBehaviour:
   singleBrokenObject: {fileID: 0}
   wallDestruction: {fileID: 0}
   destroySelf: 1
+  objectPoolTag: 1
+  objectPooled: 0
   isBurning: 0
   destroyed: 0
   zombiePartLayer:
@@ -1635,10 +1681,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerType: 2
+  startTimerOnAwake: 0
+  startOnAwakeDelay: 1.5
   stopTime: 5
   tickRate: 0.05
   timerEnabled: 0
   timerProgress: 0
+  materials: []
+  getObjectMaterial: 0
+  destroyOnFinish: 0
 --- !u!1 &6892264360084809927
 GameObject:
   m_ObjectHideFlags: 0
@@ -1766,10 +1817,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerType: 2
+  startTimerOnAwake: 0
+  startOnAwakeDelay: 1.5
   stopTime: 5
   tickRate: 0.05
   timerEnabled: 0
   timerProgress: 0
+  materials: []
+  getObjectMaterial: 0
+  destroyOnFinish: 0
 --- !u!1 &7013718605843434578
 GameObject:
   m_ObjectHideFlags: 0
@@ -1897,7 +1953,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerType: 2
+  startTimerOnAwake: 0
+  startOnAwakeDelay: 1.5
   stopTime: 5
   tickRate: 0.05
   timerEnabled: 0
   timerProgress: 0
+  materials: []
+  getObjectMaterial: 0
+  destroyOnFinish: 0
