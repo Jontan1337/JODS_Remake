@@ -100,11 +100,11 @@ public class TaekwondoClass : SurvivorClass, IHitter
 		unitsHit.Clear();
 		flyingKick = true;
 		sController.enabled = false;
-		lController.DisableLook();
+		JODSInput.DisableCamera();
 	}
 	private void FlyingKickEnd()
 	{
-		lController.EnableLook();
+		JODSInput.EnableCamera();
 		sController.enabled = true;
 
 		flyingKickStart = 0;

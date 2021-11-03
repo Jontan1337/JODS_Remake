@@ -11,7 +11,8 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	private SurvivorController sController;
 
 	[SerializeField] private SurvivorSO survivorSO;
-	[SerializeField] private SkinnedMeshRenderer survivorRenderer = null;
+	[SerializeField] private SkinnedMeshRenderer bodyRenderer = null;
+	[SerializeField] private SkinnedMeshRenderer headRenderer = null;
 	[Space]
 	[Header("Stats")]
 	[SerializeField] private int currentHealth = 100;
@@ -199,8 +200,11 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 		abilityCooldown = survivorSO.abilityCooldown;
 		abilityCooldownCount = abilityCooldown;
 
-		survivorRenderer.material = survivorSO.survivorMaterial;
-		survivorRenderer.sharedMesh = survivorSO.survivorMesh;
+		bodyRenderer.sharedMesh = survivorSO.bodyMesh;
+		headRenderer.sharedMesh = survivorSO.headMesh;
+
+		bodyRenderer.material = survivorSO.characterMaterial;
+		headRenderer.material = survivorSO.characterMaterial;
 
 		healthBar.maxValue = maxHealth;
 		healthBar.value = currentHealth;

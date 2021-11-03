@@ -12,7 +12,8 @@ public class LobbyCharacters : NetworkBehaviour
     public new GameObject light;
     public GameObject nameTag;
     [Space]
-    [SerializeField] private SkinnedMeshRenderer characterRenderer = null;
+    [SerializeField] private SkinnedMeshRenderer bodyRenderer = null;
+    [SerializeField] private SkinnedMeshRenderer headRenderer = null;
 
     [Header("Default Character")]
     [SerializeField] private Material defaultMaterial = null;
@@ -56,8 +57,10 @@ public class LobbyCharacters : NetworkBehaviour
         {
             if (survivor.name == survivorName)
             {
-                characterRenderer.material = survivor.survivorMaterial;
-                characterRenderer.sharedMesh = survivor.survivorMesh;
+                bodyRenderer.material = survivor.characterMaterial;
+                headRenderer.material = survivor.characterMaterial;
+                bodyRenderer.sharedMesh = survivor.bodyMesh;
+                headRenderer.sharedMesh = survivor.headMesh;
                 break;
             }
         }
@@ -65,8 +68,10 @@ public class LobbyCharacters : NetworkBehaviour
 
     private void ChangeToDefaultCharacter()
     {
-        characterRenderer.material = defaultMaterial;
-        characterRenderer.sharedMesh = defaultMesh;
+        bodyRenderer.material = defaultMaterial;
+        headRenderer.material = defaultMaterial;
+        bodyRenderer.sharedMesh = defaultMesh;
+        headRenderer.sharedMesh = defaultMesh;
     }
 
     [Server]

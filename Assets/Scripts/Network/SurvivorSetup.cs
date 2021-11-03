@@ -133,7 +133,7 @@ public class SurvivorSetup : NetworkBehaviour
         yield return new WaitForSeconds(0.1f);
         if (hasAuthority)
         {
-            headTransform.gameObject.SetActive(false);
+            headTransform.GetComponent<SkinnedMeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly;
             bodyTransform.localPosition += new Vector3(0f, 0f, -0.2f);
 
             foreach (GameObject g in disableIfPlayer) { g.SetActive(false); }

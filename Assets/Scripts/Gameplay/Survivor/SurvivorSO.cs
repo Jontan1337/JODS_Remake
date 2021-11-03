@@ -21,8 +21,9 @@ public class SurvivorSO : ScriptableObject
     public GameObject classScript;
     public GameObject starterWeapon;
     public GameObject abilityObject;
-    public Mesh survivorMesh;
-    public Material survivorMaterial;
+    public Mesh bodyMesh;
+    public Mesh headMesh;
+    public Material characterMaterial;
 
     [Header("Survivor Class Description")]
     [TextArea(10, 20)]
