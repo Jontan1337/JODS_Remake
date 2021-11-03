@@ -90,10 +90,8 @@ public class PlaceItem : EquipmentItem
 			transform.parent = null;
 			Rpc_Cleanup(connectionToClient);
 			OnPlaced?.Invoke();
-			Svr_InvokeOnDrop();
-
-			// MANGLER COLLISION - FIX
-
+			//Svr_InvokeOnDrop();
+			Unbind();
 			Svr_EnablePhysics();
 			authController.Svr_RemoveAuthority();
 		}
@@ -117,8 +115,6 @@ public class PlaceItem : EquipmentItem
 		// Kalder Cmd_Drop, som kalder Svr_Unequip. Det resulterer i at 'Special' bliver kørt 2 gange... Skulle blive fixet via ændring i equipment
 		Drop(true);
 	}
-
-	
 	public override void Svr_Unequip()
 	{
 		Drop(false);
@@ -126,7 +122,10 @@ public class PlaceItem : EquipmentItem
 
 	public void Drop(bool drop)
 	{
-		Rpc_Cleanup(connectionToClient);
+		if (connectionToClient != null)
+		{
+			Rpc_Cleanup(connectionToClient);
+		}
 		switch (equipmentType)
 		{
 			case EquipmentType.None:
