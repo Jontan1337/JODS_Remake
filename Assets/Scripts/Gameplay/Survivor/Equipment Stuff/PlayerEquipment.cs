@@ -5,7 +5,7 @@ using Mirror;
 using System;
 using UnityEngine.InputSystem;
 
-public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
+public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
 {
     [Tooltip("A list of the equipment types, the player should have.")]
     public List<EquipmentType> equipmentSlotsTypes = new List<EquipmentType>();
@@ -38,7 +38,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
 
     private int equipmentSlotsCount = 0;
     private Coroutine COMoveToHands;
-    private PlayerSetup playerSetup;
+    private SurvivorSetup playerSetup;
 
     private const string slotsUIParentName = "CanvasInGame/Hotbar";
 
@@ -134,7 +134,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     }
     public bool IsInitialized { get; private set; }
 
-    public void Init(PlayerSetup initializer)
+    public void Init(SurvivorSetup initializer)
     {
         if (IsInitialized) return;
 
@@ -218,7 +218,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<PlayerSetup>
     }
     public override void OnStopAuthority()
     {
-        transform.root.GetComponent<PlayerSetup>().onSpawnItem -= GetReferences;
+        transform.root.GetComponent<SurvivorSetup>().onSpawnItem -= GetReferences;
         JODSInput.Controls.Survivor.Hotbarselecting.performed -= number => Cmd_SelectSlot(Mathf.RoundToInt(number.ReadValue<float>()) - 1);
     }
     #endregion

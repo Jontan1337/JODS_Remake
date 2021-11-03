@@ -11,11 +11,11 @@ public class EquipmentControl : NetworkBehaviour
 	}
 	public override void OnStartAuthority()
 	{
-		transform.root.GetComponent<PlayerSetup>().onSpawnItem += GetEquipment;
+		transform.root.GetComponent<SurvivorSetup>().onSpawnItem += GetEquipment;
 	}
 	public override void OnStopAuthority()
 	{
-		transform.root.GetComponent<PlayerSetup>().onSpawnItem -= GetEquipment;
+		transform.root.GetComponent<SurvivorSetup>().onSpawnItem -= GetEquipment;
 	}
 
 	public void GetEquipment(GameObject item)

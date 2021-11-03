@@ -39,7 +39,7 @@ public class Interactor : NetworkBehaviour
 
     private void Awake()
     {
-        transform.root.GetComponent<PlayerSetup>().onSpawnItem += GetCamera;
+        transform.root.GetComponent<SurvivorSetup>().onSpawnItem += GetCamera;
     }
 
     #region NetworkCallbacks
@@ -50,7 +50,7 @@ public class Interactor : NetworkBehaviour
 
     public override void OnStopAuthority()
     {
-        transform.root.GetComponent<PlayerSetup>().onSpawnItem -= GetCamera;
+        transform.root.GetComponent<SurvivorSetup>().onSpawnItem -= GetCamera;
         JODSInput.Controls.Survivor.Interact.performed -= ctx => Interact();
     }
     #endregion

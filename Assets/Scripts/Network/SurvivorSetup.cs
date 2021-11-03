@@ -24,7 +24,7 @@ public struct DynamicItem {
     public List<DynamicItem> children;
 }
 
-public class PlayerSetup : NetworkBehaviour
+public class SurvivorSetup : NetworkBehaviour
 {
     public List<DynamicItem> dynamicItems;
 
@@ -32,35 +32,25 @@ public class PlayerSetup : NetworkBehaviour
     public Action onDestroyPlayer;
 
     [Space]
-    [Space]
     [SyncVar] public string playerName;
 
     [Header("Prefabs for player setup")]
-    [SerializeField] private GameObject playerHands;
-    [SerializeField] private GameObject equipment;
-    [SerializeField] private GameObject slotsUIParent;
     [SerializeField] private TextMesh playerNameText = null;
     [SerializeField, Tooltip("A list of the equipment types, the player should start with.")]
     public List<EquipmentType> equipmentSlotsTypes = new List<EquipmentType>();
 
     [Header("References")]
-
-    [Space]
-
-    [SerializeField] private List<GameObject> disableIfPlayer = new List<GameObject>();
-    [SerializeField] private List<GameObject> disableIfNotPlayer = new List<GameObject>();
-    [SerializeField] private List<GameObject> enableIfPlayer = new List<GameObject>();
-    [SerializeField] private List<GameObject> enableIfNotPlayer = new List<GameObject>();
     [SerializeField] private GameObject[] prefabDisableIfPlayer = null;
     [SerializeField] private GameObject[] prefabDisableIfNotPlayer = null;
     [SerializeField] private GameObject[] prefabEnableIfPlayer = null;
     [SerializeField] private GameObject[] prefabEnableIfNotPlayer = null;
 
+    [Header("Runtime setup")]
+    [SerializeField] private List<GameObject> disableIfPlayer = new List<GameObject>();
+    [SerializeField] private List<GameObject> disableIfNotPlayer = new List<GameObject>();
+    [SerializeField] private List<GameObject> enableIfPlayer = new List<GameObject>();
+    [SerializeField] private List<GameObject> enableIfNotPlayer = new List<GameObject>();
     [SerializeField] private List<GameObject> dynamicallySpawnedItems;
-
-    [SerializeField] private bool Survivor = false;
-    [SerializeField] private bool isMe;
-    [SerializeField] private int points;
 
     public override void OnStartServer()
     {
@@ -153,19 +143,6 @@ public class PlayerSetup : NetworkBehaviour
                 onSpawnItem?.Invoke(dynamicItem);
             }
 
-            TryGetComponent(out Spectator spectator);
-            // Only set player name if player is not a spectator.
-            if (!spectator)
-            {
-                //CmdChangeName(PlayerPrefs.GetString("PlayerName"));
-            }
-
-            if (Survivor)
-            {
-                gameObject.layer = 13; //Ignore Raycast Layer
-                playerNameText.text = playerName;
-            }
-
             name = name + " (ME)";
         }
         else
@@ -181,7 +158,7 @@ public class PlayerSetup : NetworkBehaviour
     {
         foreach (GameObject dynamicItem in dynamicallySpawnedItems)
         {
-            dynamicItem.TryGetComponent(out IInitializable<PlayerSetup> initializable);
+            dynamicItem.TryGetComponent(out IInitializable<SurvivorSetup> initializable);
             initializable?.Init(this);
         }
     }

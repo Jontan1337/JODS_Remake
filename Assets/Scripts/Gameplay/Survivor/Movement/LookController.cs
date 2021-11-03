@@ -27,7 +27,7 @@ public class LookController : NetworkBehaviour
 
 	public override void OnStartAuthority()
 	{
-		transform.root.GetComponent<PlayerSetup>().onSpawnItem += GetInitialItems;
+		transform.root.GetComponent<SurvivorSetup>().onSpawnItem += GetInitialItems;
 		Cursor.lockState = CursorLockMode.Locked;
 	}
 	public override void OnStartClient()
@@ -39,7 +39,7 @@ public class LookController : NetworkBehaviour
 	}
 	public override void OnStopAuthority()
 	{
-		transform.root.GetComponent<PlayerSetup>().onSpawnItem -= GetInitialItems;
+		transform.root.GetComponent<SurvivorSetup>().onSpawnItem -= GetInitialItems;
 
 	}
 	public override void OnStopClient()

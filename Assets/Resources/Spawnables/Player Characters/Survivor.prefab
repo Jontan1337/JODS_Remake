@@ -116,7 +116,6 @@ GameObject:
   - component: {fileID: 1735939669978907520}
   - component: {fileID: 4213556439957542976}
   - component: {fileID: 6832228927272020571}
-  - component: {fileID: 5532665387928719515}
   m_Layer: 13
   m_Name: Head
   m_TagString: Untagged
@@ -225,20 +224,6 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 617239051806690651}
-  m_Mesh: {fileID: -5495902117074765545, guid: 08df41f9ed75b4346b30eacfea509be7, type: 3}
---- !u!64 &5532665387928719515
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 617239051806690651}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
   m_Mesh: {fileID: -5495902117074765545, guid: 08df41f9ed75b4346b30eacfea509be7, type: 3}
 --- !u!1 &2123582384439408749
 GameObject:
@@ -1980,30 +1965,25 @@ MonoBehaviour:
     position: {x: 0, y: 1.9, z: 0}
     activeType: 2
     children:
-    - listItemName: WorldCamera
+    - listItemName: Player Camera
       prefab: {fileID: 6222407410909346251, guid: beeedc4be235b6744aca80b4be429040,
         type: 3}
       position: {x: 0, y: 0.1, z: 0}
       activeType: 0
       children: []
-    - listItemName: PlayerHands
+    - listItemName: Player Hands
       prefab: {fileID: 7469820133590246594, guid: c35b413099755c84488f6bd89608381b,
         type: 3}
       position: {x: 0.14, y: -0.14, z: 0.35}
       activeType: 2
       children: []
-  - listItemName: Equipment
+  - listItemName: Player Equipment
     prefab: {fileID: 5545151553288273671, guid: 8aa36f6128d160f4faea76bcdc7a1b24,
       type: 3}
     position: {x: 0, y: 0, z: 0}
     activeType: 2
     children: []
   playerName: 
-  playerHands: {fileID: 7469820133590246594, guid: c35b413099755c84488f6bd89608381b,
-    type: 3}
-  equipment: {fileID: 5545151553288273671, guid: 8aa36f6128d160f4faea76bcdc7a1b24,
-    type: 3}
-  slotsUIParent: {fileID: 6850896366548614916}
   playerNameText: {fileID: 0}
   equipmentSlotsTypes: 01000000010000000200000003000000
   disableIfPlayer: []
@@ -2049,6 +2029,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c23d6d1beb055cb42a0c8d2300361835, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
 --- !u!1 &5922127114707202528
 GameObject:
   m_ObjectHideFlags: 0
@@ -2060,7 +2042,6 @@ GameObject:
   - component: {fileID: 5922127114707103168}
   - component: {fileID: 5922127114693541090}
   - component: {fileID: 5584626271873957391}
-  - component: {fileID: 8340248296226690520}
   m_Layer: 13
   m_Name: Cube
   m_TagString: Untagged
@@ -2169,20 +2150,6 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5922127114707202528}
-  m_Mesh: {fileID: -5495902117074765545, guid: 08df41f9ed75b4346b30eacfea509be7, type: 3}
---- !u!64 &8340248296226690520
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5922127114707202528}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
   m_Mesh: {fileID: -5495902117074765545, guid: 08df41f9ed75b4346b30eacfea509be7, type: 3}
 --- !u!1 &5922127114707202530
 GameObject:
