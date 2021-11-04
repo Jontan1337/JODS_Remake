@@ -35,7 +35,7 @@ public class FirstPersonLookController : MonoBehaviour, IBindable
 		rotation.y = mouseDelta.y * sensitivity;
 	}
 
-	private void LateUpdate()
+	public void DoRotation()
 	{
 		// Set target rotations for the Lerp.
 		// Clamp target rotation X.
@@ -46,8 +46,8 @@ public class FirstPersonLookController : MonoBehaviour, IBindable
 		// Lerp the target rotations from current target rotation to body's rotation + target rotation.
 		smoothTargetRotY = Mathf.Lerp(smoothTargetRotY, rotateHorizontal.rotation.y + targetRotY, Time.deltaTime * smoothAcceleration);
 		// Rotate the camera up and down.
-		rotateVertical.eulerAngles = new Vector3(smoothTargetRotX, transform.eulerAngles.y, 0f);
+		rotateVertical.eulerAngles = new Vector3(smoothTargetRotX, smoothTargetRotY, 0f);
 		// Rotate the body left and right.
-		transform.eulerAngles = new Vector3(0f, smoothTargetRotY, 0f);
+		rotateHorizontal.eulerAngles = new Vector3(0f, smoothTargetRotY, 0f);
 	}
 }

@@ -42,12 +42,18 @@ public class LookController : NetworkBehaviour
 			firstPersonLookController.Unbind();
 		}
 	}
-	#endregion
+    #endregion
 
-	private void CameraShake(float amount)
+    private void LateUpdate()
     {
-		rotateHorizontal.DOComplete();
-		rotateHorizontal.DOShakeRotation(0.2f, 0.2f * amount, 1, 0f, true);
+		if (!hasAuthority) return;
+		firstPersonLookController.DoRotation();
+    }
+
+    private void CameraShake(float amount)
+    {
+        playerCamera.DOComplete();
+        playerCamera.DOShakeRotation(0.1f, 0.2f * amount, 10, 10f, false);
     }
 
 	private void GetImpacter(GameObject oldObject, GameObject newObject)
@@ -81,7 +87,7 @@ public class LookController : NetworkBehaviour
 					playerCamera = item.GetComponent<Camera>();
 					playerItemCamera = item.GetComponentInChildren<Camera>();
 					cameraSettings = playerCamera.GetComponent<CameraSettings>();
-					firstPersonLookController.rotateHorizontal = playerCamera.transform;
+					firstPersonLookController.rotateHorizontal = rotateHorizontal;
 					firstPersonLookController.rotateVertical = rotateVertical;
 					Cmd_SetVirtualHead(rotateVertical);
 					break;

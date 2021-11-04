@@ -4180,16 +4180,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
       objectReference: {fileID: 0}
-    - target: {fileID: 6464912123858017701, guid: 01c4a3d1834a449439a57ffa8ea61184,
-        type: 3}
-      propertyPath: sceneId
-      value: 1019088591
-      objectReference: {fileID: 0}
-    - target: {fileID: 6464912123858017701, guid: 01c4a3d1834a449439a57ffa8ea61184,
-        type: 3}
-      propertyPath: m_AssetId
-      value: 01c4a3d1834a449439a57ffa8ea61184
-      objectReference: {fileID: 0}
     - target: {fileID: 8677567993216096706, guid: 01c4a3d1834a449439a57ffa8ea61184,
         type: 3}
       propertyPath: sceneId
@@ -4199,16 +4189,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AssetId
       value: 01c4a3d1834a449439a57ffa8ea61184
-      objectReference: {fileID: 0}
-    - target: {fileID: 8677567993216096718, guid: 01c4a3d1834a449439a57ffa8ea61184,
-        type: 3}
-      propertyPath: useProjectile
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8677567993216096718, guid: 01c4a3d1834a449439a57ffa8ea61184,
-        type: 3}
-      propertyPath: currentAmmunition
-      value: 999999
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 01c4a3d1834a449439a57ffa8ea61184, type: 3}
@@ -4872,6 +4852,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 13
   playerHead: {fileID: 0}
+  bulletTrail: {fileID: 0}
 --- !u!1001 &1780851054
 PrefabInstance:
   m_ObjectHideFlags: 0

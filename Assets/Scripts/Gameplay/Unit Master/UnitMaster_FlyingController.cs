@@ -48,30 +48,16 @@ public class UnitMaster_FlyingController : MonoBehaviour
 
     private void Rotate(Vector2 rotateValues)
     {
-        rotation.x = rotateValues.x * (sensitivity);
-        rotation.y = rotateValues.y * (sensitivity);
+        rotation.x = rotateValues.x * (sensitivity * 50);
+        rotation.y = rotateValues.y * (sensitivity * 50);
     }
 
     float targetRotX, targetRotY = 0f;
     float smoothTargetRotX, smoothTargetRotY = 0f;
     private void LateUpdate()
     {
-        //Rotation
-        //This does not clamp the rotation
-
-        // Set target rotations for the Lerp.
-        // Clamp target rotation X.
-        targetRotX = Mathf.Clamp(targetRotX += -rotation.y, minRotY, maxRotY);
-        targetRotY += rotation.x;
-        // Lerp the target rotations from current target rotation to camera's rotation + target rotation.
-        smoothTargetRotX = Mathf.Lerp(smoothTargetRotX, cam.transform.rotation.x + targetRotX, Time.deltaTime * 20);
-        // Lerp the target rotations from current target rotation to body's rotation + target rotation.
-        smoothTargetRotY = Mathf.Lerp(smoothTargetRotY, transform.rotation.y + targetRotY, Time.deltaTime * 20);
-        // Rotate the camera up and down.
-        cam.transform.eulerAngles = new Vector3(smoothTargetRotX, transform.eulerAngles.y, 0f);
-        // Rotate the body left and right.
-        transform.eulerAngles = new Vector3(0f, smoothTargetRotY, 0f);
-
+        cam.transform.Rotate(Vector3.right * -rotation.y * Time.deltaTime * (Mathf.Clamp(rotation.magnitude * 0.1f, 0f, 20f) * 0.1f), Space.Self);
+        transform.Rotate(Vector3.up * rotation.x * Time.deltaTime * (Mathf.Clamp(rotation.magnitude * 0.1f, 0f, 20f) * 0.1f), Space.World);
     }
     private void Update()
     {

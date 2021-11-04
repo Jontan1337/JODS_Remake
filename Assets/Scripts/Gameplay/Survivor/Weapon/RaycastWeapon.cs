@@ -11,6 +11,7 @@ public class RaycastWeapon : RangedWeapon
     [SerializeField] private LayerMask ignoreLayer = 13;
     [Header("References")]
     [SerializeField] private Transform playerHead;
+    [SerializeField] private ParticleSystem bulletTrail;
 
     protected override void Shoot()
     {
@@ -72,7 +73,7 @@ public class RaycastWeapon : RangedWeapon
     [ClientRpc]
     private void Rpc_BulletTrail(Vector3 direction)
     {
-        GameObject fx = ObjectPool.Instance.SpawnFromLocalPool(Tags.BulletTrail, shootOrigin.position, Quaternion.identity, 1);
-        fx.transform.forward = direction - shootOrigin.position;
+        bulletTrail.transform.forward = direction - shootOrigin.position;
+        bulletTrail.Emit(1);
     }
 }
