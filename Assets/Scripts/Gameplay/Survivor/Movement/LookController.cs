@@ -49,7 +49,6 @@ public class LookController : NetworkBehaviour
 		rotateHorizontal.DOComplete();
 		rotateHorizontal.DOShakeRotation(0.2f, 0.2f * amount, 1, 0f, true);
     }
-	uwu
 	private void GetImpacter(GameObject oldObject, GameObject newObject)
     {
         if (oldObject)
