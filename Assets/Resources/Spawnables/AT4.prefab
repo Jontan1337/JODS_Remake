@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7808350306422601685}
+  - component: {fileID: 4483686743845626221}
   - component: {fileID: 1227181990305762787}
   - component: {fileID: 4772508216466960666}
-  - component: {fileID: 6633225329221974598}
   - component: {fileID: 1433574980823963295}
   - component: {fileID: 4229689174388185662}
   - component: {fileID: 7395952788218079930}
@@ -20,7 +20,7 @@ GameObject:
   - component: {fileID: 4698299209981788439}
   - component: {fileID: 8549777038908305319}
   - component: {fileID: 6441341795825767503}
-  - component: {fileID: 4483686743845626221}
+  - component: {fileID: 6633225329221974598}
   m_Layer: 0
   m_Name: AT4
   m_TagString: Untagged
@@ -43,6 +43,51 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4483686743845626221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6487308696307582406}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6322c1bd888c664192abf45035393ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  itemName: Item name
+  equipmentType: 1
+  unequippedLayer: 14
+  equippedLayer: 15
+  isInteractable: 1
+  authController: {fileID: 1433574980823963295}
+  objectVisuals: {fileID: 7395952788218079930}
+  owner: {fileID: 0}
+  rb: {fileID: 2790234340522229746}
+  outline: {fileID: 0}
+  damage: 0
+  fireMode: 0
+  fireModes: 
+  burstBulletAmount: 3
+  fireRate: 600
+  fireInterval: 0.1
+  bulletsPerShot: 1
+  currentAmmunition: 5
+  maxCurrentAmmunition: 5
+  extraAmmunition: 0
+  highPower: 0
+  recoil: 1
+  shootOrigin: {fileID: 6676770000506010917}
+  muzzleFlash: {fileID: 9102040174698106515}
+  sfxPlayer: {fileID: 6441341795825767503}
+  shootSound: {fileID: 8300000, guid: 715c383811c8e0745a345d19e85fd6aa, type: 3}
+  emptySound: {fileID: 8300000, guid: 6e8772b49f34d402a90016ed445d8a2f, type: 3}
+  muzzleParticle: {fileID: 9102040174712887283}
+  projectileSpeed: 60
+  timeToLive: 5
+  bulletTag: 7
 --- !u!33 &1227181990305762787
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -92,22 +137,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &6633225329221974598
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6487308696307582406}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sceneId: 0
-  serverOnly: 0
-  m_AssetId: 
-  hasSpawned: 0
 --- !u!114 &1433574980823963295
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1466,7 +1495,7 @@ MonoBehaviour:
   playOnAwake: 0
   playAmountOfTimes: 0
   amountOfPlays: 2
---- !u!114 &4483686743845626221
+--- !u!114 &6633225329221974598
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1475,41 +1504,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 6487308696307582406}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c6322c1bd888c664192abf45035393ec, type: 3}
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  itemName: Item name
-  equipmentType: 1
-  unequippedLayer: 14
-  equippedLayer: 15
-  isInteractable: 1
-  destroyOnDrop: 1
-  authController: {fileID: 1433574980823963295}
-  objectVisuals: {fileID: 7395952788218079930}
-  rb: {fileID: 2790234340522229746}
-  outline: {fileID: 0}
-  damage: 0
-  fireMode: 0
-  fireModes: 
-  burstBulletAmount: 3
-  fireRate: 600
-  fireInterval: 0.1
-  bulletsPerShot: 1
-  currentAmmunition: 1
-  maxCurrentAmmunition: 1
-  extraAmmunition: 0
-  recoil: 1
-  shootOrigin: {fileID: 6676770000506010917}
-  muzzleFlash: {fileID: 9102040174698106515}
-  sfxPlayer: {fileID: 6441341795825767503}
-  shootSound: {fileID: 8300000, guid: 715c383811c8e0745a345d19e85fd6aa, type: 3}
-  emptySound: {fileID: 8300000, guid: 6e8772b49f34d402a90016ed445d8a2f, type: 3}
-  muzzleParticle: {fileID: 9102040174712887283}
-  projectileSpeed: 60
-  timeToLive: 5
-  bulletTag: 7
+  sceneId: 0
+  serverOnly: 0
+  m_AssetId: 
+  hasSpawned: 0
 --- !u!1 &9000193407902524925
 GameObject:
   m_ObjectHideFlags: 0

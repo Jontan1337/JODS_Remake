@@ -281,6 +281,25 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 			}
 		}
 		// Is the entity a single destructable object or an explosive
+
+		StartCoroutine(DestroyWait());
+		//if (singleDestructable || entityType == EntityType.explosive)
+		//{
+		//	if (objectPooled)
+		//	{
+		//		ObjectPool.Instance.ReturnToNetworkedPool(objectPoolTag, gameObject, 0);
+		//	}
+		//	else
+		//	{
+		//		Destroy(gameObject);
+		//	}
+		//}
+	}
+
+
+	IEnumerator DestroyWait()
+	{
+		yield return new WaitForSeconds(0.1f);
 		if (singleDestructable || entityType == EntityType.explosive)
 		{
 			if (objectPooled)
@@ -294,13 +313,12 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 		}
 	}
 
-
 	// Doesn't work properly... Test as client
 	[ClientRpc]
 	private void Rpc_StartExplosionEffect()
 	{
-		explosionEffect.Play();
 		explosionEffect.gameObject.transform.parent = null;
+		explosionEffect.Play();
 		explosionEffect.GetComponent<SFXPlayer>()?.PlaySFX();
 	}
 
