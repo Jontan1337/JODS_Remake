@@ -8,15 +8,18 @@ public class ProjectileWeapon : RangedWeapon
 	[Header("Projectile Settings")]
 	[SerializeField] private int projectileSpeed = 30;
 	[SerializeField] private float timeToLive = 5f;
-	[SerializeField] private Tags bulletTag = Tags.Rocket;
+	//[SerializeField] private Tags bulletTag;
+	[SerializeField] private GameObject projectile;
 
 
 	protected override void Shoot()
 	{
 		base.Shoot();
 		Rpc_ShootFX();
-		GameObject projectile = ObjectPool.Instance.SpawnFromLocalPool(bulletTag, shootOrigin.position, shootOrigin.rotation, timeToLive);
-		ProjectileShoot(projectile);
+		GameObject projectileToSpawn = Instantiate(projectile, shootOrigin.position, shootOrigin.rotation);
+		NetworkServer.Spawn(projectileToSpawn);
+		//projectile = ObjectPool.Instance.SpawnFromLocalPool(bulletTag, shootOrigin.position, shootOrigin.rotation, timeToLive);
+		ProjectileShoot(projectileToSpawn);
 	}
 
 	[ClientRpc]

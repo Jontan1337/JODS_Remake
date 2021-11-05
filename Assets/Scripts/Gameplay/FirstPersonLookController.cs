@@ -46,7 +46,6 @@ public class FirstPersonLookController : MonoBehaviour, IBindable
 		float acceleration = Mathf.Clamp(rotation.magnitude * 0.1f, 0f, 20f) * 0.1f;
 		// Set target rotations.
 		// Clamp target rotation X.
-		print(acceleration);
 		targetRotX = Mathf.Clamp(targetRotX += -rotation.y * acceleration, minRotY, maxRotY);
 		targetRotY += rotation.x * acceleration;
 		// Lerp the target rotations from current target rotation to camera's rotation + target rotation.

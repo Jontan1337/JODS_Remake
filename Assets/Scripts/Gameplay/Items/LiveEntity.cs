@@ -282,24 +282,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 		}
 		// Is the entity a single destructable object or an explosive
 
-		StartCoroutine(DestroyWait());
-		//if (singleDestructable || entityType == EntityType.explosive)
-		//{
-		//	if (objectPooled)
-		//	{
-		//		ObjectPool.Instance.ReturnToNetworkedPool(objectPoolTag, gameObject, 0);
-		//	}
-		//	else
-		//	{
-		//		Destroy(gameObject);
-		//	}
-		//}
-	}
-
-
-	IEnumerator DestroyWait()
-	{
-		yield return new WaitForSeconds(0.1f);
+		//StartCoroutine(DestroyWait());
 		if (singleDestructable || entityType == EntityType.explosive)
 		{
 			if (objectPooled)
@@ -312,6 +295,22 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 			}
 		}
 	}
+
+	//IEnumerator DestroyWait()
+	//{
+	//	yield return new WaitForSeconds(0.1f);
+	//	if (singleDestructable || entityType == EntityType.explosive)
+	//	{
+	//		if (objectPooled)
+	//		{
+	//			ObjectPool.Instance.ReturnToNetworkedPool(objectPoolTag, gameObject, 0);
+	//		}
+	//		else
+	//		{
+	//			Destroy(gameObject);
+	//		}
+	//	}
+	//}
 
 	// Doesn't work properly... Test as client
 	[ClientRpc]

@@ -29,6 +29,12 @@ public class RocketLauncher : ProjectileWeapon
 	[Command]
 	public void Cmd_Destroy()
 	{
+		StartCoroutine(DestroyWait());
+		//NetworkServer.Destroy(gameObject);
+	}
+	IEnumerator DestroyWait()
+	{
+		yield return new WaitForSeconds(0.1f);
 		NetworkServer.Destroy(gameObject);
 	}
 

@@ -74,8 +74,8 @@ MonoBehaviour:
   fireRate: 600
   fireInterval: 0.1
   bulletsPerShot: 1
-  currentAmmunition: 5
-  maxCurrentAmmunition: 5
+  currentAmmunition: 1
+  maxCurrentAmmunition: 1
   extraAmmunition: 0
   highPower: 0
   recoil: 1
@@ -87,7 +87,8 @@ MonoBehaviour:
   muzzleParticle: {fileID: 9102040174712887283}
   projectileSpeed: 60
   timeToLive: 5
-  bulletTag: 7
+  projectile: {fileID: 3668033450558484208, guid: 688023c254216764891da7115d73253e,
+    type: 3}
 --- !u!33 &1227181990305762787
 MeshFilter:
   m_ObjectHideFlags: 0
