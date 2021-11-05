@@ -38,7 +38,7 @@ public class SurvivorSetup : NetworkBehaviour
     [SerializeField] private TextMesh playerNameText = null; // Change to something else??
 
     [Header("First person setup")]
-    [SerializeField] private Transform headTransform = null;
+    [SerializeField] private SkinnedMeshRenderer headMesh = null;
     [SerializeField] private Transform bodyTransform = null;
 
     [Header("References")]
@@ -133,7 +133,7 @@ public class SurvivorSetup : NetworkBehaviour
         yield return new WaitForSeconds(0.1f);
         if (hasAuthority)
         {
-            headTransform.GetComponent<SkinnedMeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly;
+            headMesh.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly;
             bodyTransform.localPosition += new Vector3(0f, 0f, -0.2f);
 
             foreach (GameObject g in disableIfPlayer) { g.SetActive(false); }

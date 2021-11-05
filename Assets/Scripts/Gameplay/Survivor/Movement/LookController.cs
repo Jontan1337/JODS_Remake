@@ -29,6 +29,7 @@ public class LookController : NetworkBehaviour
         if (hasAuthority)
         {
 			firstPersonLookController.Bind();
+			firstPersonLookController.HideCursor();
         }
     }
     public override void OnStopAuthority()
@@ -40,6 +41,7 @@ public class LookController : NetworkBehaviour
 		if (hasAuthority)
 		{
 			firstPersonLookController.Unbind();
+			firstPersonLookController.ShowCursor();
 		}
 	}
     #endregion

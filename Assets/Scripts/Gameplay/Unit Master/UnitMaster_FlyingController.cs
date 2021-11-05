@@ -12,11 +12,7 @@ public class UnitMaster_FlyingController : MonoBehaviour
     [SerializeField] private float movementSpeed = 10f;
     [SerializeField] private float gravity = 20f;
     [Space]
-    [SerializeField] private float minRotY = -60f;
-    [SerializeField] private float maxRotY = 60f;
-    [Space]
-    [SerializeField] [Range(0.1f, 2f)] private float sensitivity = 1f;
-    [Space]
+    [SerializeField] private FirstPersonLookController firstPersonLookController = null;
     [SerializeField] private Transform cursorMarker = null;
     [SerializeField] private bool showMarker = false;    
 
@@ -33,11 +29,26 @@ public class UnitMaster_FlyingController : MonoBehaviour
 
         //Input stuff
 
+    }
+
+    private void OnEnable()
+    {
         // Movement Input
         JODSInput.Controls.Master.Movement.performed += ctx => Move(ctx.ReadValue<Vector2>());
 
         // Camera Input
-        JODSInput.Controls.Master.Camera.performed += ctx => Rotate(ctx.ReadValue<Vector2>());
+        firstPersonLookController.Bind();
+        firstPersonLookController.HideCursor();
+    }
+
+    private void OnDisable()
+    {
+        // Movement Input
+        JODSInput.Controls.Master.Movement.performed -= ctx => Move(ctx.ReadValue<Vector2>());
+
+        // Camera Input
+        firstPersonLookController.Unbind();
+        firstPersonLookController.ShowCursor();
     }
 
     private void Move(Vector2 moveValues)
@@ -46,19 +57,11 @@ public class UnitMaster_FlyingController : MonoBehaviour
         m_vertical = moveValues.y;
     }
 
-    private void Rotate(Vector2 rotateValues)
-    {
-        rotation.x = rotateValues.x * (sensitivity * 50);
-        rotation.y = rotateValues.y * (sensitivity * 50);
-    }
-
-    float targetRotX, targetRotY = 0f;
-    float smoothTargetRotX, smoothTargetRotY = 0f;
     private void LateUpdate()
     {
-        cam.transform.Rotate(Vector3.right * -rotation.y * Time.deltaTime * (Mathf.Clamp(rotation.magnitude * 0.1f, 0f, 20f) * 0.1f), Space.Self);
-        transform.Rotate(Vector3.up * rotation.x * Time.deltaTime * (Mathf.Clamp(rotation.magnitude * 0.1f, 0f, 20f) * 0.1f), Space.World);
+        firstPersonLookController.DoRotation();
     }
+
     private void Update()
     {
         //Movement
