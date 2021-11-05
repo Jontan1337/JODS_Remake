@@ -76,6 +76,8 @@ public class UnitMaster : NetworkBehaviour
         public Transform unitButtonContainer;
         [Space]
         public Image screenTint;
+        [Space]
+        public Image fadeImage;
     }
     [Space]
     public UserInterface UI;
@@ -244,6 +246,9 @@ public class UnitMaster : NetworkBehaviour
 
         //Camera Change Input
         JODSInput.Controls.Master.ChangeCamera.performed += ctx => SwitchCamera(!inTopdownView);
+
+        //Take Control of unit Input
+        JODSInput.Controls.Master.TakeControl.performed += ctx => TryToTakeControl();
     }
 
     private void RemoveBinds()
@@ -273,6 +278,9 @@ public class UnitMaster : NetworkBehaviour
 
         //Camera Change Input
         JODSInput.Controls.Master.ChangeCamera.performed -= ctx => SwitchCamera(!inTopdownView);
+
+        //Take Control of unit Input
+        JODSInput.Controls.Master.TakeControl.performed -= ctx => TryToTakeControl();
     }
     #endregion
 
@@ -288,7 +296,7 @@ public class UnitMaster : NetworkBehaviour
 
     #endregion
 
-    #region Gameplay Functions
+    #region Input Functions
 
     [Header("Debugging")]
     [SerializeField] private bool shift = false;
@@ -542,17 +550,26 @@ public class UnitMaster : NetworkBehaviour
         UI.RechargeRateButton.SetActive(enable);
     }
 
-    private void SpawnTextReset()
-    {
-        UI.spawnText.text = "";
-        UI.spawnText.gameObject.SetActive(false);
-    }
-
     private void SetSpawnText(string newText)
+    {
+
+        if (spawnTextBool)
+        {
+            StopCoroutine(spawnTextCo);
+        }
+        spawnTextCo = StartCoroutine(IESpawnText(newText));
+    }
+    private Coroutine spawnTextCo = null;
+    private bool spawnTextBool = false;
+    private IEnumerator IESpawnText(string newText)
     {
         UI.spawnText.text = newText;
         UI.spawnText.gameObject.SetActive(true);
-        Invoke(nameof(SpawnTextReset), 1f);
+
+        yield return new WaitForSeconds(1f);
+
+        UI.spawnText.text = "";
+        UI.spawnText.gameObject.SetActive(false);
     }
 
     #endregion
@@ -644,7 +661,7 @@ public class UnitMaster : NetworkBehaviour
 
     #endregion
 
-    #region Unit Functions
+    #region Gameplay Functions
 
     private void SetMasterUnits()
     {
@@ -941,6 +958,60 @@ public class UnitMaster : NetworkBehaviour
     }
     #endregion
 
+    #region Control
+
+    private void TryToTakeControl()
+    {
+        if (!takingControlBool) {
+
+            Raycast(out bool didHit, out RaycastHit hit);
+            if (didHit)
+            {
+                StartCoroutine(IETakingControl(hit.transform));
+            }
+        }
+    }
+    bool takingControlBool = false;
+    private IEnumerator IETakingControl(Transform targetToControl)
+    {
+        takingControlBool = true;
+
+        JODSInput.Controls.Master.Disable();
+
+        Camera currentCamera = GetCurrentCamera;
+        if (!inTopdownView)
+        {
+            GameObject zoomCamera = Instantiate(currentCamera.gameObject, currentCamera.transform.position, currentCamera.transform.rotation);
+            currentCamera = zoomCamera.GetComponent<Camera>();
+        }
+
+        float elapsedTime = 0;
+        Color fade = UI.fadeImage.color;
+        while (elapsedTime < 1)
+        {
+            if (inTopdownView)
+            {
+                currentCamera.orthographicSize -= Time.deltaTime * 10;
+            }
+            else
+            {
+                currentCamera.fieldOfView += Time.deltaTime * 20;
+                currentCamera.transform.position = Vector3.Lerp(currentCamera.transform.position, targetToControl.position, Time.deltaTime);
+            }
+
+            elapsedTime += Time.deltaTime;
+
+            fade.a += Time.deltaTime;
+            UI.fadeImage.color = fade;
+            yield return null;
+        }
+        if (!inTopdownView) Destroy(currentCamera);
+        yield return new WaitForSeconds(1f);
+
+    }
+
+    #endregion
+
     #region Checks
 
     //This function will shoot a ray from the currently used camera, and will return a Raycast Hit
@@ -1128,6 +1199,9 @@ public class UnitMaster : NetworkBehaviour
             //If changing to topdown, then disable it.
         }
     }
+
+    private Camera GetCurrentCamera => inTopdownView ? topdown.camera : flying.flyingController.cam;
+
     #endregion
 
     #region Network Commands
