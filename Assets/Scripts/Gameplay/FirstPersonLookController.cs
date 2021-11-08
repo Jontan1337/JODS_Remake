@@ -61,11 +61,12 @@ public class FirstPersonLookController : MonoBehaviour, IBindable
 		targetRotY += rotation.x;
 		// Lerp the target rotations from current target rotation to camera's rotation + target rotation.
 		smoothTargetRotX = Mathf.Lerp(smoothTargetRotX, rotateVertical.rotation.x + targetRotX, Time.deltaTime * smoothAcceleration);
-		// Lerp the target rotations from current target rotation to body's rotation + target rotation.
-		smoothTargetRotY = Mathf.Lerp(smoothTargetRotY, rotateHorizontal.rotation.y + targetRotY, Time.deltaTime * smoothAcceleration);
+        // Lerp the target rotations from current target rotation to body's rotation + target rotation.
+        smoothTargetRotY = Mathf.Lerp(smoothTargetRotY, rotateHorizontal.rotation.y + targetRotY, Time.deltaTime * smoothAcceleration);
+		// NOTE: The order of the rotations is important as it is.
+        // Rotate the body left and right.
+        rotateHorizontal.eulerAngles = new Vector3(0f, targetRotY, 0f);
 		// Rotate the camera up and down.
-		rotateVertical.eulerAngles = new Vector3(targetRotX, targetRotY, 0f);
-		// Rotate the body left and right.
-		rotateHorizontal.eulerAngles = new Vector3(0f, targetRotY, 0f);
+		rotateVertical.eulerAngles = new Vector3(targetRotX, rotateHorizontal.eulerAngles.y, 0f);
 	}
 }
