@@ -11,7 +11,7 @@ public class JODSSlider : MonoBehaviour
 
     public void onSliderValueChanged(float value)
     {
-        text.text = $"{value.ToString():0,1}";
+        text.text = $"{value.ToString("n2")}";
     }
 
     public void onTextChanged(string value)
