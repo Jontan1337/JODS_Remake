@@ -21,8 +21,8 @@ public class SurvivorAnimationManager : NetworkBehaviour
 		Debug.LogWarning("IK stuff here");
 	}
 
-	private void WalkAnimationStart()
+	public void SetFloat(string param, float value)
 	{
-		anim.Play("");
+		anim.SetFloat(param, value);
 	}
 }

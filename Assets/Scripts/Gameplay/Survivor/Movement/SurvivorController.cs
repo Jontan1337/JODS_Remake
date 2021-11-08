@@ -18,6 +18,7 @@ public class SurvivorController : NetworkBehaviour
     [SerializeField] private LayerMask groundMask = 0;
     
     CharacterController cc;
+    SurvivorAnimationManager anim;
     public float speed;
     public float sprintSpeedMultiplier;
     public float jumpSpeed;
@@ -25,9 +26,11 @@ public class SurvivorController : NetworkBehaviour
     public bool isSprinting;
     public bool isGrounded;
 
+
     private void Start()
     {
         cc = GetComponent<CharacterController>();
+        anim = GetComponent<SurvivorAnimationManager>();
     }
 
     #region NetworkBehaviour Callbacks
@@ -65,6 +68,8 @@ public class SurvivorController : NetworkBehaviour
         }
         moveDirection.y -= gravity * Time.deltaTime;
         cc.Move(moveDirection * Time.deltaTime);
+        anim.SetFloat("xVelocity", horizontal);
+        anim.SetFloat("yVelocity", vertical);
     }
 
     private void Move(InputAction.CallbackContext context)
