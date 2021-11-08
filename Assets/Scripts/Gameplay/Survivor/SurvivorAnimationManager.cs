@@ -29,13 +29,4 @@ public class SurvivorAnimationManager : NetworkBehaviour
 	{
 		anim.SetBool(param, value);
 	}
-
-	public void SpeedUp(float speedMultiplier)
-	{
-		anim.speed *= speedMultiplier;
-	}
-	public void SlowDown(float speedMultiplier)
-	{
-		anim.speed /= speedMultiplier;
-	}
 }

@@ -100,14 +100,12 @@ public class SurvivorController : NetworkBehaviour
 
         isSprinting = true;
         speed *= sprintSpeedMultiplier;
-        anim.SpeedUp(sprintSpeedMultiplier);
     }
 
     private void OnSprintCanceled(InputAction.CallbackContext context)
     {
         isSprinting = false;
         speed /= sprintSpeedMultiplier;
-        anim.SlowDown(sprintSpeedMultiplier);
     }
 
     public bool IsMoving() => (moveDirection.z != 0 || moveDirection.x != 0);
