@@ -54,8 +54,8 @@ public class LookController : NetworkBehaviour
 
     private void CameraShake(float amount)
     {
-        playerCamera.DOComplete();
-        playerCamera.DOShakeRotation(0.1f, 0.2f * amount, 10, 10f, false);
+        //playerCamera.DOComplete();
+        //playerCamera.DOShakeRotation(0.1f, 0.2f * amount, 10, 10f, false);
     }
 	private void GetImpacter(GameObject oldObject, GameObject newObject)
     {

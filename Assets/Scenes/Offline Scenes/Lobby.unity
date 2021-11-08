@@ -5318,6 +5318,75 @@ Transform:
   m_Father: {fileID: 349234462}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &946987470
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 8026191710590332880, guid: e59c8e3d13550c64d87ac09b278ed0e7,
+        type: 3}
+      propertyPath: m_Name
+      value: GameManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 8026191710590332886, guid: e59c8e3d13550c64d87ac09b278ed0e7,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.5632546
+      objectReference: {fileID: 0}
+    - target: {fileID: 8026191710590332886, guid: e59c8e3d13550c64d87ac09b278ed0e7,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.9766581
+      objectReference: {fileID: 0}
+    - target: {fileID: 8026191710590332886, guid: e59c8e3d13550c64d87ac09b278ed0e7,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 9.287192
+      objectReference: {fileID: 0}
+    - target: {fileID: 8026191710590332886, guid: e59c8e3d13550c64d87ac09b278ed0e7,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8026191710590332886, guid: e59c8e3d13550c64d87ac09b278ed0e7,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8026191710590332886, guid: e59c8e3d13550c64d87ac09b278ed0e7,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8026191710590332886, guid: e59c8e3d13550c64d87ac09b278ed0e7,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8026191710590332886, guid: e59c8e3d13550c64d87ac09b278ed0e7,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 8026191710590332886, guid: e59c8e3d13550c64d87ac09b278ed0e7,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8026191710590332886, guid: e59c8e3d13550c64d87ac09b278ed0e7,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8026191710590332886, guid: e59c8e3d13550c64d87ac09b278ed0e7,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e59c8e3d13550c64d87ac09b278ed0e7, type: 3}
 --- !u!4 &978824352 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: bd1df1217236bd545a7008fa24518637,
@@ -5492,6 +5561,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 987336043}
   m_CullTransparentMesh: 0
+--- !u!114 &1006297522 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8026191710590332885, guid: e59c8e3d13550c64d87ac09b278ed0e7,
+    type: 3}
+  m_PrefabInstance: {fileID: 946987470}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd21797709827764f84c80b1cc90dc61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!850595691 &1011000352
 LightingSettings:
   m_ObjectHideFlags: 0
@@ -14296,6 +14377,41 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1049974900231211433, guid: be972e2614802d04080036bbbd8c47b9,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1049974900231211433, guid: be972e2614802d04080036bbbd8c47b9,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
+      value: GameSettings, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 1049974900231211433, guid: be972e2614802d04080036bbbd8c47b9,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1049974900231211433, guid: be972e2614802d04080036bbbd8c47b9,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[2].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1049974900231211433, guid: be972e2614802d04080036bbbd8c47b9,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[2].m_Target
+      value: 
+      objectReference: {fileID: 1006297522}
+    - target: {fileID: 1049974900231211433, guid: be972e2614802d04080036bbbd8c47b9,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      value: SetMouseSensitivity
+      objectReference: {fileID: 0}
+    - target: {fileID: 1049974900231211433, guid: be972e2614802d04080036bbbd8c47b9,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 2958848735258251293, guid: be972e2614802d04080036bbbd8c47b9,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -14375,6 +14491,41 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 74.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7117538204291289672, guid: be972e2614802d04080036bbbd8c47b9,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7117538204291289672, guid: be972e2614802d04080036bbbd8c47b9,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: GameSettings, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7117538204291289672, guid: be972e2614802d04080036bbbd8c47b9,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7117538204291289672, guid: be972e2614802d04080036bbbd8c47b9,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7117538204291289672, guid: be972e2614802d04080036bbbd8c47b9,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 1006297522}
+    - target: {fileID: 7117538204291289672, guid: be972e2614802d04080036bbbd8c47b9,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: SetMouseAcceleration
+      objectReference: {fileID: 0}
+    - target: {fileID: 7117538204291289672, guid: be972e2614802d04080036bbbd8c47b9,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 7506619605089933241, guid: be972e2614802d04080036bbbd8c47b9,
         type: 3}
