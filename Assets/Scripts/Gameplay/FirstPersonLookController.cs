@@ -57,8 +57,8 @@ public class FirstPersonLookController : MonoBehaviour, IBindable
         }
         // Set target rotations.
         // Clamp target rotation X.
-        targetRotX = Mathf.Clamp(targetRotX += -rotation.y, minRotY, maxRotY);
-		targetRotY += rotation.x;
+        targetRotX = Mathf.Clamp(targetRotX += -rotation.y * acceleration, minRotY, maxRotY);
+		targetRotY += rotation.x * acceleration;
 		// Lerp the target rotations from current target rotation to camera's rotation + target rotation.
 		smoothTargetRotX = Mathf.Lerp(smoothTargetRotX, rotateVertical.rotation.x + targetRotX, Time.deltaTime * smoothAcceleration);
         // Lerp the target rotations from current target rotation to body's rotation + target rotation.
