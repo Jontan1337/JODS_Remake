@@ -129,12 +129,10 @@ public class PlaceItem : EquipmentItem
 		switch (equipmentType)
 		{
 			case EquipmentType.None:
-				print("none");
 				base.Unbind();
 				Cmd_DestroyGameObject();
 				break;
 			case EquipmentType.Special:
-				print("special");
 				if (drop)
 				{
 					Cmd_Drop();

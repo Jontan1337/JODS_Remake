@@ -12,6 +12,7 @@ public class SurvivorController : NetworkBehaviour
     private float horizontal;
     private float vertical;
     private float groundDistance = 0.2f;
+    private float x, y = 0;
     private bool isJumping;
 
     [SerializeField] private Transform groundCheck = null;
@@ -48,10 +49,9 @@ public class SurvivorController : NetworkBehaviour
         JODSInput.Controls.Survivor.Sprint.performed -= OnSprintPerformed;
         JODSInput.Controls.Survivor.Sprint.canceled -= OnSprintCanceled;
     }
-    #endregion
+	#endregion
 
-
-    private void Update()
+	private void Update()
     {
         if (!hasAuthority) return;
 
@@ -68,8 +68,11 @@ public class SurvivorController : NetworkBehaviour
         }
         moveDirection.y -= gravity * Time.deltaTime;
         cc.Move(moveDirection * Time.deltaTime);
-        anim.SetFloat("xVelocity", horizontal);
-        anim.SetFloat("yVelocity", vertical);
+		anim.SetFloat("xVelocity", x = Mathf.Lerp(x, horizontal, Time.deltaTime * 10));
+		anim.SetFloat("yVelocity", y = Mathf.Lerp(y, vertical, Time.deltaTime * 10));
+		//anim.SetFloat("xVelocity", horizontal);
+        //anim.SetFloat("yVelocity", vertical);
+        //anim.SetBool("Walking", IsMoving());
     }
 
     private void Move(InputAction.CallbackContext context)
@@ -97,12 +100,14 @@ public class SurvivorController : NetworkBehaviour
 
         isSprinting = true;
         speed *= sprintSpeedMultiplier;
+        anim.SpeedUp(sprintSpeedMultiplier);
     }
 
     private void OnSprintCanceled(InputAction.CallbackContext context)
     {
         isSprinting = false;
         speed /= sprintSpeedMultiplier;
+        anim.SlowDown(sprintSpeedMultiplier);
     }
 
     public bool IsMoving() => (moveDirection.z != 0 || moveDirection.x != 0);
