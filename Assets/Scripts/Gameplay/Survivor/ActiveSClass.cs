@@ -43,6 +43,9 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	public bool test;
 
 	public bool IsDead => isDead;
+
+	public float MovementSpeed => movementSpeed;
+
 	public int GetHealth => currentHealth;
 	public int Health
 	{
@@ -196,6 +199,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 		sController = GetComponent<SurvivorController>();
 		movementSpeed = survivorSO.movementSpeed;
 		sController.speed *= movementSpeed;
+		GetComponent<SurvivorAnimationManager>().anim.speed = movementSpeed;
 
 		abilityCooldown = survivorSO.abilityCooldown;
 		abilityCooldownCount = abilityCooldown;

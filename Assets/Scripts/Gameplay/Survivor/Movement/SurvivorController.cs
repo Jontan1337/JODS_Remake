@@ -56,23 +56,24 @@ public class SurvivorController : NetworkBehaviour
         if (!hasAuthority) return;
 
         CheckGround();
+
         if (cc.isGrounded)
         {
             moveDirection = transform.TransformDirection(new Vector3(horizontal, 0.00f, vertical)) * speed;
             if (isJumping)
             {
-
                 moveDirection.y = jumpSpeed;
                 isJumping = false;
             }
         }
         moveDirection.y -= gravity * Time.deltaTime;
         cc.Move(moveDirection * Time.deltaTime);
+		if (isSprinting && vertical > 0.65)
+		{
+			vertical = 2;
+		}
 		anim.SetFloat("xVelocity", x = Mathf.Lerp(x, horizontal, Time.deltaTime * 10));
 		anim.SetFloat("yVelocity", y = Mathf.Lerp(y, vertical, Time.deltaTime * 10));
-		//anim.SetFloat("xVelocity", horizontal);
-        //anim.SetFloat("yVelocity", vertical);
-        //anim.SetBool("Walking", IsMoving());
     }
 
     private void Move(InputAction.CallbackContext context)
@@ -97,15 +98,14 @@ public class SurvivorController : NetworkBehaviour
 
     private void OnSprintPerformed(InputAction.CallbackContext context)
     {
-
         isSprinting = true;
-        speed *= sprintSpeedMultiplier;
+        //speed *= sprintSpeedMultiplier;
     }
 
     private void OnSprintCanceled(InputAction.CallbackContext context)
     {
         isSprinting = false;
-        speed /= sprintSpeedMultiplier;
+        //speed /= sprintSpeedMultiplier;
     }
 
     public bool IsMoving() => (moveDirection.z != 0 || moveDirection.x != 0);
