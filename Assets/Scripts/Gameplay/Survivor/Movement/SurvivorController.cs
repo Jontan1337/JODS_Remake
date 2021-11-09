@@ -22,8 +22,8 @@ public class SurvivorController : NetworkBehaviour
 
 	CharacterController cc;
 	SurvivorAnimationManager anim;
-	public float walkSpeed;
-	public float sprintSpeed;
+	public float walkSpeedMultiplier;
+	public float sprintSpeedMultiplier;
 	public float speedMultiplier;
 	public float jumpSpeed;
 	public bool isSprinting;
@@ -80,11 +80,11 @@ public class SurvivorController : NetworkBehaviour
 		cc.Move(moveDirection * Time.deltaTime);
 		if (isSprinting && vertical > 0.65)
 		{
-			speedMultiplier = sprintSpeed;
+			speedMultiplier = sprintSpeedMultiplier;
 		}
 		else
 		{
-			speedMultiplier = walkSpeed;
+			speedMultiplier = walkSpeedMultiplier;
 		}
 		anim.SetFloat("xVelocity", x = Mathf.Lerp(x, horizontal, Time.deltaTime * 10));
 		anim.SetFloat("yVelocity", y = Mathf.Lerp(y, Mathf.Clamp(vertical * speedMultiplier, -1f, 2f), Time.deltaTime * 10));
