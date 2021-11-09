@@ -2172,8 +2172,9 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 1
-  speed: 3
-  sprintSpeedMultiplier: 2
+  walkSpeed: 1
+  sprintSpeed: 2
+  speedMultiplier: 1
   jumpSpeed: 5
   gravity: 20
   isSprinting: 0
@@ -2335,6 +2336,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  anim: {fileID: 0}
 --- !u!114 &140378723284269974
 MonoBehaviour:
   m_ObjectHideFlags: 0

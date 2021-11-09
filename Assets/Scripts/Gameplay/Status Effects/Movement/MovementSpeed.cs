@@ -11,11 +11,11 @@ public class MovementSpeed : StatusEffect
     {
         sClass = obj.GetComponent<SurvivorController>();
         movementSpeed = (MovementSpeedSO) effect;
-        defaultSpeed = sClass.speed;
+        defaultSpeed = sClass.walkSpeed;
     }
     public override void OnEffectApplied()
     {
-        sClass.speed += defaultSpeed * movementSpeed.speedModifier;
+        sClass.walkSpeed += defaultSpeed * movementSpeed.speedModifier;
     }
     public override void ApplyEffect(int? amount)
     {
@@ -24,7 +24,7 @@ public class MovementSpeed : StatusEffect
 
     public override void End()
     {
-        sClass.speed = defaultSpeed;
+        sClass.walkSpeed = defaultSpeed;
     }
 
     public override void Tick()
