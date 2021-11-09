@@ -2,12 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using RootMotion.FinalIK;
 
-public class SurvivorAnimationManager : NetworkBehaviour
+public class SurvivorAnimationManager : NetworkBehaviour, IInitializable<SurvivorSetup>
 {
 	public Animator anim;
-	// Start is called before the first frame update
-	void Start()
+	public FullBodyBipedIK fullBodyIK;
+
+	private bool isInitialized = false;
+    public bool IsInitialized => isInitialized;
+
+    // Start is called before the first frame update
+    void Start()
 	{
 		if (!hasAuthority) return;
 		anim = GetComponent<Animator>();
@@ -29,4 +35,37 @@ public class SurvivorAnimationManager : NetworkBehaviour
 	{
 		anim.SetBool(param, value);
 	}
+
+	public void SetIKRightHandEffector(Transform effector)
+    {
+		if (effector != null)
+        {
+			fullBodyIK.solver.rightHandEffector.target = effector;
+			fullBodyIK.solver.rightHandEffector.positionWeight = 1f;
+        }
+		else
+        {
+			fullBodyIK.solver.rightHandEffector.target = null;
+			fullBodyIK.solver.rightHandEffector.positionWeight = 0f;
+        }
+    }
+	public void SetIKLeftHandEffector(Transform effector)
+    {
+
+		if (effector != null)
+		{
+			fullBodyIK.solver.leftHandEffector.target = effector;
+			fullBodyIK.solver.leftHandEffector.positionWeight = 1f;
+		}
+		else
+		{
+			fullBodyIK.solver.leftHandEffector.target = null;
+			fullBodyIK.solver.leftHandEffector.positionWeight = 0f;
+		}
+	}
+
+    public void Init(SurvivorSetup initializer)
+    {
+        throw new System.NotImplementedException();
+    }
 }

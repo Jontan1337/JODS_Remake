@@ -18,9 +18,10 @@ GameObject:
   - component: {fileID: 8677567993216096719}
   - component: {fileID: 8677567993216096712}
   - component: {fileID: 8677567993216096717}
-  - component: {fileID: 8677567993216096706}
   - component: {fileID: 8296172669356463415}
   - component: {fileID: 2721683097890432565}
+  - component: {fileID: 3486995782189894877}
+  - component: {fileID: 8677567993216096706}
   m_Layer: 14
   m_Name: AK-47
   m_TagString: Untagged
@@ -1465,22 +1466,6 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   hasPhysics: 1
---- !u!114 &8677567993216096706
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 814314852993368252}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sceneId: 0
-  serverOnly: 0
-  m_AssetId: 
-  hasSpawned: 0
 --- !u!114 &8296172669356463415
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1516,6 +1501,36 @@ MonoBehaviour:
   syncParent: 1
   syncPosition: 1
   syncRotation: 1
+--- !u!114 &3486995782189894877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 814314852993368252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70140efb1a5ab844f8715db9d11c9f74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rightHandEffector: {fileID: 1365892089242661874}
+  leftHandEffector: {fileID: 5032451589527515873}
+--- !u!114 &8677567993216096706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 814314852993368252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  serverOnly: 0
+  m_AssetId: 
+  hasSpawned: 0
 --- !u!1 &8677567994327279420
 GameObject:
   m_ObjectHideFlags: 0
