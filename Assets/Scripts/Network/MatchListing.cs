@@ -61,7 +61,7 @@ public class MatchListing : NetworkDiscovery
         match.transform.localScale = Vector3.one;
         ServerListItem newServerListItem = match.GetComponent<ServerListItem>();
         string tempName = $"{response.EndPoint.Address}";
-        newServerListItem.Setup(tempName, 0, response.EndPoint.Address.ToString());
+        newServerListItem.Setup(tempName, 1, response.EndPoint.Address.ToString());
         //match.transform.Find("match name").GetComponent<Text>().text = $"{result.address} | Players : {result.playerCount} / {result.maxPlayerCount}" /*m.currentSize*/;
         newServerListItem.JoinButton.onClick.AddListener(delegate () { Lobby.Instance.MMJoinMatch(response.uri); });
         discoveredServers.Add(match);

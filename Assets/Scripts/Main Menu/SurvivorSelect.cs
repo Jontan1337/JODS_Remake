@@ -11,6 +11,7 @@ public class SurvivorSelect : NetworkBehaviour
     [SyncVar] public int playerIndex;
     [Header("Visual")]
     [SerializeField] private GameObject selectedVisual = null;
+    [SerializeField] private TextMesh playerNameText = null;
     public bool Selected => selected;
 
     public void Select(bool value, bool removeSO = true)
@@ -27,7 +28,7 @@ public class SurvivorSelect : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void Rpc_SelectSurvivor(int index, bool hasSelected)
+    public void Rpc_SelectSurvivor(int index, bool hasSelected, string playerName)
     {
         if (selected && index != playerIndex) return;
 
@@ -41,6 +42,8 @@ public class SurvivorSelect : NetworkBehaviour
             playerIndex = index;
 
             SetPlayerSurvivorSO(playerIndex);
+
+            playerNameText.text = playerName;
         }
 
         Select(!selected);

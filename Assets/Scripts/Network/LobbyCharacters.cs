@@ -17,7 +17,6 @@ public class LobbyCharacters : NetworkBehaviour
 
     [Header("Default Character")]
     [SerializeField] private Material defaultMaterial = null;
-    [SerializeField] private Mesh defaultMesh = null;
 
     private ParticleSystem charSmoke;
 
@@ -70,8 +69,6 @@ public class LobbyCharacters : NetworkBehaviour
     {
         bodyRenderer.material = defaultMaterial;
         headRenderer.material = defaultMaterial;
-        bodyRenderer.sharedMesh = defaultMesh;
-        headRenderer.sharedMesh = defaultMesh;
     }
 
     [Server]
