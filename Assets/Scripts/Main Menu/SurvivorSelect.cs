@@ -9,6 +9,7 @@ public class SurvivorSelect : NetworkBehaviour
     [Space]
     [SyncVar (hook = nameof(ShowVisuals)), SerializeField] private bool selected;
     [SyncVar] public int playerIndex;
+    [SyncVar (hook = nameof(ChangeNameText)), SerializeField] private string playerName;
     [Header("Visual")]
     [SerializeField] private GameObject selectedVisual = null;
     [SerializeField] private TextMesh playerNameText = null;
@@ -24,7 +25,11 @@ public class SurvivorSelect : NetworkBehaviour
             if (removeSO) RemovePlayerSurvivorSO(playerIndex);
 
             playerIndex = 0;
+
+            return;
         }
+
+        ChangeNameText("", playerName);
     }
 
     [ClientRpc]
@@ -43,7 +48,7 @@ public class SurvivorSelect : NetworkBehaviour
 
             SetPlayerSurvivorSO(playerIndex);
 
-            playerNameText.text = playerName;
+            this.playerName = playerName;
         }
 
         Select(!selected);
@@ -78,6 +83,11 @@ public class SurvivorSelect : NetworkBehaviour
     private void ShowVisuals(bool oldVal, bool newVal)
     {
         selectedVisual.SetActive(newVal);
+    }
+
+    private void ChangeNameText(string oldVal, string newVal)
+    {
+        playerNameText.text = newVal;
     }
             
     [Server]    //This method is called by the server (lobby manager)
