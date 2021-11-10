@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using RootMotion.FinalIK;
+using System;
 
-public class SurvivorAnimationManager : NetworkBehaviour, IInitializable<SurvivorSetup>
+public class SurvivorAnimationManager : NetworkBehaviour
 {
 	public Animator anim;
 	public FullBodyBipedIK fullBodyIK;
@@ -17,9 +18,41 @@ public class SurvivorAnimationManager : NetworkBehaviour, IInitializable<Survivo
 	{
 		if (!hasAuthority) return;
 		anim = GetComponent<Animator>();
+		GetComponent<SurvivorSetup>().onSpawnItem += GetReferences;
 	}
 
-	public void HasWeaponAnimation(bool enable)
+    private void GetReferences(GameObject item)
+    {
+		if (item.TryGetComponent(out ItemName itemName))
+		{
+            if (itemName.itemName == ItemNames.Equipment)
+            {
+				if (item.TryGetComponent(out PlayerEquipment playerEquipment))
+                {
+					playerEquipment.onServerEquippedItemChange += OnEquippedItemChange;
+                }
+            }
+		}
+	}
+
+    private void OnEquippedItemChange(GameObject oldItem, GameObject newItem)
+    {
+        if (newItem)
+        {
+			if (newItem.TryGetComponent(out HandIKEffectors handIKEffectors))
+			{
+				SetIKRightHandEffector(handIKEffectors.rightHandEffector);
+				SetIKLeftHandEffector(handIKEffectors.leftHandEffector);
+			}
+        }
+		else
+        {
+			SetIKRightHandEffector(null);
+			SetIKLeftHandEffector(null);
+		}
+    }
+
+    public void HasWeaponAnimation(bool enable)
 	{
 		anim.SetBool("HasWeapon", enable);
 
@@ -64,8 +97,6 @@ public class SurvivorAnimationManager : NetworkBehaviour, IInitializable<Survivo
 		}
 	}
 
-    public void Init(SurvivorSetup initializer)
-    {
-        throw new System.NotImplementedException();
-    }
+    
+
 }
