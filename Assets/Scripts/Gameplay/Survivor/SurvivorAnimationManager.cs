@@ -10,6 +10,9 @@ public class SurvivorAnimationManager : NetworkBehaviour
 	public Animator anim;
 	public FullBodyBipedIK fullBodyIK;
 
+	public HandPoser rightHandPoser;
+	public HandPoser leftHandPoser;
+
 	private bool isInitialized = false;
     public bool IsInitialized => isInitialized;
 
@@ -43,13 +46,11 @@ public class SurvivorAnimationManager : NetworkBehaviour
 			{
 				SetIKRightHandEffector(handIKEffectors.rightHandEffector);
 				SetIKLeftHandEffector(handIKEffectors.leftHandEffector);
+				return;
 			}
         }
-		else
-        {
-			SetIKRightHandEffector(null);
-			SetIKLeftHandEffector(null);
-		}
+		SetIKRightHandEffector(null);
+		SetIKLeftHandEffector(null);
     }
 
     public void HasWeaponAnimation(bool enable)
@@ -75,11 +76,19 @@ public class SurvivorAnimationManager : NetworkBehaviour
         {
 			fullBodyIK.solver.rightHandEffector.target = effector;
 			fullBodyIK.solver.rightHandEffector.positionWeight = 1f;
-        }
+			fullBodyIK.solver.rightHandEffector.rotationWeight = 1f;
+			rightHandPoser.poseRoot = effector;
+			rightHandPoser.localPositionWeight = 1f;
+			rightHandPoser.localRotationWeight = 1f;
+		}
 		else
         {
 			fullBodyIK.solver.rightHandEffector.target = null;
 			fullBodyIK.solver.rightHandEffector.positionWeight = 0f;
+			fullBodyIK.solver.rightHandEffector.rotationWeight = 0f;
+			rightHandPoser.poseRoot = null;
+			rightHandPoser.localPositionWeight = 0f;
+			rightHandPoser.localRotationWeight = 0f;
         }
     }
 	public void SetIKLeftHandEffector(Transform effector)
@@ -89,13 +98,21 @@ public class SurvivorAnimationManager : NetworkBehaviour
 		{
 			fullBodyIK.solver.leftHandEffector.target = effector;
 			fullBodyIK.solver.leftHandEffector.positionWeight = 1f;
+			fullBodyIK.solver.leftHandEffector.rotationWeight = 1f;
+			leftHandPoser.poseRoot = effector;
+			leftHandPoser.localPositionWeight = 1f;
+			leftHandPoser.localRotationWeight = 1f;
 		}
 		else
 		{
 			fullBodyIK.solver.leftHandEffector.target = null;
-			fullBodyIK.solver.leftHandEffector.positionWeight = 0f;
+            fullBodyIK.solver.leftHandEffector.positionWeight = 0f;
+			fullBodyIK.solver.leftHandEffector.rotationWeight = 0f;
+			leftHandPoser.poseRoot = null;
+			leftHandPoser.localPositionWeight = 0f;
+			leftHandPoser.localRotationWeight = 0f;
 		}
-	}
+    }
 
     
 
