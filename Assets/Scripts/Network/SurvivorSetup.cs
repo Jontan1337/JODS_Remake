@@ -39,8 +39,11 @@ public class SurvivorSetup : NetworkBehaviour
     [SerializeField] private TextMesh playerNameText = null; // Change to something else??
 
     [Header("First person setup")]
+    [SerializeField] private SkinnedMeshRenderer bodyMesh = null;
+    [SerializeField] private SkinnedMeshRenderer armsMesh = null;
     [SerializeField] private SkinnedMeshRenderer headMesh = null;
-    [SerializeField] private Transform bodyTransform = null;
+    [SerializeField] private Transform armatureTransform = null;
+    [SerializeField] private float armatureForwardOffset = -0.3f;
 
     [Header("References")]
     [SerializeField] private GameObject[] prefabDisableIfPlayer = null;
@@ -138,8 +141,11 @@ public class SurvivorSetup : NetworkBehaviour
         yield return new WaitForSeconds(0.1f);
         if (hasAuthority)
         {
+            armsMesh.gameObject.layer = LayerMask.NameToLayer("FirstPerson");
+            bodyMesh.gameObject.layer = LayerMask.NameToLayer("FirstPerson");
+            //bodyMesh.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly;
             headMesh.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly;
-            bodyTransform.localPosition += new Vector3(0f, 0f, -0.2f);
+            armatureTransform.localPosition += new Vector3(0f, 0f, armatureForwardOffset);
 
             foreach (GameObject g in disableIfPlayer) { g.SetActive(false); }
             foreach (GameObject g in enableIfPlayer) { g.SetActive(true); }
