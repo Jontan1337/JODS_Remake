@@ -22,7 +22,7 @@ public class LookController : NetworkBehaviour
 
 	public override void OnStartAuthority()
 	{
-		transform.root.GetComponent<SurvivorSetup>().onSpawnItem += GetInitialItems;
+		transform.root.GetComponent<SurvivorSetup>().onClientSpawnItem += GetInitialItems;
 	}
     public override void OnStartClient()
     {
@@ -34,7 +34,7 @@ public class LookController : NetworkBehaviour
     }
     public override void OnStopAuthority()
 	{
-		transform.root.GetComponent<SurvivorSetup>().onSpawnItem -= GetInitialItems;
+		transform.root.GetComponent<SurvivorSetup>().onClientSpawnItem -= GetInitialItems;
 	}
 	public override void OnStopClient()
 	{

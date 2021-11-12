@@ -60,7 +60,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         }
         if (muzzleFlash != null)
         {
-
             if (muzzleFlash.TryGetComponent(out ParticleSystem particle))
             {
                 muzzleParticle = particle;
@@ -68,12 +67,23 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         }
     }
 
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+        OnImpact += ImpactShake;
+    }
+
+    public override void OnStopClient()
+    {
+        base.OnStopClient();
+        OnImpact -= ImpactShake;
+    }
+
     public override void Bind()
     {
         base.Bind();
         JODSInput.Controls.Survivor.Reload.performed += OnReload;
         JODSInput.Controls.Survivor.Changefiremode.performed += OnChangeFireMode;
-        OnImpact += ImpactShake;
     }
     public override void Unbind()
     {
@@ -85,7 +95,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         base.Unbind();
         JODSInput.Controls.Survivor.Reload.performed -= OnReload;
         JODSInput.Controls.Survivor.Changefiremode.performed -= OnChangeFireMode;
-        OnImpact -= ImpactShake;
     }
 
     protected override void OnLMBPerformed(InputAction.CallbackContext obj)
@@ -284,14 +293,19 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     #region Clients
 
     [ClientRpc]
-    protected void Rpc_ShootFX()
+    protected virtual void Rpc_Shoot()
+    {
+        ShootFX();
+    }
+
+    protected void ShootFX()
     {
         sfxPlayer.PlaySFX(shootSound);
         muzzleParticle.Emit(10);
         if (hasAuthority)
         {
-            OnImpact?.Invoke(recoil);
         }
+        OnImpact?.Invoke(recoil);
     }
     protected void ImpactShake(float amount)
     {

@@ -1,4 +1,5 @@
 ﻿using Mirror;
+using RootMotion.FinalIK;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -227,6 +228,34 @@ public static class CustomReadWrite
             return null;
         }
         return identity.GetComponent<EngineerClass>();
+    }
+
+    public static void WriteHandIKEffectors(this NetworkWriter writer, HandIKEffectors value)
+    {
+        if (value == null)
+        {
+            writer.WriteUInt32(0);
+            return;
+        }
+        NetworkIdentity identity = value.GetComponent<NetworkIdentity>();
+        if (identity != null)
+        {
+            writer.WriteUInt32(identity.netId);
+        }
+        else
+        {
+            logger.LogWarning("NetworkWriter " + value + " has no NetworkIdentity");
+            writer.WriteUInt32(0);
+        }
+    }
+    public static HandIKEffectors ReadHandIKEffectors(this NetworkReader reader)
+    {
+        NetworkIdentity identity = reader.ReadNetworkIdentity();
+        if (identity == null)
+        {
+            return null;
+        }
+        return identity.GetComponent<HandIKEffectors>();
     }
     /*
     public static void WriteSurvivorClass(this NetworkWriter writer, SurvivorClass value)

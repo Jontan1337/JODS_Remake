@@ -5,7 +5,7 @@ using UnityEngine;
 public enum ItemNames
 {
     VirtualHead,
-    PlayerHands,
+    ItemContainer,
     Camera,
     Equipment
 }

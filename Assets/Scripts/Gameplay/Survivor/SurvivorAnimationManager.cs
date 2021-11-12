@@ -10,18 +10,25 @@ public class SurvivorAnimationManager : NetworkBehaviour
 	public Animator anim;
 	public FullBodyBipedIK fullBodyIK;
 
+	public Transform rightHandEffector;
+	public Transform leftHandEffector;
+
 	public HandPoser rightHandPoser;
 	public HandPoser leftHandPoser;
 
 	private bool isInitialized = false;
     public bool IsInitialized => isInitialized;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
 	{
-		if (!hasAuthority) return;
-		anim = GetComponent<Animator>();
-		GetComponent<SurvivorSetup>().onSpawnItem += GetReferences;
+		if (hasAuthority)
+        {
+			anim = GetComponent<Animator>();
+        }
+        if (isServer)
+        {
+        }
+		GetComponent<SurvivorSetup>().onServerSpawnItem += GetReferences;
 	}
 
     private void GetReferences(GameObject item)
@@ -32,25 +39,25 @@ public class SurvivorAnimationManager : NetworkBehaviour
             {
 				if (item.TryGetComponent(out PlayerEquipment playerEquipment))
                 {
-					playerEquipment.onServerEquippedItemChange += OnEquippedItemChange;
+					playerEquipment.onServerEquippedItemChange += OnServerEquippedItemChange;
                 }
             }
 		}
 	}
 
-    private void OnEquippedItemChange(GameObject oldItem, GameObject newItem)
+    private void OnServerEquippedItemChange(GameObject oldItem, GameObject newItem)
     {
         if (newItem)
         {
 			if (newItem.TryGetComponent(out HandIKEffectors handIKEffectors))
 			{
-				SetIKRightHandEffector(handIKEffectors.rightHandEffector);
-				SetIKLeftHandEffector(handIKEffectors.leftHandEffector);
+                Rpc_SetIKRightHandEffector(handIKEffectors);
+                Rpc_SetIKLeftHandEffector(handIKEffectors);
 				return;
 			}
-        }
-		SetIKRightHandEffector(null);
-		SetIKLeftHandEffector(null);
+		}
+        Rpc_SetIKRightHandEffector(null);
+        Rpc_SetIKLeftHandEffector(null);
     }
 
     public void HasWeaponAnimation(bool enable)
@@ -70,10 +77,13 @@ public class SurvivorAnimationManager : NetworkBehaviour
 		anim.SetBool(param, value);
 	}
 
-	public void SetIKRightHandEffector(Transform effector)
+	[ClientRpc]
+	public void Rpc_SetIKRightHandEffector(HandIKEffectors handIKEffectors)
     {
-		if (effector != null)
+		print("RPC IK stuff");
+		if (handIKEffectors != null)
         {
+			Transform effector = handIKEffectors.rightHandEffector;
 			fullBodyIK.solver.rightHandEffector.target = effector;
 			fullBodyIK.solver.rightHandEffector.positionWeight = 1f;
 			fullBodyIK.solver.rightHandEffector.rotationWeight = 1f;
@@ -91,11 +101,12 @@ public class SurvivorAnimationManager : NetworkBehaviour
 			rightHandPoser.localRotationWeight = 0f;
         }
     }
-	public void SetIKLeftHandEffector(Transform effector)
-    {
-
-		if (effector != null)
+	[ClientRpc]
+	public void Rpc_SetIKLeftHandEffector(HandIKEffectors handIKEffectors)
+	{
+		if (handIKEffectors != null)
 		{
+			Transform effector = handIKEffectors.leftHandEffector;
 			fullBodyIK.solver.leftHandEffector.target = effector;
 			fullBodyIK.solver.leftHandEffector.positionWeight = 1f;
 			fullBodyIK.solver.leftHandEffector.rotationWeight = 1f;
@@ -113,7 +124,4 @@ public class SurvivorAnimationManager : NetworkBehaviour
 			leftHandPoser.localRotationWeight = 0f;
 		}
     }
-
-    
-
 }

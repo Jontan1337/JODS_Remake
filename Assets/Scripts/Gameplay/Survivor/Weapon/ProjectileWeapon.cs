@@ -15,7 +15,7 @@ public class ProjectileWeapon : RangedWeapon
 	protected override void Shoot()
 	{
 		base.Shoot();
-		Rpc_ShootFX();
+		Rpc_Shoot();
 		GameObject projectileToSpawn = Instantiate(projectile, shootOrigin.position, shootOrigin.rotation);
 		NetworkServer.Spawn(projectileToSpawn);
 		//projectile = ObjectPool.Instance.SpawnFromLocalPool(bulletTag, shootOrigin.position, shootOrigin.rotation, timeToLive);

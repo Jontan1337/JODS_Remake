@@ -30,7 +30,8 @@ public class SurvivorSetup : NetworkBehaviour
     public List<DynamicItem> dynamicItems;
     [SerializeField, Tooltip("A list of the equipment types, the player should start with.")]
     public List<EquipmentType> equipmentSlotsTypes = new List<EquipmentType>();
-    public Action<GameObject> onSpawnItem;
+    public Action<GameObject> onServerSpawnItem;
+    public Action<GameObject> onClientSpawnItem;
     public Action onDestroyPlayer;
 
     [Space]
@@ -129,6 +130,10 @@ public class SurvivorSetup : NetworkBehaviour
         {
             Svr_SpawnItems();
             InitSpawnedItems();
+            foreach (GameObject dynamicItem in dynamicallySpawnedItems)
+            {
+                onServerSpawnItem?.Invoke(dynamicItem);
+            }
         }
         yield return new WaitForSeconds(0.1f);
         if (hasAuthority)
@@ -145,7 +150,7 @@ public class SurvivorSetup : NetworkBehaviour
 
             foreach (GameObject dynamicItem in dynamicallySpawnedItems)
             {
-                onSpawnItem?.Invoke(dynamicItem);
+                onClientSpawnItem?.Invoke(dynamicItem);
             }
 
             name = name + " (ME)";

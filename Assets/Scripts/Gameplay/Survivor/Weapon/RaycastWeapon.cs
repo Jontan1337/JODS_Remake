@@ -10,13 +10,31 @@ public class RaycastWeapon : RangedWeapon
     [Header("Settings")]
     [SerializeField] private LayerMask ignoreLayer = 13;
     [Header("References")]
-    [SerializeField] private Transform playerHead;
+    [SerializeField, SyncVar] private Transform playerHead;
     [SerializeField] private ParticleSystem bulletTrail;
+
+    //public override bool OnSerialize(NetworkWriter writer, bool initialState)
+    //{
+    //    if (!initialState)
+    //    {
+    //        writer.WriteTransform(playerHead);
+    //        return true;
+    //    }
+    //    print(writer.Length);
+    //    return false;
+    //}
+    //public override void OnDeserialize(NetworkReader reader, bool initialState)
+    //{
+    //    if (!initialState)
+    //    {
+    //        reader.ReadTransform();
+    //    }
+    //}
 
     protected override void Shoot()
     {
         base.Shoot();
-        Rpc_ShootFX();
+        Rpc_Shoot();
         
         Ray aimRay = new Ray(playerHead.position + new Vector3(0f, 0.1f), playerHead.forward);
         
@@ -25,14 +43,14 @@ public class RaycastWeapon : RangedWeapon
             Vector3 targetPoint = aimHit.point;
             Ray shootRay = new Ray(shootOrigin.position, targetPoint - shootOrigin.position);
 
-            Rpc_BulletTrail(targetPoint);
+            //Rpc_BulletTrail(targetPoint);
 
             if (Physics.Raycast(shootRay, out RaycastHit shootHit, range, ~ignoreLayer))
             {
                 Debug.DrawRay(shootOrigin.position, targetPoint - shootOrigin.position, Color.green, 2f);
 
-                PhysicMaterial phyMat = shootHit.collider.sharedMaterial;
-                Rpc_Bullethole(shootHit.point, shootHit.normal, phyMat ? phyMat.name : "");
+                //PhysicMaterial phyMat = shootHit.collider.sharedMaterial;
+                //Rpc_Bullethole(shootHit.point, shootHit.normal, phyMat ? phyMat.name : "");
 
                 if (shootHit.collider.TryGetComponent(out IDamagable damagable))
                 {
@@ -44,12 +62,12 @@ public class RaycastWeapon : RangedWeapon
                             detachable.Detach((int)DamageTypes.Pierce);
                         }
                     }
-                }                
+                }
             }
         }
         else
         {
-            Rpc_BulletTrail(playerHead.forward * range);
+            //Rpc_BulletTrail(playerHead.forward * range);
         }
     }
 
@@ -58,10 +76,38 @@ public class RaycastWeapon : RangedWeapon
     {
         base.Svr_Interact(interacter);
         playerHead = interacter.GetComponent<LookController>().RotateVertical;
+        Rpc_GetPlayerHead(playerHead);
+    }
+    [ClientRpc]
+    private void Rpc_GetPlayerHead(Transform head)
+    {
+        playerHead = head;
     }
 
     [ClientRpc]
-    private void Rpc_Bullethole(Vector3 point, Vector3 normal, string phyMatName)
+    protected override void Rpc_Shoot()
+    {
+        base.Rpc_Shoot();
+        Ray aimRay = new Ray(playerHead.position + new Vector3(0f, 0.1f), playerHead.forward);
+        if (Physics.Raycast(aimRay, out RaycastHit aimHit, range, ~ignoreLayer))
+        {
+            Vector3 targetPoint = aimHit.point;
+            Ray shootRay = new Ray(shootOrigin.position, targetPoint - shootOrigin.position);
+            BulletTrail(targetPoint);
+            if (Physics.Raycast(shootRay, out RaycastHit shootHit, range, ~ignoreLayer))
+            {
+                Debug.DrawRay(shootOrigin.position, targetPoint - shootOrigin.position, Color.green, 2f);
+                PhysicMaterial phyMat = shootHit.collider.sharedMaterial;
+                Bullethole(shootHit.point, shootHit.normal, phyMat ? phyMat.name : "");
+            }
+        }
+        else
+        {
+            BulletTrail(playerHead.forward * range);
+        }
+    }
+
+    private void Bullethole(Vector3 point, Vector3 normal, string phyMatName)
     {
         if (GlobalVariables.hallo.TryGetValue(phyMatName, out Tags fxTag))
         {
@@ -70,8 +116,7 @@ public class RaycastWeapon : RangedWeapon
         }
     }
 
-    [ClientRpc]
-    private void Rpc_BulletTrail(Vector3 direction)
+    private void BulletTrail(Vector3 direction)
     {
         bulletTrail.transform.forward = direction - shootOrigin.position;
         bulletTrail.Emit(1);

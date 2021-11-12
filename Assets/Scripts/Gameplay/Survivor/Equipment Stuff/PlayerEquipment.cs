@@ -151,7 +151,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
             // This is run in Start instead of OnStartServer because
             // OnStartServer gets called before Start when equipment object
             // is not set as child to player yet.
-            initializer.onSpawnItem += GetReferences;
+            initializer.onClientSpawnItem += GetReferences;
         }
 
         IsInitialized = true;
@@ -218,7 +218,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
     }
     public override void OnStopAuthority()
     {
-        transform.root.GetComponent<SurvivorSetup>().onSpawnItem -= GetReferences;
+        transform.root.GetComponent<SurvivorSetup>().onClientSpawnItem -= GetReferences;
         JODSInput.Controls.Survivor.Hotbarselecting.performed -= number => Cmd_SelectSlot(Mathf.RoundToInt(number.ReadValue<float>()) - 1);
     }
     #endregion
@@ -658,7 +658,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
         {
             switch (itemName.itemName)
             {
-                case ItemNames.PlayerHands:
+                case ItemNames.ItemContainer:
                     playerHands = item.transform;
                     Cmd_SetPlayerHands(playerHands);
                     break;

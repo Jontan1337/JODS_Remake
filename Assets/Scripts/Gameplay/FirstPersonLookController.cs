@@ -50,6 +50,7 @@ public class FirstPersonLookController : MonoBehaviour, IBindable
 
 	public void DoRotation()
 	{
+		if (!rotateVertical || !rotateHorizontal) return;
 		float acceleration = 1f;
 		if (this.acceleration != 0)
         {
