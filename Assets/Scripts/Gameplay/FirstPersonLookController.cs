@@ -10,7 +10,8 @@ public class FirstPersonLookController : MonoBehaviour, IBindable
 
 	[SerializeField] private float sensitivity = 1f;
 	[SerializeField] private float acceleration = 1f;
-	[SerializeField] private float smoothAcceleration = 500f;
+	[SerializeField] private float maxAcceleration = 1f;
+	[SerializeField] private float mouseEasingSpeed = 500f;
 	[SerializeField] private float minRotY = -75f;
 	[SerializeField] private float maxRotY = 75f;
 
@@ -39,6 +40,8 @@ public class FirstPersonLookController : MonoBehaviour, IBindable
     {
 		sensitivity = GameSettings.Instance.mouseSensitivity;
 		acceleration = GameSettings.Instance.mouseAcceleration;
+		maxAcceleration = GameSettings.Instance.maxMouseAcceleration;
+		mouseEasingSpeed = GameSettings.Instance.mouseEasingSpeed;
     }
 
     void Look(InputAction.CallbackContext context)
@@ -54,20 +57,20 @@ public class FirstPersonLookController : MonoBehaviour, IBindable
 		float acceleration = 1f;
 		if (this.acceleration != 0)
         {
-			acceleration = Mathf.Clamp(rotation.magnitude * this.acceleration, 0f, 10f) * 0.1f;
+			acceleration = Mathf.Clamp(rotation.magnitude * this.acceleration, 0f, maxAcceleration) * 0.1f;
         }
         // Set target rotations.
         // Clamp target rotation X.
         targetRotX = Mathf.Clamp(targetRotX += -rotation.y * acceleration, minRotY, maxRotY);
 		targetRotY += rotation.x * acceleration;
 		// Lerp the target rotations from current target rotation to camera's rotation + target rotation.
-		smoothTargetRotX = Mathf.Lerp(smoothTargetRotX, rotateVertical.rotation.x + targetRotX, Time.deltaTime * smoothAcceleration);
+		smoothTargetRotX = Mathf.Lerp(smoothTargetRotX, rotateVertical.rotation.x + targetRotX, Time.deltaTime * mouseEasingSpeed);
         // Lerp the target rotations from current target rotation to body's rotation + target rotation.
-        smoothTargetRotY = Mathf.Lerp(smoothTargetRotY, rotateHorizontal.rotation.y + targetRotY, Time.deltaTime * smoothAcceleration);
+        smoothTargetRotY = Mathf.Lerp(smoothTargetRotY, rotateHorizontal.rotation.y + targetRotY, Time.deltaTime * mouseEasingSpeed);
 		// NOTE: The order of the rotations is important as it is.
         // Rotate the body left and right.
-        rotateHorizontal.eulerAngles = new Vector3(0f, targetRotY, 0f);
+        rotateHorizontal.eulerAngles = new Vector3(0f, smoothTargetRotY, 0f);
 		// Rotate the camera up and down.
-		rotateVertical.eulerAngles = new Vector3(targetRotX, rotateHorizontal.eulerAngles.y, 0f);
+		rotateVertical.eulerAngles = new Vector3(smoothTargetRotX, rotateHorizontal.eulerAngles.y, 0f);
 	}
 }
