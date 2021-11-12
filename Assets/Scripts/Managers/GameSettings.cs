@@ -7,8 +7,10 @@ public class GameSettings : MonoBehaviour
     private static GameSettings instance;
 
     [Header("Controls")]
-    public float mouseSensitivity = 0f;
+    public float mouseSensitivity = 1f;
     public float mouseAcceleration = 0f;
+    public float maxMouseAcceleration = 0f;
+    public float mouseEasingSpeed = 0f;
 
     public static GameSettings Instance { get => instance; }
 
@@ -35,5 +37,13 @@ public class GameSettings : MonoBehaviour
     public void SetMouseAcceleration(float value)
     {
         mouseAcceleration = value;
+    }
+    public void SetMaxMouseAcceleration(float value)
+    {
+        maxMouseAcceleration = value;
+    }
+    public void SetMouseEasingSpeed(float value)
+    {
+        mouseEasingSpeed = value;
     }
 }
