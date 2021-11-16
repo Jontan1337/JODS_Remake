@@ -10,6 +10,7 @@ public class Syringe : Projectile
 		base.Start();
 		objectPoolTag = Tags.Syringe;
 		transform.Rotate(new Vector3(90, 0, 0));
+		StartCoroutine(LifeTime());
 	}
 	[Server]
 	public override void OnHit(Collision hit)
@@ -24,6 +25,12 @@ public class Syringe : Projectile
 		{
 			idmg?.Svr_Damage(2);
 		}
+	}
+
+	IEnumerator LifeTime()
+	{
+		yield return new WaitForSeconds(5f);
+		Destroy();
 	}
 }
 
