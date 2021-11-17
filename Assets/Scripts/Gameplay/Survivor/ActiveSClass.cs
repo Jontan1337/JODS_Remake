@@ -237,7 +237,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 		{
 			starterWeapon = Instantiate(survivorSO.starterWeapon, transform.position, transform.rotation);
 			NetworkServer.Spawn(starterWeapon);
-			yield return new WaitForSeconds(0.2f);
+			yield return new WaitForSeconds(0.35f);
 			starterWeapon.GetComponent<EquipmentItem>().Svr_Interact(gameObject);			
 		}
 	}

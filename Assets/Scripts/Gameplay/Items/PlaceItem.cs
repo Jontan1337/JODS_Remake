@@ -49,18 +49,16 @@ public class PlaceItem : EquipmentItem
 			// Raycast pointing downwards from the placeholder.
 			if (Physics.Raycast(placeholder.transform.position, -Vector3.up, out RaycastHit hitDown, maxPlaceRange, ~ignoreLayer))
 			{
-				// If the raycast hits anything the placeholder will be positioned at the object.
+				// If the downwards facing raycast hits anything, the placeholder will be positioned at the object.
 				placeholder.transform.position = PlaceholderPos(hitDown);
 			}
 			else
 			{
-				// if the raycast doesn't hit anything, obstructed is set to false here since it doesn't do OnTriggerExit.
+				// if the raycast doesn't hit anything, obstructed is set to false here since OnTriggerExit isn't triggered.
 				placeholder.GetComponent<ItemPlaceholder>().Obstructed(false);
 			}
 			// If downwards facing raycast doesn't hit anything, the placeholder is inactive.
 			placeholder.gameObject.SetActive(hitDown.transform);
-
-
 
 			// Rotates the placeholder to always stand upright, even on slopes.
 			placeholder.transform.eulerAngles = new Vector3(0, transform.rotation.eulerAngles.y, 0);

@@ -110,4 +110,9 @@ public class NetworkTest : NetworkManager
         playerIds.Remove(conn);
         base.OnServerDisconnect(conn);
     }
+
+    private void OnGUI()
+    {
+        GUI.TextField(new Rect(20, 100, 150, 20), "Network Test ON");
+    }
 }
