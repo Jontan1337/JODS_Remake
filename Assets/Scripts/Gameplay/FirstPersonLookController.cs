@@ -19,7 +19,12 @@ public class FirstPersonLookController : MonoBehaviour, IBindable
 	private float targetRotX, targetRotY = 0f;
 	private float smoothTargetRotX, smoothTargetRotY = 0f;
 
-    public void Bind()
+	private void Awake()
+	{
+		SetMouseSettings();
+	}
+
+	public void Bind()
 	{
 		JODSInput.Controls.Survivor.Camera.performed += Look;
 	}
@@ -36,13 +41,13 @@ public class FirstPersonLookController : MonoBehaviour, IBindable
 		Cursor.lockState = CursorLockMode.None;
 	}
 
-    private void Awake()
+	private void SetMouseSettings()
     {
 		sensitivity = GameSettings.Instance.mouseSensitivity;
 		acceleration = GameSettings.Instance.mouseAcceleration;
 		maxAcceleration = GameSettings.Instance.maxMouseAcceleration;
 		mouseEasingSpeed = GameSettings.Instance.mouseEasingSpeed;
-    }
+	}
 
     void Look(InputAction.CallbackContext context)
 	{

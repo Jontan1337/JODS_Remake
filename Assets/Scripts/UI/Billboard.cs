@@ -8,19 +8,13 @@ public class Billboard : MonoBehaviour
     private void Start()
     {
         // Set target camera to the player running this script.
-        StartCoroutine(GetCameraInScene());
         billboardText = GetComponent<TextMesh>().transform;
-    }
-    private IEnumerator GetCameraInScene()
-    {
-        yield return new WaitForSeconds(0.1f);
-        targetCamera = FindObjectOfType<Camera>().transform;
+        // TODO: Somehow find the player camera in the scene.
     }
 
     private void LateUpdate()
     {
         // Text is turned 180 relative to camera.. TODO: Fix.
-        if (targetCamera)
-            billboardText.transform.LookAt(2 * billboardText.position - targetCamera.position);
+        billboardText.transform.LookAt(2 * billboardText.position - targetCamera.position);
     }
 }
