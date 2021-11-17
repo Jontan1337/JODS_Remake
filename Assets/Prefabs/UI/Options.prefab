@@ -1932,7 +1932,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1049974900231211430}
   - component: {fileID: 1049974900231211433}
-  - component: {fileID: 1237611530994394289}
   - component: {fileID: 574097308}
   m_Layer: 5
   m_Name: Sensitivity Slider
@@ -2015,18 +2014,6 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1237611530994394289}
-        m_TargetAssemblyTypeName: Option_Sensitivity, Assembly-CSharp
-        m_MethodName: ChangeSensitivity
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 574097308}
         m_TargetAssemblyTypeName: JODSSlider, Assembly-CSharp
         m_MethodName: onSliderValueChanged
@@ -2051,18 +2038,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &1237611530994394289
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1049974900231211431}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2dddbbea7b95f79478977fde3cfbf5fa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &574097308
 MonoBehaviour:
   m_ObjectHideFlags: 0
