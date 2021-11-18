@@ -51,6 +51,8 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     private const string AttackTrigger = "Attack";
     private const string BloodAmount = "_BloodAmount";
 
+    public int Damage { get => damage; }
+    public DamageTypes DamageType { get => damageType; }
     public float SplatterAmount
     {
         get => splatterAmount;
