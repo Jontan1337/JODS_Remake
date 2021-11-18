@@ -1,7 +1,11 @@
 ﻿using UnityEngine;
+using System;
 
 public class JODSInput : MonoBehaviour
 {
+    public static Action onMovementDisabled;
+    public static Action onCameraDisabled;
+
     public static Controls Controls { get; private set; }
 
     private void Awake()
@@ -27,6 +31,7 @@ public class JODSInput : MonoBehaviour
     public static void DisableMovement()
     {
         Controls.Survivor.Movement.Disable();
+        onMovementDisabled?.Invoke();
     }
     public static void EnableJump()
     {
@@ -43,6 +48,7 @@ public class JODSInput : MonoBehaviour
     public static void DisableCamera()
     {
         Controls.Survivor.Camera.Disable();
+        onCameraDisabled?.Invoke();
     }
     // INTERACTION
     public static void EnableInteract()
@@ -84,5 +90,14 @@ public class JODSInput : MonoBehaviour
     public static void DisableDrop()
     {
         Controls.Survivor.Drop.Disable();
+    }
+    // Menu/UI
+    public static void EnableEscape()
+    {
+        Controls.MainMenu.Escape.Enable();
+    }
+    public static void DisableEscape()
+    {
+        Controls.MainMenu.Escape.Disable();
     }
 }

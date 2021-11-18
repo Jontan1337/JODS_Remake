@@ -38,7 +38,7 @@ public class GameSettings : MonoBehaviour
     {
         mouseAcceleration = value;
     }
-    public void SetMaxMouseAcceleration(float value)
+    public void SetMouseMaxAcceleration(float value)
     {
         maxMouseAcceleration = value;
     }

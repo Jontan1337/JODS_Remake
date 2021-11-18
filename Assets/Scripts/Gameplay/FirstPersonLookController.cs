@@ -27,10 +27,12 @@ public class FirstPersonLookController : MonoBehaviour, IBindable
 	public void Bind()
 	{
 		JODSInput.Controls.Survivor.Camera.performed += Look;
+		JODSInput.onCameraDisabled += OnCameraDisabled;
 	}
 	public void Unbind()
 	{
 		JODSInput.Controls.Survivor.Camera.performed -= Look;
+		JODSInput.onCameraDisabled -= OnCameraDisabled;
 	}
 	public void HideCursor()
     {
@@ -43,10 +45,6 @@ public class FirstPersonLookController : MonoBehaviour, IBindable
 
 	private void SetMouseSettings()
     {
-		sensitivity = GameSettings.Instance.mouseSensitivity;
-		acceleration = GameSettings.Instance.mouseAcceleration;
-		maxAcceleration = GameSettings.Instance.maxMouseAcceleration;
-		mouseEasingSpeed = GameSettings.Instance.mouseEasingSpeed;
 	}
 
     void Look(InputAction.CallbackContext context)
@@ -56,8 +54,18 @@ public class FirstPersonLookController : MonoBehaviour, IBindable
 		rotation.y = mouseDelta.y * sensitivity;
 	}
 
+	private void OnCameraDisabled()
+    {
+		rotation = new Vector2();
+    }
+
 	public void DoRotation()
 	{
+		sensitivity = GameSettings.Instance.mouseSensitivity;
+		this.acceleration = GameSettings.Instance.mouseAcceleration;
+		maxAcceleration = GameSettings.Instance.maxMouseAcceleration;
+		mouseEasingSpeed = GameSettings.Instance.mouseEasingSpeed;
+
 		if (!rotateVertical || !rotateHorizontal) return;
 		float acceleration = 1f;
 		if (this.acceleration != 0)
