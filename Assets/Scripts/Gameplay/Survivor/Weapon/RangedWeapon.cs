@@ -9,6 +9,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 {
     [Header("Weapon stats")]
     [SerializeField] protected int damage = 10;
+    [SerializeField] private AmmunitionTypes ammunitionType = AmmunitionTypes.Small;
     [SerializeField] private FireModes fireMode = FireModes.Single;
     [SerializeField] private FireModes[] fireModes = null;
     [SerializeField] private int burstBulletAmount = 3;
@@ -46,6 +47,11 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     private int fireModeIndex = 0;
 
     public Action<float> OnImpact { get; set; }
+
+    public int Damage { get => damage; }
+    public AmmunitionTypes AmmunitionType { get => ammunitionType; set => ammunitionType = value; }
+    public FireModes FireMode { get => fireMode; }
+    public FireModes[] AllFireModes { get => fireModes; }
 
     private void OnValidate()
     {
