@@ -15,6 +15,8 @@ public class TaekwondoClass : SurvivorClass, IHitter
 	[SerializeField, SyncVar] private float flyingKickSpeed = 1.5f;
 	[SerializeField, SyncVar] private int flyingKickDamage = 100;
 	[SyncVar] private bool flyingKick = false;
+	[SyncVar] private bool kicking = false;
+
 
 	public List<Collider> unitsHit = new List<Collider>();
 
@@ -73,6 +75,11 @@ public class TaekwondoClass : SurvivorClass, IHitter
 		if (CanFlyKick())
 		{
 			StartCoroutine(FlyingKick());
+			GetComponentInParent<ActiveSClass>().StartAbilityCooldownCo();
+		}
+		else if (!kicking)
+		{
+			StartCoroutine(Kick());
 		}
 	}
 
@@ -116,12 +123,8 @@ public class TaekwondoClass : SurvivorClass, IHitter
 			{
 				Physics.IgnoreCollision(item, cController, false);
 			}
-		}
-		GetComponentInParent<ActiveSClass>().StartAbilityCooldownCo();
+		}		
 	}
-
-
-	// TO DO - ONLY FLY KICK WHEN SPRINTING FORWARD
 
 	private bool CanFlyKick()
 	{
@@ -145,5 +148,21 @@ public class TaekwondoClass : SurvivorClass, IHitter
 	private void Cmd_OnHit(GameObject hitObject)
 	{
 		hitObject.GetComponent<IDamagable>()?.Svr_Damage(flyingKickDamage);
+	}
+
+	private IEnumerator Kick()
+	{
+		kicking = true;
+		sController.enabled = false;
+		GetComponentInParent<SurvivorAnimationManager>().anim.SetBool("Kicking", true);
+		//GetComponentInParent<SurvivorAnimationManager>().anim.speed *= 0.5f;
+
+
+		yield return new WaitForSeconds(0.2f);
+
+		kicking = false;
+		sController.enabled = true;
+		GetComponentInParent<SurvivorAnimationManager>().anim.SetBool("Kicking", false);
+		//GetComponentInParent<SurvivorAnimationManager>().anim.speed *= 2f;
 	}
 }

@@ -46,7 +46,7 @@ public class LookController : NetworkBehaviour
 	}
     #endregion
 
-    private void LateUpdate()
+    private void Update()
     {
 		if (!hasAuthority) return;
 		firstPersonLookController.DoRotation();
