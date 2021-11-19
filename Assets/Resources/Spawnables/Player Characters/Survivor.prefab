@@ -187,6 +187,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2876454906695447267}
+  - component: {fileID: 758359759323515737}
+  - component: {fileID: 4221712545830191379}
   m_Layer: 0
   m_Name: R.LowerLeg
   m_TagString: Untagged
@@ -209,6 +211,31 @@ Transform:
   m_Father: {fileID: 2047403158743977519}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &758359759323515737
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 125445186100275787}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 0
+  serializedVersion: 2
+  m_Size: {x: 0.0016373398, y: 0.006329873, z: 0.0036020125}
+  m_Center: {x: 0.000038518105, y: 0.0026986946, z: -0.00073349505}
+--- !u!114 &4221712545830191379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 125445186100275787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a1f8b8ba3356bd4fa9ba5c0bdb99646, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &133319971922067850
 GameObject:
   m_ObjectHideFlags: 0

@@ -295,7 +295,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 
 	private void OnControllerColliderHit(ControllerColliderHit hit)
 	{
-		GetComponentInChildren<IHitter>()?.OnHit(hit);
+		GetComponentInChildren<IHitter>()?.OnFlyingKickHit(hit);
 	}
 
 	void Die()

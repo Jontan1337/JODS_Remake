@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IHitter
 {
-	void OnHit(ControllerColliderHit hit);
+	void OnFlyingKickHit(ControllerColliderHit hit);
 }
