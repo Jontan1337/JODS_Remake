@@ -8,10 +8,18 @@ public class UIShopButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 {
     [SerializeField] private bool weaponSlot;
     [Space]
+    [SerializeField] private bool purchasable;
+    [Space]
     [SerializeField] private WeaponShop shop;
     [SerializeField] private Text priceText;
     [SerializeField] private Text PLACEHOLDERText;
-    [Space]
+
+    private Button button;
+    private void Start()
+    {
+        button = GetComponent<Button>();
+    }
+
     private ShopItem item;
     public ShopItem Item
     {
@@ -28,10 +36,25 @@ public class UIShopButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         }
     }
 
+    public void OnButtonClick()
+    {
+        Debug.Log("TODO: Points system. Make a check here to see if player has enough points to buy the item");
+
+        //If player has enough points
+        //Buy the item
+        shop.Svr_BuyItem(item, this);
+    }
+
+    public void EnableShopButton(bool enable)
+    {
+        print("hallo");
+        button.interactable = enable;
+        purchasable = enable;
+    }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (weaponSlot)
+        if (weaponSlot && purchasable)
         {
             shop.ShowWeaponInfo(item);
         }
@@ -39,7 +62,7 @@ public class UIShopButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (weaponSlot)
+        if (weaponSlot && purchasable)
         {
             shop.ShowWeaponInfo(null);
         }
