@@ -72,10 +72,7 @@ public class TaekwondoClass : SurvivorClass, IHitter
 			sController = GetComponentInParent<SurvivorController>();
 			lController = GetComponentInParent<LookController>();
 
-			//lowerLeg = transform.parent.Find("Armature").Find("R.Hip").Find("R.UpperLeg").Find("R.LowerLeg").AddComponent<Collider>();
-
 			lowerLeg = transform.parent.Find("Armature").GetComponentInChildren<Collider>();
-
 		}
 	}
 
@@ -174,7 +171,8 @@ public class TaekwondoClass : SurvivorClass, IHitter
 		unitsHit.Clear();
 		kicking = true;
 		sController.enabled = false;
-		GetComponentInParent<SurvivorAnimationManager>().anim.SetBool("Kicking", true);
+		//GetComponentInParent<SurvivorAnimationManager>().anim.SetBool("Kicking", true);
+		Rpc_Kick(kicking);
 		GetComponentInParent<FullBodyBipedIK>().enabled = false;
 		lowerLeg.enabled = true;
 
@@ -182,9 +180,16 @@ public class TaekwondoClass : SurvivorClass, IHitter
 
 		kicking = false;
 		sController.enabled = true;
-		GetComponentInParent<SurvivorAnimationManager>().anim.SetBool("Kicking", false);
+		//GetComponentInParent<SurvivorAnimationManager>().anim.SetBool("Kicking", false);
+		Rpc_Kick(kicking);
 		GetComponentInParent<FullBodyBipedIK>().enabled = true;
 		lowerLeg.enabled = false;
+	}
+
+	[ClientRpc]
+	private void Rpc_Kick(bool kicking)
+	{
+		GetComponentInParent<SurvivorAnimationManager>().anim.SetBool("Kicking", kicking);
 	}
 
 	#endregion
