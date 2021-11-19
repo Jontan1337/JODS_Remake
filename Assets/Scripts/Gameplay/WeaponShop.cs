@@ -80,12 +80,19 @@ public class WeaponShop : NetworkBehaviour, IInteractable
     }
 
     
+    [Server]
     public void Svr_Interact(GameObject interacter)
+    {
+        Rpc_Interact(interacter.GetComponent<NetworkIdentity>().connectionToClient, interacter);
+    }
+
+    [TargetRpc]
+    public virtual void Rpc_Interact(NetworkConnection target, GameObject interacter)
     {
         inShop = !inShop;
         shopCanvas.SetActive(inShop);
 
-        Cursor.lockState =  inShop ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.lockState = inShop ? CursorLockMode.None : CursorLockMode.Locked;
         Cursor.visible = inShop;
 
         if (inShop) { EnterShop(); }
