@@ -15,10 +15,6 @@ public class UIShopButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     [SerializeField] private Text PLACEHOLDERText;
 
     private Button button;
-    private void Start()
-    {
-        button = GetComponent<Button>();
-    }
 
     private ShopItem item;
     public ShopItem Item
@@ -47,6 +43,7 @@ public class UIShopButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     public void EnableShopButton(bool enable)
     {
+        button = GetComponent<Button>();
         button.interactable = enable;
         purchasable = enable;
     }
