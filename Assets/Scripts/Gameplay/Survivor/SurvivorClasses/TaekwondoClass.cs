@@ -166,21 +166,21 @@ public class TaekwondoClass : SurvivorClass, IHitter
 		}
 	}
 
+
+	// NOGET ER GALT SOM CLIENT
 	private IEnumerator Kick()
 	{
 		unitsHit.Clear();
 		kicking = true;
 		sController.enabled = false;
-		//GetComponentInParent<SurvivorAnimationManager>().anim.SetBool("Kicking", true);
 		Rpc_Kick(kicking);
 		GetComponentInParent<FullBodyBipedIK>().enabled = false;
 		lowerLeg.enabled = true;
 
-		yield return new WaitForSeconds(0.2f);
+		yield return new WaitForSeconds(0.3f);
 
 		kicking = false;
 		sController.enabled = true;
-		//GetComponentInParent<SurvivorAnimationManager>().anim.SetBool("Kicking", false);
 		Rpc_Kick(kicking);
 		GetComponentInParent<FullBodyBipedIK>().enabled = true;
 		lowerLeg.enabled = false;
