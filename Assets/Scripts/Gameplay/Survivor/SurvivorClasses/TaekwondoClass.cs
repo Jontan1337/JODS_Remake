@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using RootMotion.FinalIK;
 
 public class TaekwondoClass : SurvivorClass, IHitter
 {
@@ -14,6 +15,9 @@ public class TaekwondoClass : SurvivorClass, IHitter
 	[SerializeField, SyncVar] private float flyingKickEnd = 100;
 	[SerializeField, SyncVar] private float flyingKickSpeed = 1.5f;
 	[SerializeField, SyncVar] private int flyingKickDamage = 100;
+	[SerializeField, SyncVar] private int kickDamage = 50;
+
+	[SerializeField] private Collider lowerLeg;
 	[SyncVar] private bool flyingKick = false;
 	[SyncVar] private bool kicking = false;
 
@@ -67,6 +71,11 @@ public class TaekwondoClass : SurvivorClass, IHitter
 			cController = GetComponentInParent<CharacterController>();
 			sController = GetComponentInParent<SurvivorController>();
 			lController = GetComponentInParent<LookController>();
+
+			//lowerLeg = transform.parent.Find("Armature").Find("R.Hip").Find("R.UpperLeg").Find("R.LowerLeg").AddComponent<Collider>();
+
+			lowerLeg = transform.parent.Find("Armature").GetComponentInChildren<Collider>();
+
 		}
 	}
 
@@ -82,6 +91,8 @@ public class TaekwondoClass : SurvivorClass, IHitter
 			StartCoroutine(Kick());
 		}
 	}
+
+	#region FlyingKick
 
 	private IEnumerator FlyingKick()
 	{
@@ -123,7 +134,7 @@ public class TaekwondoClass : SurvivorClass, IHitter
 			{
 				Physics.IgnoreCollision(item, cController, false);
 			}
-		}		
+		}
 	}
 
 	private bool CanFlyKick()
@@ -131,7 +142,7 @@ public class TaekwondoClass : SurvivorClass, IHitter
 		return !sController.isGrounded && sController.isSprinting && sController.IsMoving();
 	}
 
-	public void OnHit(ControllerColliderHit hit)
+	public void OnFlyingKickHit(ControllerColliderHit hit)
 	{
 		if (!hasAuthority) return;
 
@@ -139,30 +150,49 @@ public class TaekwondoClass : SurvivorClass, IHitter
 		{
 			unitsHit.Add(hit.collider);
 			Physics.IgnoreCollision(hit.collider, cController);
-			Cmd_OnHit(hit.gameObject);
+			Cmd_OnHit(hit.transform, flyingKickDamage);
 		}
 		else if (hit.gameObject.layer == 0 && flyingKick) flyingKickStart = flyingKickEnd;
 	}
 
-	[Command]
-	private void Cmd_OnHit(GameObject hitObject)
+	#endregion
+
+	#region Kick
+
+	public void OnKickHit(Collider hit)
 	{
-		hitObject.GetComponent<IDamagable>()?.Svr_Damage(flyingKickDamage);
+		if (!hasAuthority) return;
+		//print(hit.transform.root.name + " " + hit.transform.root.gameObject.layer);
+		if (hit.gameObject.layer == 9 && kicking || hit.gameObject.layer == 10 && kicking)
+		{
+			Cmd_OnHit(hit.transform.root, kickDamage);
+		}
 	}
 
 	private IEnumerator Kick()
 	{
+		unitsHit.Clear();
 		kicking = true;
 		sController.enabled = false;
 		GetComponentInParent<SurvivorAnimationManager>().anim.SetBool("Kicking", true);
-		//GetComponentInParent<SurvivorAnimationManager>().anim.speed *= 0.5f;
-
+		GetComponentInParent<FullBodyBipedIK>().enabled = false;
+		lowerLeg.enabled = true;
 
 		yield return new WaitForSeconds(0.2f);
 
 		kicking = false;
 		sController.enabled = true;
 		GetComponentInParent<SurvivorAnimationManager>().anim.SetBool("Kicking", false);
-		//GetComponentInParent<SurvivorAnimationManager>().anim.speed *= 2f;
+		GetComponentInParent<FullBodyBipedIK>().enabled = true;
+		lowerLeg.enabled = false;
+	}
+
+	#endregion
+
+
+	[Command]
+	private void Cmd_OnHit(Transform hitObject, int dmg)
+	{
+		hitObject.GetComponent<IDamagable>()?.Svr_Damage(dmg);
 	}
 }
