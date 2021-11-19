@@ -174,6 +174,7 @@ public class WeaponShop : NetworkBehaviour, IInteractable
 
     public void BuyItem(ShopItem item, UIShopButton button)
     {
+        print("købbb mannnnn");
         Svr_BuyItem(item, button);
     }
 
@@ -182,6 +183,7 @@ public class WeaponShop : NetworkBehaviour, IInteractable
     {
         //Buy the item for the player
         Debug.LogError("Clients can't buy items");
+        Debug.LogError("THIS IS NOT REACHED WHEN CLIENTS BUY");
 
         //And disable the item button for others, so they can't purchase it.
         //This is done by getting the index of the button in the allSlots array.
