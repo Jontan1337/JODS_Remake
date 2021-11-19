@@ -65,8 +65,6 @@ public class WeaponShop : NetworkBehaviour, IInteractable
         weaponStats.SetActive(false);
         shopCanvas.SetActive(false);
 
-        if (!isServer) return;
-
         //Combine both arrays of UIShopButtons into one
         allSlots = new UIShopButton[weaponSlots.Length + equipmentSlots.Length];
         weaponSlots.CopyTo(allSlots, 0);

@@ -47,7 +47,6 @@ public class UIShopButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     public void EnableShopButton(bool enable)
     {
-        print("hallo");
         button.interactable = enable;
         purchasable = enable;
     }
