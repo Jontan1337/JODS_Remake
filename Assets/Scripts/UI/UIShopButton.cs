@@ -38,7 +38,7 @@ public class UIShopButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
         //If player has enough points
         //Buy the item
-        shop.Svr_BuyItem(item, this);
+        shop.BuyItem(item, this);
     }
 
     public void EnableShopButton(bool enable)

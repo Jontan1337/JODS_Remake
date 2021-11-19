@@ -162,8 +162,13 @@ public class WeaponShop : NetworkBehaviour, IInteractable
         JODSInput.Controls.Enable();
     }
 
+    public void BuyItem(ShopItem item, UIShopButton button)
+    {
+        Svr_BuyItem(item, button);
+    }
+
     [Server]
-    public void Svr_BuyItem(ShopItem Item, UIShopButton button)
+    public void Svr_BuyItem(ShopItem item, UIShopButton button)
     {
         //Buy the item for the player
 
