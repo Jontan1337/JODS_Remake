@@ -140,18 +140,28 @@ public class WeaponShop : NetworkBehaviour, IInteractable
                     break;
                 }
             }
+            //Get the index of the item, from the allShopItems array
+            int allShopItemsIndex = 0;
+            for (int x = 0; x < allShopItems.Count; x++)
+            {
+                if (allShopItems[x] == shopItems[i])
+                {
+                    allShopItemsIndex = x;
+                    break;
+                }
+            }
 
             //Assign the item to the slot
             newSlot.Item = item;
 
-            Rpc_SetShopSlotValues(i, allSlotsIndex, weaponSlotItems);
+            Rpc_SetShopSlotValues(allShopItemsIndex, allSlotsIndex, weaponSlotItems);
         }
     }
 
     [ClientRpc]
-    private void Rpc_SetShopSlotValues(int index, int allSlotsIndex, bool weaponSlotItems)
+    private void Rpc_SetShopSlotValues(int allShopItemsIndex, int allSlotsIndex, bool weaponSlotItems)
     {
-        var item = allShopItems[index];
+        var item = allShopItems[allShopItemsIndex];
 
         UIShopButton newSlot = allSlots[allSlotsIndex];
         newSlot.Item = item;
@@ -171,7 +181,7 @@ public class WeaponShop : NetworkBehaviour, IInteractable
     public void Svr_BuyItem(ShopItem item, UIShopButton button)
     {
         //Buy the item for the player
-
+        Debug.LogError("Clients can't buy items");
 
         //And disable the item button for others, so they can't purchase it.
         //This is done by getting the index of the button in the allSlots array.
@@ -251,9 +261,15 @@ public class WeaponShop : NetworkBehaviour, IInteractable
             // 75% chance to be a ranged weapon
             bool newMeleeWeapon = Random.Range(1, 5) == 4;
 
-            currentWeaponSelection.Add(newMeleeWeapon ?
+            ShopItem newItem =newMeleeWeapon ?
                 meleeWeapons[Random.Range(0, meleeWeapons.Count)] :
-                rangedWeapons[Random.Range(0, rangedWeapons.Count)]);
+                rangedWeapons[Random.Range(0, rangedWeapons.Count)];
+
+
+            currentWeaponSelection.Add(newItem);
+            print(newItem.shopItemName);
+
+
         }
         if (currentWeaponSelection.Count > 0)
         {
