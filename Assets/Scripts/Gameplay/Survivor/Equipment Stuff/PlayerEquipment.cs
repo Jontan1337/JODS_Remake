@@ -40,7 +40,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
     private Coroutine COMoveToHands;
     private SurvivorSetup playerSetup;
 
-    private const string slotsUIParentName = "CanvasInGame/Hotbar";
+    private const string slotsUIParentName = "UI/Canvas - In Game/Hotbar";
 
     #region ServerOnly Fields
 

@@ -30,11 +30,23 @@ public class GameUIControls : NetworkBehaviour
         if (canvasMenu.gameObject.activeSelf)
         {
             JODSInput.DisableCamera();
+            //JODSInput.DisableMovement();
+            JODSInput.DisableLMB();
+            JODSInput.DisableRMB();
+            JODSInput.DisableDrop();
+            JODSInput.DisableReload();
+            JODSInput.DisableInteract();
             firstPersonLookController.ShowCursor();
         }
         else
         {
             JODSInput.EnableCamera();
+            //JODSInput.EnableMovement();
+            JODSInput.EnableLMB();
+            JODSInput.EnableRMB();
+            JODSInput.EnableDrop();
+            JODSInput.EnableReload();
+            JODSInput.EnableInteract();
             firstPersonLookController.HideCursor();
         }
     }
