@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,8 +10,13 @@ public class GameSettings : MonoBehaviour
     [Header("Controls")]
     public float mouseSensitivity = 1f;
     public float mouseAcceleration = 0f;
-    public float maxMouseAcceleration = 10f;
+    public float mouseMaxAcceleration = 10f;
     public float mouseEasingSpeed = 500f;
+
+    public static Action<float> onMouseSensitivityChanged;
+    public static Action<float> onMouseAccelerationChanged;
+    public static Action<float> onMouseMaxAccelerationChanged;
+    public static Action<float> onMouseEasingSpeedChanged;
 
     public static GameSettings Instance { get => instance; }
 
@@ -33,17 +39,21 @@ public class GameSettings : MonoBehaviour
     public void SetMouseSensitivity(float value)
     {
         mouseSensitivity = value;
+        onMouseSensitivityChanged?.Invoke(value);
     }
     public void SetMouseAcceleration(float value)
     {
         mouseAcceleration = value;
+        onMouseAccelerationChanged?.Invoke(value);
     }
     public void SetMouseMaxAcceleration(float value)
     {
-        maxMouseAcceleration = value;
+        mouseMaxAcceleration = value;
+        onMouseMaxAccelerationChanged?.Invoke(value);
     }
     public void SetMouseEasingSpeed(float value)
     {
         mouseEasingSpeed = value;
+        onMouseEasingSpeedChanged?.Invoke(value);
     }
 }

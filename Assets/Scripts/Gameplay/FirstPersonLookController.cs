@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -11,7 +12,7 @@ public class FirstPersonLookController : MonoBehaviour, IBindable
 	[SerializeField] private float sensitivity = 1f;
 	[SerializeField] private float acceleration = 1f;
 	[SerializeField] private float maxAcceleration = 1f;
-	[SerializeField] private float mouseEasingSpeed = 500f;
+	[SerializeField] private float easingSpeed = 500f;
 	[SerializeField] private float minRotY = -75f;
 	[SerializeField] private float maxRotY = 75f;
 
@@ -28,8 +29,33 @@ public class FirstPersonLookController : MonoBehaviour, IBindable
 	{
 		JODSInput.Controls.Survivor.Camera.performed += Look;
 		JODSInput.onCameraDisabled += OnCameraDisabled;
+		GameSettings.onMouseSensitivityChanged += OnMouseSensitivityChanged;
+		GameSettings.onMouseAccelerationChanged += OnMouseAccelerationChanged;
+		GameSettings.onMouseMaxAccelerationChanged += OnMouseMaxAccelerationChanged;
+		GameSettings.onMouseEasingSpeedChanged += OnMouseEasingChanged;
 	}
-	public void Unbind()
+
+    private void OnMouseSensitivityChanged(float value)
+    {
+		sensitivity = value;
+    }
+
+    private void OnMouseAccelerationChanged(float value)
+    {
+		acceleration = value;
+    }
+
+    private void OnMouseMaxAccelerationChanged(float value)
+    {
+		maxAcceleration = value;
+    }
+
+    private void OnMouseEasingChanged(float value)
+    {
+		easingSpeed = value;
+    }
+
+    public void Unbind()
 	{
 		JODSInput.Controls.Survivor.Camera.performed -= Look;
 		JODSInput.onCameraDisabled -= OnCameraDisabled;
@@ -42,6 +68,7 @@ public class FirstPersonLookController : MonoBehaviour, IBindable
 	{
 		Cursor.lockState = CursorLockMode.None;
 	}
+
 
 	private void SetMouseSettings()
     {
@@ -61,11 +88,6 @@ public class FirstPersonLookController : MonoBehaviour, IBindable
 
 	public void DoRotation()
 	{
-		sensitivity = GameSettings.Instance.mouseSensitivity;
-		this.acceleration = GameSettings.Instance.mouseAcceleration;
-		maxAcceleration = GameSettings.Instance.maxMouseAcceleration;
-		mouseEasingSpeed = GameSettings.Instance.mouseEasingSpeed;
-
 		if (!rotateVertical || !rotateHorizontal) return;
 		float acceleration = 1f;
 		if (this.acceleration != 0)
@@ -77,9 +99,9 @@ public class FirstPersonLookController : MonoBehaviour, IBindable
         targetRotX = Mathf.Clamp(targetRotX += -rotation.y * acceleration, minRotY, maxRotY);
 		targetRotY += rotation.x * acceleration;
 		// Lerp the target rotations from current target rotation to camera's rotation + target rotation.
-		smoothTargetRotX = Mathf.Lerp(smoothTargetRotX, rotateVertical.rotation.x + targetRotX, Time.deltaTime * mouseEasingSpeed);
+		smoothTargetRotX = Mathf.Lerp(smoothTargetRotX, rotateVertical.rotation.x + targetRotX, Time.deltaTime * easingSpeed);
         // Lerp the target rotations from current target rotation to body's rotation + target rotation.
-        smoothTargetRotY = Mathf.Lerp(smoothTargetRotY, rotateHorizontal.rotation.y + targetRotY, Time.deltaTime * mouseEasingSpeed);
+        smoothTargetRotY = Mathf.Lerp(smoothTargetRotY, rotateHorizontal.rotation.y + targetRotY, Time.deltaTime * easingSpeed);
 		// NOTE: The order of the rotations is important as it is.
         // Rotate the body left and right.
         rotateHorizontal.eulerAngles = new Vector3(0f, smoothTargetRotY, 0f);
