@@ -129,33 +129,46 @@ public class WeaponShop : NetworkBehaviour, IInteractable
             var item = shopItems[i];
 
             UIShopButton newSlot = weaponSlotItems ? weaponSlots[i] : equipmentSlots[i];
-
-            //Get the index of the slot, from the allSlots array
-            int allSlotsIndex = 0;
-            for (int x = 0; x < allSlots.Length; x++)
-            {
-                if (allSlots[x] == newSlot)
-                {
-                    allSlotsIndex = x;
-                    break;
-                }
-            }
-            //Get the index of the item, from the allShopItems array
-            int allShopItemsIndex = 0;
-            for (int x = 0; x < allShopItems.Count; x++)
-            {
-                if (allShopItems[x] == shopItems[i])
-                {
-                    allShopItemsIndex = x;
-                    break;
-                }
-            }
+            int allSlotsIndex = GetSlotIndex(newSlot);
+            int allShopItemsIndex = GetShopItemIndex(shopItems, i);
 
             //Assign the item to the slot
             newSlot.Item = item;
 
             Rpc_SetShopSlotValues(allShopItemsIndex, allSlotsIndex, weaponSlotItems);
         }
+    }
+
+    public int GetShopItemIndex(List<ShopItem> shopItems, int i)
+    {
+        //Get the index of the item, from the allShopItems array
+        int allShopItemsIndex = 0;
+        for (int x = 0; x < allShopItems.Count; x++)
+        {
+            if (allShopItems[x] == shopItems[i])
+            {
+                allShopItemsIndex = x;
+                break;
+            }
+        }
+
+        return allShopItemsIndex;
+    }
+
+    public int GetSlotIndex(UIShopButton newSlot)
+    {
+        //Get the index of the slot, from the allSlots array
+        int allSlotsIndex = 0;
+        for (int x = 0; x < allSlots.Length; x++)
+        {
+            if (allSlots[x] == newSlot)
+            {
+                allSlotsIndex = x;
+                break;
+            }
+        }
+
+        return allSlotsIndex;
     }
 
     [ClientRpc]
@@ -172,15 +185,19 @@ public class WeaponShop : NetworkBehaviour, IInteractable
         JODSInput.Controls.Enable();
     }
 
-    public void BuyItem(ShopItem item, UIShopButton button)
+
+    [Command(ignoreAuthority = true)]
+    public void Cmd_BuyItem(int index)
     {
         print("købbb mannnnn");
-        Svr_BuyItem(item, button);
+        Svr_BuyItem(index);
     }
 
     [Server]
-    public void Svr_BuyItem(ShopItem item, UIShopButton button)
+    public void Svr_BuyItem(int buttonIndex)
     {
+        UIShopButton button = allSlots[buttonIndex];
+        ShopItem item = button.Item;
         //Buy the item for the player
         Debug.LogError("Clients can't buy items");
         Debug.LogError("THIS IS NOT REACHED WHEN CLIENTS BUY");
