@@ -11,23 +11,59 @@ public class GameUIControls : NetworkBehaviour
     [SerializeField] private Transform canvasInGame;
     [SerializeField] private FirstPersonLookController firstPersonLookController;
 
+    public Transform activeMenuCanvas;
+
+    public Transform ActiveMenuCanvas
+    {
+        get => activeMenuCanvas;
+        set
+        {
+            if (isLocalPlayer)
+            {
+                activeMenuCanvas = value;
+
+            }
+        }
+    }
+
+    private static GameUIControls instance;
+
+    public static GameUIControls Instance
+    {
+        get => instance;
+    }
+
     public override void OnStartAuthority()
     {
-        JODSInput.Controls.MainMenu.Escape.performed += ToggleMenu;
+        instance = this;
+        activeMenuCanvas = canvasMenu;
+        JODSInput.Controls.MainMenu.Escape.performed += ToggleMenuControls;
     }
 
     public override void OnStopAuthority()
     {
-        JODSInput.Controls.MainMenu.Escape.performed -= ToggleMenu;
+        JODSInput.Controls.MainMenu.Escape.performed -= ToggleMenuControls;
     }
 
-    private void ToggleMenu(InputAction.CallbackContext obj)
+    public void ToggleMenu(GameObject newMenu)
+    {
+        
+    }
+
+    public void ToggleMenuControls(InputAction.CallbackContext obj)
     {
         // Also make the escape button work as a back button in a menu perhaps??
 
-        canvasMenu.gameObject.SetActive(!canvasMenu.gameObject.activeSelf);
+        activeMenuCanvas.gameObject.SetActive(!activeMenuCanvas.gameObject.activeSelf);
         canvasInGame.gameObject.SetActive(!canvasInGame.gameObject.activeSelf);
-        if (canvasMenu.gameObject.activeSelf)
+
+        // Reset the target menu canvas.
+        if (!activeMenuCanvas.gameObject.activeSelf)
+        { // this don't work yet completetly help..
+            activeMenuCanvas = canvasMenu;
+        }
+
+        if (activeMenuCanvas.gameObject.activeSelf)
         {
             JODSInput.DisableCamera();
             //JODSInput.DisableMovement();

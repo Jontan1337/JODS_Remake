@@ -186,11 +186,13 @@ public class WeaponShop : NetworkBehaviour, IInteractable
 
     public void InteractWithShop()
     {
-        inShop = !inShop;
-        shopCanvas.SetActive(inShop);
+        GameUIControls.Instance.activeMenuCanvas = shopCanvas.transform;
+        GameUIControls.Instance.ToggleMenuControls(default);
+        //inShop = !inShop;
+        //shopCanvas.SetActive(inShop);
 
-        Cursor.lockState = inShop ? CursorLockMode.None : CursorLockMode.Locked;
-        Cursor.visible = inShop;
+        //Cursor.lockState = inShop ? CursorLockMode.None : CursorLockMode.Locked;
+        //Cursor.visible = inShop;
 
         if (inShop) { EnterShop(); }
         else { ExitShop(); }
@@ -198,7 +200,7 @@ public class WeaponShop : NetworkBehaviour, IInteractable
 
     private void EnterShop()
     {
-        JODSInput.Controls.Disable();
+        //JODSInput.Controls.Disable();
     }
 
     private void SetShopSlotValues(List<ShopItem> shopItems, bool weaponSlotItems)
