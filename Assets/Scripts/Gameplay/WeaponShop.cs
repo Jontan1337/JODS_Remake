@@ -52,7 +52,7 @@ public class WeaponShop : NetworkBehaviour, IInteractable
     [SerializeField] private Text weaponDamageTypeText= null;
     [Space]
     [SerializeField] private Transform topPartOfCrate = null;
-    private float topOpenValue = 330f;
+    [SerializeField] private float topOpenValue = 330f;
 
     [Header("Network Related")]
     [SyncVar, SerializeField] private bool shopIsOpen = false;
@@ -103,41 +103,57 @@ public class WeaponShop : NetworkBehaviour, IInteractable
     [ClientRpc]
     private void Rpc_ShopVisuals(bool open)
     {
-        if (shopTopOpening)
+        if (shopTopVisualCo != null)
         {
             StopCoroutine(shopTopVisualCo);
-            shopTopOpening = false;
         }
         shopTopVisualCo = StartCoroutine(ShopTopVisual(open));
     }
 
-    private bool shopTopOpening;
     private Coroutine shopTopVisualCo;
     private IEnumerator ShopTopVisual(bool open)
     {
-        shopTopOpening = true;
         if (open)
         {
-            while(topPartOfCrate.localEulerAngles.x > topOpenValue)
+            while (topPartOfCrate.localEulerAngles.x > topOpenValue)
             {
                 print(topPartOfCrate.localEulerAngles.x);
                 yield return null;
-                topPartOfCrate.Rotate(-Time.deltaTime * 10, 0f, 0f);
+                topPartOfCrate.Rotate(-Time.deltaTime * 50, 0f, 0f);
             }
         }
         else
         {
-            while (topPartOfCrate.localEulerAngles.x < 0f)
+            while (topPartOfCrate.localEulerAngles.x < 359f)
             {
+                print(topPartOfCrate.localEulerAngles.x);
                 yield return null;
-                topPartOfCrate.Rotate(Time.deltaTime * 10, 0f, 0f);
+                topPartOfCrate.Rotate(Time.deltaTime * 50, 0f, 0f);
             }
         }
-        shopTopOpening = false;
+    }
+
+    public void CloseShop()
+    {
+        Cmd_CloseShop(playerGameObject);
+    }
+
+    [Command(ignoreAuthority = true)]
+    private void Cmd_CloseShop(GameObject interacter)
+    {
+        Svr_Interact(interacter);
     }
     
     [Server]
     public void Svr_Interact(GameObject interacter)
+    {
+        Svr_HandleUser(interacter);
+
+        Rpc_Interact(interacter.GetComponent<NetworkIdentity>().connectionToClient, interacter);
+    }
+
+    [Server]
+    private void Svr_HandleUser(GameObject interacter)
     {
         if (playersInShop.Contains(interacter))
         {
@@ -155,8 +171,6 @@ public class WeaponShop : NetworkBehaviour, IInteractable
             }
             playersInShop.Add(interacter);
         }
-
-        Rpc_Interact(interacter.GetComponent<NetworkIdentity>().connectionToClient, interacter);
     }
 
     [TargetRpc]
