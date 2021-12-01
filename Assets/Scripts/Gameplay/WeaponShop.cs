@@ -277,6 +277,11 @@ public class WeaponShop : NetworkBehaviour, IInteractable
         //Buy the item for the player
         print(player.name + " bought " + item.shopItemName);
 
+        var spawnedItem = Instantiate(item.shopItemPrefab);
+        NetworkServer.Spawn(spawnedItem);
+
+        spawnedItem.GetComponent<EquipmentItem>().Svr_Interact(player);
+
         //And disable the item button for others, so they can't purchase it.
         //This is done by getting the index of the button in the allSlots array.
         //By using the index and not the gameobject itself, we avoid having to apply a networkidentity to the buttons
