@@ -50,8 +50,16 @@ public class WeaponShop : NetworkBehaviour, IInteractable
     [SerializeField] private Text weaponDamageValueText = null;
     [SerializeField] private Text weaponDamageTypeValueText= null;
     [SerializeField] private Text weaponDamageTypeText= null;
+    [Space]
+    [SerializeField] private Transform topPartOfCrate = null;
+    private float topOpenValue = 330f;
+
+    [Header("Network Related")]
+    [SyncVar, SerializeField] private bool shopIsOpen = false;
+    private List<GameObject> playersInShop = new List<GameObject>();
 
     private bool inShop = false;
+    private GameObject playerGameObject = null;
 
     [Header("Debug")]
     [SerializeField] private bool test = false;
@@ -92,16 +100,73 @@ public class WeaponShop : NetworkBehaviour, IInteractable
         Svr_GenerateNewSelection();
     }
 
+    [ClientRpc]
+    private void Rpc_ShopVisuals(bool open)
+    {
+        if (shopTopOpening)
+        {
+            StopCoroutine(shopTopVisualCo);
+            shopTopOpening = false;
+        }
+        shopTopVisualCo = StartCoroutine(ShopTopVisual(open));
+    }
+
+    private bool shopTopOpening;
+    private Coroutine shopTopVisualCo;
+    private IEnumerator ShopTopVisual(bool open)
+    {
+        shopTopOpening = true;
+        if (open)
+        {
+            while(topPartOfCrate.localEulerAngles.x > topOpenValue)
+            {
+                print(topPartOfCrate.localEulerAngles.x);
+                yield return null;
+                topPartOfCrate.Rotate(-Time.deltaTime * 10, 0f, 0f);
+            }
+        }
+        else
+        {
+            while (topPartOfCrate.localEulerAngles.x < 0f)
+            {
+                yield return null;
+                topPartOfCrate.Rotate(Time.deltaTime * 10, 0f, 0f);
+            }
+        }
+        shopTopOpening = false;
+    }
     
     [Server]
     public void Svr_Interact(GameObject interacter)
     {
+        if (playersInShop.Contains(interacter))
+        {
+            playersInShop.Remove(interacter);
+            if (playersInShop.Count == 0)
+            {
+                Rpc_ShopVisuals(false);
+            }
+        }
+        else
+        {
+            if (playersInShop.Count == 0)
+            {
+                Rpc_ShopVisuals(true);
+            }
+            playersInShop.Add(interacter);
+        }
+
         Rpc_Interact(interacter.GetComponent<NetworkIdentity>().connectionToClient, interacter);
     }
 
     [TargetRpc]
     public void Rpc_Interact(NetworkConnection target, GameObject interacter)
     {
+        //Store the players gameobject
+        //This is later used when a button is pressed to check which player pressed it.
+        playerGameObject = interacter;
+        //This could probably be done differently. Optimize later.
+
         InteractWithShop();
     }
 
@@ -185,22 +250,18 @@ public class WeaponShop : NetworkBehaviour, IInteractable
         JODSInput.Controls.Enable();
     }
 
-
-    [Command(ignoreAuthority = true)]
-    public void Cmd_BuyItem(int index)
+    public void BuyItem(int index)
     {
-        print("købbb mannnnn");
-        Svr_BuyItem(index);
+        Cmd_BuyItem(index, playerGameObject);
     }
 
-    [Server]
-    public void Svr_BuyItem(int buttonIndex)
+    [Command(ignoreAuthority = true)]
+    public void Cmd_BuyItem(int index, GameObject player)
     {
-        UIShopButton button = allSlots[buttonIndex];
+        UIShopButton button = allSlots[index];
         ShopItem item = button.Item;
         //Buy the item for the player
-        Debug.LogError("Clients can't buy items");
-        Debug.LogError("THIS IS NOT REACHED WHEN CLIENTS BUY");
+        print(player.name + " bought " + item.shopItemName);
 
         //And disable the item button for others, so they can't purchase it.
         //This is done by getting the index of the button in the allSlots array.
@@ -286,9 +347,6 @@ public class WeaponShop : NetworkBehaviour, IInteractable
 
 
             currentWeaponSelection.Add(newItem);
-            print(newItem.shopItemName);
-
-
         }
         if (currentWeaponSelection.Count > 0)
         {
