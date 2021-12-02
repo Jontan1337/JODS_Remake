@@ -8,6 +8,7 @@ public class UnitMasterSO : ScriptableObject
     [Header("Necessities")]
     public string masterName = "Default Master";
     public Object masterClass;
+    public MapSettingsSO associatedMapSettings;
 
     [Header("Units (In descending order)")]
     public UnitSO[] units;

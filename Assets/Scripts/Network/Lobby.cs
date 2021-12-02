@@ -58,9 +58,12 @@ public class Lobby : NetworkManager
     [Header("Room Data")]
     public List<LobbyPlayer> roomPlayers = new List<LobbyPlayer>();
     public MatchListing MatchListing;
-    [Scene] public string gameplayScene;
 
-    [Space]
+    [Header("Map Settings")] 
+    public MapSettingsSO currentMapSettings;
+    [Scene] private string gameplayScene;
+
+    [Header("Debug")]
     public bool mustHaveMaster;
 
     private bool isInitialized = false;
@@ -125,6 +128,20 @@ public class Lobby : NetworkManager
         singleton.StartHost();
 
         MatchListing.AdvertiseServer();
+
+        //Apply the masters associasted map settings as the current map settings
+        List<UnitMasterSO> masterSOList = PlayableCharactersManager.instance.GetAllMasters();
+
+        foreach (UnitMasterSO master in masterSOList)
+        {
+            if (master.name == MasterSelection.instance.GetMasterName)
+            {
+                currentMapSettings = master.associatedMapSettings;
+                gameplayScene = currentMapSettings.gameplayScene;
+                print(gameplayScene);
+                break;
+            }
+        }
 
         EnterLobby();
     }
@@ -403,7 +420,7 @@ public class Lobby : NetworkManager
             }
 
             //Change their name (Only in the editor inspector. Won't affect gameplay or players)
-            who.name += " (Master)";
+            who.name += " (Master)";            
 
             //Master has been successfully chosen 
             return true;
