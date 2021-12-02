@@ -18,13 +18,18 @@ public class PlayerSpawner : NetworkBehaviour
     [SerializeField] private List<SurvivorSO> survivorSOList = new List<SurvivorSO>();
     [SerializeField] private List<UnitMasterSO> masterSOList = new List<UnitMasterSO>();
 
-    private List<PlayerToSpawn> playersToSpawns = new List<PlayerToSpawn>();
+    private List<PlayerToSpawn> playersToSpawns;
+
+    private MapSettingsSO mapSettings;
+    private List<Vector3> spawnPoints = new List<Vector3>();
 
     public override void OnStartServer()
     {
         //Get both lits of playable characters, which are later used to spawn each player with their chosen class
         survivorSOList = PlayableCharactersManager.instance.GetAllSurvivors();
         masterSOList = PlayableCharactersManager.instance.GetAllMasters();
+        mapSettings = Lobby.Instance.currentMapSettings;
+        spawnPoints = new List<Vector3>(mapSettings.spawnPoints);
 
         //When a player connects to the new scene, then invoke the ReadyPlayer method
         Lobby.OnServerReadied += Svr_ReadyPlayer; //This method puts the player's info into a list, which will be used when spawning the player.
@@ -63,8 +68,13 @@ public class PlayerSpawner : NetworkBehaviour
         //Reference to the old player instance
         GameObject oldPlayerInstance = conn.identity.gameObject;
 
+        //Get a spawnpoint from the list of spawnpoints
+        int newSpawnpointIndex = UnityEngine.Random.Range(0, spawnPoints.Count);
+        Vector3 spawnpoint = spawnPoints[newSpawnpointIndex];
+        spawnPoints.RemoveAt(newSpawnpointIndex);
+
         //Spawn a new object for the player and set a reference to the new player instance.
-        GameObject newPlayerInstance = Instantiate(_isMaster ? masterPrefab : survivorPrefab, transform.position, transform.rotation);
+        GameObject newPlayerInstance = Instantiate(_isMaster ? masterPrefab : survivorPrefab, spawnpoint, Quaternion.identity);
 
         if (NetworkServer.ReplacePlayerForConnection(conn, newPlayerInstance))
         {
