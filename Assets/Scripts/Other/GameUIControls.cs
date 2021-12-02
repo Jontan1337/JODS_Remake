@@ -11,6 +11,8 @@ public class GameUIControls : NetworkBehaviour
     [SerializeField] private Transform canvasInGame;
     [SerializeField] private FirstPersonLookController firstPersonLookController;
 
+    public Action onMenuClosed;
+
     public Transform activeMenuCanvas;
 
     public Transform ActiveMenuCanvas
@@ -21,7 +23,6 @@ public class GameUIControls : NetworkBehaviour
             if (isLocalPlayer)
             {
                 activeMenuCanvas = value;
-
             }
         }
     }
@@ -45,45 +46,50 @@ public class GameUIControls : NetworkBehaviour
         JODSInput.Controls.MainMenu.Escape.performed -= ToggleMenuControls;
     }
 
-    public void ToggleMenu(GameObject newMenu)
-    {
-        
-    }
-
-    public void ToggleMenuControls(InputAction.CallbackContext obj)
+    private void ToggleMenuControls(InputAction.CallbackContext obj)
     {
         // Also make the escape button work as a back button in a menu perhaps??
 
-        activeMenuCanvas.gameObject.SetActive(!activeMenuCanvas.gameObject.activeSelf);
-        canvasInGame.gameObject.SetActive(!canvasInGame.gameObject.activeSelf);
-
-        // Reset the target menu canvas.
-        if (!activeMenuCanvas.gameObject.activeSelf)
-        { // this don't work yet completetly help..
-            activeMenuCanvas = canvasMenu;
-        }
-
         if (activeMenuCanvas.gameObject.activeSelf)
         {
-            JODSInput.DisableCamera();
-            //JODSInput.DisableMovement();
-            JODSInput.DisableLMB();
-            JODSInput.DisableRMB();
-            JODSInput.DisableDrop();
-            JODSInput.DisableReload();
-            JODSInput.DisableInteract();
-            firstPersonLookController.ShowCursor();
+            DisableMenu();
         }
         else
         {
-            JODSInput.EnableCamera();
-            //JODSInput.EnableMovement();
-            JODSInput.EnableLMB();
-            JODSInput.EnableRMB();
-            JODSInput.EnableDrop();
-            JODSInput.EnableReload();
-            JODSInput.EnableInteract();
-            firstPersonLookController.HideCursor();
+            EnableMenu();
         }
+    }
+
+    public void EnableMenu()
+    {
+        activeMenuCanvas.gameObject.SetActive(true);
+        canvasInGame.gameObject.SetActive(false);
+        JODSInput.DisableCamera();
+        //JODSInput.DisableMovement();
+        JODSInput.DisableLMB();
+        JODSInput.DisableRMB();
+        JODSInput.DisableDrop();
+        JODSInput.DisableReload();
+        JODSInput.DisableInteract();
+        firstPersonLookController.ShowCursor();
+    }
+    public void DisableMenu()
+    {
+        activeMenuCanvas.gameObject.SetActive(false);
+        canvasInGame.gameObject.SetActive(true);
+        // Reset the target menu canvas back to standard menu.
+        if (!activeMenuCanvas.gameObject.activeSelf)
+        {
+            activeMenuCanvas = canvasMenu;
+        }
+        JODSInput.EnableCamera();
+        //JODSInput.EnableMovement();
+        JODSInput.EnableLMB();
+        JODSInput.EnableRMB();
+        JODSInput.EnableDrop();
+        JODSInput.EnableReload();
+        JODSInput.EnableInteract();
+        firstPersonLookController.HideCursor();
+        onMenuClosed?.Invoke();
     }
 }

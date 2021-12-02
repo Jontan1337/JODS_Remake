@@ -137,13 +137,18 @@ public class WeaponShop : NetworkBehaviour, IInteractable
     {
         Cmd_CloseShop(playerGameObject);
     }
-
     [Command(ignoreAuthority = true)]
     private void Cmd_CloseShop(GameObject interacter)
     {
-        Svr_Interact(interacter);
+        Svr_HandleUser(interacter);
+        Rpc_CloseShop(interacter.GetComponent<NetworkIdentity>().connectionToClient);
     }
-    
+    [TargetRpc]
+    private void Rpc_CloseShop(NetworkConnection target)
+    {
+        GameUIControls.Instance.DisableMenu();
+    }
+
     [Server]
     public void Svr_Interact(GameObject interacter)
     {
@@ -187,20 +192,14 @@ public class WeaponShop : NetworkBehaviour, IInteractable
     public void InteractWithShop()
     {
         GameUIControls.Instance.activeMenuCanvas = shopCanvas.transform;
-        GameUIControls.Instance.ToggleMenuControls(default);
-        //inShop = !inShop;
-        //shopCanvas.SetActive(inShop);
-
-        //Cursor.lockState = inShop ? CursorLockMode.None : CursorLockMode.Locked;
-        //Cursor.visible = inShop;
-
-        if (inShop) { EnterShop(); }
-        else { ExitShop(); }
+        GameUIControls.Instance.EnableMenu();
+        GameUIControls.Instance.onMenuClosed += OnMenuClosed;
     }
 
-    private void EnterShop()
+    public void OnMenuClosed()
     {
-        //JODSInput.Controls.Disable();
+        Cmd_CloseShop(playerGameObject);
+        GameUIControls.Instance.onMenuClosed -= OnMenuClosed;
     }
 
     private void SetShopSlotValues(List<ShopItem> shopItems, bool weaponSlotItems)
@@ -259,11 +258,6 @@ public class WeaponShop : NetworkBehaviour, IInteractable
 
         UIShopButton newSlot = allSlots[allSlotsIndex];
         newSlot.Item = item;
-    }
-
-    private void ExitShop()
-    {
-        JODSInput.Controls.Enable();
     }
 
     public void BuyItem(int index)
