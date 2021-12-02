@@ -138,7 +138,6 @@ public class Lobby : NetworkManager
             {
                 currentMapSettings = master.associatedMapSettings;
                 gameplayScene = currentMapSettings.gameplayScene;
-                print(gameplayScene);
                 break;
             }
         }

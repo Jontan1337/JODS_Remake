@@ -32094,8 +32094,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 7107372926057023631}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: MMListMatches
+        m_TargetAssemblyTypeName: Mirror.Discovery.NetworkDiscoveryBase`2[[Mirror.Discovery.ServerRequest,
+          Mirror.Components
+        m_MethodName: StartDiscovery
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -33672,7 +33673,7 @@ MonoBehaviour:
     type: 3}
   roomPlayers: []
   MatchListing: {fileID: 7107372926057023631}
-  gameplayScene: Assets/Scenes/Online Scenes/City.unity
+  currentMapSettings: {fileID: 0}
   mustHaveMaster: 0
 --- !u!4 &7107372927296446061
 Transform:

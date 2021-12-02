@@ -146,7 +146,7 @@ public class WeaponShop : NetworkBehaviour, IInteractable
     [TargetRpc]
     private void Rpc_CloseShop(NetworkConnection target)
     {
-        GameUIControls.Instance.DisableMenu();
+        PlayerManager.Instance.DisableMenu();
     }
 
     [Server]
@@ -191,15 +191,15 @@ public class WeaponShop : NetworkBehaviour, IInteractable
 
     public void InteractWithShop()
     {
-        GameUIControls.Instance.activeMenuCanvas = shopCanvas.transform;
-        GameUIControls.Instance.EnableMenu();
-        GameUIControls.Instance.onMenuClosed += OnMenuClosed;
+        PlayerManager.Instance.activeMenuCanvas = shopCanvas.transform;
+        PlayerManager.Instance.EnableMenu();
+        PlayerManager.Instance.onMenuClosed += OnMenuClosed;
     }
 
     public void OnMenuClosed()
     {
         Cmd_CloseShop(playerGameObject);
-        GameUIControls.Instance.onMenuClosed -= OnMenuClosed;
+        PlayerManager.Instance.onMenuClosed -= OnMenuClosed;
     }
 
     private void SetShopSlotValues(List<ShopItem> shopItems, bool weaponSlotItems)

@@ -4,8 +4,9 @@ using UnityEngine;
 using Mirror;
 using UnityEngine.InputSystem;
 using System;
+using UnityEngine.SceneManagement;
 
-public class GameUIControls : NetworkBehaviour
+public class PlayerManager : NetworkBehaviour
 {
     [SerializeField] private Transform canvasMenu;
     [SerializeField] private Transform canvasInGame;
@@ -27,9 +28,9 @@ public class GameUIControls : NetworkBehaviour
         }
     }
 
-    private static GameUIControls instance;
+    private static PlayerManager instance;
 
-    public static GameUIControls Instance
+    public static PlayerManager Instance
     {
         get => instance;
     }
@@ -91,5 +92,22 @@ public class GameUIControls : NetworkBehaviour
         JODSInput.EnableInteract();
         firstPersonLookController.HideCursor();
         onMenuClosed?.Invoke();
+    }
+
+    public void QuitToMenu(string sceneName)
+    {
+        if (netIdentity.isActiveAndEnabled)
+        {
+            if (isServer)
+            {
+                NetworkManager.singleton.StopHost();
+            }
+            else
+            {
+                NetworkManager.singleton.StopClient();
+            }
+            Destroy(NetworkManager.singleton);
+        }
+        SceneManager.LoadSceneAsync(sceneName);
     }
 }

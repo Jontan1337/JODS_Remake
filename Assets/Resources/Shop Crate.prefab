@@ -104,13 +104,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 547077310920267851}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0.00008726013, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0, y: 1.03, z: -0.65}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 234844941374034784}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -0.01, y: 0, z: 0}
 --- !u!33 &2350249549448619876
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -173,7 +173,7 @@ GameObject:
   - component: {fileID: 344788462489629879}
   - component: {fileID: 344788462489629876}
   m_Layer: 0
-  m_Name: Military Crate
+  m_Name: Shop Crate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -291,6 +291,7 @@ MonoBehaviour:
   weaponDamageTypeValueText: {fileID: 8305113301507411163}
   weaponDamageTypeText: {fileID: 5598684015219496146}
   topPartOfCrate: {fileID: 6140357131660082084}
+  topOpenValue: 330
   shopIsOpen: 0
   test: 1
 --- !u!114 &344788462489629876
