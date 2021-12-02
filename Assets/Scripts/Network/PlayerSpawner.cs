@@ -18,10 +18,10 @@ public class PlayerSpawner : NetworkBehaviour
     [SerializeField] private List<SurvivorSO> survivorSOList = new List<SurvivorSO>();
     [SerializeField] private List<UnitMasterSO> masterSOList = new List<UnitMasterSO>();
 
-    private List<PlayerToSpawn> playersToSpawns;
+    private List<PlayerToSpawn> playersToSpawns = new List<PlayerToSpawn>();
 
     private MapSettingsSO mapSettings;
-    private List<Vector3> spawnPoints = new List<Vector3>();
+    private List<Vector3> spawnPoints;
 
     public override void OnStartServer()
     {
