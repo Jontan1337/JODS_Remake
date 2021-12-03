@@ -5,15 +5,21 @@ using Mirror;
 using UnityEngine.InputSystem;
 using System;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PlayerManager : NetworkBehaviour
 {
     [SerializeField] private Transform canvasMenu;
     [SerializeField] private Transform canvasInGame;
     [SerializeField] private FirstPersonLookController firstPersonLookController;
+    [Space]
+    [SerializeField] private bool hasEquipment;
+    [SerializeField] private Dropdown equipmentBehaviourDropDown;
 
+    public Action onMenuOpened;
     public Action onMenuClosed;
 
+    [Space]
     public Transform activeMenuCanvas;
 
     public Transform ActiveMenuCanvas
@@ -40,11 +46,19 @@ public class PlayerManager : NetworkBehaviour
         instance = this;
         activeMenuCanvas = canvasMenu;
         JODSInput.Controls.MainMenu.Escape.performed += ToggleMenuControls;
+        if (hasEquipment)
+        {
+            equipmentBehaviourDropDown.onValueChanged.AddListener(GameSettings.Instance.SetPickupBehaviour);
+        }
     }
 
     public override void OnStopAuthority()
     {
         JODSInput.Controls.MainMenu.Escape.performed -= ToggleMenuControls;
+        if (hasEquipment)
+        {
+            equipmentBehaviourDropDown.onValueChanged.RemoveListener(GameSettings.Instance.SetPickupBehaviour);
+        }
     }
 
     private void ToggleMenuControls(InputAction.CallbackContext obj)
@@ -73,6 +87,7 @@ public class PlayerManager : NetworkBehaviour
         JODSInput.DisableReload();
         JODSInput.DisableInteract();
         firstPersonLookController.ShowCursor();
+        onMenuOpened?.Invoke();
     }
     public void DisableMenu()
     {

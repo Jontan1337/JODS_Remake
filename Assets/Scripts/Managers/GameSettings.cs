@@ -8,11 +8,14 @@ public class GameSettings : MonoBehaviour
     private static GameSettings instance;
 
     [Header("Controls")]
+    public ItemPickupBehaviour pickupBehaviour;
+    [Header("Controls")]
     public float mouseSensitivity = 1f;
     public float mouseAcceleration = 0f;
     public float mouseMaxAcceleration = 10f;
     public float mouseEasingSpeed = 500f;
 
+    public static Action<ItemPickupBehaviour> onItemPickupBehaviourChanged;
     public static Action<float> onMouseSensitivityChanged;
     public static Action<float> onMouseAccelerationChanged;
     public static Action<float> onMouseMaxAccelerationChanged;
@@ -34,6 +37,12 @@ public class GameSettings : MonoBehaviour
 
         Application.targetFrameRate = Screen.currentResolution.refreshRate;
         print(Screen.currentResolution.refreshRate);
+    }
+
+    public void SetPickupBehaviour(int index)
+    {
+        pickupBehaviour = (ItemPickupBehaviour) index;
+        onItemPickupBehaviourChanged?.Invoke(pickupBehaviour);
     }
 
     public void SetMouseSensitivity(float value)

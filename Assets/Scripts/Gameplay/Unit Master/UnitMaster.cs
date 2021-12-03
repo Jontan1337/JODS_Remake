@@ -213,6 +213,23 @@ public class UnitMaster : NetworkBehaviour
         mClass.UseSpecial();
     }
 
+    public override void OnStartClient()
+    {
+        if (hasAuthority)
+        {
+            PlayerManager.Instance.onMenuOpened += OnMenuEnabled;
+            PlayerManager.Instance.onMenuClosed += OnMenuDisabled;
+        }
+    }
+    public override void OnStopClient()
+    {
+        if (hasAuthority)
+        {
+            PlayerManager.Instance.onMenuOpened -= OnMenuEnabled;
+            PlayerManager.Instance.onMenuClosed -= OnMenuDisabled;
+        }
+    }
+
     public override void OnStopAuthority()
     {
         RemoveBinds();
@@ -292,6 +309,15 @@ public class UnitMaster : NetworkBehaviour
         }
         //If there is no master class selected, then clear the list of units
         else if (unitList.Count != 0) unitList.Clear();
+    }
+
+    private void OnMenuEnabled()
+    {
+        JODSInput.DisableCamera();
+    }
+    private void OnMenuDisabled()
+    {
+        JODSInput.EnableCamera();
     }
 
     #endregion
@@ -780,7 +806,7 @@ public class UnitMaster : NetworkBehaviour
 
         //A random unit from the chosen unit's prefab list gets picked, and the name gets sent to the server, which then spawns the unit.
         //This is because there can be multiple variations of one unit.
-        CmdSpawnMyUnit(hit.point,
+        Cmd_SpawnMyUnit(hit.point,
             chosenUnit.unitPrefab.name,
             unitList[chosenUnitIndex].level);
 
@@ -815,7 +841,7 @@ public class UnitMaster : NetworkBehaviour
         if (!ViewCheck(unitToRefund.transform.position, false)) return;
 
         //If the location meets the requirements, then refund the unit.
-        CmdRefundUnit(unitToRefund.gameObject);
+        Cmd_RefundUnit(unitToRefund.gameObject);
 
         //Spawn a smoke effect to hide the removal of the unit.
         SmokeEffect(unitToRefund.transform.position);
@@ -1207,7 +1233,7 @@ public class UnitMaster : NetworkBehaviour
     #region Network Commands
 
     [Command]
-    void CmdSpawnMyUnit(Vector3 pos, string name, int level)
+    void Cmd_SpawnMyUnit(Vector3 pos, string name, int level)
     {
         //Set the positions y value to be a bit higher, so that the unit doesn't spawn inside the floor
         pos = new Vector3(pos.x, pos.y + 0.5f, pos.z);
@@ -1235,7 +1261,7 @@ public class UnitMaster : NetworkBehaviour
         NetworkServer.Spawn(newUnit);
     }
     [Command]
-    void CmdRefundUnit(GameObject unitToRefund)
+    void Cmd_RefundUnit(GameObject unitToRefund)
     {
         NetworkServer.Destroy(unitToRefund);
     }

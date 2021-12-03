@@ -152,6 +152,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
             // OnStartServer gets called before Start when equipment object
             // is not set as child to player yet.
             initializer.onClientSpawnItem += GetReferences;
+            GameSettings.onItemPickupBehaviourChanged += Cmd_OnItemPickupBehaviourChanged;
         }
 
         IsInitialized = true;
@@ -167,6 +168,12 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
         {
             equipmentSlotsUIParent = transform.parent.Find(slotsUIParentName);
         }
+    }
+
+    [Command]
+    private void Cmd_OnItemPickupBehaviourChanged(ItemPickupBehaviour pickupBehaviour)
+    {
+        itemPickupBehaviour = (ItemPickupBehaviour)pickupBehaviour;
     }
 
     [TargetRpc]
