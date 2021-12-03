@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 1029c65ba9c3a3a4b8cde1c1e23375df
+guid: 1de0e9d72e4fbdd43b48fe0652a564d9
 ModelImporter:
   serializedVersion: 20101
   internalIDToNameTable: []
@@ -7,8 +7,13 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: Light
+    second: {fileID: 2100000, guid: ad8c064104e222b4bb9e6b062a840bb9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: Material
-    second: {fileID: 2100000, guid: c2d4c38a499d5f745957935acc662a48, type: 2}
+    second: {fileID: 2100000, guid: 9904534ef69fea44aa03cd57da29c5f1, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0
@@ -62,12 +67,12 @@ ModelImporter:
     meshOptimizationFlags: -1
     indexFormat: 0
     secondaryUVAngleDistortion: 8
-    secondaryUVAreaDistortion: 15.000001
+    secondaryUVAreaDistortion: 15
     secondaryUVHardAngle: 88
-    secondaryUVMarginMethod: 1
-    secondaryUVMinLightmapResolution: 40
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 1
     secondaryUVMinObjectScale: 1
-    secondaryUVPackMargin: 4
+    secondaryUVPackMargin: 1
     useFileScale: 1
   tangentSpace:
     normalSmoothAngle: 60
