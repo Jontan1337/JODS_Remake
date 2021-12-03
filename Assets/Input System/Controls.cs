@@ -35,6 +35,14 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
+                    ""name"": ""Movement"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""9d6849ac-aa2d-4ffd-b982-311bedd9c4e3"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
                     ""name"": ""Floor Up"",
                     ""type"": ""Button"",
                     ""id"": ""968763e4-0606-4865-b387-a5746d12c85d"",
@@ -55,14 +63,6 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""type"": ""Value"",
                     ""id"": ""c6f6740d-aeaf-46e4-9588-e027f3af2e17"",
                     ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
-                    ""name"": ""Movement"",
-                    ""type"": ""PassThrough"",
-                    ""id"": ""9d6849ac-aa2d-4ffd-b982-311bedd9c4e3"",
-                    ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
                 },
@@ -260,61 +260,6 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""2D Vector"",
-                    ""id"": ""d56a714e-9096-4be9-8779-66e109ae1d0c"",
-                    ""path"": ""2DVector"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Movement"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""up"",
-                    ""id"": ""6e443704-dfe8-43e8-9d15-efaedf249e4c"",
-                    ""path"": ""<Keyboard>/w"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""down"",
-                    ""id"": ""0d4d2949-f394-495f-b5d5-5f29d1717a5d"",
-                    ""path"": ""<Keyboard>/s"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""left"",
-                    ""id"": ""fcb94148-a1d5-4a64-ad2a-1cbb0d5d1763"",
-                    ""path"": ""<Keyboard>/a"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""right"",
-                    ""id"": ""a44c9dfa-b707-4776-b154-6aa6faa2bf36"",
-                    ""path"": ""<Keyboard>/d"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
                     ""name"": """",
                     ""id"": ""370b2f35-2f63-44ea-b2fe-ca02ea759d9a"",
                     ""path"": ""<Keyboard>/shift"",
@@ -379,6 +324,61 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""action"": ""Take Control"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""2D Vector"",
+                    ""id"": ""d56a714e-9096-4be9-8779-66e109ae1d0c"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""6e443704-dfe8-43e8-9d15-efaedf249e4c"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""0d4d2949-f394-495f-b5d5-5f29d1717a5d"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""fcb94148-a1d5-4a64-ad2a-1cbb0d5d1763"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""a44c9dfa-b707-4776-b154-6aa6faa2bf36"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -386,6 +386,22 @@ public class @Controls : IInputActionCollection, IDisposable
             ""name"": ""Survivor"",
             ""id"": ""5099cd33-2d13-4876-92a2-34fd78f0c0a5"",
             ""actions"": [
+                {
+                    ""name"": ""LMB"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""9846ef2e-34d6-48a5-b5d3-070dc33f2dc4"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": ""Press""
+                },
+                {
+                    ""name"": ""RMB"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""99caf4ec-47ad-4912-ad28-e7983ef0e694"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": ""Press""
+                },
                 {
                     ""name"": ""Movement"",
                     ""type"": ""PassThrough"",
@@ -409,22 +425,6 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
-                },
-                {
-                    ""name"": ""LMB"",
-                    ""type"": ""PassThrough"",
-                    ""id"": ""9846ef2e-34d6-48a5-b5d3-070dc33f2dc4"",
-                    ""expectedControlType"": ""Axis"",
-                    ""processors"": """",
-                    ""interactions"": ""Press""
-                },
-                {
-                    ""name"": ""RMB"",
-                    ""type"": ""PassThrough"",
-                    ""id"": ""99caf4ec-47ad-4912-ad28-e7983ef0e694"",
-                    ""expectedControlType"": ""Axis"",
-                    ""processors"": """",
-                    ""interactions"": ""Press""
                 },
                 {
                     ""name"": ""Reload"",
@@ -695,28 +695,6 @@ public class @Controls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""5f9346c5-418b-4004-98ca-6e09753d9145"",
-                    ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Game Actions"",
-                    ""action"": ""LMB"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""7b5ffd5c-da12-4d51-b118-0ca891118039"",
-                    ""path"": ""<Mouse>/rightButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Game Actions"",
-                    ""action"": ""RMB"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""b1e454e4-7e89-4175-9b93-91e01e8a7dae"",
                     ""path"": ""<Keyboard>/r"",
                     ""interactions"": ""Press"",
@@ -745,6 +723,28 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Change fire mode"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5f9346c5-418b-4004-98ca-6e09753d9145"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Game Actions"",
+                    ""action"": ""LMB"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7b5ffd5c-da12-4d51-b118-0ca891118039"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Game Actions"",
+                    ""action"": ""RMB"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -814,6 +814,115 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""General"",
+            ""id"": ""f0be7ca1-c141-4fd6-945f-f7b2368dc944"",
+            ""actions"": [
+                {
+                    ""name"": ""MouseDelta"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""8466f367-d8b3-4ae1-a878-768a2837eeae"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Movement"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""8ffeebc4-3b0a-46bf-b5f2-b7f9717cc933"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""New action"",
+                    ""type"": ""Button"",
+                    ""id"": ""64170f68-8242-49bf-ada7-adf2646080de"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""7ecb809c-9257-4684-9c29-9357b803c565"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""New action"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c6b49c98-2d50-4ebc-99be-d3e8685aa572"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MouseDelta"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""2D Vector"",
+                    ""id"": ""0242b4e6-c656-4b7d-901d-8e142c56e012"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""a425af82-cf0a-4096-a6d8-d692a86ee3e8"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""2a46bddd-d5a5-423f-8060-c31e8f19d14a"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""90cbd5a1-5358-4d9c-81cc-2d59387ef21e"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""54168f7d-f428-491d-81a5-986d6ebf62ba"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -828,10 +937,10 @@ public class @Controls : IInputActionCollection, IDisposable
         m_Master = asset.FindActionMap("Master", throwIfNotFound: true);
         m_Master_LMB = m_Master.FindAction("LMB", throwIfNotFound: true);
         m_Master_RMB = m_Master.FindAction("RMB", throwIfNotFound: true);
+        m_Master_Movement = m_Master.FindAction("Movement", throwIfNotFound: true);
         m_Master_FloorUp = m_Master.FindAction("Floor Up", throwIfNotFound: true);
         m_Master_FloorDown = m_Master.FindAction("Floor Down", throwIfNotFound: true);
         m_Master_UnitSelecting = m_Master.FindAction("Unit Selecting", throwIfNotFound: true);
-        m_Master_Movement = m_Master.FindAction("Movement", throwIfNotFound: true);
         m_Master_Shift = m_Master.FindAction("Shift", throwIfNotFound: true);
         m_Master_Ctrl = m_Master.FindAction("Ctrl", throwIfNotFound: true);
         m_Master_ChangeCamera = m_Master.FindAction("Change Camera", throwIfNotFound: true);
@@ -840,11 +949,11 @@ public class @Controls : IInputActionCollection, IDisposable
         m_Master_TakeControl = m_Master.FindAction("Take Control", throwIfNotFound: true);
         // Survivor
         m_Survivor = asset.FindActionMap("Survivor", throwIfNotFound: true);
+        m_Survivor_LMB = m_Survivor.FindAction("LMB", throwIfNotFound: true);
+        m_Survivor_RMB = m_Survivor.FindAction("RMB", throwIfNotFound: true);
         m_Survivor_Movement = m_Survivor.FindAction("Movement", throwIfNotFound: true);
         m_Survivor_Jump = m_Survivor.FindAction("Jump", throwIfNotFound: true);
         m_Survivor_Camera = m_Survivor.FindAction("Camera", throwIfNotFound: true);
-        m_Survivor_LMB = m_Survivor.FindAction("LMB", throwIfNotFound: true);
-        m_Survivor_RMB = m_Survivor.FindAction("RMB", throwIfNotFound: true);
         m_Survivor_Reload = m_Survivor.FindAction("Reload", throwIfNotFound: true);
         m_Survivor_Interact = m_Survivor.FindAction("Interact", throwIfNotFound: true);
         m_Survivor_Drop = m_Survivor.FindAction("Drop", throwIfNotFound: true);
@@ -857,6 +966,11 @@ public class @Controls : IInputActionCollection, IDisposable
         m_MainMenu_LMB = m_MainMenu.FindAction("LMB", throwIfNotFound: true);
         m_MainMenu_Space = m_MainMenu.FindAction("Space", throwIfNotFound: true);
         m_MainMenu_Escape = m_MainMenu.FindAction("Escape", throwIfNotFound: true);
+        // General
+        m_General = asset.FindActionMap("General", throwIfNotFound: true);
+        m_General_MouseDelta = m_General.FindAction("MouseDelta", throwIfNotFound: true);
+        m_General_Movement = m_General.FindAction("Movement", throwIfNotFound: true);
+        m_General_Newaction = m_General.FindAction("New action", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -908,10 +1022,10 @@ public class @Controls : IInputActionCollection, IDisposable
     private IMasterActions m_MasterActionsCallbackInterface;
     private readonly InputAction m_Master_LMB;
     private readonly InputAction m_Master_RMB;
+    private readonly InputAction m_Master_Movement;
     private readonly InputAction m_Master_FloorUp;
     private readonly InputAction m_Master_FloorDown;
     private readonly InputAction m_Master_UnitSelecting;
-    private readonly InputAction m_Master_Movement;
     private readonly InputAction m_Master_Shift;
     private readonly InputAction m_Master_Ctrl;
     private readonly InputAction m_Master_ChangeCamera;
@@ -924,10 +1038,10 @@ public class @Controls : IInputActionCollection, IDisposable
         public MasterActions(@Controls wrapper) { m_Wrapper = wrapper; }
         public InputAction @LMB => m_Wrapper.m_Master_LMB;
         public InputAction @RMB => m_Wrapper.m_Master_RMB;
+        public InputAction @Movement => m_Wrapper.m_Master_Movement;
         public InputAction @FloorUp => m_Wrapper.m_Master_FloorUp;
         public InputAction @FloorDown => m_Wrapper.m_Master_FloorDown;
         public InputAction @UnitSelecting => m_Wrapper.m_Master_UnitSelecting;
-        public InputAction @Movement => m_Wrapper.m_Master_Movement;
         public InputAction @Shift => m_Wrapper.m_Master_Shift;
         public InputAction @Ctrl => m_Wrapper.m_Master_Ctrl;
         public InputAction @ChangeCamera => m_Wrapper.m_Master_ChangeCamera;
@@ -949,6 +1063,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @RMB.started -= m_Wrapper.m_MasterActionsCallbackInterface.OnRMB;
                 @RMB.performed -= m_Wrapper.m_MasterActionsCallbackInterface.OnRMB;
                 @RMB.canceled -= m_Wrapper.m_MasterActionsCallbackInterface.OnRMB;
+                @Movement.started -= m_Wrapper.m_MasterActionsCallbackInterface.OnMovement;
+                @Movement.performed -= m_Wrapper.m_MasterActionsCallbackInterface.OnMovement;
+                @Movement.canceled -= m_Wrapper.m_MasterActionsCallbackInterface.OnMovement;
                 @FloorUp.started -= m_Wrapper.m_MasterActionsCallbackInterface.OnFloorUp;
                 @FloorUp.performed -= m_Wrapper.m_MasterActionsCallbackInterface.OnFloorUp;
                 @FloorUp.canceled -= m_Wrapper.m_MasterActionsCallbackInterface.OnFloorUp;
@@ -958,9 +1075,6 @@ public class @Controls : IInputActionCollection, IDisposable
                 @UnitSelecting.started -= m_Wrapper.m_MasterActionsCallbackInterface.OnUnitSelecting;
                 @UnitSelecting.performed -= m_Wrapper.m_MasterActionsCallbackInterface.OnUnitSelecting;
                 @UnitSelecting.canceled -= m_Wrapper.m_MasterActionsCallbackInterface.OnUnitSelecting;
-                @Movement.started -= m_Wrapper.m_MasterActionsCallbackInterface.OnMovement;
-                @Movement.performed -= m_Wrapper.m_MasterActionsCallbackInterface.OnMovement;
-                @Movement.canceled -= m_Wrapper.m_MasterActionsCallbackInterface.OnMovement;
                 @Shift.started -= m_Wrapper.m_MasterActionsCallbackInterface.OnShift;
                 @Shift.performed -= m_Wrapper.m_MasterActionsCallbackInterface.OnShift;
                 @Shift.canceled -= m_Wrapper.m_MasterActionsCallbackInterface.OnShift;
@@ -989,6 +1103,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @RMB.started += instance.OnRMB;
                 @RMB.performed += instance.OnRMB;
                 @RMB.canceled += instance.OnRMB;
+                @Movement.started += instance.OnMovement;
+                @Movement.performed += instance.OnMovement;
+                @Movement.canceled += instance.OnMovement;
                 @FloorUp.started += instance.OnFloorUp;
                 @FloorUp.performed += instance.OnFloorUp;
                 @FloorUp.canceled += instance.OnFloorUp;
@@ -998,9 +1115,6 @@ public class @Controls : IInputActionCollection, IDisposable
                 @UnitSelecting.started += instance.OnUnitSelecting;
                 @UnitSelecting.performed += instance.OnUnitSelecting;
                 @UnitSelecting.canceled += instance.OnUnitSelecting;
-                @Movement.started += instance.OnMovement;
-                @Movement.performed += instance.OnMovement;
-                @Movement.canceled += instance.OnMovement;
                 @Shift.started += instance.OnShift;
                 @Shift.performed += instance.OnShift;
                 @Shift.canceled += instance.OnShift;
@@ -1027,11 +1141,11 @@ public class @Controls : IInputActionCollection, IDisposable
     // Survivor
     private readonly InputActionMap m_Survivor;
     private ISurvivorActions m_SurvivorActionsCallbackInterface;
+    private readonly InputAction m_Survivor_LMB;
+    private readonly InputAction m_Survivor_RMB;
     private readonly InputAction m_Survivor_Movement;
     private readonly InputAction m_Survivor_Jump;
     private readonly InputAction m_Survivor_Camera;
-    private readonly InputAction m_Survivor_LMB;
-    private readonly InputAction m_Survivor_RMB;
     private readonly InputAction m_Survivor_Reload;
     private readonly InputAction m_Survivor_Interact;
     private readonly InputAction m_Survivor_Drop;
@@ -1043,11 +1157,11 @@ public class @Controls : IInputActionCollection, IDisposable
     {
         private @Controls m_Wrapper;
         public SurvivorActions(@Controls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @LMB => m_Wrapper.m_Survivor_LMB;
+        public InputAction @RMB => m_Wrapper.m_Survivor_RMB;
         public InputAction @Movement => m_Wrapper.m_Survivor_Movement;
         public InputAction @Jump => m_Wrapper.m_Survivor_Jump;
         public InputAction @Camera => m_Wrapper.m_Survivor_Camera;
-        public InputAction @LMB => m_Wrapper.m_Survivor_LMB;
-        public InputAction @RMB => m_Wrapper.m_Survivor_RMB;
         public InputAction @Reload => m_Wrapper.m_Survivor_Reload;
         public InputAction @Interact => m_Wrapper.m_Survivor_Interact;
         public InputAction @Drop => m_Wrapper.m_Survivor_Drop;
@@ -1064,6 +1178,12 @@ public class @Controls : IInputActionCollection, IDisposable
         {
             if (m_Wrapper.m_SurvivorActionsCallbackInterface != null)
             {
+                @LMB.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnLMB;
+                @LMB.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnLMB;
+                @LMB.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnLMB;
+                @RMB.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnRMB;
+                @RMB.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnRMB;
+                @RMB.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnRMB;
                 @Movement.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnMovement;
                 @Movement.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnMovement;
                 @Movement.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnMovement;
@@ -1073,12 +1193,6 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Camera.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnCamera;
                 @Camera.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnCamera;
                 @Camera.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnCamera;
-                @LMB.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnLMB;
-                @LMB.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnLMB;
-                @LMB.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnLMB;
-                @RMB.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnRMB;
-                @RMB.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnRMB;
-                @RMB.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnRMB;
                 @Reload.started -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnReload;
                 @Reload.performed -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnReload;
                 @Reload.canceled -= m_Wrapper.m_SurvivorActionsCallbackInterface.OnReload;
@@ -1104,6 +1218,12 @@ public class @Controls : IInputActionCollection, IDisposable
             m_Wrapper.m_SurvivorActionsCallbackInterface = instance;
             if (instance != null)
             {
+                @LMB.started += instance.OnLMB;
+                @LMB.performed += instance.OnLMB;
+                @LMB.canceled += instance.OnLMB;
+                @RMB.started += instance.OnRMB;
+                @RMB.performed += instance.OnRMB;
+                @RMB.canceled += instance.OnRMB;
                 @Movement.started += instance.OnMovement;
                 @Movement.performed += instance.OnMovement;
                 @Movement.canceled += instance.OnMovement;
@@ -1113,12 +1233,6 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Camera.started += instance.OnCamera;
                 @Camera.performed += instance.OnCamera;
                 @Camera.canceled += instance.OnCamera;
-                @LMB.started += instance.OnLMB;
-                @LMB.performed += instance.OnLMB;
-                @LMB.canceled += instance.OnLMB;
-                @RMB.started += instance.OnRMB;
-                @RMB.performed += instance.OnRMB;
-                @RMB.canceled += instance.OnRMB;
                 @Reload.started += instance.OnReload;
                 @Reload.performed += instance.OnReload;
                 @Reload.canceled += instance.OnReload;
@@ -1193,6 +1307,55 @@ public class @Controls : IInputActionCollection, IDisposable
         }
     }
     public MainMenuActions @MainMenu => new MainMenuActions(this);
+
+    // General
+    private readonly InputActionMap m_General;
+    private IGeneralActions m_GeneralActionsCallbackInterface;
+    private readonly InputAction m_General_MouseDelta;
+    private readonly InputAction m_General_Movement;
+    private readonly InputAction m_General_Newaction;
+    public struct GeneralActions
+    {
+        private @Controls m_Wrapper;
+        public GeneralActions(@Controls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @MouseDelta => m_Wrapper.m_General_MouseDelta;
+        public InputAction @Movement => m_Wrapper.m_General_Movement;
+        public InputAction @Newaction => m_Wrapper.m_General_Newaction;
+        public InputActionMap Get() { return m_Wrapper.m_General; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(GeneralActions set) { return set.Get(); }
+        public void SetCallbacks(IGeneralActions instance)
+        {
+            if (m_Wrapper.m_GeneralActionsCallbackInterface != null)
+            {
+                @MouseDelta.started -= m_Wrapper.m_GeneralActionsCallbackInterface.OnMouseDelta;
+                @MouseDelta.performed -= m_Wrapper.m_GeneralActionsCallbackInterface.OnMouseDelta;
+                @MouseDelta.canceled -= m_Wrapper.m_GeneralActionsCallbackInterface.OnMouseDelta;
+                @Movement.started -= m_Wrapper.m_GeneralActionsCallbackInterface.OnMovement;
+                @Movement.performed -= m_Wrapper.m_GeneralActionsCallbackInterface.OnMovement;
+                @Movement.canceled -= m_Wrapper.m_GeneralActionsCallbackInterface.OnMovement;
+                @Newaction.started -= m_Wrapper.m_GeneralActionsCallbackInterface.OnNewaction;
+                @Newaction.performed -= m_Wrapper.m_GeneralActionsCallbackInterface.OnNewaction;
+                @Newaction.canceled -= m_Wrapper.m_GeneralActionsCallbackInterface.OnNewaction;
+            }
+            m_Wrapper.m_GeneralActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @MouseDelta.started += instance.OnMouseDelta;
+                @MouseDelta.performed += instance.OnMouseDelta;
+                @MouseDelta.canceled += instance.OnMouseDelta;
+                @Movement.started += instance.OnMovement;
+                @Movement.performed += instance.OnMovement;
+                @Movement.canceled += instance.OnMovement;
+                @Newaction.started += instance.OnNewaction;
+                @Newaction.performed += instance.OnNewaction;
+                @Newaction.canceled += instance.OnNewaction;
+            }
+        }
+    }
+    public GeneralActions @General => new GeneralActions(this);
     private int m_GameActionsSchemeIndex = -1;
     public InputControlScheme GameActionsScheme
     {
@@ -1206,10 +1369,10 @@ public class @Controls : IInputActionCollection, IDisposable
     {
         void OnLMB(InputAction.CallbackContext context);
         void OnRMB(InputAction.CallbackContext context);
+        void OnMovement(InputAction.CallbackContext context);
         void OnFloorUp(InputAction.CallbackContext context);
         void OnFloorDown(InputAction.CallbackContext context);
         void OnUnitSelecting(InputAction.CallbackContext context);
-        void OnMovement(InputAction.CallbackContext context);
         void OnShift(InputAction.CallbackContext context);
         void OnCtrl(InputAction.CallbackContext context);
         void OnChangeCamera(InputAction.CallbackContext context);
@@ -1219,11 +1382,11 @@ public class @Controls : IInputActionCollection, IDisposable
     }
     public interface ISurvivorActions
     {
+        void OnLMB(InputAction.CallbackContext context);
+        void OnRMB(InputAction.CallbackContext context);
         void OnMovement(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnCamera(InputAction.CallbackContext context);
-        void OnLMB(InputAction.CallbackContext context);
-        void OnRMB(InputAction.CallbackContext context);
         void OnReload(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
         void OnDrop(InputAction.CallbackContext context);
@@ -1237,5 +1400,11 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnLMB(InputAction.CallbackContext context);
         void OnSpace(InputAction.CallbackContext context);
         void OnEscape(InputAction.CallbackContext context);
+    }
+    public interface IGeneralActions
+    {
+        void OnMouseDelta(InputAction.CallbackContext context);
+        void OnMovement(InputAction.CallbackContext context);
+        void OnNewaction(InputAction.CallbackContext context);
     }
 }
