@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using UnityEngine.InputSystem;
@@ -38,6 +37,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     [SyncVar(hook = nameof(ToggleAnimator))] private bool animatorEnabled = false;
 
     private Coroutine COSplatterShader;
+    private Coroutine COAttack;
     private Coroutine COAttackInterval;
 
     private int amountSlashed = 0;
@@ -69,7 +69,8 @@ public class MeleeWeapon : EquipmentItem, IImpacter
         networkAnimator = GetComponent<NetworkAnimator>();
     }
 
-    protected override void OnLMBPerformed(InputAction.CallbackContext context) => Cmd_Attack();
+    protected override void OnLMBPerformed(InputAction.CallbackContext context) => Cmd_StartAttack();
+    protected override void OnLMBCanceled(InputAction.CallbackContext context) => Cmd_StopAttack();
 
     [Server]
     public override void Svr_Pickup(Transform newParent, NetworkConnection conn)
@@ -100,6 +101,8 @@ public class MeleeWeapon : EquipmentItem, IImpacter
         if (isServer)
         {
             IDamagable damagable = null;
+            // Damage the target root unless it's the same as previous root
+            // (prevent multiple attacks on child colliders of same parent).
             if (other.transform.root != previousHitColliderParent)
             {
                 if (other.TryGetComponent(out damagable))
@@ -140,68 +143,85 @@ public class MeleeWeapon : EquipmentItem, IImpacter
                     break;
             }
         }
-
-        // All clients
-        //if (isClient)
-        //{
-        //    if (other.TryGetComponent(out IDamagable damagable))
-        //    {
-        //        if (other.TryGetComponent(out IDetachable detachable))
-        //        {
-        //            detachable.Detach(damageType);
-        //        }
-        //    }
-        //}
     }
 
     #region Server
 
     [Command]
-    private void Cmd_Attack()
+    private void Cmd_StartAttack()
     {
-        if (!canAttack) return;
-        amountSlashed = 0;
+        isAttacking = true;
         // Play the melee attack animation.
-        networkAnimator.SetTrigger(AttackTrigger);
-        //weaponAnimator.SetTrigger(AttackTrigger);
-        COAttackInterval = StartCoroutine(IEAttackInterval());
+        //networkAnimator.SetTrigger(AttackTrigger);
+        COAttack = StartCoroutine(IEAttack());
 
         //object arg1 = "NetworkConnection";
         //object arg2 = "Attack!";
         //NetworkTest.AddBuffer(this, nameof(Rpc_TestPrint), new object[] { arg1, arg2 });
     }
-
     [TargetRpc]
     private void Rpc_TestPrint(NetworkConnection target, string message)
     {
         print(message);
     }
 
-    // Called by animation event.
-    public void StartAttacking()
-    {
-        if (!hasAuthority) return;
-
-        Cmd_StartAttacking();
-    }
-    // Called by animation event.
-    public void StopAttacking()
-    {
-        if (!hasAuthority) return;
-
-        Cmd_StopAttacking();
-    }
     [Command]
-    private void Cmd_StartAttacking()
+    private void Cmd_StopAttack()
     {
-        isAttacking = true;
+        // Stop the melee attack animation.
+        isAttacking = false;
+        if (COAttack != null)
+        {
+            StopCoroutine(COAttack);
+        }
+    }
+
+    // Called by animation event.
+    public void StartOfAttack()
+    {
+        if (!hasAuthority) return;
+
+        Cmd_StartOfAttack();
+    }
+
+    // Called by animation event.
+    public void EndOfAttack()
+    {
+        if (!hasAuthority) return;
+
+        Cmd_EndOfAttack();
+    }
+
+    [Command]
+    private void Cmd_StartOfAttack()
+    {
         Rpc_ApplySplatter(splatterRemoveAmountOnSwing);
         previousHitColliderParent = null;
     }
+
     [Command]
-    private void Cmd_StopAttacking()
+    private void Cmd_EndOfAttack()
     {
-        isAttacking = false;
+        amountSlashed = 0;
+    }
+
+    private IEnumerator IEAttack()
+    {
+        while (true)
+        {
+            if (canAttack)
+            {
+                print("Attack");
+                networkAnimator.SetTrigger(AttackTrigger);
+                StartAttackInterval();
+            }
+            yield return null;
+        }
+    }
+
+    private void StartAttackInterval()
+    {
+        COAttackInterval = StartCoroutine(IEAttackInterval());
     }
 
     private IEnumerator IEAttackInterval()
@@ -214,7 +234,6 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     #endregion
 
     #region Client
-
 
     [ClientRpc]
     private void Rpc_SwingSFX()
