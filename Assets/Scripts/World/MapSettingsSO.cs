@@ -9,4 +9,6 @@ public class MapSettingsSO : ScriptableObject
     [Scene] public string gameplayScene;
 
     public Vector3[] spawnPoints;
+    [Space]
+    public Vector3[] shopSpawnPoints;
 }
