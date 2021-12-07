@@ -82,12 +82,12 @@ public class PlaceItem : EquipmentItem
 	{
 		if (!obstructed && placeholderActive)
 		{
-			transform.position = placeholderPos;
-			transform.rotation = placeholderRot;
-			transform.parent = null;
 			Rpc_Cleanup(connectionToClient);
 			OnPlaced?.Invoke();
 			//Svr_InvokeOnDrop();
+			transform.position = placeholderPos;
+			transform.rotation = placeholderRot;
+			transform.parent = null;
 			Unbind();
 			Svr_EnablePhysics();
 			authController.Svr_RemoveAuthority();
@@ -117,7 +117,7 @@ public class PlaceItem : EquipmentItem
 		Drop(false);
 	}
 
-	public void Drop(bool drop)
+	public void Drop(bool dropItem)
 	{
 		if (connectionToClient != null)
 		{
@@ -130,7 +130,7 @@ public class PlaceItem : EquipmentItem
 				Cmd_DestroyGameObject();
 				break;
 			case EquipmentType.Special:
-				if (drop)
+				if (dropItem)
 				{
 					Cmd_Drop();
 				}

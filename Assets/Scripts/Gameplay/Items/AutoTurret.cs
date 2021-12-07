@@ -327,7 +327,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 			}
 			else if (!lineOfSightCheck)
 			{
-				Debug.LogError(didHit.transform.name);
+				//Debug.LogError(didHit.transform.name);
 				Svr_LostTarget();
 			}
 		}
@@ -383,9 +383,9 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	[Server]
 	public void Svr_OnPlaced()
 	{
+		GetComponentInParent<ActiveSClass>()?.StartAbilityCooldownCo();
 		Svr_StartSearching();
 		StartCoroutine(Duration());
-		GetComponentInParent<ActiveSClass>()?.StartAbilityCooldownCo();
 	}
 
 	private void OnDrawGizmos()
