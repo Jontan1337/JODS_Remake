@@ -10,7 +10,7 @@ public class Gamemode_Survival : GamemodeBase
     [Header("Survival Timer Settings")]
     [SerializeField] private int timeSurvived = 0;
     [SerializeField] private Text timeSurvivedText = null;
-    private string timeSurvivedTextDefault = "Time Survived: \n ";
+    private readonly string timeSurvivedTextDefault = "Time Survived: \n ";
 
     [Header("Points System Management")]
     [SerializeField] private int numberOfPlayers = 0;
@@ -21,7 +21,8 @@ public class Gamemode_Survival : GamemodeBase
     [Space]
     [SerializeField] private int timeBetweenShopPeriods = 120; //2 minutes between each shop period
     [SerializeField] private int shopPeriodDuration = 30; //each shop period lasts 30 seconds
-    private List<Vector3> shopSpawnpoints = new List<Vector3>();
+    [Space]
+    [SerializeField] private GameObject shopPrefab;
 
     public override void InitializeGamemode()
     {
@@ -32,7 +33,7 @@ public class Gamemode_Survival : GamemodeBase
         survivalTimerCo = StartCoroutine(SurvivalTimer());
     }
 
-    Coroutine survivalTimerCo;
+    Coroutine survivalTimerCo; //To stop the coroutine eventually
     private IEnumerator SurvivalTimer()
     {
         while (true)
@@ -43,7 +44,11 @@ public class Gamemode_Survival : GamemodeBase
             UpdateSurvivalTimer(timeSurvived);
 
             timeTillNextShopPeriod--;
-            if (timeTillNextShopPeriod >= 0) NewShopPeriod();
+            if (timeTillNextShopPeriod <= 0)
+            {
+                timeTillNextShopPeriod = timeBetweenShopPeriods + shopPeriodDuration;
+                NewShopPeriod();
+            }
         }
     }
 
@@ -58,8 +63,21 @@ public class Gamemode_Survival : GamemodeBase
 
     private void NewShopPeriod()
     {
+        ShopSpawnPoint spawnpoint = mapSettings.shopSpawnPoints[Random.Range(0, mapSettings.shopSpawnPoints.Length)];
 
+        GameObject newShop = Instantiate(shopPrefab, spawnpoint.position, spawnpoint.rotation);
+
+        NetworkServer.Spawn(newShop);
+
+        newShop.GetComponent<WeaponShop>().Svr_GenerateNewSelection();
+
+        StartCoroutine(IEShopPeriod(newShop));
     }
+    private IEnumerator IEShopPeriod(GameObject shop)
+    {
+        yield return new WaitForSeconds(shopPeriodDuration);
 
+        NetworkServer.Destroy(shop);
+    }
 
 }

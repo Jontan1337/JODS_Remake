@@ -68,7 +68,7 @@ public class WeaponShop : NetworkBehaviour, IInteractable
 
     public string ObjectName => throw new System.NotImplementedException();
 
-    private void Start()
+    private void Awake()
     {
         weaponStats.SetActive(false);
         shopCanvas.SetActive(false);
@@ -93,6 +93,9 @@ public class WeaponShop : NetworkBehaviour, IInteractable
             StartCoroutine(GenerateNewSelectionDelay());
         }
     }
+
+    public void InitializeShop() { }
+
     //THIS COROUTINE IS ONLY NECESSARY FOR TESTING PURPOSES. DELETE EVENTUALLY
     private IEnumerator GenerateNewSelectionDelay()
     {
@@ -324,7 +327,7 @@ public class WeaponShop : NetworkBehaviour, IInteractable
 
 
     [Server]
-    private void Svr_GenerateNewSelection()
+    public void Svr_GenerateNewSelection()
     {
         //Reset
         currentWeaponSelection.Clear();

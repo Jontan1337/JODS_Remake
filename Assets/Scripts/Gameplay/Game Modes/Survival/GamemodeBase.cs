@@ -13,6 +13,7 @@ public abstract class GamemodeBase : NetworkBehaviour
     [SerializeField] private AudioClip countdownAudio = null;
     [SerializeField] private AudioClip countdownEndAudio = null;
     private AudioSource AS;
+    public MapSettingsSO mapSettings;
 
     [Header("Scoreboard")]
     [SerializeField] private GameObject scoreboard = null;
@@ -25,12 +26,19 @@ public abstract class GamemodeBase : NetworkBehaviour
 
     }
 
+    public override void OnStartServer()
+    {
+        Lobby.OnPlayersLoaded += Initialize;
+    }
+
     private void Start()
     {
         AS = GetComponent<AudioSource>();
+    }
 
-
-        if (!isServer) return;
+    private void Initialize()
+    {
+        print("go");
         StartCoroutine(IEGameStartCountdown());
     }
 

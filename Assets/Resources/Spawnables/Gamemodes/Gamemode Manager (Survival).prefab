@@ -1128,13 +1128,16 @@ MonoBehaviour:
   gameStartCountdownText: {fileID: 5475870585490503284}
   countdownAudio: {fileID: 8300000, guid: fe0b1f9aeb45b41b089175aeeabd5d95, type: 3}
   countdownEndAudio: {fileID: 8300000, guid: 8a8eb1dcc80aefe449165cfe7e162751, type: 3}
+  mapSettings: {fileID: 0}
   scoreboard: {fileID: 5268074551380514651}
   timeSurvived: 0
   timeSurvivedText: {fileID: 7499271558537831577}
   numberOfPlayers: 0
   timeTillNextShopPeriod: 0
-  timeBetweenShopPeriods: 0
-  shopPeriodDuration: 120
+  timeBetweenShopPeriods: 10
+  shopPeriodDuration: 10
+  shopPrefab: {fileID: 579142006993177050, guid: 54b2c4ebd847c6d4b9a13dd609d0aefc,
+    type: 3}
 --- !u!82 &5475870583975361135
 AudioSource:
   m_ObjectHideFlags: 0
