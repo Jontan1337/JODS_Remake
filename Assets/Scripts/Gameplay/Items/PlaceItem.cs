@@ -87,9 +87,7 @@ public class PlaceItem : EquipmentItem
 			transform.position = placeholderPos;
 			transform.rotation = placeholderRot;
 			transform.parent = null;
-			//Unbind();
-			Svr_EnablePhysics();			
-
+			Svr_EnablePhysics();
 			authController.Svr_RemoveAuthority();
 			Svr_InvokeOnDrop();
 		}
@@ -134,10 +132,6 @@ public class PlaceItem : EquipmentItem
 				if (dropItem)
 				{
 					Cmd_Drop();
-				}
-				else
-				{
-					//base.Svr_Unequip();
 				}
 				break;
 			default:
