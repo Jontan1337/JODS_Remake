@@ -20,15 +20,14 @@ public class PlayerSpawner : NetworkBehaviour
 
     private List<PlayerToSpawn> playersToSpawns = new List<PlayerToSpawn>();
 
-    private MapSettingsSO mapSettings;
+    public MapSettingsSO mapSettings;
     private List<Vector3> spawnPoints;
 
     public override void OnStartServer()
     {
-        //Get both lits of playable characters, which are later used to spawn each player with their chosen class
+        //Get both lists of playable characters, which are later used to spawn each player with their chosen class
         survivorSOList = PlayableCharactersManager.instance.GetAllSurvivors();
         masterSOList = PlayableCharactersManager.instance.GetAllMasters();
-        mapSettings = Lobby.Instance.currentMapSettings;
         spawnPoints = new List<Vector3>(mapSettings.spawnPoints);
 
         //When a player connects to the new scene, then invoke the ReadyPlayer method
@@ -100,6 +99,8 @@ public class PlayerSpawner : NetworkBehaviour
                     }
                 }
             }
+
+            GamemodeBase.Instance.Svr_AddPlayer(newPlayerInstance);
 
             //When the new player instance is all set and ready, then destroy the old one, as it is no longer needed.
             NetworkServer.Destroy(oldPlayerInstance);

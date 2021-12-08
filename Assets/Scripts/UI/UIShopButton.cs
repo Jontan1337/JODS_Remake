@@ -6,13 +6,13 @@ using UnityEngine.UI;
 
 public class UIShopButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    [SerializeField] private bool weaponSlot;
+    [SerializeField] private bool weaponSlot = false;
     [Space]
-    [SerializeField] private bool purchasable;
+    [SerializeField] private bool purchasable = false;
     [Space]
-    [SerializeField] private WeaponShop shop;
-    [SerializeField] private Text priceText;
-    [SerializeField] private Text PLACEHOLDERText;
+    [SerializeField] private WeaponShop shop = null;
+    [SerializeField] private Text priceText = null;
+    [SerializeField] private Text PLACEHOLDERText = null;
 
     private Button button;
 

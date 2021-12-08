@@ -54,6 +54,7 @@ public class Lobby : NetworkManager
     public GameObject lobbyPlayer;
     public GameObject GOLobbySync;
     public GameObject listMatch;
+    public GameObject[] gamemodePrefabs;
 
     [Header("Room Data")]
     public List<LobbyPlayer> roomPlayers = new List<LobbyPlayer>();
@@ -62,6 +63,8 @@ public class Lobby : NetworkManager
     [Header("Map Settings")] 
     public MapSettingsSO currentMapSettings;
     [Scene] private string gameplayScene;
+    [Space]
+    public int gamemodeInt;
 
     [Header("Debug")]
     public bool mustHaveMaster;
@@ -222,12 +225,17 @@ public class Lobby : NetworkManager
 
             //Spawn the Player Spawner
             GameObject playerSpawnerInstance = Instantiate(playerSpawner);
+            playerSpawnerInstance.GetComponent<PlayerSpawner>().mapSettings = currentMapSettings;
             NetworkServer.Spawn(playerSpawnerInstance);
 
             //Spawn the Object Pool
             GameObject objectPoolInstance = Instantiate(objectPool);
             NetworkServer.Spawn(objectPoolInstance);
             objectPool = objectPoolInstance;
+
+            GameObject gamemodeManager = Instantiate(gamemodePrefabs[gamemodeInt]);
+            gamemodeManager.GetComponent<GamemodeBase>().mapSettings = currentMapSettings;
+            NetworkServer.Spawn(gamemodeManager);
         }
     }
 
@@ -489,6 +497,11 @@ public class Lobby : NetworkManager
         }
 
         return true;
+    }
+
+    public void ChangeGamemode(int value)
+    {
+        gamemodeInt = value;
     }
 
     #endregion

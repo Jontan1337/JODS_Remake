@@ -41,9 +41,6 @@ public class WeaponShop : NetworkBehaviour, IInteractable
     private UIShopButton[] allSlots = null;
     [Space]
     [SerializeField] private GameObject shopCanvas = null;
-    [SerializeField] private Transform weaponSlotsContainer = null;
-    [SerializeField] private Transform equipmentSlotsContainer = null;
-    [SerializeField] private GameObject shopUISlotPrefab = null;
     [Space]
     [SerializeField] private GameObject weaponStats = null;
     [SerializeField] private Text weaponNameText = null;
@@ -53,13 +50,15 @@ public class WeaponShop : NetworkBehaviour, IInteractable
     [Space]
     [SerializeField] private Transform topPartOfCrate = null;
     [SerializeField] private float topOpenValue = 330f;
+    [Space]
+    [SerializeField] private Text playerPointsText = null;
 
     [Header("Network Related")]
-    [SyncVar, SerializeField] private bool shopIsOpen = false;
     private List<GameObject> playersInShop = new List<GameObject>();
 
-    private bool inShop = false;
     private GameObject playerGameObject = null;
+
+    private string pointsTextDefault = "Your points: ";
 
     [Header("Debug")]
     [SerializeField] private bool test = false;
@@ -68,7 +67,7 @@ public class WeaponShop : NetworkBehaviour, IInteractable
 
     public string ObjectName => throw new System.NotImplementedException();
 
-    private void Start()
+    private void Awake()
     {
         weaponStats.SetActive(false);
         shopCanvas.SetActive(false);
@@ -93,6 +92,9 @@ public class WeaponShop : NetworkBehaviour, IInteractable
             StartCoroutine(GenerateNewSelectionDelay());
         }
     }
+
+    public void InitializeShop() { }
+
     //THIS COROUTINE IS ONLY NECESSARY FOR TESTING PURPOSES. DELETE EVENTUALLY
     private IEnumerator GenerateNewSelectionDelay()
     {
@@ -149,6 +151,12 @@ public class WeaponShop : NetworkBehaviour, IInteractable
         PlayerManager.Instance.DisableMenu();
     }
 
+    [TargetRpc]
+    private void Rpc_ShowPoints(NetworkConnection target, int points)
+    {
+        playerPointsText.text = pointsTextDefault + points;
+    }
+
     [Server]
     public void Svr_Interact(GameObject interacter)
     {
@@ -173,6 +181,8 @@ public class WeaponShop : NetworkBehaviour, IInteractable
             if (playersInShop.Count == 0)
             {
                 Rpc_ShopVisuals(true);
+                Rpc_ShowPoints(interacter.GetComponent<NetworkIdentity>().connectionToClient,
+                GamemodeBase.Instance.Svr_GetPoints(interacter));
             }
             playersInShop.Add(interacter);
         }
@@ -270,9 +280,22 @@ public class WeaponShop : NetworkBehaviour, IInteractable
     {
         UIShopButton button = allSlots[index];
         ShopItem item = button.Item;
-        //Buy the item for the player
-        print(player.name + " bought " + item.shopItemName);
 
+        //Check if the player has enough points to buy the item
+        if (GamemodeBase.Instance.Svr_GetPoints(player) < item.shopItemPrice)
+        {
+            //If not, nothing happens.
+            return;
+        }
+        else
+        {
+            //If they have enough, detract the price from their points,
+            GamemodeBase.Instance.Svr_ModifyPoints(player, -item.shopItemPrice);
+            Rpc_ShowPoints(player.GetComponent<NetworkIdentity>().connectionToClient,
+                GamemodeBase.Instance.Svr_GetPoints(player));
+        }
+
+        //Buy the item for the player
         var spawnedItem = Instantiate(item.shopItemPrefab);
         NetworkServer.Spawn(spawnedItem);
 
@@ -324,7 +347,7 @@ public class WeaponShop : NetworkBehaviour, IInteractable
 
 
     [Server]
-    private void Svr_GenerateNewSelection()
+    public void Svr_GenerateNewSelection()
     {
         //Reset
         currentWeaponSelection.Clear();

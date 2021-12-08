@@ -33,6 +33,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	[SerializeField] private Slider healthBar = null;
 	[SerializeField] private Slider healthLossBar = null;
 	[SerializeField] private Slider armorBar = null;
+	[SerializeField] private Image abilityCooldownUI = null;
 
 	[Header("Events")]
 	[SerializeField] private UnityEvent<float> onChangedHealth = null;
@@ -65,9 +66,9 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 				Die();
 			}
 			if (isServer)
-            {
+			{
 				Rpc_SyncStats(connectionToClient, currentHealth, armor);
-            }
+			}
 		}
 	}
 	public int Armor
@@ -139,10 +140,12 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	public IEnumerator AbilityCooldown()
 	{
 		abilityIsReady = false;
+		abilityCooldownUI.fillAmount = 0;
 		while (abilityCooldownCount > 0)
 		{
-			abilityCooldownCount -= 1;
-			yield return new WaitForSeconds(1);
+			abilityCooldownCount -= Time.deltaTime;
+			abilityCooldownUI.fillAmount += Time.deltaTime / abilityCooldown;
+			yield return null;
 		}
 		abilityCooldownCount = abilityCooldown;
 		abilityIsReady = true;
@@ -238,7 +241,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 			starterWeapon = Instantiate(survivorSO.starterWeapon, transform.position, transform.rotation);
 			NetworkServer.Spawn(starterWeapon);
 			yield return new WaitForSeconds(0.35f);
-			starterWeapon.GetComponent<EquipmentItem>().Svr_Interact(gameObject);			
+			starterWeapon.GetComponent<EquipmentItem>().Svr_Interact(gameObject);
 		}
 	}
 	#endregion
@@ -284,11 +287,11 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 
 	[TargetRpc]
 	public void Rpc_SyncStats(NetworkConnection target, int newHealth, int newArmor)
-    {
+	{
 		if (isServer) return;
 		Health = newHealth;
 		Armor = newArmor;
-    }
+	}
 
 	#endregion
 
