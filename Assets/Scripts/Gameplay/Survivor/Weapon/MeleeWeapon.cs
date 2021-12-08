@@ -4,16 +4,20 @@ using Mirror;
 using UnityEngine.InputSystem;
 using System;
 
+[RequireComponent(typeof(Animator), typeof(NetworkAnimator), typeof(SFXPlayer))]
 public class MeleeWeapon : EquipmentItem, IImpacter
 {
     [Header("Settings")]
     [SerializeField] private LayerMask ignoreLayer;
 
     [Header("Weapon stats")]
-    [SerializeField] private int damage = 10;
+    [SerializeField] private int currentDamage = 10;
+    [SerializeField] private int normalDamage = 10;
+    [SerializeField] private int currentPunchthrough = 2;
+    [SerializeField] private int normalPunchthrough = 2;
     [SerializeField] private DamageTypes damageType = DamageTypes.Slash;
     [SerializeField] private float attackInterval = 0.1f;
-    [SerializeField] private int slashPower = 2;
+    [SerializeField] private bool chargeable = false;
 
     [Header("Game details")]
     [SerializeField] private float splatterAmount = 0f;
@@ -49,9 +53,10 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     public Action<float> OnImpact { get; set; }
 
     private const string AttackTrigger = "Attack";
+    private const string AttackingBool = "Attacking";
     private const string BloodAmount = "_BloodAmount";
 
-    public int Damage { get => damage; }
+    public int Damage { get => currentDamage; }
     public DamageTypes DamageType { get => damageType; }
     public float SplatterAmount
     {
@@ -88,6 +93,13 @@ public class MeleeWeapon : EquipmentItem, IImpacter
         base.Svr_Drop();
     }
 
+    public override void Svr_Unequip()
+    {
+        base.Svr_Unequip();
+        StopIEAttack();
+        weaponAnimator.Play("Idle");
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (!isAttacking) return;
@@ -108,7 +120,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
                 if (other.TryGetComponent(out damagable))
                 {
                     previousHitColliderParent = other.transform.root;
-                    damagable?.Svr_Damage(damage);
+                    damagable?.Svr_Damage(currentDamage);
                 }
                 amountSlashed++;
             }
@@ -127,15 +139,15 @@ public class MeleeWeapon : EquipmentItem, IImpacter
                         {
                             detachable.Detach((int)damageType);
                         }
-                        if (amountSlashed == slashPower)
+                        if (amountSlashed == currentPunchthrough)
                         {
-                            weaponAnimator.CrossFadeInFixedTime("Idle", 0.1f);
+                            weaponAnimator.CrossFadeInFixedTime("Idle", 0.2f);
                             amountSlashed = 0;
                         }
                     }
                     break;
                 case DamageTypes.Blunt:
-                    weaponAnimator.CrossFadeInFixedTime("Idle", 0.1f);
+                    weaponAnimator.CrossFadeInFixedTime("Idle", 0.2f);
                     break;
                 case DamageTypes.Pierce:
                     break;
@@ -147,18 +159,49 @@ public class MeleeWeapon : EquipmentItem, IImpacter
 
     #region Server
 
+    // Called by animation even.
+    // Using server should prevent clients
+    // from calling this method and setting the damage.
+    [ServerCallback]
+    public void Svr_SetDamage(int damage)
+    {
+        currentDamage = damage;
+    }
+    // Called by animation even.
+    // Using server should prevent clients
+    // from calling this method and setting the damage.
+    [ServerCallback]
+    public void Svr_SetPunchthrough(int punchthrough)
+    {
+        currentPunchthrough = punchthrough;
+    }
+
     [Command]
     private void Cmd_StartAttack()
     {
-        isAttacking = true;
         // Play the melee attack animation.
         //networkAnimator.SetTrigger(AttackTrigger);
-        COAttack = StartCoroutine(IEAttack());
+        StartIEAttack();
 
         //object arg1 = "NetworkConnection";
         //object arg2 = "Attack!";
         //NetworkTest.AddBuffer(this, nameof(Rpc_TestPrint), new object[] { arg1, arg2 });
     }
+
+    private void StartIEAttack()
+    {
+        COAttack = StartCoroutine(IEAttack());
+    }
+    private void StopIEAttack()
+    {
+        if (COAttack != null)
+        {
+            StopCoroutine(COAttack);
+            COAttack = null;
+        }
+        weaponAnimator.SetBool(AttackingBool, false);
+    }
+
     [TargetRpc]
     private void Rpc_TestPrint(NetworkConnection target, string message)
     {
@@ -170,10 +213,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     {
         // Stop the melee attack animation.
         isAttacking = false;
-        if (COAttack != null)
-        {
-            StopCoroutine(COAttack);
-        }
+        StopIEAttack();
     }
 
     // Called by animation event.
@@ -197,12 +237,15 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     {
         Rpc_ApplySplatter(splatterRemoveAmountOnSwing);
         previousHitColliderParent = null;
+        isAttacking = true;
     }
 
     [Command]
     private void Cmd_EndOfAttack()
     {
         amountSlashed = 0;
+        currentDamage = normalDamage;
+        currentPunchthrough = normalPunchthrough;
     }
 
     private IEnumerator IEAttack()
@@ -211,8 +254,8 @@ public class MeleeWeapon : EquipmentItem, IImpacter
         {
             if (canAttack)
             {
-                print("Attack");
-                networkAnimator.SetTrigger(AttackTrigger);
+                //networkAnimator.SetTrigger(AttackTrigger);
+                weaponAnimator.SetBool(AttackingBool, true);
                 StartAttackInterval();
             }
             yield return null;
