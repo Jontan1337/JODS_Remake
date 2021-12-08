@@ -12,7 +12,7 @@ public abstract class GamemodeBase : NetworkBehaviour
     [SerializeField] private Text gameStartCountdownText = null;
     [SerializeField] private AudioClip countdownAudio = null;
     [SerializeField] private AudioClip countdownEndAudio = null;
-    private AudioSource AS;
+    protected AudioSource AS;
     public MapSettingsSO mapSettings;
 
     [Header("Scoreboard")]

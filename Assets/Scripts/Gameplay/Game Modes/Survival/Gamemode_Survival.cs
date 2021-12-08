@@ -22,7 +22,9 @@ public class Gamemode_Survival : GamemodeBase
     [SerializeField] private int timeBetweenShopPeriods = 120; //2 minutes between each shop period
     [SerializeField] private int shopPeriodDuration = 30; //each shop period lasts 30 seconds
     [Space]
-    [SerializeField] private GameObject shopPrefab;
+    [SerializeField] private GameObject shopPrefab = null;
+    [Space]
+    [SerializeField] private AudioClip shopPeriodSpawnAudio = null;
 
     public override void InitializeGamemode()
     {
@@ -63,6 +65,8 @@ public class Gamemode_Survival : GamemodeBase
 
     private void NewShopPeriod()
     {
+        AS.PlayOneShot(shopPeriodSpawnAudio, 1f);
+
         ShopSpawnPoint spawnpoint = mapSettings.shopSpawnPoints[Random.Range(0, mapSettings.shopSpawnPoints.Length)];
 
         GameObject newShop = Instantiate(shopPrefab, spawnpoint.position, spawnpoint.rotation);
