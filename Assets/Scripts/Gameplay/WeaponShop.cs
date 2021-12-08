@@ -41,9 +41,6 @@ public class WeaponShop : NetworkBehaviour, IInteractable
     private UIShopButton[] allSlots = null;
     [Space]
     [SerializeField] private GameObject shopCanvas = null;
-    [SerializeField] private Transform weaponSlotsContainer = null;
-    [SerializeField] private Transform equipmentSlotsContainer = null;
-    [SerializeField] private GameObject shopUISlotPrefab = null;
     [Space]
     [SerializeField] private GameObject weaponStats = null;
     [SerializeField] private Text weaponNameText = null;
@@ -55,10 +52,8 @@ public class WeaponShop : NetworkBehaviour, IInteractable
     [SerializeField] private float topOpenValue = 330f;
 
     [Header("Network Related")]
-    [SyncVar, SerializeField] private bool shopIsOpen = false;
     private List<GameObject> playersInShop = new List<GameObject>();
 
-    private bool inShop = false;
     private GameObject playerGameObject = null;
 
     [Header("Debug")]
