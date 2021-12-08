@@ -84,13 +84,14 @@ public class PlaceItem : EquipmentItem
 		{
 			Rpc_Cleanup(connectionToClient);
 			OnPlaced?.Invoke();
-			//Svr_InvokeOnDrop();
 			transform.position = placeholderPos;
 			transform.rotation = placeholderRot;
 			transform.parent = null;
-			Unbind();
-			Svr_EnablePhysics();
+			//Unbind();
+			Svr_EnablePhysics();			
+
 			authController.Svr_RemoveAuthority();
+			Svr_InvokeOnDrop();
 		}
 	}
 
@@ -136,7 +137,7 @@ public class PlaceItem : EquipmentItem
 				}
 				else
 				{
-					base.Svr_Unequip();
+					//base.Svr_Unequip();
 				}
 				break;
 			default:
