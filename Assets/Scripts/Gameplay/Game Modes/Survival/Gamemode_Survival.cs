@@ -12,10 +12,6 @@ public class Gamemode_Survival : GamemodeBase
     [SerializeField] private Text timeSurvivedText = null;
     private readonly string timeSurvivedTextDefault = "Time Survived: \n ";
 
-    [Header("Points System Management")]
-    [SerializeField] private int numberOfPlayers = 0;
-    private Dictionary<GameObject, int> playersAndPoints = new Dictionary<GameObject, int>();
-
     [Header("Shop Period Management")]
     [SerializeField] private int timeTillNextShopPeriod = 0;
     [Space]

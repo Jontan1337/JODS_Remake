@@ -7,6 +7,14 @@ using Mirror;
 [RequireComponent(typeof(AudioSource))]
 public abstract class GamemodeBase : NetworkBehaviour
 {
+    #region Singleton
+    public static GamemodeBase Instance;
+    private void Awake()
+    {
+        Instance = this;
+    }
+    #endregion
+
     [Header("General Gamemode Settings")]
     [SerializeField] private int gameStartCountdown = 5;
     [SerializeField] private Text gameStartCountdownText = null;
@@ -14,6 +22,28 @@ public abstract class GamemodeBase : NetworkBehaviour
     [SerializeField] private AudioClip countdownEndAudio = null;
     protected AudioSource AS;
     public MapSettingsSO mapSettings;
+
+    [Header("Points System Management")]
+    [SerializeField] private int defaultStartingPoints = 100;
+    private Dictionary<GameObject, int> playersAndPoints = new Dictionary<GameObject, int>();
+
+    [Server]
+    public int Svr_GetPoints(GameObject player)
+    {
+        return playersAndPoints[player];
+    }
+
+    [Server]
+    public void Svr_ModifyPoints(GameObject player, int amount)
+    {
+        playersAndPoints[player] += amount;
+    }
+
+    [Server]
+    public void Svr_AddPlayer(GameObject player)
+    {
+        playersAndPoints.Add(player, defaultStartingPoints);
+    }
 
     [Header("Scoreboard")]
     [SerializeField] private GameObject scoreboard = null;
@@ -38,7 +68,6 @@ public abstract class GamemodeBase : NetworkBehaviour
 
     private void Initialize()
     {
-        print("go");
         StartCoroutine(IEGameStartCountdown());
     }
 
