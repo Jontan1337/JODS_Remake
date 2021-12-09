@@ -6,14 +6,32 @@ using UnityEngine.InputSystem;
 
 public class SyringeGun : ProjectileWeapon
 {
+	[SerializeField] private GameObject syringe1;
+	[SerializeField] private GameObject syringe2;
 	protected override void Shoot()
 	{
 		base.Shoot();
-		if (currentAmmunition == 0 && extraAmmunition == 0)
+
+		switch (currentAmmunition)
 		{
-			GetComponentInParent<ActiveSClass>().StartAbilityCooldownCo();
-			Unbind();
+			case 0:
+				GetComponentInParent<ActiveSClass>().StartAbilityCooldownCo();
+				Unbind();
+				break;
+			case 1:
+				syringe1.SetActive(false);
+				break;
+			case 2:
+				syringe2.SetActive(false);
+				break;
+			default:
+				break;
 		}
+		//if (currentAmmunition == 0 && extraAmmunition == 0)
+		//{
+		//	GetComponentInParent<ActiveSClass>().StartAbilityCooldownCo();
+		//	Unbind();
+		//}
 	}
 	protected override void OnDropPerformed(InputAction.CallbackContext obj)
 	{
