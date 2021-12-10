@@ -27,11 +27,6 @@ public class SyringeGun : ProjectileWeapon
 			default:
 				break;
 		}
-		//if (currentAmmunition == 0 && extraAmmunition == 0)
-		//{
-		//	GetComponentInParent<ActiveSClass>().StartAbilityCooldownCo();
-		//	Unbind();
-		//}
 	}
 	protected override void OnDropPerformed(InputAction.CallbackContext obj)
 	{
@@ -52,7 +47,6 @@ public class SyringeGun : ProjectileWeapon
 	public void Cmd_Destroy()
 	{
 		StartCoroutine(DestroyWait());
-		//NetworkServer.Destroy(gameObject);
 	}
 	IEnumerator DestroyWait()
 	{

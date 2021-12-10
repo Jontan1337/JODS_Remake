@@ -385,6 +385,8 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	{
 		GetComponentInParent<ActiveSClass>()?.StartAbilityCooldownCo();
 		Svr_StartSearching();
+		transform.GetChild(1).gameObject.SetActive(true);
+		transform.GetChild(2).gameObject.SetActive(true);
 		StartCoroutine(Duration());
 	}
 
