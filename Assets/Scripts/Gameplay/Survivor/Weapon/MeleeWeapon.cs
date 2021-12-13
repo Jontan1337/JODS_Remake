@@ -45,6 +45,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     private Coroutine COAttackInterval;
 
     private int amountSlashed = 0;
+    private bool hitOnSwing = false;
 
     private Transform previousHitColliderParent;
 
@@ -72,6 +73,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     {
         material = GetComponent<MeshRenderer>().material;
         networkAnimator = GetComponent<NetworkAnimator>();
+        weaponAnimator.speed = attackInterval * 1f;
     }
 
     protected override void OnLMBPerformed(InputAction.CallbackContext context) => Cmd_StartAttack();
@@ -104,7 +106,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     {
         if (!isAttacking) return;
 
-        // Wack animation played on local client.
+        // Wack camera shake animation played on local client.
         if (hasAuthority)
         {
             OnImpact?.Invoke(10);
@@ -121,6 +123,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
                 {
                     previousHitColliderParent = other.transform.root;
                     damagable?.Svr_Damage(currentDamage);
+                    weaponAnimator.speed = 0.1f;
                 }
                 amountSlashed++;
             }
@@ -255,8 +258,13 @@ public class MeleeWeapon : EquipmentItem, IImpacter
             if (canAttack)
             {
                 //networkAnimator.SetTrigger(AttackTrigger);
+                weaponAnimator.speed = attackInterval * 1f;
                 weaponAnimator.SetBool(AttackingBool, true);
                 StartAttackInterval();
+            }
+            else
+            {
+                weaponAnimator.SetBool(AttackingBool, false);
             }
             yield return null;
         }
