@@ -26,6 +26,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	[SerializeField] private ParticleSystem bulletShell = null;
 	[SerializeField] private GameObject turretSmoke = null;
 	[SerializeField, SyncVar] private Transform target = null;
+	[SerializeField] private GameObject Laser;
 
 	[Space]
 	[SerializeField] private LayerMask unitLayer = 0;
@@ -33,6 +34,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 
 	private List<Collider> enemiesInSight = new List<Collider>();
 	[SyncVar] private bool isDead;
+
 
 	#region Coroutines
 	// The turret tries to shoot at a fixed interval. The value of fireRate should be the desired rounds per minute (RPM).
@@ -122,6 +124,25 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 			yield return new WaitForSeconds(0.01f);
 			barrel.transform.localPosition = new Vector3(0, barrel.transform.localPosition.y, barrel.transform.localPosition.z + 0.005f);
 		}
+	}
+
+	IEnumerator StartUp()
+	{
+		float time = 0;
+		float duration = 1;
+		Vector3 targetRot = new Vector3(0, 0, 0);
+		Vector3 startRot = new Vector3(50, 0 ,0);
+		pivot.localRotation = Quaternion.Euler(startRot);
+		while (time < duration)
+		{
+			time += Time.deltaTime;
+			pivot.localRotation = Quaternion.Lerp(pivot.localRotation, Quaternion.Euler(targetRot), time/duration);
+			yield return null;
+		}
+		yield return new WaitForSeconds(0.2f);
+		Laser.SetActive(true);
+		yield return new WaitForSeconds(0.4f);
+		Svr_StartSearching();
 	}
 
 	#endregion
@@ -375,16 +396,13 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 			item.Play();
 		}
 	}
-
-
-
 	// Invoked when the turret is put down on the ground.
 	// Starts the searching coroutine, the time until the turret dies and the cooldown on the engineers ability.
 	[Server]
 	public void Svr_OnPlaced()
 	{
 		GetComponentInParent<ActiveSClass>()?.StartAbilityCooldownCo();
-		Svr_StartSearching();
+		StartCoroutine(StartUp());
 		transform.GetChild(1).gameObject.SetActive(true);
 		transform.GetChild(2).gameObject.SetActive(true);
 		StartCoroutine(Duration());
