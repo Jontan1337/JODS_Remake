@@ -187,8 +187,9 @@ public class WeaponShop : NetworkBehaviour, IInteractable
             {
                 Rpc_ShopVisuals(true);
                 if (!GamemodeBase.Instance) return;
-                Rpc_ShowPoints(interacter.GetComponent<NetworkIdentity>().connectionToClient,
-                GamemodeBase.Instance.Svr_GetPoints(interacter));
+                NetworkIdentity identity = interacter.GetComponent<NetworkIdentity>();
+                Rpc_ShowPoints(identity.connectionToClient,
+                GamemodeBase.Instance.Svr_GetPoints(identity.netId));
             }
             playersInShop.Add(interacter);
         }
@@ -289,9 +290,13 @@ public class WeaponShop : NetworkBehaviour, IInteractable
 
         if (GamemodeBase.Instance)
         {
+            GamemodeBase gamemode = GamemodeBase.Instance;
+
+            NetworkIdentity identity = player.GetComponent<NetworkIdentity>();
+            uint playerId = identity.netId;
 
             //Check if the player has enough points to buy the item
-            if (GamemodeBase.Instance.Svr_GetPoints(player) < item.shopItemPrice)
+            if (gamemode.Svr_GetPoints(playerId) < item.shopItemPrice)
             {
                 //If not, nothing happens.
                 return;
@@ -299,9 +304,8 @@ public class WeaponShop : NetworkBehaviour, IInteractable
             else
             {
                 //If they have enough, detract the price from their points,
-                GamemodeBase.Instance.Svr_ModifyPoints(player, -item.shopItemPrice);
-                Rpc_ShowPoints(player.GetComponent<NetworkIdentity>().connectionToClient,
-                    GamemodeBase.Instance.Svr_GetPoints(player));
+                gamemode.Svr_ModifyPoints(playerId, -item.shopItemPrice);
+                Rpc_ShowPoints(identity.connectionToClient, gamemode.Svr_GetPoints(playerId));
             }
 
         }
