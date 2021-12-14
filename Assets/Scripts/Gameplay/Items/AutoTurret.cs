@@ -22,11 +22,12 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	[SerializeField] private Transform swivel = null;
 	[SerializeField] private Transform pivot = null;
 	[SerializeField] private Transform barrel = null;
+	[SerializeField] private Transform cylinder = null;
 	[SerializeField] private ParticleSystem muzzleFlash = null;
 	[SerializeField] private ParticleSystem bulletShell = null;
+	[SerializeField] private GameObject Laser;
 	[SerializeField] private GameObject turretSmoke = null;
 	[SerializeField, SyncVar] private Transform target = null;
-	[SerializeField] private GameObject Laser;
 
 	[Space]
 	[SerializeField] private LayerMask unitLayer = 0;
@@ -130,19 +131,19 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	{
 		float time = 0;
 		float duration = 1;
-		Vector3 targetRot = new Vector3(0, 0, 0);
 		Vector3 startRot = new Vector3(50, 0 ,0);
-		pivot.localRotation = Quaternion.Euler(startRot);
+		Vector3 targetRot = new Vector3(0, 0, 0);
 		while (time < duration)
 		{
-			time += Time.deltaTime;
-			pivot.localRotation = Quaternion.Lerp(pivot.localRotation, Quaternion.Euler(targetRot), time/duration);
+			time += Time.deltaTime/duration;
+			pivot.localRotation = Quaternion.Lerp(Quaternion.Euler(startRot), Quaternion.Euler(targetRot), time);
 			yield return null;
 		}
 		yield return new WaitForSeconds(0.2f);
 		Laser.SetActive(true);
 		yield return new WaitForSeconds(0.4f);
 		Svr_StartSearching();
+		StartCoroutine(Duration());
 	}
 
 	#endregion
@@ -402,10 +403,9 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	public void Svr_OnPlaced()
 	{
 		GetComponentInParent<ActiveSClass>()?.StartAbilityCooldownCo();
+		swivel.gameObject.SetActive(true);
+		cylinder.gameObject.SetActive(true);
 		StartCoroutine(StartUp());
-		transform.GetChild(1).gameObject.SetActive(true);
-		transform.GetChild(2).gameObject.SetActive(true);
-		StartCoroutine(Duration());
 	}
 
 	private void OnDrawGizmos()

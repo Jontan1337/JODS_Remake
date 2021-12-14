@@ -4,6 +4,31 @@ using UnityEngine;
 using UnityEngine.UI;
 using Mirror;
 
+[System.Serializable]
+public struct PlayerData
+{
+    public PlayerData(uint playerId, string playerName, int score) : this()
+    {
+        this.playerId = playerId;
+        this.playerName = playerName;
+        this.score = score;
+    }
+
+    //Shared stats
+    public uint playerId;
+    public string playerName;
+    public int score;
+
+    //Survivor Stats
+    public int points;
+    public int kills;
+
+    //Master Stats
+    public int unitsPlaced;
+    public int totalUpgrades;
+    public int totalUnitUpgrades;
+}
+
 [RequireComponent(typeof(AudioSource))]
 public abstract class GamemodeBase : NetworkBehaviour
 {
@@ -24,25 +49,38 @@ public abstract class GamemodeBase : NetworkBehaviour
     public MapSettingsSO mapSettings;
 
     [Header("Points System Management")]
-    [SerializeField] private int defaultStartingPoints = 100;
-    private Dictionary<GameObject, int> playersAndPoints = new Dictionary<GameObject, int>();
+    [SerializeField] private int defaultStartingPoints = 0;
+    [SerializeField] private List<PlayerData> playerList = new List<PlayerData>();
 
-    [Server]
-    public int Svr_GetPoints(GameObject player)
+    private PlayerData GetPlayer(uint playerId)
     {
-        return playersAndPoints[player];
+        foreach(PlayerData player in playerList)
+        {
+            if(player.playerId == playerId)
+            {
+                return player;
+            }
+        }
+        return new PlayerData();
     }
 
     [Server]
-    public void Svr_ModifyPoints(GameObject player, int amount)
+    public int Svr_GetPoints(uint playerId)
     {
-        playersAndPoints[player] += amount;
+        return GetPlayer(playerId).points;
     }
 
     [Server]
-    public void Svr_AddPlayer(GameObject player)
+    public void Svr_ModifyPoints(uint playerId, int amount)
     {
-        playersAndPoints.Add(player, defaultStartingPoints);
+        PlayerData player = GetPlayer(playerId);
+        player.points += amount;
+    }
+
+    [Server]
+    public void Svr_AddPlayer(uint playerId, string playerName)
+    {
+        playerList.Add(new PlayerData(playerId, playerName, defaultStartingPoints));
     }
 
     [Header("Scoreboard")]
