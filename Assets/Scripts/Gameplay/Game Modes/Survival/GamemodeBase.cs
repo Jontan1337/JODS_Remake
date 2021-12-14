@@ -52,17 +52,29 @@ public abstract class GamemodeBase : NetworkBehaviour
     [SerializeField] private int defaultStartingPoints = 0;
     [SerializeField] private List<PlayerData> playerList = new List<PlayerData>();
 
+    private PlayerData GetPlayer(uint playerId)
+    {
+        foreach(PlayerData player in playerList)
+        {
+            if(player.playerId == playerId)
+            {
+                return player;
+            }
+        }
+        return new PlayerData();
+    }
+
     [Server]
     public int Svr_GetPoints(uint playerId)
     {
-        return 0;
-        //return playerList[player];
+        return GetPlayer(playerId).points;
     }
 
     [Server]
     public void Svr_ModifyPoints(uint playerId, int amount)
     {
-        //playerList[player] += amount;
+        PlayerData player = GetPlayer(playerId);
+        player.points += amount;
     }
 
     [Server]
