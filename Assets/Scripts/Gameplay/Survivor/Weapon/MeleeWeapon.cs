@@ -3,6 +3,7 @@ using UnityEngine;
 using Mirror;
 using UnityEngine.InputSystem;
 using System;
+using DG.Tweening;
 
 [RequireComponent(typeof(Animator), typeof(NetworkAnimator), typeof(SFXPlayer))]
 public class MeleeWeapon : EquipmentItem, IImpacter
@@ -73,7 +74,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     {
         material = GetComponent<MeshRenderer>().material;
         networkAnimator = GetComponent<NetworkAnimator>();
-        weaponAnimator.speed = attackInterval * 1f;
+        weaponAnimator.speed = attackInterval / 1f;
     }
 
     protected override void OnLMBPerformed(InputAction.CallbackContext context) => Cmd_StartAttack();
@@ -95,11 +96,25 @@ public class MeleeWeapon : EquipmentItem, IImpacter
         base.Svr_Drop();
     }
 
+    [Server]
     public override void Svr_Unequip()
     {
         base.Svr_Unequip();
         StopIEAttack();
         weaponAnimator.Play("Idle");
+    }
+
+    private void ResetAnimatorSpeed()
+    {
+        if (hasAuthority)
+        {
+            Cmd_ResetAnimatorSpeed();
+        }
+    }
+    [Command]
+    private void Cmd_ResetAnimatorSpeed()
+    {
+        weaponAnimator.speed = attackInterval / 1f;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -109,7 +124,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
         // Wack camera shake animation played on local client.
         if (hasAuthority)
         {
-            OnImpact?.Invoke(10);
+            //OnImpact?.Invoke(10);
         }
 
         if (isServer)
@@ -123,7 +138,6 @@ public class MeleeWeapon : EquipmentItem, IImpacter
                 {
                     previousHitColliderParent = other.transform.root;
                     damagable?.Svr_Damage(currentDamage);
-                    weaponAnimator.speed = 0.1f;
                 }
                 amountSlashed++;
             }
@@ -144,13 +158,16 @@ public class MeleeWeapon : EquipmentItem, IImpacter
                         }
                         if (amountSlashed == currentPunchthrough)
                         {
-                            weaponAnimator.CrossFadeInFixedTime("Idle", 0.2f);
+                            weaponAnimator.speed = 0f;
+                            //weaponAnimator.CrossFadeInFixedTime("Idle", 0.5f);
+                            weaponAnimator.SetBool(AttackingBool, false);
+                            ImpactShake(1f);
                             amountSlashed = 0;
                         }
                     }
                     break;
                 case DamageTypes.Blunt:
-                    weaponAnimator.CrossFadeInFixedTime("Idle", 0.2f);
+                    weaponAnimator.CrossFadeInFixedTime("Idle", 0.5f);
                     break;
                 case DamageTypes.Pierce:
                     break;
@@ -162,7 +179,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
 
     #region Server
 
-    // Called by animation even.
+    // Called by animation event.
     // Using server should prevent clients
     // from calling this method and setting the damage.
     [ServerCallback]
@@ -170,7 +187,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     {
         currentDamage = damage;
     }
-    // Called by animation even.
+    // Called by animation event.
     // Using server should prevent clients
     // from calling this method and setting the damage.
     [ServerCallback]
@@ -190,6 +207,11 @@ public class MeleeWeapon : EquipmentItem, IImpacter
         //object arg2 = "Attack!";
         //NetworkTest.AddBuffer(this, nameof(Rpc_TestPrint), new object[] { arg1, arg2 });
     }
+    //[TargetRpc]
+    //private void Rpc_TestPrint(NetworkConnection target, string message)
+    //{
+    //    print(message);
+    //}
 
     private void StartIEAttack()
     {
@@ -205,11 +227,6 @@ public class MeleeWeapon : EquipmentItem, IImpacter
         weaponAnimator.SetBool(AttackingBool, false);
     }
 
-    [TargetRpc]
-    private void Rpc_TestPrint(NetworkConnection target, string message)
-    {
-        print(message);
-    }
 
     [Command]
     private void Cmd_StopAttack()
@@ -249,6 +266,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
         amountSlashed = 0;
         currentDamage = normalDamage;
         currentPunchthrough = normalPunchthrough;
+        isAttacking = false;
     }
 
     private IEnumerator IEAttack()
@@ -258,13 +276,13 @@ public class MeleeWeapon : EquipmentItem, IImpacter
             if (canAttack)
             {
                 //networkAnimator.SetTrigger(AttackTrigger);
-                weaponAnimator.speed = attackInterval * 1f;
+                //weaponAnimator.speed = attackInterval * 1f;
                 weaponAnimator.SetBool(AttackingBool, true);
                 StartAttackInterval();
             }
             else
             {
-                weaponAnimator.SetBool(AttackingBool, false);
+
             }
             yield return null;
         }
@@ -282,9 +300,30 @@ public class MeleeWeapon : EquipmentItem, IImpacter
         canAttack = true;
     }
 
+    private void OnPunchThroughLimitReached()
+    {
+        if (!hasAuthority) return;
+
+        Cmd_OnPunchThroughLimitReached();
+    }
+    [Command]
+    private void Cmd_OnPunchThroughLimitReached()
+    {
+        Cmd_ResetAnimatorSpeed();
+        weaponAnimator.CrossFadeInFixedTime("Idle", 0.1f);
+    }
+
     #endregion
 
     #region Client
+
+    private void ImpactShake(float amount)
+    {
+        Cmd_EndOfAttack();
+        transform.parent.DOComplete();
+        transform.parent.DOPunchPosition(new Vector3(0f, 0.1f, -0.1f), 0.5f, 10, 0.1f);
+        transform.parent.DOPunchRotation(new Vector3(0f, 2f, UnityEngine.Random.Range(-1f, 1f)), 0.5f, 10, 0.1f).OnComplete(OnPunchThroughLimitReached);
+    }
 
     [ClientRpc]
     private void Rpc_SwingSFX()
