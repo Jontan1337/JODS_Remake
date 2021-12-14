@@ -391,8 +391,10 @@ public class UnitMaster : NetworkBehaviour
         UnchooseUnit();
     }
     private Coroutine continuousSpawnCo;
+    private bool continuousSpawnBool;
     private IEnumerator IEContinuousSpawn()
     {
+        continuousSpawnBool = true;
         while (true)
         {
             yield return new WaitForSeconds(0.1f);
@@ -409,6 +411,8 @@ public class UnitMaster : NetworkBehaviour
     }
     private void StopContinuousSpawn()
     {
+        if (!continuousSpawnBool) return;
+        continuousSpawnBool = false;
         StopCoroutine(continuousSpawnCo);
     }
     #endregion
