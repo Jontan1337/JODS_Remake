@@ -135,6 +135,10 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 		{
 			sClass.ActiveAbility();
 		}
+		else
+		{
+			sClass.ActiveAbilitySecondary();			
+		}
 	}
 
 	public IEnumerator AbilityCooldown()
