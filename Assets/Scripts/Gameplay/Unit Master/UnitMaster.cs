@@ -818,6 +818,8 @@ public class UnitMaster : NetworkBehaviour
         IncreaseEnergy(-chosenUnit.energyCost);
         UpdateEnergyUI();//Update UI
         IncreaseXp(chosenUnit.xpGain); //Master gains xp though
+
+        GamemodeBase.Instance.Svr_ModifyStat(GetComponent<NetworkIdentity>().netId, 1, PlayerDataStat.UnitsPlaced);
     }
 
     void TryToRefundUnit()

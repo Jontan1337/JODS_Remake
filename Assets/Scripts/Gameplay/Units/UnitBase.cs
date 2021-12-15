@@ -1462,7 +1462,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
         if (IsDead)
         {
-            GamemodeBase.Instance.Svr_ModifyPoints(target.GetComponent<NetworkIdentity>().netId, 10);
+            GamemodeBase.Instance.Svr_ModifyStat(target.GetComponent<NetworkIdentity>().netId, 10, PlayerDataStat.Points);
+            GamemodeBase.Instance.Svr_ModifyStat(target.GetComponent<NetworkIdentity>().netId, 1, PlayerDataStat.Kills);
         }
 
         animator.SetTrigger("Hit");
