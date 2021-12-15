@@ -100,7 +100,7 @@ public class PlayerSpawner : NetworkBehaviour
                 }
             }
 
-            GamemodeBase.Instance.Svr_AddPlayer(conn.identity.netId, oldPlayerInstance.name);
+            GamemodeBase.Instance.Svr_AddPlayer(conn.identity.netId, oldPlayerInstance.name, _isMaster);
 
             //When the new player instance is all set and ready, then destroy the old one, as it is no longer needed.
             NetworkServer.Destroy(oldPlayerInstance);

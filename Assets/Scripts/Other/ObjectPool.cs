@@ -38,8 +38,10 @@ public class ObjectPool : NetworkBehaviour
 
     private void Start()
     {
+        /*
 		Debug.LogWarning("TODO : make pools enqueue the object spawned immediately, putting it at the back of the queue." +
 			" This will make it possible to spawn objects even if all objects are used. It will just use an already spawned object.");
+        */
 
 		if (test)
 		{

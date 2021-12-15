@@ -53,6 +53,8 @@ public abstract class GamemodeBase : NetworkBehaviour
     [SerializeField] private int defaultStartingPoints = 0;
     [SerializeField] private List<PlayerData> playerList = new List<PlayerData>();
 
+    #region Point System and Player Scores
+
     private PlayerData GetPlayer(uint playerId)
     {
         int index = 0;
@@ -79,22 +81,25 @@ public abstract class GamemodeBase : NetworkBehaviour
     }
 
     [Server]
-    public void Svr_AddPlayer(uint playerId, string playerName)
+    public void Svr_AddPlayer(uint playerId, string playerName, bool isMaster = false)
     {
-        playerList.Add(new PlayerData(playerId, playerName, defaultStartingPoints));
-    }
+        PlayerData newPlayer = new PlayerData(playerId, playerName, defaultStartingPoints);
 
-    [Header("Scoreboard")]
-    [SerializeField] private GameObject scoreboard = null;
+        playerList.Add(newPlayer);
 
-    //TEMPORARY
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Tab))
+        //Assign the player to a scoreboard row
+        foreach (ScoreboardRow row in isMaster ? masterRows : survivorRows)
         {
-            scoreboard.SetActive(!scoreboard.activeSelf);
+            if (row.playerId == 0)
+            {
+                row.playerId = playerId;
+                row.SetupPlayerScore(newPlayer);
+                break;
+            }
         }
     }
+
+    #endregion
 
     public override void OnStartServer()
     {
@@ -115,6 +120,8 @@ public abstract class GamemodeBase : NetworkBehaviour
     {
         StartCoroutine(IEGameStartCountdown());
     }
+
+    #region Countdown
 
     private IEnumerator IEGameStartCountdown()
     {
@@ -187,8 +194,47 @@ public abstract class GamemodeBase : NetworkBehaviour
         //Enable player controls here.
     }
 
+    #endregion
+
     public abstract void InitializeGamemode();
 
+
+    #region Scoreboard
+
+    [Header("Scoreboard")]
+    [SerializeField] private GameObject scoreboard = null;
+    [Space]
+    [SerializeField] private ScoreboardRow[] survivorRows = null;
+    [SerializeField] private ScoreboardRow[] masterRows = null;
+    [Space]
+    [SerializeField] private bool scoreboardIsOpen = false;
+
+    //TEMPORARY
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            OpenScoreboard();
+        }
+    }
+
+    private void OpenScoreboard()
+    {
+        scoreboardIsOpen = !scoreboardIsOpen;
+        scoreboard.SetActive(scoreboardIsOpen);
+
+        if (scoreboardIsOpen)
+        {
+            foreach(ScoreboardRow row in masterRows)
+            {
+                row.ChangeScores(GetPlayer(row.playerId));
+            }
+        }
+    }
+
+
+
+    #endregion
 
     [Header("Debug")]
     [SerializeField] private bool test = false;
