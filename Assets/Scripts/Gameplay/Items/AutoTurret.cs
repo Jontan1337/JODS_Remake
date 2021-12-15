@@ -136,14 +136,25 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		while (time < duration)
 		{
 			time += Time.deltaTime/duration;
-			pivot.localRotation = Quaternion.Lerp(Quaternion.Euler(startRot), Quaternion.Euler(targetRot), time);
+			TurretStartUp(startRot, targetRot, time);
+			//pivot.localRotation = Quaternion.Lerp(Quaternion.Euler(startRot), Quaternion.Euler(targetRot), time);
 			yield return null;
 		}
 		yield return new WaitForSeconds(0.2f);
-		Laser.SetActive(true);
+		ShowLaser();
 		yield return new WaitForSeconds(0.4f);
 		Svr_StartSearching();
 		StartCoroutine(Duration());
+	}
+	[ClientRpc]
+	private void TurretStartUp(Vector3 startRot, Vector3 targetRot, float time)
+	{
+		pivot.localRotation = Quaternion.Lerp(Quaternion.Euler(startRot), Quaternion.Euler(targetRot), time);
+	}
+	[ClientRpc]
+	private void ShowLaser()
+	{
+		Laser.SetActive(true);
 	}
 
 	#endregion
