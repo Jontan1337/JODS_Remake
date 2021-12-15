@@ -52,7 +52,7 @@ public abstract class GamemodeBase : NetworkBehaviour
 
     [Header("Points System Management")]
     [SerializeField] private int defaultStartingPoints = 0;
-    [SerializeField] private List<PlayerData> playerList = new List<PlayerData>();
+    [SerializeField] private readonly SyncList<PlayerData> playerList = new SyncList<PlayerData>();
 
     #region Point System and Player Scores
 
