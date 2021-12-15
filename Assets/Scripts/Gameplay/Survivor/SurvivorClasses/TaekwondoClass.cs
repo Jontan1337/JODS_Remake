@@ -83,7 +83,14 @@ public class TaekwondoClass : SurvivorClass, IHitter
 			StartCoroutine(FlyingKick());
 			GetComponentInParent<ActiveSClass>().StartAbilityCooldownCo();
 		}
-		else if (!kicking)
+		else if (!kicking && sController.isGrounded)
+		{
+			StartCoroutine(Kick());
+		}
+	}
+	public override void ActiveAbilitySecondary()
+	{
+		if (!kicking && sController.isGrounded)
 		{
 			StartCoroutine(Kick());
 		}
