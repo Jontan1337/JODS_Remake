@@ -444,10 +444,13 @@ MonoBehaviour:
   ignoreLayer:
     serializedVersion: 2
     m_Bits: 8192
-  damage: 5
+  currentDamage: 10
+  normalDamage: 10
+  currentPunchthrough: 2
+  normalPunchthrough: 2
   damageType: 1
-  attackInterval: 0.5
-  slashPower: 1
+  attackInterval: 0.2
+  chargeable: 0
   splatterAmount: 0
   maxSplatterAmount: 0.35
   splatterAmountOnHit: 0.04

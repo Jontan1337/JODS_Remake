@@ -74,7 +74,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     {
         material = GetComponent<MeshRenderer>().material;
         networkAnimator = GetComponent<NetworkAnimator>();
-        weaponAnimator.speed = attackInterval / 1f;
+        weaponAnimator.speed = 1f / attackInterval;
     }
 
     protected override void OnLMBPerformed(InputAction.CallbackContext context) => Cmd_StartAttack();
@@ -114,7 +114,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     [Command]
     private void Cmd_ResetAnimatorSpeed()
     {
-        weaponAnimator.speed = attackInterval / 1f;
+        weaponAnimator.speed = 1f / attackInterval;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -321,8 +321,8 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     {
         Cmd_EndOfAttack();
         transform.parent.DOComplete();
-        transform.parent.DOPunchPosition(new Vector3(0f, 0.1f, -0.1f), 0.5f, 10, 0.1f);
-        transform.parent.DOPunchRotation(new Vector3(0f, 2f, UnityEngine.Random.Range(-1f, 1f)), 0.5f, 10, 0.1f).OnComplete(OnPunchThroughLimitReached);
+        transform.parent.DOPunchPosition(new Vector3(0f, 0.1f, -0.1f), 0.4f, 10, 0.1f);
+        transform.parent.DOPunchRotation(new Vector3(2f, 1f, UnityEngine.Random.Range(-1f, 1f)), 0.4f, 10, 0.1f).OnComplete(OnPunchThroughLimitReached);
     }
 
     [ClientRpc]
