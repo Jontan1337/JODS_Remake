@@ -162,7 +162,6 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
     {
         // When parent changed, check if it's correctly set to player Survivor
         // and then find UI hotbar under Survivors canvas.
-        Debug.Log($"My parent {transform.parent}", this);
 
         if (transform.parent.name.Contains("Survivor"))
         {
