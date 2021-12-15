@@ -17,19 +17,19 @@ public class PlayerData
     }
 
     //Shared stats
-    public uint playerId;
-    public string playerName;
-    public int score;
-    public bool isMaster;
+    [SyncVar] public uint playerId;
+    [SyncVar] public string playerName;
+    [SyncVar] public int score;
+    [SyncVar] public bool isMaster;
 
     //Survivor Stats
-    public int points;
-    public int kills;
+    [SyncVar] public int points;
+    [SyncVar] public int kills;
 
     //Master Stats
-    public int unitsPlaced;
-    public int totalUpgrades;
-    public int totalUnitUpgrades;
+    [SyncVar] public int unitsPlaced;
+    [SyncVar] public int totalUpgrades;
+    [SyncVar] public int totalUnitUpgrades;
 }
 
 [RequireComponent(typeof(AudioSource))]
