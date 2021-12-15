@@ -36,7 +36,6 @@ public class GameSettings : MonoBehaviour
         }
 
         Application.targetFrameRate = Screen.currentResolution.refreshRate;
-        print(Screen.currentResolution.refreshRate);
     }
 
     public void SetPickupBehaviour(int index)

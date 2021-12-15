@@ -95,6 +95,14 @@ public class WeaponShop : NetworkBehaviour, IInteractable
         }
     }
 
+    private void OnDestroy()
+    {
+        if (playerGameObject != null)
+        {
+            CloseShop();
+        }
+    }
+
     public void InitializeShop() { }
 
     //THIS COROUTINE IS ONLY NECESSARY FOR TESTING PURPOSES. DELETE EVENTUALLY
