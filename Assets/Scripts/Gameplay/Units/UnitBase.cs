@@ -1460,6 +1460,11 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
         Health -= damage;
 
+        if (IsDead)
+        {
+            GamemodeBase.Instance.Svr_ModifyPoints(target.GetComponent<NetworkIdentity>().netId, 10);
+        }
+
         animator.SetTrigger("Hit");
     }
 

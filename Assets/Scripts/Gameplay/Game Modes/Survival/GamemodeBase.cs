@@ -19,6 +19,7 @@ public class PlayerData
     public uint playerId;
     public string playerName;
     public int score;
+    public bool isMaster;
 
     //Survivor Stats
     public int points;
@@ -77,7 +78,14 @@ public abstract class GamemodeBase : NetworkBehaviour
     [Server]
     public void Svr_ModifyPoints(uint playerId, int amount)
     {
-        GetPlayer(playerId).points += amount;
+        PlayerData playerToModify = GetPlayer(playerId);
+        playerToModify.points += amount;
+        if (amount > 0)
+        {
+            playerToModify.score += amount;
+        }
+
+        UpdateScoreboardRow(playerToModify);
     }
 
     [Server]
@@ -225,9 +233,33 @@ public abstract class GamemodeBase : NetworkBehaviour
 
         if (scoreboardIsOpen)
         {
-            foreach(ScoreboardRow row in masterRows)
+            UpdateScoreboard();
+        }
+    }
+
+    private void UpdateScoreboard()
+    {
+        foreach (PlayerData pd in playerList)
+        {
+            foreach (ScoreboardRow row in pd.isMaster ? masterRows : survivorRows)
             {
-                row.ChangeScores(GetPlayer(row.playerId));
+                if (row.playerId == pd.playerId)
+                {
+                    row.ChangeScores(pd);
+                    break;
+                }
+            }
+        }
+    }
+
+    private void UpdateScoreboardRow(PlayerData pd)
+    {
+        foreach (ScoreboardRow row in pd.isMaster ? masterRows : survivorRows)
+        {
+            if (row.playerId == pd.playerId)
+            {
+                row.ChangeScores(pd);
+                break;
             }
         }
     }
