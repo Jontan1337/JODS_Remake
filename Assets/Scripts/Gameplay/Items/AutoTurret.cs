@@ -400,12 +400,17 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 	// Invoked when the turret is put down on the ground.
 	// Starts the searching coroutine, the time until the turret dies and the cooldown on the engineers ability.
 	[Server]
-	public void Svr_OnPlaced()
+	private void Svr_OnPlaced()
 	{
 		GetComponentInParent<ActiveSClass>()?.StartAbilityCooldownCo();
+		ShowTurret();
+		StartCoroutine(StartUp());
+	}
+	[ClientRpc]
+	private void ShowTurret()
+	{
 		swivel.gameObject.SetActive(true);
 		cylinder.gameObject.SetActive(true);
-		StartCoroutine(StartUp());
 	}
 
 	private void OnDrawGizmos()
