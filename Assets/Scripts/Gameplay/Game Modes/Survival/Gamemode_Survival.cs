@@ -61,6 +61,8 @@ public class Gamemode_Survival : GamemodeBase
 
     private void NewShopPeriod()
     {
+        if (!mapSettings) return;
+
         AS.PlayOneShot(shopPeriodSpawnAudio, 1f);
 
         ShopSpawnPoint spawnpoint = mapSettings.shopSpawnPoints[Random.Range(0, mapSettings.shopSpawnPoints.Length)];

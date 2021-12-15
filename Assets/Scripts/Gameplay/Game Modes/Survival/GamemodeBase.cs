@@ -90,9 +90,10 @@ public abstract class GamemodeBase : NetworkBehaviour
     //TEMPORARY
     private void Update()
     {
-
-        scoreboard.SetActive(Input.GetKey(KeyCode.Tab));
-
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            scoreboard.SetActive(!scoreboard.activeSelf);
+        }
     }
 
     public override void OnStartServer()
@@ -103,6 +104,11 @@ public abstract class GamemodeBase : NetworkBehaviour
     private void Start()
     {
         AS = GetComponent<AudioSource>();
+
+        if (test)
+        {
+            Initialize();
+        }
     }
 
     private void Initialize()
@@ -182,4 +188,8 @@ public abstract class GamemodeBase : NetworkBehaviour
     }
 
     public abstract void InitializeGamemode();
+
+
+    [Header("Debug")]
+    [SerializeField] private bool test = false;
 }

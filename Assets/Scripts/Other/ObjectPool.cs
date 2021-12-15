@@ -66,8 +66,6 @@ public class ObjectPool : NetworkBehaviour
 
 	private void InitializeLocalPool()
     {
-		print("InitializeLocalPool");
-
 		localPoolDictionary = new Dictionary<string, Queue<GameObject>>();
 
 		//For each pool of objects (Prop Group, Obstacles, etc)
@@ -193,8 +191,6 @@ public class ObjectPool : NetworkBehaviour
 	[Server]
 	private void InitializeNetworkedPool()
 	{
-		print("InitializeNetworkedPool");
-
 		networkedPoolDictionary = new Dictionary<string, Queue<GameObject>>();
 
 		//For each pool of objects (Prop Group, Obstacles, etc)
