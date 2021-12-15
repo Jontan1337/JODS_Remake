@@ -7,6 +7,7 @@ using Mirror;
 [System.Serializable]
 public class PlayerData
 {
+    public PlayerData() { };
     public PlayerData(uint playerId, string playerName, int score)
     {
         this.playerId = playerId;
