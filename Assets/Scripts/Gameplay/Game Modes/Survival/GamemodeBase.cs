@@ -8,11 +8,12 @@ using Mirror;
 public class PlayerData
 {
     public PlayerData() { }
-    public PlayerData(uint playerId, string playerName, int score)
+    public PlayerData(uint playerId, string playerName, int score, bool isMaster)
     {
         this.playerId = playerId;
         this.playerName = playerName;
         this.score = score;
+        this.isMaster = isMaster;
         points = score;
     }
 
@@ -131,7 +132,7 @@ public abstract class GamemodeBase : NetworkBehaviour
     [Server]
     public void Svr_AddPlayer(uint playerId, string playerName, bool isMaster = false)
     {
-        PlayerData newPlayer = new PlayerData(playerId, playerName, defaultStartingPoints);
+        PlayerData newPlayer = new PlayerData(playerId, playerName, defaultStartingPoints, isMaster);
 
         // playerList.Add(newPlayer);
         Rpc_ChangePlayerList(newPlayer);
