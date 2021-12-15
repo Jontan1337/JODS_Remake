@@ -71,7 +71,24 @@ public abstract class GamemodeBase : NetworkBehaviour
     [ClientRpc]
     private void Rpc_ChangePlayerList(PlayerData playerData)
     {
-        playerList.Add(playerData);
+        bool playerExists = false;
+
+        int index = 0;
+        foreach (PlayerData player in playerList)
+        {
+            if (player.playerId == playerData.playerId)
+            {
+                index = playerList.IndexOf(player);
+                playerExists = true;
+            }
+        }
+
+        if (playerExists)
+        {
+            playerList[index] = playerData;
+        }
+
+        else playerList.Add(playerData);
     }
 
 
