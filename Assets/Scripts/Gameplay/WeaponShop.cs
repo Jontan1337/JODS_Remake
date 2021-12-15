@@ -307,7 +307,7 @@ public class WeaponShop : NetworkBehaviour, IInteractable
             else
             {
                 //If they have enough, detract the price from their points,
-                gamemode.Svr_ModifyPoints(playerId, -item.shopItemPrice);
+                gamemode.Svr_ModifyStat(playerId, -item.shopItemPrice);
                 Rpc_ShowPoints(identity.connectionToClient, gamemode.Svr_GetPoints(playerId));
             }
 

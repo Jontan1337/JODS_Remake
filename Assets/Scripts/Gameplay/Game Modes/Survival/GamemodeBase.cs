@@ -32,6 +32,16 @@ public class PlayerData
     [SyncVar] public int totalUnitUpgrades;
 }
 
+public enum PlayerDataStat
+{
+    Score,
+    Points,
+    Kills,
+    UnitsPlaced,
+    TotalUpgrades,
+    TotalUnitUpgrades
+}
+
 [RequireComponent(typeof(AudioSource))]
 public abstract class GamemodeBase : NetworkBehaviour
 {
@@ -53,9 +63,16 @@ public abstract class GamemodeBase : NetworkBehaviour
 
     [Header("Points System Management")]
     [SerializeField] private int defaultStartingPoints = 0;
-    [SerializeField] private readonly SyncList<PlayerData> playerList = new SyncList<PlayerData>();
+    [SerializeField] private List<PlayerData> playerList = new List<PlayerData>();
 
     #region Point System and Player Scores
+
+    [ClientRpc]
+    private void Rpc_ChangePlayerList(PlayerData playerData)
+    {
+        playerList.Add(playerData);
+    }
+
 
     private PlayerData GetPlayer(uint playerId)
     {
@@ -77,10 +94,32 @@ public abstract class GamemodeBase : NetworkBehaviour
     }
 
     [Server]
-    public void Svr_ModifyPoints(uint playerId, int amount)
+    public void Svr_ModifyStat(uint playerId, int amount, PlayerDataStat stat = PlayerDataStat.Score)
     {
         PlayerData playerToModify = GetPlayer(playerId);
-        playerToModify.points += amount;
+
+        switch (stat)
+        {
+            case PlayerDataStat.Points:
+                playerToModify.points += amount;
+                break;
+            case PlayerDataStat.Kills:
+                playerToModify.kills += amount;
+                break;
+            case PlayerDataStat.UnitsPlaced:
+                playerToModify.unitsPlaced += amount;
+                break;
+            case PlayerDataStat.TotalUnitUpgrades:
+                playerToModify.totalUnitUpgrades += amount;
+                break;   
+            case PlayerDataStat.TotalUpgrades:
+                playerToModify.totalUpgrades += amount;
+                break;
+        }
+
+
+        
+        
         if (amount > 0)
         {
             playerToModify.score += amount;
@@ -94,7 +133,8 @@ public abstract class GamemodeBase : NetworkBehaviour
     {
         PlayerData newPlayer = new PlayerData(playerId, playerName, defaultStartingPoints);
 
-        playerList.Add(newPlayer);
+        // playerList.Add(newPlayer);
+        Rpc_ChangePlayerList(newPlayer);
 
         //Assign the player to a scoreboard row
         foreach (ScoreboardRow row in isMaster ? masterRows : survivorRows)
