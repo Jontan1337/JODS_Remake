@@ -5,13 +5,14 @@ using UnityEngine.UI;
 using Mirror;
 
 [System.Serializable]
-public struct PlayerData
+public class PlayerData
 {
-    public PlayerData(uint playerId, string playerName, int score) : this()
+    public PlayerData(uint playerId, string playerName, int score)
     {
         this.playerId = playerId;
         this.playerName = playerName;
         this.score = score;
+        points = score;
     }
 
     //Shared stats
@@ -54,14 +55,15 @@ public abstract class GamemodeBase : NetworkBehaviour
 
     private PlayerData GetPlayer(uint playerId)
     {
+        int index = 0;
         foreach(PlayerData player in playerList)
         {
             if(player.playerId == playerId)
             {
-                return player;
+                index = playerList.IndexOf(player);
             }
         }
-        return new PlayerData();
+        return playerList[index];
     }
 
     [Server]
@@ -73,8 +75,7 @@ public abstract class GamemodeBase : NetworkBehaviour
     [Server]
     public void Svr_ModifyPoints(uint playerId, int amount)
     {
-        PlayerData player = GetPlayer(playerId);
-        player.points += amount;
+        GetPlayer(playerId).points += amount;
     }
 
     [Server]

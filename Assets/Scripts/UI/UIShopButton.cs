@@ -34,10 +34,6 @@ public class UIShopButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     public void OnButtonClick()
     {
-        Debug.Log("TODO: Points system. Make a check here to see if player has enough points to buy the item");
-
-        //If player has enough points
-        //Buy the item
         shop.BuyItem(shop.GetSlotIndex(this));
     }
 
