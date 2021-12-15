@@ -64,6 +64,7 @@ public class NetworkTest : NetworkManager
     public override void OnServerAddPlayer(NetworkConnection conn)
     {
         base.OnServerAddPlayer(conn);
+        GamemodeBase.Instance.Svr_AddPlayer(conn.identity.netId, "Player");
         playerIds.Add(conn);
         StartCoroutine(DispatchNewConnection(conn));
     }
@@ -76,6 +77,7 @@ public class NetworkTest : NetworkManager
         if (conn.connectionId != 0)
         {
             RelayOnServerAddPlayer?.Invoke(conn);
+
         }
 
         foreach (var item in networkBufferList)
