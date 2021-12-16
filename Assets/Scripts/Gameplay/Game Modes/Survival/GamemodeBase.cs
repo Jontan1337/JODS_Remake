@@ -103,7 +103,6 @@ public abstract class GamemodeBase : NetworkBehaviour
         }
     }
 
-
     private PlayerData GetPlayer(uint playerId)
     {
         int index = 0;
@@ -145,10 +144,7 @@ public abstract class GamemodeBase : NetworkBehaviour
             case PlayerDataStat.TotalUpgrades:
                 playerToModify.totalUpgrades += amount;
                 break;
-        }
-
-
-        
+        }        
         
         if (amount > 0)
         {
@@ -171,8 +167,6 @@ public abstract class GamemodeBase : NetworkBehaviour
 
         // playerList.Add(newPlayer);
         Rpc_ChangePlayerList(newPlayer);
-
-
     }
 
     #endregion
