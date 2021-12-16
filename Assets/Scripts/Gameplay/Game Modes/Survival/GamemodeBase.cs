@@ -89,6 +89,18 @@ public abstract class GamemodeBase : NetworkBehaviour
         }
 
         else playerList.Add(playerData);
+
+
+        //Assign the player to a scoreboard row
+        foreach (ScoreboardRow row in playerData.isMaster ? masterRows : survivorRows)
+        {
+            if (row.playerId == 0)
+            {
+                row.playerId = playerData.playerId;
+                row.SetupPlayerScore(playerData);
+                break;
+            }
+        }
     }
 
 
@@ -154,16 +166,7 @@ public abstract class GamemodeBase : NetworkBehaviour
         // playerList.Add(newPlayer);
         Rpc_ChangePlayerList(newPlayer);
 
-        //Assign the player to a scoreboard row
-        foreach (ScoreboardRow row in isMaster ? masterRows : survivorRows)
-        {
-            if (row.playerId == 0)
-            {
-                row.playerId = playerId;
-                row.SetupPlayerScore(newPlayer);
-                break;
-            }
-        }
+
     }
 
     #endregion
