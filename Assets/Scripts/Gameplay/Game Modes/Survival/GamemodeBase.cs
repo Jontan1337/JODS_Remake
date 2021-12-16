@@ -125,6 +125,12 @@ public abstract class GamemodeBase : NetworkBehaviour
     [Server]
     public void Svr_ModifyStat(uint playerId, int amount, PlayerDataStat stat = PlayerDataStat.Score)
     {
+        Rpc_ModifyPlayerData(playerId, amount, stat);
+    }
+
+    [ClientRpc]
+    private void Rpc_ModifyPlayerData(uint playerId, int amount, PlayerDataStat stat)
+    {
         PlayerData playerToModify = GetPlayer(playerId);
 
         switch (stat)
@@ -140,18 +146,18 @@ public abstract class GamemodeBase : NetworkBehaviour
                 break;
             case PlayerDataStat.TotalUnitUpgrades:
                 playerToModify.totalUnitUpgrades += amount;
-                break;   
+                break;
             case PlayerDataStat.TotalUpgrades:
                 playerToModify.totalUpgrades += amount;
                 break;
-        }        
-        
+        }
+
         if (amount > 0)
         {
             playerToModify.score += amount;
         }
 
-        Rpc_UpdateScoreboardRow(playerToModify);
+        UpdateScoreboardRow(playerToModify);
     }
 
     [ClientRpc]
@@ -301,6 +307,7 @@ public abstract class GamemodeBase : NetworkBehaviour
 
     private void UpdateScoreboard()
     {
+        print("updating entire scoreboard");
         foreach (PlayerData pd in playerList)
         {
             foreach (ScoreboardRow row in pd.isMaster ? masterRows : survivorRows)
@@ -316,6 +323,7 @@ public abstract class GamemodeBase : NetworkBehaviour
 
     private void UpdateScoreboardRow(PlayerData pd)
     {
+        print("updating " + pd.playerName + "'s scoreboard");
         foreach (ScoreboardRow row in pd.isMaster ? masterRows : survivorRows)
         {
             if (row.playerId == pd.playerId)
