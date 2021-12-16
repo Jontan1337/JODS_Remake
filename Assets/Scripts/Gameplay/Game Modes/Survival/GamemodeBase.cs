@@ -155,6 +155,12 @@ public abstract class GamemodeBase : NetworkBehaviour
             playerToModify.score += amount;
         }
 
+        Rpc_UpdateScoreboardRow(playerToModify);
+    }
+
+    [ClientRpc]
+    private void Rpc_UpdateScoreboardRow(PlayerData playerToModify)
+    {
         UpdateScoreboardRow(playerToModify);
     }
 
