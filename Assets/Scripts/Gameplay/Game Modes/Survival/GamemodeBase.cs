@@ -125,9 +125,36 @@ public abstract class GamemodeBase : NetworkBehaviour
     [Server]
     public void Svr_ModifyStat(uint playerId, int amount, PlayerDataStat stat = PlayerDataStat.Score)
     {
-        Rpc_ModifyPlayerData(playerId, amount, stat);
+        PlayerData playerToModify = GetPlayer(playerId);
+
+        switch (stat)
+        {
+            case PlayerDataStat.Points:
+                playerToModify.points += amount;
+                break;
+            case PlayerDataStat.Kills:
+                playerToModify.kills += amount;
+                break;
+            case PlayerDataStat.UnitsPlaced:
+                playerToModify.unitsPlaced += amount;
+                break;
+            case PlayerDataStat.TotalUnitUpgrades:
+                playerToModify.totalUnitUpgrades += amount;
+                break;
+            case PlayerDataStat.TotalUpgrades:
+                playerToModify.totalUpgrades += amount;
+                break;
+        }
+
+        if (amount > 0)
+        {
+            playerToModify.score += amount;
+        }
+
+        Rpc_UpdateScoreboardRow(playerToModify);
     }
 
+    /*
     [ClientRpc]
     private void Rpc_ModifyPlayerData(uint playerId, int amount, PlayerDataStat stat)
     {
@@ -159,6 +186,7 @@ public abstract class GamemodeBase : NetworkBehaviour
 
         UpdateScoreboardRow(playerToModify);
     }
+    */
 
     [ClientRpc]
     private void Rpc_UpdateScoreboardRow(PlayerData playerToModify)
