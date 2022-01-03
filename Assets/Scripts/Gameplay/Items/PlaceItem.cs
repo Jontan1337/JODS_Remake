@@ -128,7 +128,7 @@ public class PlaceItem : EquipmentItem
 		{
 			case EquipmentType.None:
 				base.Unbind();
-				Svr_DestroyGameObject();
+				Cmd_DestroyGameObject();
 				break;
 			case EquipmentType.Special:
 				if (dropItem)
@@ -141,8 +141,8 @@ public class PlaceItem : EquipmentItem
 		}
 	}
 
-	[Server]
-	private void Svr_DestroyGameObject()
+	[Command]
+	private void Cmd_DestroyGameObject()
 	{
 		NetworkServer.Destroy(gameObject);
 	}
