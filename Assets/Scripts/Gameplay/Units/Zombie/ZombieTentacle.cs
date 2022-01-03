@@ -90,12 +90,12 @@ public class ZombieTentacle : UnitBase, IZombie, IControllable
 
     public override void OnSelect()
     {
-        throw new System.NotImplementedException();
+        //throw new System.NotImplementedException();
     }
 
     public override void OnDeselect()
     {
-        throw new System.NotImplementedException();
+        //throw new System.NotImplementedException();
     }
 
     #region Interface Functions

@@ -970,7 +970,7 @@ public class UnitMaster : NetworkBehaviour
             }
 
             //Command my selected unit to move to the location
-            selectedUnit.MoveToLocation(hit.point);
+            selectedUnit.Svr_MoveToLocation(hit.point);
 
             StartSelectCoroutine();
         }

@@ -308,11 +308,14 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
                 rb.useGravity = false;
             }
         }
-        CoSearch = SearchCoroutine();
         InitialUnitSetup();
-        if (!searching) { StartCoroutine(CoSearch); searching = true; }
-
+        
         StartCoroutine(MovementAnimationCoroutine());
+
+        if (!isServer) return;
+
+        CoSearch = SearchCoroutine();
+        if (!searching) { StartCoroutine(CoSearch); searching = true; }
     }
 
     private void SetStats()
@@ -1336,7 +1339,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     #region Commands
 
-    public void MoveToLocation(Vector3 pos)
+    public void Svr_MoveToLocation(Vector3 pos)
     {
         //If the unit meets the requirements to be commanded to move to a new location
         //Requirements : (Not Chasing)
