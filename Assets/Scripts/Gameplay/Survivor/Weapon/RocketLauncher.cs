@@ -25,13 +25,9 @@ public class RocketLauncher : ProjectileWeapon
 	{
 		base.Unbind();
 
-        Cmd_Destroy();
-
-        /*
 
         if (hasAuthority) Cmd_Destroy();
 		else Svr_Destroy();
-        */
 	}
 	[Command]
 	public void Cmd_Destroy()
