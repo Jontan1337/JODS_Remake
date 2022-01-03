@@ -338,7 +338,6 @@ public abstract class GamemodeBase : NetworkBehaviour
 
     private void UpdateScoreboard()
     {
-        print("updating entire scoreboard");
         foreach (PlayerData pd in playerList)
         {
             foreach (ScoreboardRow row in pd.isMaster ? masterRows : survivorRows)
@@ -354,7 +353,6 @@ public abstract class GamemodeBase : NetworkBehaviour
 
     private void UpdateScoreboardRow(PlayerData pd)
     {
-        print("updating " + pd.playerName + "'s scoreboard");
         foreach (ScoreboardRow row in pd.isMaster ? masterRows : survivorRows)
         {
             if (row.playerId == pd.playerId)
@@ -364,8 +362,6 @@ public abstract class GamemodeBase : NetworkBehaviour
             }
         }
     }
-
-
 
     #endregion
 
