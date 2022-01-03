@@ -513,8 +513,8 @@ public class Lobby : NetworkManager
         //Check if everyone is ready
         if (IsEveryoneReady())
         {
-            countdown.StartCountdown();
             LobbySync.Instance.Rpc_StopRotation();
+            countdown.StartCountdown();
         }
         else
         {

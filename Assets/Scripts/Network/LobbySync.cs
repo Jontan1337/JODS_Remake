@@ -151,6 +151,8 @@ public class LobbySync : NetworkBehaviour
     [ClientRpc]
     private void Rpc_RotateNameTag(GameObject player, GameObject character)
     {
+        if (!character) return;
+
         // Set the nametag rotation to face the camera.
         character.GetComponent<LobbyCharacters>().nameTag.transform.rotation = 
             Quaternion.LookRotation
