@@ -1462,6 +1462,12 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
         if (IsDead)
         {
+            if (!target)
+            {
+                Debug.LogError("Zombie doesn't know who killed em, so can't give points");
+                return;
+            }
+
             GamemodeBase.Instance.Svr_ModifyStat(target.GetComponent<NetworkIdentity>().netId, 10, PlayerDataStat.Points);
             GamemodeBase.Instance.Svr_ModifyStat(target.GetComponent<NetworkIdentity>().netId, 1, PlayerDataStat.Kills);
         }
