@@ -98,6 +98,12 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     }
     public Special special;
 
+    private enum AttackAnimation{
+        Melee,
+        Ranged,
+        Special
+    }
+
     [Header("Movement")]
     [SerializeField] private float movementSpeed = 1.5f;
     [Space]
@@ -245,7 +251,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         {
             if (value == attackMelee) return;
             attackMelee = value;
-            animator.SetBool("Melee", attackMelee);
+            Rpc_PlayAttackAnimation(AttackAnimation.Melee, attackMelee);
             //melee.canMelee = false;
         }
     }
@@ -257,7 +263,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             print("attafk");
             if (value == attackRange) return;
             attackRange = value;
-            animator.SetBool("Ranged", attackRange);
+            Rpc_PlayAttackAnimation(AttackAnimation.Ranged, attackRange);
         }
     }
     public bool AttackSpecial
@@ -267,7 +273,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         {
             if (value == attackSpecial) return;
             attackSpecial = value;
-            animator.SetBool("Special", attackSpecial);
+            Rpc_PlayAttackAnimation(AttackAnimation.Special, attackSpecial);
         }
     }
     public int Health
@@ -565,8 +571,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
 
         if (upgrades.upgradeMovementSpeed) movementSpeed = Mathf.Clamp(movementSpeed + (upgrades.movementSpeedUpgradeIncrease * (unitLevel - 1)), 0, upgrades.movementSpeedUpgradeMax);
-
-        //print("Stats multiplier not implemented (" + multiplier + ")");
     }
 
     #endregion
@@ -1365,6 +1369,29 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     }
 
     #endregion
+
+    #endregion
+
+    #region Animation
+
+    [ClientRpc]
+    private void Rpc_PlayAttackAnimation(AttackAnimation anim, bool value)
+    {
+        switch (anim)
+        {
+            case AttackAnimation.Melee:
+                animator.SetBool("Melee", value);
+                break;
+                
+            case AttackAnimation.Ranged:
+                animator.SetBool("Ranged", value);
+                break;
+                
+            case AttackAnimation.Special:
+                animator.SetBool("Special", value);
+                break;
+        }
+    }
 
     #endregion
 

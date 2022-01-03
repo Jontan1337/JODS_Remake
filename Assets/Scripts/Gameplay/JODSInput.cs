@@ -15,11 +15,13 @@ public class JODSInput : MonoBehaviour
 
     private void OnEnable()
     {
+        if (Controls == null) return;
         Controls.Enable();
     }
 
     private void OnDisable()
     {
+        if (Controls == null) return;
         Controls.Disable();
     }
 
