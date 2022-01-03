@@ -94,7 +94,7 @@ public class LobbySync : NetworkBehaviour
                     LobbyCharacters tempLobbyCharacter = tempLobbyPlayer.GetComponent<LobbyCharacters>();
 
                     StartCoroutine(GetPlayerInfo(tempLobbyCharacter));
-                    StartCoroutine(RotateNameTag(tempLobbyPlayer, lobbyPlayerCharacter.gameObject));
+                    RotateNameTagCo = StartCoroutine(RotateNameTag(tempLobbyPlayer, lobbyPlayerCharacter.gameObject));
                 }
             }
         }
@@ -117,6 +117,7 @@ public class LobbySync : NetworkBehaviour
         playerCharacter.transform.rotation = playerSeat.transform.rotation;
     }
 
+    private Coroutine RotateNameTagCo;
     private IEnumerator RotateNameTag(GameObject player, GameObject character)
     {
         // Wait for a small amount of time because the network is delayed or something?
@@ -128,6 +129,10 @@ public class LobbySync : NetworkBehaviour
             yield return new WaitForSeconds(0.1f);
         }
 
+    }
+    public void StopRotation()
+    {
+        StopCoroutine(RotateNameTagCo);
     }
     private void SetLobbyCamera(GameObject player)
     {
