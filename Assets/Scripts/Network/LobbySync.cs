@@ -94,7 +94,7 @@ public class LobbySync : NetworkBehaviour
                     LobbyCharacters tempLobbyCharacter = tempLobbyPlayer.GetComponent<LobbyCharacters>();
 
                     StartCoroutine(GetPlayerInfo(tempLobbyCharacter));
-                    RotateNameTagCo = StartCoroutine(RotateNameTag(tempLobbyPlayer, lobbyPlayerCharacter.gameObject));
+                    StartCoroutine(RotateNameTag(tempLobbyPlayer, lobbyPlayerCharacter.gameObject));
                 }
             }
         }
@@ -117,24 +117,22 @@ public class LobbySync : NetworkBehaviour
         playerCharacter.transform.rotation = playerSeat.transform.rotation;
     }
 
-    private Coroutine RotateNameTagCo;
     private IEnumerator RotateNameTag(GameObject player, GameObject character)
     {
         // Wait for a small amount of time because the network is delayed or something?
         yield return new WaitForSeconds(0.2f);
 
-        while (true)
+        int refreshes = 5;
+
+        while (refreshes > 0)
         {
             Rpc_RotateNameTag(player, character);
             yield return new WaitForSeconds(0.1f);
+            refreshes--;
         }
 
     }
-    [Server]
-    public void Svr_StopRotation()
-    {
-        StopCoroutine(RotateNameTagCo);
-    }
+
     private void SetLobbyCamera(GameObject player)
     {
         Rpc_SetLobbyCamera(player);
