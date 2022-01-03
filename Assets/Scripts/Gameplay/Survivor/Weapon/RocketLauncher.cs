@@ -24,7 +24,8 @@ public class RocketLauncher : ProjectileWeapon
 	public override void Unbind()
 	{
 		base.Unbind();
-		Cmd_Destroy();
+        if (hasAuthority) Cmd_Destroy();
+		else Svr_Destroy();
 	}
 	[Command]
 	public void Cmd_Destroy()
@@ -32,7 +33,13 @@ public class RocketLauncher : ProjectileWeapon
 		StartCoroutine(DestroyWait());
 		//NetworkServer.Destroy(gameObject);
 	}
-	IEnumerator DestroyWait()
+    [Server]
+    public void Svr_Destroy()
+    {
+        StartCoroutine(DestroyWait());
+        //NetworkServer.Destroy(gameObject);
+    }
+    IEnumerator DestroyWait()
 	{
 		yield return new WaitForSeconds(0.1f);
 		NetworkServer.Destroy(gameObject);
