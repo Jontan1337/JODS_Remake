@@ -8,7 +8,7 @@ public class LobbyCharacters : NetworkBehaviour
     [SyncVar] public int lobbyCharID;
     [Header("References")]
     public LobbyPlayer player;
-    public GameObject smoke;
+    public GameObject masterEffects;
     public new GameObject light;
     public GameObject nameTag;
     [Space]
@@ -18,14 +18,11 @@ public class LobbyCharacters : NetworkBehaviour
     [Header("Default Character")]
     [SerializeField] private Material defaultMaterial = null;
 
-    private ParticleSystem charSmoke;
-
     private List<SurvivorSO> survivorSOList = new List<SurvivorSO>();
 
     private void Start()
     {
         survivorSOList = PlayableCharactersManager.instance.GetAllSurvivors();
-        charSmoke = smoke.GetComponent<ParticleSystem>();
     }
 
     // Register when the lobby character is assigned to a parent player.
@@ -77,16 +74,9 @@ public class LobbyCharacters : NetworkBehaviour
         Rpc_ToggleChoice(want ? want : player.wantsToBeMaster);
     }
     [ClientRpc]
-    public void Rpc_ToggleChoice(bool playSmoke)
+    public void Rpc_ToggleChoice(bool enable)
     {
-        if (playSmoke)
-        {
-            charSmoke.Play();
-        }
-        else
-        {
-            charSmoke.Stop();
-        }
+        masterEffects.SetActive(enable);
     }
 
     [Server]
