@@ -597,7 +597,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     {
         while (!isDead)
         {
-            yield return new WaitForSeconds(0.01f);
+            yield return new WaitForSeconds(0.2f);
 
             //Set Walk Animation, if walking
             Walking = navAgent.velocity.magnitude > 0.1f;
