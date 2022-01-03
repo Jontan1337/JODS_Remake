@@ -130,8 +130,8 @@ public class LobbySync : NetworkBehaviour
         }
 
     }
-    [ClientRpc]
-    public void Rpc_StopRotation()
+    [Server]
+    public void Svr_StopRotation()
     {
         StopCoroutine(RotateNameTagCo);
     }
