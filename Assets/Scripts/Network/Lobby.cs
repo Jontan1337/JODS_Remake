@@ -514,7 +514,7 @@ public class Lobby : NetworkManager
         if (IsEveryoneReady())
         {
             countdown.StartCountdown();
-            Rpc_EveryoneIsReady();
+            LobbySync.Instance.Rpc_StopRotation();
         }
         else
         {
@@ -531,12 +531,6 @@ public class Lobby : NetworkManager
         }
         //If all are ready, return true.
         return true;
-    }
-
-    [ClientRpc]
-    private void Rpc_EveryoneIsReady()
-    {
-        LobbySync.Instance.StopRotation();
     }
 
     public void ServerCountdownCompleted()
