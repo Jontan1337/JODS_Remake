@@ -49,6 +49,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         public float meleeCooldown = 0;
         [Space]
         public bool canMelee = true;
+        //public bool standStill = true;
         [Space]
         public StatusEffectSO statusEffectToApply = null;
         public int amount = 0;
@@ -260,7 +261,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         get { return attackRange; }
         set
         {
-            print("attafk");
             if (value == attackRange) return;
             attackRange = value;
             Rpc_PlayAttackAnimation(AttackAnimation.Ranged, attackRange);
@@ -597,7 +597,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     {
         while (!isDead)
         {
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds(0.01f);
 
             //Set Walk Animation, if walking
             Walking = navAgent.velocity.magnitude > 0.1f;
@@ -930,8 +930,13 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     {
         if (CanSee(currentTarget) && CanMeleeAttack)
         {
-            bool inRange = WithinMeleeRange(); //This could be optimized later
-            if (inRange && !stoppedMoving) StopMovement();
+            /*
+            if (melee.standStill)
+            {
+                bool inRange = WithinMeleeRange(); //This could be optimized later
+                if (inRange && !stoppedMoving) StopMovement();
+            }
+            */
 
             AttackMelee = true;
             LookAtTarget();
@@ -952,7 +957,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         if (!isServer) return;
 
         AttackMelee = false;
-        ResumeMovement();
+        if (stoppedMoving) ResumeMovement();
 
         //This will check one last time if the survivor is within melee range. 
         //Because the survivor might have moved while a melee animation was happening.
@@ -1003,8 +1008,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     }
     public virtual void SpawnProjectile()
     {
-        print("wtf");
-
         if (ranged.standStill) ResumeMovement();
         if (ranged.directRangedAttack)
         {
