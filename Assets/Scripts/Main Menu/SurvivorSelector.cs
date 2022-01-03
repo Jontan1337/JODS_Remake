@@ -47,8 +47,6 @@ public class SurvivorSelector : NetworkBehaviour
             if (highlight == null) highlight = SurvivorSelectHighlight.instance;
             if (Camera.main)
             {
-
-
                 RaycastHit hit;
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 

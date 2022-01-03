@@ -25,7 +25,7 @@ public class RocketLauncher : ProjectileWeapon
 	{
 		base.Unbind();
 
-
+        //epik fix
         if (hasAuthority) Cmd_Destroy();
 		else Svr_Destroy();
 	}

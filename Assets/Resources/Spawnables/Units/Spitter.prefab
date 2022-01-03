@@ -1332,6 +1332,11 @@ MonoBehaviour:
   isMelee: 1
   isRanged: 1
   hasSpecial: 0
+  upgrades:
+    upgradeMultiplier: 0.1
+    upgradeMovementSpeed: 1
+    movementSpeedUpgradeIncrease: 0.1
+    movementSpeedUpgradeMax: 3
   melee:
     meleeDamageMin: 2
     meleeDamageMax: 10
@@ -1347,6 +1352,8 @@ MonoBehaviour:
     maxRange: 25
     rangedCooldown: 5
     preferredRange: 15
+    TEMPProjectilePrefab: {fileID: 3613215282632267500, guid: 2fecdf493e9322a4d892f94dac02076a,
+      type: 3}
     projectileTag: 5
     projectileSpeed: 20
     projectileSpawnLocation: {x: 0, y: 1.8, z: 0.5}

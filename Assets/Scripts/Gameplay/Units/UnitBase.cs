@@ -65,6 +65,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         public int rangedCooldown = 0;
         public int preferredRange = 0;
         [Space]
+        public GameObject TEMPProjectilePrefab;
         public Tags projectileTag;
         public int projectileSpeed;
         public Vector3 projectileSpawnLocation;
@@ -1002,7 +1003,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             return;
         }
         //Spawn the projectile
-        GameObject projectile = ObjectPool.Instance.SpawnFromNetworkedPool(ranged.projectileTag, transform.TransformPoint(ranged.projectileSpawnLocation), Quaternion.identity);
+        GameObject projectile = Instantiate(ranged.TEMPProjectilePrefab, transform.TransformPoint(ranged.projectileSpawnLocation), Quaternion.identity);
+        //GameObject projectile = ObjectPool.Instance.SpawnFromNetworkedPool(ranged.projectileTag, transform.TransformPoint(ranged.projectileSpawnLocation), Quaternion.identity);
 
         //Aim the projectile at the current target.
         projectile.transform.LookAt(new Vector3(currentTarget.position.x, projectile.transform.position.y, currentTarget.position.z));
@@ -1017,6 +1019,9 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         uProjectile.damage = ranged.rangedDamage;
         uProjectile.statusEffectToApply = ranged.statusEffectToApply;
         uProjectile.amount = ranged.amount;
+
+        //TEMPORARY
+        NetworkServer.Spawn(projectile);
 
         AttackRange = false; //Disables this bool, allowing the unit to do another ranged attack.
         StartCoroutine(RangedCooldownCoroutine()); //Start cooldown
