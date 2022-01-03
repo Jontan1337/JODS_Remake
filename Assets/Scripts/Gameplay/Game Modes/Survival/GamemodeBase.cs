@@ -125,6 +125,7 @@ public abstract class GamemodeBase : NetworkBehaviour
     [Server]
     public void Svr_ModifyStat(uint playerId, int amount, PlayerDataStat stat = PlayerDataStat.Score)
     {
+        /*
         PlayerData playerToModify = GetPlayer(playerId);
 
         switch (stat)
@@ -150,6 +151,8 @@ public abstract class GamemodeBase : NetworkBehaviour
         {
             playerToModify.score += amount;
         }
+
+        */
 
         Rpc_ModifyPlayerData(playerId, amount, stat);
     }
