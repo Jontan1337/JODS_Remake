@@ -122,7 +122,12 @@ public class LobbySync : NetworkBehaviour
         // Wait for a small amount of time because the network is delayed or something?
         yield return new WaitForSeconds(0.2f);
 
-        Rpc_RotateNameTag(player, character);
+        while (true)
+        {
+            Rpc_RotateNameTag(player, character);
+            yield return new WaitForSeconds(0.1f);
+        }
+
     }
     private void SetLobbyCamera(GameObject player)
     {
