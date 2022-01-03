@@ -83,7 +83,9 @@ public class PlaceItem : EquipmentItem
 		if (!obstructed && placeholderActive)
 		{
 			Rpc_Cleanup(connectionToClient);
-			OnPlaced?.Invoke();
+			//OnPlaced?.Invoke();
+			GetComponent<IPlaceable>().Owner = transform.root;
+			GetComponent<IPlaceable>()?.Svr_OnPlaced();
 			transform.position = placeholderPos;
 			transform.rotation = placeholderRot;
 			transform.parent = null;
