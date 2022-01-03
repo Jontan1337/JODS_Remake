@@ -6,7 +6,7 @@ using UnityEngine;
 
 
 
-public class AutoTurret : NetworkBehaviour, IDamagable
+public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 {
 	[Header("Stats")]
 	[SerializeField] private float range = 30;
@@ -173,7 +173,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		Rpc_BulletTrail(didHit.point);
 		// The turret uses a raycast to check if a damagable unit is in front of its barrel.
 		// The turret will shoot at any unit that can be damaged, even if it's not the target.
-		didHit.transform.GetComponent<IDamagable>()?.Svr_Damage(damage, transform);
+		didHit.transform.GetComponent<IDamagable>()?.Svr_Damage(damage, Owner);
 
 		// If the target is dead after the shot, the target is lost.
 		if (target.GetComponent<IDamagable>().IsDead)
@@ -408,15 +408,8 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 			item.Play();
 		}
 	}
-	// Invoked when the turret is put down on the ground.
-	// Starts the searching coroutine, the time until the turret dies and the cooldown on the engineers ability.
-	[Server]
-	private void Svr_OnPlaced()
-	{
-		GetComponentInParent<ActiveSClass>()?.StartAbilityCooldownCo();
-		ShowTurret();
-		StartCoroutine(StartUp());
-	}
+
+
 	[ClientRpc]
 	private void ShowTurret()
 	{
@@ -453,10 +446,38 @@ public class AutoTurret : NetworkBehaviour, IDamagable
 		}
 	}
 
-	public int GetHealth => health;
+
+
+    public int GetHealth => health;
 	public bool IsDead => isDead;
 
 
 
+
+
 	#endregion
+
+	#region Placeable
+
+	// Invoked when the turret is put down on the ground.
+	// Starts the searching coroutine, the time until the turret dies and the cooldown on the engineers ability.
+	[Server]
+	public void Svr_OnPlaced()
+	{
+		Rpc_OnPlaced(Owner.GetComponent<NetworkIdentity>().connectionToClient);
+		ShowTurret();
+		StartCoroutine(StartUp());
+	}
+
+	[TargetRpc]
+	private void Rpc_OnPlaced(NetworkConnection conn)
+    {
+		Owner.GetComponentInParent<ActiveSClass>()?.StartAbilityCooldownCo();
+	}
+
+	public Transform Owner { get; set; }
+
+	#endregion
+
+
 }
