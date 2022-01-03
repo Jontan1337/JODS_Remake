@@ -254,6 +254,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         get { return attackRange; }
         set
         {
+            print("attafk");
             if (value == attackRange) return;
             attackRange = value;
             animator.SetBool("Ranged", attackRange);
@@ -998,6 +999,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     }
     public virtual void SpawnProjectile()
     {
+        print("wtf");
+
         if (ranged.standStill) ResumeMovement();
         if (ranged.directRangedAttack)
         {
