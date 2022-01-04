@@ -58,7 +58,7 @@ public class ZombieTentacle : UnitBase, IZombie, IControllable
 
     private IEnumerator GrabEnumerator()
     {
-        while (HasTarget())
+        while (currentTarget)
         {
             if (!WithinSpecialDistance()) break;
 

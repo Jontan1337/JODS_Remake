@@ -919,7 +919,6 @@ GameObject:
   - component: {fileID: 3111955437412843389}
   - component: {fileID: 7268481018662647202}
   - component: {fileID: 8474330984967329327}
-  - component: {fileID: 8073584086447519524}
   - component: {fileID: 6031390602394093755}
   - component: {fileID: 4357786088293068199}
   - component: {fileID: 1929941139300681039}
@@ -927,6 +926,9 @@ GameObject:
   - component: {fileID: 1176566101888023450}
   - component: {fileID: 3108551447775370058}
   - component: {fileID: 2528154675861264777}
+  - component: {fileID: 890206177}
+  - component: {fileID: 890206175}
+  - component: {fileID: 890206176}
   m_Layer: 9
   m_Name: Tentacle
   m_TagString: Untagged
@@ -942,7 +944,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2334045856554427847}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.2411394, y: 0, z: 22.286592}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 6313826403556896739}
@@ -973,6 +975,11 @@ MonoBehaviour:
   isMelee: 1
   isRanged: 0
   hasSpecial: 1
+  upgrades:
+    upgradeMultiplier: 0.1
+    upgradeMovementSpeed: 1
+    movementSpeedUpgradeIncrease: 0.1
+    movementSpeedUpgradeMax: 3
   melee:
     meleeDamageMin: 2
     meleeDamageMax: 5
@@ -988,6 +995,7 @@ MonoBehaviour:
     maxRange: 20
     rangedCooldown: 5
     preferredRange: 15
+    TEMPProjectilePrefab: {fileID: 0}
     projectileTag: 0
     projectileSpeed: 0
     projectileSpawnLocation: {x: 0, y: 0, z: 0}
@@ -1026,8 +1034,6 @@ MonoBehaviour:
     m_Bits: 512
   particleColor: {r: 1, g: 0, b: 0, a: 1}
   currentTarget: {fileID: 0}
-  navAgent: {fileID: 0}
-  hasTarget: 0
   permanentTarget: 1
   animator: {fileID: 8474330984967329327}
   bodyRenderer: {fileID: 4180718029855638980}
@@ -1058,6 +1064,9 @@ MonoBehaviour:
     unitMats: []
     isSelected: 0
   canRagdoll: 1
+  canPathfind: 1
+  stopMovement: 0
+  stopPathfinding: 0
   CaughtSurvivor: 0
 --- !u!95 &8474330984967329327
 Animator:
@@ -1078,28 +1087,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!195 &8073584086447519524
-NavMeshAgent:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2334045856554427847}
-  m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.5
-  m_Speed: 3.5
-  m_Acceleration: 8
-  avoidancePriority: 50
-  m_AngularSpeed: 120
-  m_StoppingDistance: 0
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
-  m_AutoRepath: 1
-  m_Height: 2
-  m_BaseOffset: 0
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
 --- !u!65 &6031390602394093755
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1108,7 +1095,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2334045856554427847}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 2, z: 1}
@@ -1294,6 +1281,94 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   statusEffects: []
+--- !u!143 &890206177
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2334045856554427847}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Height: 1.85
+  m_Radius: 0.3
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &890206175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2334045856554427847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6eb1402c17e84a9282a7f0f62eb584f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 5
+  radius: 0.5
+  height: 2
+  canMove: 1
+  maxSpeed: 1
+  gravity: {x: NaN, y: NaN, z: NaN}
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  centerOffsetCompatibility: NaN
+  repathRateCompatibility: NaN
+  canSearchCompability: 0
+  orientation: 0
+  enableRotation: 1
+  autoRepath:
+    mode: 0
+    interval: 0.5
+    sensitivity: 10
+    maximumInterval: 2
+    visualizeSensitivity: 0
+  targetCompatibility: {fileID: 0}
+  maxAcceleration: -2.5
+  rotationSpeed: 360
+  slowdownDistance: 0.6
+  pickNextWaypointDist: 2
+  endReachedDistance: 0.2
+  alwaysDrawGizmos: 0
+  slowWhenNotFacingTarget: 1
+  whenCloseToDestination: 0
+  constrainInsideGraph: 0
+--- !u!114 &890206176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2334045856554427847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 373b52eb9bf8c40f785bb6947a1aee66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1
+  drawGizmos: 1
+  detailedGizmos: 0
+  startEndModifier:
+    addPoints: 0
+    exactStartPoint: 3
+    exactEndPoint: 3
+    useRaycasting: 0
+    mask:
+      serializedVersion: 2
+      m_Bits: 4294967295
+    useGraphRaycasting: 0
+  traversableTags: -1
+  tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  graphMask:
+    value: -1
 --- !u!1 &2382456407788445095
 GameObject:
   m_ObjectHideFlags: 0
@@ -4318,15 +4393,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 47f46eb35d857c34fb1b1ccd121d07fc, type: 3}
---- !u!4 &8897014060617393500 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1608835893210805546, guid: 47f46eb35d857c34fb1b1ccd121d07fc,
-    type: 3}
-  m_PrefabInstance: {fileID: 7866434632927613046}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &6861081812566651907 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3610836937551029365, guid: 47f46eb35d857c34fb1b1ccd121d07fc,
+    type: 3}
+  m_PrefabInstance: {fileID: 7866434632927613046}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8897014060617393500 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1608835893210805546, guid: 47f46eb35d857c34fb1b1ccd121d07fc,
     type: 3}
   m_PrefabInstance: {fileID: 7866434632927613046}
   m_PrefabAsset: {fileID: 0}

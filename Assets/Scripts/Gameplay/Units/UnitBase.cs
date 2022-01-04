@@ -1,17 +1,19 @@
-﻿using System.Threading.Tasks;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.AI;
+using Pathfinding;
 using Mirror;
 
 [RequireComponent(typeof(Animator))]
-[RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(BoxCollider))]
 [RequireComponent(typeof(NetworkIdentity))]
 [RequireComponent(typeof(NetworkAnimator))]
 [RequireComponent(typeof(NetworkTransform))]
 [RequireComponent(typeof(AudioSource))]
+[RequireComponent(typeof(Dissolve))]
+[RequireComponent(typeof(StatusEffectManager))]
+[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(Seeker))]
+[RequireComponent(typeof(AIPath))]
 
 public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 {
@@ -126,10 +128,12 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     [Header("AI")]
     [SerializeField] protected Transform currentTarget = null;
-    public NavMeshAgent navAgent;
-    [SerializeField] private bool hasTarget = false;
     [SerializeField] private bool permanentTarget = true;
     protected bool targetIsLiveEntity = false;
+    private Seeker seeker;
+    private AIPath ai;
+    private CharacterController controller;
+    Path path;
 
     [Header("References")]
     public Animator animator;
@@ -304,6 +308,12 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         if (unitSO) SetStats();
     }
 
+    private void OnDisable()
+    {
+        if (seeker == null) return;
+        seeker.pathCallback -= OnPathComplete;
+    }
+
     public virtual void Start()
     {
         if (canRagdoll)
@@ -436,8 +446,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         if (unitSO == null)
         {
             Debug.LogError($"{name} had no Unit Scriptable Object and could not be setup properly. " +
-                $"This should not be possible, if the unit is spawned by the master." +
-                $"If this unit was not spawned by the-- Master, then ignore this.");
+                $"This should not be possible, if the unit is spawned by the master. " +
+                $"If this unit was not spawned by the Master, then ignore this.");
             return;
         }
 
@@ -446,12 +456,13 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         //If the unit's level is higher than 1 (base level), then increase stats.
         if (unitLevel > 1) IncreaseStats(); //Increase the stats based on what level the unit is.
 
-        //Nav Mesh 
-        navAgent = GetComponent<NavMeshAgent>();
-        navAgent.speed = movementSpeed;
-        navAgent.acceleration = 60;
-        navAgent.stoppingDistance = Mathf.Clamp(melee.meleeRange - 0.5f, 1f, 20f);
-        navAgent.avoidancePriority = Random.Range(1, 100);
+        //Pathfinding
+        seeker = GetComponent<Seeker>();
+        seeker.pathCallback += OnPathComplete;
+        controller = GetComponent<CharacterController>();
+        ai = GetComponent<AIPath>();
+        ai.maxSpeed = movementSpeed;
+        
 
         //Animations -----------------------
         animator = GetComponent<Animator>();
@@ -577,18 +588,73 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     #region Movement
 
+    #region Pathfinding
+
+    bool repathDelay = false;
+    public bool canPathfind = true;
+    private void Repath(bool lessRepaths = false, Vector3? commandLocation = null)
+    {
+        if (!canPathfind) return; //I can't pathfind, so...
+
+        //Check if it is necessary to repath
+        //has the player moved? etc.
+        //Less repaths if the target is far away or out of sight
+
+        repathDelay = lessRepaths ? !repathDelay : false;
+        if (repathDelay) return; //If there's a repath delay, then don't repath.
+        //Every second repath request passes through if there's a delay
+
+        if (!currentTarget) return; //If I have no target, then what am I pathing towards?...
+
+        //Calculate a new path for the unit.
+        seeker.StartPath(transform.position, 
+            commandLocation != null ? (Vector3)commandLocation : currentTarget.position);
+    }
+
+    private void OnPathComplete(Path p)
+    {
+        //Pool the path
+        p.Claim(this);
+
+        if (!p.error)
+        {
+            //Release the previous path from the pool
+            if (path != null) path.Release(this);
+            //Make the stored path the new path
+            path = p;
+        }
+        else
+        {
+            path.Release(this);
+        }
+    }
+
+    private void EnablePathfinding(bool enable = true, bool stopPath = false)
+    {
+        if (!enable && stopPath)
+        {
+            //Cancel the path
+            seeker.StartPath(transform.position, transform.position);
+
+        }
+
+        canPathfind = enable;
+    }
+
+    #endregion
+
     protected void StopMovement()
     {
-        navAgent.speed = 0;
+        if (stoppedMoving) return;
+        print(new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name);
+        EnablePathfinding(false, true);
         stoppedMoving = true;
-        navAgent.isStopped = true;
-        navAgent.ResetPath();
     }
     protected void ResumeMovement()
     {
         if (stoppedMoving)
         {
-            navAgent.speed = movementSpeed;
+            EnablePathfinding();
             stoppedMoving = false;
         }
     }
@@ -600,7 +666,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             yield return new WaitForSeconds(0.2f);
 
             //Set Walk Animation, if walking
-            Walking = navAgent.velocity.magnitude > 0.1f;
+            Walking = controller.velocity.magnitude > 0.1f;
         }
     }
 
@@ -613,7 +679,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         while (!isDead)
         {
             yield return new WaitForSeconds(0.5f);
-
+            
             //Search ----------
 
             //Get a list of all survivor colliders within Sight Distance
@@ -644,7 +710,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
         if (!closerThanCurrent)
         {
-            if (HasTarget())
+            if (currentTarget)
             {
                 if (!CloserThanTarget(newTarget)) return;
             }
@@ -663,7 +729,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     {
         //Lose the target
         SetTarget(null);
-        HasTarget();
 
         //Stop the chase coroutine (stop chasing the survivor)
         if (chasing) { StopCoroutine(CoChase); chasing = false; }
@@ -673,19 +738,9 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         if (!searching) { StartCoroutine(CoSearch); searching = true; }
 
         //Stop moving
-        navAgent.isStopped = true;
-        navAgent.ResetPath();
-
-        //Set Walk Animation to not walk
-        Walking = false;
+        EnablePathfinding(false);
 
         print($"{name} : Mission failed, we'll get em next time");
-    }
-
-    protected bool HasTarget()
-    {
-        hasTarget = (currentTarget != null);
-        return hasTarget;
     }
 
     private void SetTarget(Transform newTarget, bool? permanent = false)
@@ -698,11 +753,13 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     {
         //Stop searching for more survivors
         if (searching) { StopCoroutine(CoSearch); searching = false; }
+        if (stoppedMoving) ResumeMovement();
+        if (!canPathfind) EnablePathfinding();
 
-        if (HasTarget()) 
+        if (currentTarget) 
         {
             chaseTime = unitSO.chaseTime;
-            navAgent.SetDestination(currentTarget.position);
+            Repath();
 
             if (!chasing) { CoChase = StartCoroutine(ChaseCoroutine()); chasing = true; }
             if (!attacking) { CoAttack = StartCoroutine(AttackCoroutine()); attacking = true; }
@@ -719,13 +776,13 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         {
             yield return new WaitForSeconds(0.5f);
 
-            if (!hasTarget) LoseTarget();
+            if (!currentTarget) LoseTarget();
 
             //Can I see the player?
             if (CanSee(currentTarget) || permanentTarget) //Permanent targets don't need to be in view
             {
                 chaseTime = unitSO.chaseTime;
-                navAgent.SetDestination(currentTarget.position);
+                Repath();
 
                 //This whole thing could be optimized?
                 //Currently it does a distance check every 0.5 seconds if ranged.
@@ -745,19 +802,16 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
                         }
                     }
                 }
-
-                else
-                {
-                    if (NextToTarget()) StopMovement();
-                    else if (!NextToTarget()) ResumeMovement();
-                }
             }
             else
             {
+                //If I can't see the target, my chase time goes down.
+                //If I don't find the target before it runs out, I lose them.
                 chaseTime -= 0.5f;
+                //I will still repath to the player for 1/4th of the chase time duration.
                 if (chaseTime > unitSO.chaseTime * 0.75f)
                 {
-                    navAgent.SetDestination(currentTarget.position);
+                    Repath();
                 }
                 if (chaseTime <= 0)
                 {
@@ -765,9 +819,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
                     LoseTarget();
                 }
             }
-
-            if (!HasTarget()) yield break; //What the heck
-            //This is to stop the coroutine from setting walk animation again... even though the code stops the coroutine? dun work for some reason
         }
     }
 
@@ -827,7 +878,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     protected bool LookingAtTarget()
     {
-        if (!HasTarget()) return false;
+        if (!currentTarget) return false;
 
         Vector3 pos = new Vector3(transform.position.x, transform.position.y + eyeHeight, transform.position.z);
         Vector3 targetPos = new Vector3(currentTarget.position.x, transform.position.y + 1.5f, currentTarget.position.z);
@@ -844,7 +895,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     protected bool CloserThanTarget(Transform compareTarget)
     {
-        if (!HasTarget()) return true;
+        if (!currentTarget) return true;
         if (compareTarget == null) return false;
 
         float newTargetDistance = Vector3.Distance(transform.position, currentTarget.position);
@@ -853,7 +904,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         return currentTargetDistance > newTargetDistance;
     }
 
-    protected bool NextToTarget() => Vector3.Distance(transform.position, currentTarget.position) <= Mathf.Clamp(navAgent.radius + 0.4f,melee.meleeRange - 0.1f,100);
+    protected bool NextToTarget() => Vector3.Distance(transform.position, currentTarget.position) <= Mathf.Clamp(.5f + 0.4f,melee.meleeRange - 0.1f,100);
 
     #endregion
 
@@ -871,7 +922,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         {
             yield return new WaitForSeconds(0.1f);
 
-            if (!HasTarget())
+            if (!currentTarget)
             {
                 LoseTarget();
                 yield return null;
@@ -930,14 +981,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     {
         if (CanSee(currentTarget) && CanMeleeAttack)
         {
-            /*
-            if (melee.standStill)
-            {
-                bool inRange = WithinMeleeRange(); //This could be optimized later
-                if (inRange && !stoppedMoving) StopMovement();
-            }
-            */
-
             AttackMelee = true;
             LookAtTarget();
         }
@@ -947,7 +990,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     protected bool CanMeleeAttack => WithinMeleeRange() && melee.canMelee;
     protected bool WithinMeleeRange()
     {
-        if (!HasTarget()) return false;
+        if (!currentTarget) return false;
         float distance = Vector3.Distance(currentTarget.position, transform.position);
         return distance <= melee.meleeRange;
     }
@@ -987,7 +1030,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     protected bool CanRangedAttack => WithinRangedDistance() && ranged.canRanged;
     protected bool WithinRangedDistance()
     {
-        if (!HasTarget()) return false;
+        if (!currentTarget) return false;
         float distance = Vector3.Distance(currentTarget.position, transform.position);
         return distance <= ranged.maxRange && distance >= ranged.minRange;
     }
@@ -1041,7 +1084,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     }
     protected bool AtPreferredDistance()
     {
-        if (!HasTarget()) return false;
+        if (!currentTarget) return false;
         float distance = Vector3.Distance(currentTarget.position, transform.position);
         return distance <= ranged.preferredRange;
     }
@@ -1062,7 +1105,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     protected bool CanSpecialAttack => WithinSpecialDistance() && special.canSpecial;
     protected bool WithinSpecialDistance()
     {
-        if (!HasTarget()) return false;
+        if (!currentTarget) return false;
         float distance = Vector3.Distance(currentTarget.position, transform.position);
         return distance <= special.specialRange;
     }
@@ -1101,8 +1144,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         if (!isDead)
         {
             isDead = true; //Bool used to ensure this only happens once
-
-            Svr_StopNavAgent();
 
             Svr_DisableCollider();
 
@@ -1148,21 +1189,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     #endregion
 
     #region Post Death
-    [Server]
-    private void Svr_StopNavAgent()
-    {
-        //Stop NavMesh Movement
-        navAgent.isStopped = true;
-        navAgent.enabled = false;
-        Rpc_StopNavAgent();
-    }
-    [ClientRpc]
-    private void Rpc_StopNavAgent()
-    {
-        //Stop NavMesh Movement
-        //navAgent.isStopped = true;
-        navAgent.enabled = false;
-    }
     [Server]
     private void Svr_SetDeathAnimation()
     {
@@ -1354,11 +1380,11 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         //If the unit meets the requirements to be commanded to move to a new location
         //Requirements : (Not Chasing)
 
-        if (HasTarget()) return;
+        if (currentTarget) return;
         if (chasing) return;
 
 
-        navAgent.SetDestination(pos);
+        Repath(false, pos);
     }
 
     #endregion
@@ -1402,7 +1428,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     bool tryingToLookAtTarget = false;
     private void LookAtTarget()
     {
-        if (!HasTarget()) return;
+        if (!currentTarget) return;
         //transform.LookAt(new Vector3(currentTarget.position.x, transform.position.y, currentTarget.position.z));
         if (!tryingToLookAtTarget)
         {
@@ -1430,6 +1456,14 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     #endregion
 
     #region Gizmos
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, sightDistance);
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, alertRadius);
+    }
 
     private void OnDrawGizmos()
     {
@@ -1485,11 +1519,11 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         if (isDead) return;
         if (target != null)
         {
-            if (HasTarget())
+            if (currentTarget)
             {
                 if (CloserThanTarget(target))
                 {
-                    Debug.Log("I got shot by someone closer than my target");
+                    Debug.Log("I got shot by someone closer than my target, going after them instead.");
                     AcquireTarget(target, false, true);
                 }
             }
@@ -1505,7 +1539,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         {
             if (!target)
             {
-                Debug.LogError("Zombie doesn't know who killed em, so can't give points");
+                Debug.LogError("Unit doesn't know who killed em, so can't give points");
                 return;
             }
 
@@ -1514,6 +1548,28 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         }
 
         animator.SetTrigger("Hit");
+    }
+
+    #endregion
+
+    #region Debug
+
+    [Header("Debug")]
+    [SerializeField] private bool stopMovement = false;
+    [SerializeField] private bool stopPathfinding = false;
+    private void Update()
+    {
+        if (stopMovement)
+        {
+            StopMovement();
+            stopMovement = false;
+        }
+
+        if (stopPathfinding)
+        {
+            EnablePathfinding(false);
+            stopPathfinding = false;
+        }
     }
 
     #endregion
