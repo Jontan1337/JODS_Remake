@@ -98,18 +98,4 @@ public class ZombieStronk : UnitBase, IZombie, IControllable
     }
 
     #endregion
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, destructibleSearchRange);
-    }
-    private void OnDrawGizmos()
-    {
-        if (select.isSelected)
-        {
-            Gizmos.color = Color.magenta;
-            Gizmos.DrawWireSphere(transform.position, destructibleSearchRange);
-        }
-    }
 }

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e89c3c3a10cc3b446800946c17aaec15, type: 3}
   m_Name: Slav
   m_EditorClassIdentifier: 
-  name: slavTest
+  name: Slav
   unitPrefab: {fileID: 2321671125669910773, guid: 15552c6c780259640af4570dfe5717ef,
     type: 3}
   unitAppearanceVariations:
@@ -34,12 +34,16 @@ MonoBehaviour:
   xpGain: 15
   xpToUnlock: 150
   xpToUpgrade: 150
-  upgradeMultiplier: 0.4
   starterUnit: 1
   health: 80
   isMelee: 1
   isRanged: 0
   hasSpecial: 0
+  upgrades:
+    upgradeMultiplier: 0.1
+    upgradeMovementSpeed: 1
+    movementSpeedUpgradeIncrease: 0.1
+    movementSpeedUpgradeMax: 3
   melee:
     meleeDamageMin: 5
     meleeDamageMax: 10
@@ -75,7 +79,7 @@ MonoBehaviour:
   sightDistance: 20
   eyeHeight: 1.2
   viewAngle: 90
-  alertRadius: 25
+  alertRadius: 15
   canAlert: 1
   bloodColor: {r: 1, g: 0, b: 0, a: 1}
   sounds:
