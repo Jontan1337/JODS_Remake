@@ -21,6 +21,15 @@ public class UnitList
     [Space]
     public int unitIndex = 0;
 }
+
+[System.Serializable]
+public class DeployableList
+{
+    public string name;
+    public DeployableSO deployable;
+    public bool unlocked;
+    public bool chosen;
+}
 [RequireComponent(typeof(AudioSource))]
 public class UnitMaster : NetworkBehaviour
 {
@@ -52,10 +61,15 @@ public class UnitMaster : NetworkBehaviour
     [SerializeField] private UnitBase selectedUnit = null;
     [SerializeField] private GameObject unitDestinationMarker = null;
 
+    [Header("Deployables")]
+    [SerializeField] private List<DeployableList> deployableList = new List<DeployableList>();
+
     [Header("Spawning")]
     [SerializeField] private LayerMask playerLayer = 1 << 13;
     [SerializeField] private int spawnCheckRadius = 200;
     [SerializeField] private int minimumSpawnRadius = 5;
+    private const string unitResourcesLocation = "Spawnables/Unit - Master/Units/";
+    private const string deployableResourcesLocation = "Spawnables/Unit - Master/Deployables/";
 
     [System.Serializable]
     public class UserInterface
@@ -74,6 +88,9 @@ public class UnitMaster : NetworkBehaviour
         [Space]
         public GameObject unitButtonPrefab;
         public Transform unitButtonContainer;
+        [Space]
+        public GameObject deployableButtonPrefab;
+        public Transform deployableButtonContainer;
         [Space]
         public Image screenTint;
         [Space]
@@ -538,9 +555,9 @@ public class UnitMaster : NetworkBehaviour
 
             //Level
             b.SetUnitLevel(u.level);
-
+            
             //Details
-            b.SetDetails(u.unit.description, u.unit.powerStat, u.unit.healthStat);
+            b.SetDetails(u.unit.name, u.unit.description, u.unit.powerStat, u.unit.healthStat);
 
             //Index
             b.UnitIndex = i;
@@ -1242,10 +1259,10 @@ public class UnitMaster : NetworkBehaviour
         pos = new Vector3(pos.x, pos.y + 0.5f, pos.z);
 
         //Get the unit to spawn
-        GameObject unitToSpawn = (GameObject)Resources.Load($"Spawnables/Units/{name}");
+        GameObject unitToSpawn = (GameObject)Resources.Load(unitResourcesLocation+$"{name}");
         if (unitToSpawn == null)
         {
-            Debug.LogError("Could not spawn unit, didn't find the unit in 'Spawnables/Units/', make sure they are in that folder");
+            Debug.LogError($"Could not spawn unit, didn't find the unit in '{unitResourcesLocation}', make sure they are in that folder");
             return;
         }
 

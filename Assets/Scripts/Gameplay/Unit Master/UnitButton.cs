@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Mirror;
+using TMPro;
 
 public class UnitButton : NetworkBehaviour
 {
@@ -14,7 +15,8 @@ public class UnitButton : NetworkBehaviour
     [SerializeField] private Image unitImage = null;
     [Header("Visual Details")]
     [SerializeField] private GameObject detailsBox = null;
-    [SerializeField] private Text descriptionText = null;
+    [SerializeField] private TMP_Text unitNameText = null;
+    [SerializeField] private TMP_Text descriptionText = null;
     [SerializeField] private Slider powerSlider = null;
     [SerializeField] private Slider healthSlider = null;
     [Header("Data")]
@@ -58,8 +60,9 @@ public class UnitButton : NetworkBehaviour
     {
         upgradeButton.SetActive(enable);
     }
-    public void SetDetails(string desc, int power, int health)
+    public void SetDetails(string unitName, string desc, int power, int health)
     {
+        unitNameText.text = unitName;
         descriptionText.text = desc;
         powerSlider.value = power;
         healthSlider.value = health;

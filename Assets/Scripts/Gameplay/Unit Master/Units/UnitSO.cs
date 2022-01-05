@@ -11,7 +11,7 @@ public struct UnitMeshGroup
     public Mesh[] rightArmVariations;
 }
 
-[CreateAssetMenu(fileName = "Unit", menuName = "Units/New Unit", order = 1)]
+[CreateAssetMenu(fileName = "Unit", menuName = "Unit Master/New Unit", order = 1)]
 public class UnitSO : ScriptableObject
 {
     [Header("Necessities")]

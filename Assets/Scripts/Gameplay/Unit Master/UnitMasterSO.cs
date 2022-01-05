@@ -12,6 +12,9 @@ public class UnitMasterSO : ScriptableObject
 
     [Header("Units (In descending order)")]
     public UnitSO[] units;
+    
+    [Header("Deployables (In descending order)")]
+    public GameObject[] deployables;
 
     [Header("Sounds")]
 

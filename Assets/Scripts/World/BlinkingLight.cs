@@ -47,6 +47,12 @@ public class BlinkingLight : MonoBehaviour
             materials = meshRenderer.materials; //Apply all the materials to the array, essentially creating a new instance of the array.
         }
 
+        foreach (Material mat in materials)
+        {
+            //Enable emission on the material(s)
+            mat.EnableKeyword("_EMISSION");
+        }
+
         ApplyColorChanges(startOn ? onColor : offColor);
         isOn = startOn;
 
