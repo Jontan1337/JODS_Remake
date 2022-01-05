@@ -831,7 +831,7 @@ public class UnitMaster : NetworkBehaviour
             //If I hit a unit, try and refund that unit
             if (hit.collider.TryGetComponent(out UnitBase unit))
             {
-                int refundAmount = unit.Refund();
+                int refundAmount = unit.Refund;
                 if (refundAmount != 0)
                 {
                     RefundUnit(unit, refundAmount);

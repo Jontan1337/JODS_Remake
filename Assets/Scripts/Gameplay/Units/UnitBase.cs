@@ -603,9 +603,22 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         if (repathDelay) return; //If there's a repath delay, then don't repath.
         //Every second repath request passes through if there's a delay
 
+        Vector3 destination = commandLocation != null ? (Vector3)commandLocation : currentTarget.position;
+
+        /*
+        //this bit of code ensures that AI try to avoid walls by 2 squares.
+        //Currently bugged, they get stuck in walls.
+
+        ABPath newpath = ABPath.Construct(transform.position, destination, null);
+
+        newpath.traversalProvider = GridShapeTraversalProvider.SquareShape(5);
+
         //Calculate a new path for the unit.
-        seeker.StartPath(transform.position, 
-            commandLocation != null ? (Vector3)commandLocation : currentTarget.position);
+        seeker.StartPath(newpath);
+        */
+
+        //Calculate a new path for the unit.
+        seeker.StartPath(transform.position, destination);
     }
 
     private void OnPathComplete(Path p)
@@ -628,6 +641,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     private void EnablePathfinding(bool enable = true, bool stopPath = false)
     {
+        print("enable " + enable);
         if (!enable && stopPath)
         {
             //Cancel the path
@@ -1406,11 +1420,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     #region Refunding
 
-    public int Refund()
-    {
-        //Meet the requirements to refund (Is max health)
-        return IsMaxHealth ? refundAmount : 0;
-    }
+    //Meet the requirements to refund (Is max health)
+    public int Refund => IsMaxHealth ? refundAmount : 0;
 
     #endregion
 
