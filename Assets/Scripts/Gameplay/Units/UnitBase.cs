@@ -1154,7 +1154,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         {
             isDead = true; //Bool used to ensure this only happens once
 
-            EnablePathfinding(false, true);
+            EnablePathfinding(false, true); //Stop the current path
+            ai.enabled = false; //Disable the AIPath component
 
             Svr_DisableCollider();
 
@@ -1203,7 +1204,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     [Server]
     private void Svr_SetDeathAnimation()
     {
-        ai.enabled = false;
         if (canRagdoll)
         {
             animator.enabled = false;
@@ -1389,6 +1389,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     #region Commands
 
+    [Server]
     public void Svr_MoveToLocation(Vector3 pos)
     {
         //If the unit meets the requirements to be commanded to move to a new location
