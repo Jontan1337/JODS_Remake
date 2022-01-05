@@ -16,7 +16,7 @@ public class ZombieTentacle : UnitBase, IZombie, IControllable
         }
 
         //Tentacle Zombie will always try and do the special attack if it is available.
-        //If the special failed, it will go on cooldown and it can begin using melee attacks
+        //If the special failed, it will go on cooldown and it will begin using melee attacks for a bit
         if (special.canSpecial)
         {
             if (CanSpecialAttack)

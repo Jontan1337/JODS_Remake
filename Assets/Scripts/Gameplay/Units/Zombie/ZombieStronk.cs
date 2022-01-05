@@ -60,8 +60,6 @@ public class ZombieStronk : UnitBase, IZombie, IControllable
 
     public override void AcquireTarget(Transform newTarget, bool alerted, bool closerThanCurrent = false, bool liveEntity = false)
     {
-        print("o shit boi a wall");
-
         base.AcquireTarget(newTarget, alerted, closerThanCurrent, liveEntity);
     }
 

@@ -91,6 +91,7 @@ public class UnitSO : ScriptableObject
     {
         public int specialCooldown = 2;
         public int specialDamage = 0;
+        public float specialTriggerRange = 5;
         public float specialRange = 5;
         [Space]
         public bool standStill = true;

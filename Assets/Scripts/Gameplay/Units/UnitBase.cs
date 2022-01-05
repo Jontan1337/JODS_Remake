@@ -88,6 +88,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     {
         public int specialCooldown = 0;
         public int specialDamage = 0; //Upgradeable
+        public float specialTriggerRange = 5;
         public float specialRange = 5;
         [Space]
         public bool standStill = true;
@@ -384,6 +385,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         //Special
         special.specialCooldown = unitSO.special.specialCooldown;
         special.specialDamage = unitSO.special.specialDamage;
+        special.specialTriggerRange = unitSO.special.specialTriggerRange;
         special.specialRange = unitSO.special.specialRange;
         special.standStill = unitSO.special.standStill;
         special.lookAtTarget = unitSO.special.lookAtTarget;
@@ -595,16 +597,11 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     private void Repath(bool lessRepaths = false, Vector3? commandLocation = null)
     {
         if (!canPathfind) return; //I can't pathfind, so...
-
-        //Check if it is necessary to repath
-        //has the player moved? etc.
-        //Less repaths if the target is far away or out of sight
+        if (!currentTarget) return; //If I have no target, then what am I pathing towards?...
 
         repathDelay = lessRepaths ? !repathDelay : false;
         if (repathDelay) return; //If there's a repath delay, then don't repath.
         //Every second repath request passes through if there's a delay
-
-        if (!currentTarget) return; //If I have no target, then what am I pathing towards?...
 
         //Calculate a new path for the unit.
         seeker.StartPath(transform.position, 
@@ -635,7 +632,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         {
             //Cancel the path
             seeker.StartPath(transform.position, transform.position);
-
         }
 
         canPathfind = enable;
@@ -646,7 +642,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     protected void StopMovement()
     {
         if (stoppedMoving) return;
-        print(new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name);
+
         EnablePathfinding(false, true);
         stoppedMoving = true;
     }
@@ -758,7 +754,10 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
         if (currentTarget) 
         {
+            //Start chasing the new target
             chaseTime = unitSO.chaseTime;
+
+            //Calculate a path towards them
             Repath();
 
             if (!chasing) { CoChase = StartCoroutine(ChaseCoroutine()); chasing = true; }
@@ -815,7 +814,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
                 }
                 if (chaseTime <= 0)
                 {
-                    //If chase time runs out, and it still can't see it's target. Stop chasing and lose the target.
+                    //If chase time runs out, and I still can't see my target. Stop chasing and lose the target.
                     LoseTarget();
                 }
             }
@@ -825,7 +824,11 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     private void Alert()
     {
         if (!canAlert) return;
+
+        //Get every gameobject within a radius with the layers in alertMask (Unit layer)
         Collider[] adjacentUnits = Physics.OverlapSphere(transform.position, alertRadius, alertMask);
+
+        //Iterate through each and tell them who my target is
         foreach (Collider col in adjacentUnits)
         {
             if (col.gameObject == gameObject) continue;
@@ -1102,7 +1105,13 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         else Debug.LogWarning($"{name} can't see it's target. Is it's ignoreOnLayer mask set properly?" +
             $" Does it ignore UnitProjectile?");
     }
-    protected bool CanSpecialAttack => WithinSpecialDistance() && special.canSpecial;
+    protected bool CanSpecialAttack => WithinSpecialTriggerDistance() && special.canSpecial;
+    protected bool WithinSpecialTriggerDistance()
+    {
+        if (!currentTarget) return false;
+        float distance = Vector3.Distance(currentTarget.position, transform.position);
+        return distance <= special.specialTriggerRange;
+    }
     protected bool WithinSpecialDistance()
     {
         if (!currentTarget) return false;
@@ -1144,6 +1153,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         if (!isDead)
         {
             isDead = true; //Bool used to ensure this only happens once
+
+            EnablePathfinding(false, true);
 
             Svr_DisableCollider();
 
@@ -1192,6 +1203,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     [Server]
     private void Svr_SetDeathAnimation()
     {
+        ai.enabled = false;
         if (canRagdoll)
         {
             animator.enabled = false;
@@ -1230,6 +1242,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     [Server]
     private void Svr_DisableCollider()
     {
+        GetComponent<CharacterController>().enabled = false;
         GetComponent<BoxCollider>().enabled = false;
         Collider[] colliders = GetComponentsInChildren<Collider>();
         foreach(Collider c in colliders)
@@ -1242,6 +1255,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     [ClientRpc]
     private void Rpc_DisableCollider()
     {
+        GetComponent<CharacterController>().enabled = false;
         GetComponent<BoxCollider>().enabled = false;
         Collider[] colliders = GetComponentsInChildren<Collider>();
         foreach (Collider c in colliders)
@@ -1455,62 +1469,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     #endregion
 
-    #region Gizmos
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, sightDistance);
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, alertRadius);
-    }
-
-    private void OnDrawGizmos()
-    {
-        //Has a target  =   Green
-        //Is searching  =   Yellow
-        //Is chasing    =   Red
-        //Is Attacking  =   Blue
-
-        if (currentTarget)
-        {
-            Gizmos.color = Color.green;
-            Gizmos.DrawSphere(new Vector3(currentTarget.position.x, currentTarget.position.y + 4, currentTarget.position.z),0.6f);
-        }
-        if (searching)
-        {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawCube(new Vector3(transform.position.x, transform.position.y + 3, transform.position.z), new Vector3(0.25f, 1, 0.25f));
-        }
-        if (chasing)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawCube(new Vector3(transform.position.x, transform.position.y + 3, transform.position.z), new Vector3(0.25f, 1, 0.25f));
-        }
-        if (attacking)
-        {
-            Gizmos.color = Color.blue;
-            Gizmos.DrawCube(new Vector3(transform.position.x, transform.position.y + 3, transform.position.z), new Vector3(0.25f, 1, 0.25f));
-        }
-        if (attackRange || attackSpecial)
-        {
-            Gizmos.color = Color.cyan;
-            Gizmos.DrawCube(new Vector3(transform.position.x, transform.position.y + 5, transform.position.z), new Vector3(0.25f, 1, 0.25f));
-        }
-        if (ranged.canRanged || special.canSpecial)
-        {
-            Gizmos.color = Color.magenta;
-            Gizmos.DrawCube(new Vector3(transform.position.x, transform.position.y + 6, transform.position.z), new Vector3(0.25f, 1, 0.25f));
-        }
-        if (rangedCooldown || specialCooldown)
-        {
-            Gizmos.color = Color.black;
-            Gizmos.DrawCube(new Vector3(transform.position.x, transform.position.y + 7, transform.position.z), new Vector3(0.25f, 1, 0.25f));
-        }
-    }
-
-    #endregion
-
     #region IDamagable
 
     [Server]
@@ -1548,6 +1506,80 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         }
 
         animator.SetTrigger("Hit");
+    }
+
+    #endregion
+
+    #region Gizmos
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, sightDistance);
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, alertRadius);
+
+        if (isMelee)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawRay(new Vector3(transform.position.x, transform.position.y + 1.5f, transform.position.z), transform.forward * melee.meleeRange);
+        }
+        if (isRanged)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawRay(new Vector3(transform.position.x, transform.position.y + 1.75f, transform.position.z), transform.forward * ranged.maxRange);
+        }
+        if (hasSpecial)
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawRay(new Vector3(transform.position.x, transform.position.y + 1.25f, transform.position.z), transform.forward * special.specialTriggerRange);
+            Gizmos.color = Color.blue;
+            Gizmos.DrawRay(new Vector3(transform.position.x, transform.position.y + 1.2f, transform.position.z), transform.forward * special.specialRange);
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        //Has a target  =   Green
+        //Is searching  =   Yellow
+        //Is chasing    =   Red
+        //Is Attacking  =   Blue
+
+        if (currentTarget)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawSphere(new Vector3(currentTarget.position.x, currentTarget.position.y + 4, currentTarget.position.z), 0.6f);
+        }
+        if (searching)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawCube(new Vector3(transform.position.x, transform.position.y + 3, transform.position.z), new Vector3(0.25f, 1, 0.25f));
+        }
+        if (chasing)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawCube(new Vector3(transform.position.x, transform.position.y + 3, transform.position.z), new Vector3(0.25f, 1, 0.25f));
+        }
+        if (attacking)
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawCube(new Vector3(transform.position.x, transform.position.y + 3, transform.position.z), new Vector3(0.25f, 1, 0.25f));
+        }
+        if (attackRange || attackSpecial)
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawCube(new Vector3(transform.position.x, transform.position.y + 5, transform.position.z), new Vector3(0.25f, 1, 0.25f));
+        }
+        if (ranged.canRanged || special.canSpecial)
+        {
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawCube(new Vector3(transform.position.x, transform.position.y + 6, transform.position.z), new Vector3(0.25f, 1, 0.25f));
+        }
+        if (rangedCooldown || specialCooldown)
+        {
+            Gizmos.color = Color.black;
+            Gizmos.DrawCube(new Vector3(transform.position.x, transform.position.y + 7, transform.position.z), new Vector3(0.25f, 1, 0.25f));
+        }
     }
 
     #endregion
