@@ -15,7 +15,7 @@ public class SyringeGun : ProjectileWeapon
 		switch (currentAmmunition)
 		{
 			case 0:
-				GetComponentInParent<ActiveSClass>().StartAbilityCooldownCo();
+				GetComponentInParent<ActiveSClass>().Rpc_StartAbilityCooldown(transform.root.GetComponent<NetworkIdentity>().connectionToClient, transform.root);
 				Unbind();
 				break;
 			case 1:
@@ -37,7 +37,7 @@ public class SyringeGun : ProjectileWeapon
 	{
 		if (currentAmmunition < maxCurrentAmmunition)
 		{
-			GetComponentInParent<ActiveSClass>().StartAbilityCooldownCo();
+			GetComponentInParent<ActiveSClass>().Rpc_StartAbilityCooldown(transform.root.GetComponent<NetworkIdentity>().connectionToClient, transform.root);
 		}
 		base.Unbind();
 		Cmd_Destroy();

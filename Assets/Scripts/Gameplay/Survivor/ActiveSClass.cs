@@ -160,6 +160,18 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 		StartCoroutine(AbilityCooldown());
 	}
 
+	[TargetRpc]
+	public void Rpc_StartAbilityCooldown(NetworkConnection conn, Transform owner)
+	{
+		owner.GetComponentInParent<ActiveSClass>()?.StartAbilityCooldownCo();
+	}
+
+	[Command]
+	public void Cmd_StartAbilityCooldown(Transform owner)
+    {
+		Rpc_StartAbilityCooldown(GetComponent<NetworkIdentity>().connectionToClient, owner);
+    }
+
 	#endregion
 
 	#region Class Stuff
