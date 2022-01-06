@@ -5,52 +5,56 @@ using UnityEngine.UI;
 using Mirror;
 using TMPro;
 
-public class UnitButton : NetworkBehaviour
+public class MasterUIGameplayButton : NetworkBehaviour
 {
     [Header("Buttons")]
     public GameObject upgradeButton = null; //These need to be public, because they are accessed by Master, to add onClick events.
     public GameObject unlockButton = null;
-    [Header("Visual")]
-    [SerializeField] private Text levelNum = null;
-    [SerializeField] private Image unitImage = null;
-    [Header("Visual Details")]
+
+    [Header("Ui References- Shared")]
+    [SerializeField] private Image imageRef = null;
     [SerializeField] private GameObject detailsBox = null;
-    [SerializeField] private TMP_Text unitNameText = null;
+    [SerializeField] private TMP_Text nameText = null;
     [SerializeField] private TMP_Text descriptionText = null;
+
+    [Header("Ui References- Unit")]
+    [SerializeField] private Text levelNumText = null;
     [SerializeField] private Slider powerSlider = null;
     [SerializeField] private Slider healthSlider = null;
+
     [Header("Data")]
-    [SerializeField] private int unitIndex;
-    public int UnitIndex
+    [SerializeField] private int buttonIndex;
+
+    public int ButtonIndex
     {
-        get { return unitIndex; }
-        set { unitIndex = value; }
+        get { return buttonIndex; }
+        set { buttonIndex = value; }
     }
 
     private void Start()
     {
-        upgradeButton.SetActive(false);
-        if (unlockButton != null) { unlockButton.SetActive(false); }
+        if (upgradeButton != null) upgradeButton.SetActive(false);
+        if (unlockButton != null) unlockButton.SetActive(false); 
 
         //Details box
         detailsBox.SetActive(false); //Deactivate it on start
     }
     public void Choose(bool chosen)
     {
-        unitImage.color = chosen ? Color.red : Color.white;
+        imageRef.color = chosen ? Color.red : Color.white;
     }
     public void Unlock(bool unlocked)
     {
-        unitImage.color = unlocked ? Color.white : Color.grey;
+        imageRef.color = unlocked ? Color.white : Color.grey;
         ShowUnlockButton(false);
     }
     public void SetUnitLevel(int level)
     {
-        levelNum.text = level.ToString();
+        levelNumText.text = level.ToString();
     }
     public void SetImage(Sprite img)
     {
-        unitImage.sprite = img;
+        imageRef.sprite = img;
     }
     public void ShowUnlockButton(bool enable)
     {
@@ -60,11 +64,12 @@ public class UnitButton : NetworkBehaviour
     {
         upgradeButton.SetActive(enable);
     }
-    public void SetDetails(string unitName, string desc, int power, int health)
+    public void SetDetails(string unitName, string desc, int power = 0, int health = 0)
     {
-        unitNameText.text = unitName;
+        nameText.text = unitName;
         descriptionText.text = desc;
-        powerSlider.value = power;
-        healthSlider.value = health;
+
+        if (power != 0) powerSlider.value = power;
+        if (health != 0) healthSlider.value = health;
     }
 }

@@ -20,6 +20,7 @@ public class UnitList
     public bool chosen;
     [Space]
     public int unitIndex = 0;
+    public int buttonIndex = 0;
 }
 
 [System.Serializable]
@@ -29,6 +30,9 @@ public class DeployableList
     public DeployableSO deployable;
     public bool unlocked;
     public bool chosen;
+    [Space]
+    public int deployableIndex = 0;
+    public int buttonIndex = 0;
 }
 [RequireComponent(typeof(AudioSource))]
 public class UnitMaster : NetworkBehaviour
@@ -56,8 +60,8 @@ public class UnitMaster : NetworkBehaviour
     [Header("Units")]
     [SerializeField] private List<UnitList> unitList = new List<UnitList>();
     [Space]
-    [SerializeField, SyncVar] private int chosenUnitIndex = 0;
-    [SerializeField] private bool hasChosenAUnit = false;
+    [SerializeField, SyncVar] private int chosenSpawnableIndex = 0;
+    [SerializeField] private bool hasChosenASpawnable = false;
     [SerializeField] private UnitBase selectedUnit = null;
     [SerializeField] private GameObject unitDestinationMarker = null;
 
@@ -98,7 +102,8 @@ public class UnitMaster : NetworkBehaviour
     }
     [Space]
     public UserInterface UI;
-    private List<UnitButton> unitButtons = new List<UnitButton>();
+
+    private List<MasterUIGameplayButton> uiGameplayButtons = new List<MasterUIGameplayButton>();
 
     [System.Serializable]
     public class TopdownMaster
@@ -161,6 +166,7 @@ public class UnitMaster : NetworkBehaviour
         name += $" ({masterSO.masterName})";
         
         SetMasterUnits();
+        SetMasterDeployables();
 
         globalAudio = GetComponent<AudioSource>();
 
@@ -168,8 +174,8 @@ public class UnitMaster : NetworkBehaviour
 
         AddBinds();
 
-
         InitializeUnitButtons();
+        InitializeDeployableButtons();
 
         //Setup the different camera modes
         flying.flyingController = flying.flyingController.GetComponent<UnitMaster_FlyingController>();
@@ -323,6 +329,7 @@ public class UnitMaster : NetworkBehaviour
         if (masterSO)
         {
             SetMasterUnits();
+            SetMasterDeployables();
         }
         //If there is no master class selected, then clear the list of units
         else if (unitList.Count != 0) unitList.Clear();
@@ -542,16 +549,16 @@ public class UnitMaster : NetworkBehaviour
 
             //Instantiate unit button prefab
             GameObject button = Instantiate(UI.unitButtonPrefab, UI.unitButtonContainer);
-            UnitButton b = button.GetComponent<UnitButton>();
+            MasterUIGameplayButton b = button.GetComponent<MasterUIGameplayButton>();
 
             //Add this button to the list
-            unitButtons.Add(b);
+            uiGameplayButtons.Add(b);
 
             //Set button values
 
             //Image
             if (u.unit.unitSprite) b.SetImage(u.unit.unitSprite);
-            else Debug.LogError($"{u.unit.name} has no unit sprite assigned!");
+            else Debug.LogWarning($"{u.unit.name} has no unit sprite assigned!");
 
             //Level
             b.SetUnitLevel(u.level);
@@ -560,17 +567,64 @@ public class UnitMaster : NetworkBehaviour
             b.SetDetails(u.unit.name, u.unit.description, u.unit.powerStat, u.unit.healthStat);
 
             //Index
-            b.UnitIndex = i;
+            b.ButtonIndex = i;
+            u.buttonIndex = i;
 
             //Add an event to call the function ChooseUnit whenever the button is pressed
-            button.GetComponent<Button>().onClick.AddListener(delegate { ChooseUnit(b.UnitIndex); });
+            button.GetComponent<Button>().onClick.AddListener(delegate { ChooseUnit(b.ButtonIndex); });
 
             //Add events to call the functions whenever the buttons are pressed
-            b.upgradeButton.GetComponent<Button>().onClick.AddListener(delegate { UpgradeUnit(b.UnitIndex); });
-            b.unlockButton.GetComponent<Button>().onClick.AddListener(delegate { UnlockNewUnit(b.UnitIndex); });
+            b.upgradeButton.GetComponent<Button>().onClick.AddListener(delegate { UpgradeUnit(b.ButtonIndex); });
+            b.unlockButton.GetComponent<Button>().onClick.AddListener(delegate { UnlockNewUnit(b.ButtonIndex); });
 
             //Start the unit button as Unlocked or Locked
             b.Unlock(u.unlocked);
+        }
+    }
+
+    private void InitializeDeployableButtons()
+    {
+        //This is used to assign the indexes of these buttons
+        int referenceIndex = uiGameplayButtons.Count;
+
+        for (int i = 0; i < deployableList.Count; i++)
+        {
+            //Check if the index has a unit assigned, if not continue to next index.
+            if (!deployableList[i].deployable)
+            {
+                Debug.LogError($"Deployable with index {i} has no deployable assigned!");
+                continue; //Go to the next iteration
+            }
+
+            //Reference
+            DeployableList d = deployableList[i];
+
+            //Instantiate unit button prefab
+            GameObject button = Instantiate(UI.deployableButtonPrefab, UI.deployableButtonContainer);
+            MasterUIGameplayButton b = button.GetComponent<MasterUIGameplayButton>();
+
+            int newIndex = referenceIndex + i;
+            b.ButtonIndex = newIndex;
+            d.buttonIndex = newIndex;
+
+            //Add this button to the list
+            uiGameplayButtons.Add(b);
+
+            //Image
+            if (d.deployable.deployableSprite) b.SetImage(d.deployable.deployableSprite);
+            else Debug.LogWarning($"{d.deployable.name} has no deployable sprite assigned!");
+
+            //Details
+            b.SetDetails(d.deployable.name, d.deployable.description);
+
+            //Add an event to call the function ChooseDeployable whenever the button is pressed
+            button.GetComponent<Button>().onClick.AddListener(delegate { ChooseDeployable(d.deployableIndex); });
+
+            //Add events to call the functions whenever the button is pressed
+            b.unlockButton.GetComponent<Button>().onClick.AddListener(delegate { UnlockNewUnit(d.deployableIndex); });
+
+            //Start the unit button as Unlocked or Locked
+            b.Unlock(d.unlocked);
         }
     }
 
@@ -588,7 +642,7 @@ public class UnitMaster : NetworkBehaviour
 
     private void UnitButtonChooseUI(bool choose)
     {
-        unitButtons[chosenUnitIndex].Choose(choose);
+        uiGameplayButtons[chosenSpawnableIndex].Choose(choose);
     }
 
     private void ActivateUpgradeDecisions(bool enable)
@@ -655,15 +709,15 @@ public class UnitMaster : NetworkBehaviour
             if (unit.unlocked)
             {
                 //If player has enough xp to upgrade it, show the upgrade button
-                if (unit.unit.xpToUpgrade <= stats.currentXp) unitButtons[i].ShowUpgradeButton(true);
-                else unitButtons[i].ShowUpgradeButton(false);
+                if (unit.unit.xpToUpgrade <= stats.currentXp) uiGameplayButtons[i].ShowUpgradeButton(true);
+                else uiGameplayButtons[i].ShowUpgradeButton(false);
                 continue;
             }
             else
             {
                 //Else, if the player has enough xp to unlock it, show the unlock button
-                if (unit.unit.xpToUnlock <= stats.currentXp) unitButtons[i].ShowUnlockButton(true);
-                else unitButtons[i].ShowUnlockButton(false);
+                if (unit.unit.xpToUnlock <= stats.currentXp) uiGameplayButtons[i].ShowUnlockButton(true);
+                else uiGameplayButtons[i].ShowUnlockButton(false);
                 continue;
             }
         }
@@ -720,6 +774,15 @@ public class UnitMaster : NetworkBehaviour
         SetMasterUnitValues();
     }
 
+    private void SetMasterDeployables()
+    {
+        if (DeployableInitialization() || deployableList.Count == 0) SetMasterDeployablesInEditor();
+
+        if (deployableList.Count == 0) return;
+
+        SetMasterDeployableValues();
+    }
+
     #region Choosing
     private void ChooseUnit(int indexNum)
     {
@@ -738,12 +801,12 @@ public class UnitMaster : NetworkBehaviour
 
         //If the master has already chosen a unit, unchoose that unit
         unit.chosen = false;
-        if (hasChosenAUnit) UnitButtonChooseUI(false);
+        if (hasChosenASpawnable) UnitButtonChooseUI(false);
 
         //Then choose the new unit
-        chosenUnitIndex = indexNum;
+        chosenSpawnableIndex = unit.buttonIndex;
         Cmd_SetChosenUnitIndex(indexNum);
-        hasChosenAUnit = true;
+        hasChosenASpawnable = true;
         unit.chosen = true;
 
         //And change the UI
@@ -758,21 +821,50 @@ public class UnitMaster : NetworkBehaviour
         }
     }
 
+    private void ChooseDeployable(int indexNum)
+    {
+        if (indexNum >= deployableList.Count)
+        {
+            Debug.Log("There is no deployable with the number " + indexNum);
+            UnchooseUnit();
+            return;
+        }
+
+        UnchooseUnit(true);
+
+        //Reference
+        DeployableList deployable = deployableList[indexNum];
+
+        //If the deployable is unlocked
+        if (!deployable.unlocked) { print("not unlocked");  return; }
+
+        chosenSpawnableIndex = deployable.buttonIndex;
+        hasChosenASpawnable = true;
+
+        UnitButtonChooseUI(true);
+
+        if (!inTopdownView)
+        {
+            //This will enable the marker for the flying camera, which is mostly a visual aid
+            EnableFlyingMarker(true);
+        }
+    }
+
     [Command]
     void Cmd_SetChosenUnitIndex(int indexNum)
     {
-        chosenUnitIndex = indexNum;
+        chosenSpawnableIndex = indexNum;
     }
 
-    private void UnchooseUnit()
+    private void UnchooseUnit(bool keepMarker = false)
     {
-        hasChosenAUnit = false;
+        hasChosenASpawnable = false;
 
         //Change the UI
         UnitButtonChooseUI(false);
         UpdateEnergyUseUI(0);
 
-        if (!inTopdownView)
+        if (!inTopdownView && !keepMarker)
         {
             //This will disable the marker for the flying camera
             EnableFlyingMarker(false);
@@ -783,60 +875,77 @@ public class UnitMaster : NetworkBehaviour
     #region Spawning & Refunding
     void TryToSpawnUnit()
     {
-        //Have I chosen a unit to spawn?
-        if (!hasChosenAUnit) return; //if not, then don't proceed
+        bool spawningADeployable = chosenSpawnableIndex >= unitList.Count;
+
+        //Have I chosen anyting to spawn?
+        if (!hasChosenASpawnable) return; //if not then don't proceed
 
         Raycast(out bool didHit, out RaycastHit hit);
 
         if (didHit)
         {
-            //Did the raycast hit an area where units can spawn? 
-            //(The "Ground" tag is currently the only surface where units can spawn)
+            //Did the raycast hit an area where spawnables can spawn? 
+            //(The "Ground" tag is currently the only surface where spawnables can spawn)
             if (hit.collider.CompareTag("Ground"))
             {
-                //Do I have enough energy to spawn the chosen unit?
-                if (unitList[chosenUnitIndex].unit.energyCost <= stats.currentEnergy)
+                //Spawn Deployable
+                if (spawningADeployable)
                 {
-                    //If yes, spawn the unit at the location
-                    SpawnUnit(hit);
+                    Spawn(hit, spawningADeployable);
                 }
-                else
+                else //Spawn Unit
                 {
-                    SetSpawnText("Not enough energy");
+                    //Do I have enough energy to spawn the chosen unit?
+                    if (unitList[chosenSpawnableIndex].unit.energyCost <= stats.currentEnergy)
+                    {
+                        //If yes, spawn the unit at the location
+                        Spawn(hit, spawningADeployable);
+                    }
+                    else
+                    {
+                        SetSpawnText("Not enough energy");
+                    }
                 }
             }
             else
             {
-                SetSpawnText("Cannot spawn unit here");
+                SetSpawnText($"Cannot spawn {(spawningADeployable ? "deployable" : "unit")} here");
             }
         }
     }
 
-    void SpawnUnit(RaycastHit hit)
+    void Spawn(RaycastHit hit, bool spawningADeployable)
     {
-        //Reference
-        UnitSO chosenUnit = unitList[chosenUnitIndex].unit;
-
         //Check if the spawn location meets the requirements.
         if (!ViewCheck(hit.point, true)) return;
 
-        //Spawn a smoke effect to hide the instantiation of the unit.
-        SmokeEffect(hit.point);
+        if (spawningADeployable)
+        {
 
-        //If the spawn location meets the requirements, then spawn the currently selected unit.
+        }
+        else
+        {
+            //Reference
+            UnitSO chosenUnit = unitList[chosenSpawnableIndex].unit;
 
-        //A random unit from the chosen unit's prefab list gets picked, and the name gets sent to the server, which then spawns the unit.
-        //This is because there can be multiple variations of one unit.
-        Cmd_SpawnMyUnit(hit.point,
-            chosenUnit.unitPrefab.name,
-            unitList[chosenUnitIndex].level);
+            //Spawn a smoke effect to hide the instantiation of the unit.
+            SmokeEffect(hit.point);
 
-        //Master loses energy, because nothing is free in life
-        IncreaseEnergy(-chosenUnit.energyCost);
-        UpdateEnergyUI();//Update UI
-        IncreaseXp(chosenUnit.xpGain); //Master gains xp though
+            //If the spawn location meets the requirements, then spawn the currently selected unit.
 
-        GamemodeBase.Instance.Svr_ModifyStat(GetComponent<NetworkIdentity>().netId, 1, PlayerDataStat.UnitsPlaced);
+            //A random unit from the chosen unit's prefab list gets picked, and the name gets sent to the server, which then spawns the unit.
+            //This is because there can be multiple variations of one unit.
+            Cmd_SpawnMyUnit(hit.point,
+                chosenUnit.unitPrefab.name,
+                unitList[chosenSpawnableIndex].level);
+
+            //Master loses energy, because nothing is free in life
+            IncreaseEnergy(-chosenUnit.energyCost);
+            UpdateEnergyUI();//Update UI
+            IncreaseXp(chosenUnit.xpGain); //Master gains xp though
+
+            GamemodeBase.Instance.Svr_ModifyStat(GetComponent<NetworkIdentity>().netId, 1, PlayerDataStat.UnitsPlaced);
+        }
     }
 
     void TryToRefundUnit()
@@ -885,7 +994,7 @@ public class UnitMaster : NetworkBehaviour
 
         //Increase the unit's level
         unit.level += 1;
-        unitButtons[which].SetUnitLevel(unit.level);
+        uiGameplayButtons[which].SetUnitLevel(unit.level);
 
         //Decrease xp by amount required to upgrade the unit
         IncreaseXp(-unit.unit.xpToUpgrade);
@@ -906,7 +1015,7 @@ public class UnitMaster : NetworkBehaviour
         unit.unlocked = true;
 
         //Unlock the unit on the button
-        unitButtons[which].Unlock(true);
+        uiGameplayButtons[which].Unlock(true);
 
         //Decrease xp by amount required to upgrade the unit
         IncreaseXp(-unit.unit.xpToUnlock);
@@ -1175,6 +1284,18 @@ public class UnitMaster : NetworkBehaviour
         }
     }
 
+    private void SetMasterDeployablesInEditor()
+    {
+        int arraySize = masterSO.deployables.Length;
+        deployableList.Clear();
+
+        for (int i = 0; i < arraySize; i++)
+        {
+            deployableList.Add(new DeployableList());
+            deployableList[i].deployable = masterSO.deployables[i];
+        }
+    }
+
     private bool UnitInitialization()
     {
         if (unitList.Count == 0) return true;
@@ -1182,6 +1303,22 @@ public class UnitMaster : NetworkBehaviour
         for (int i = 0; i < masterSO.units.Length; i++)
         {
             if (unitList[i].unit != masterSO.units[i])
+            {
+                //Remake the list
+                return true;
+            }
+        }
+        //List does not need to be remade
+        return false;
+    }
+
+    private bool DeployableInitialization()
+    {
+        if (deployableList.Count == 0) return true;
+        //Check if the list is as it should be. If it is ok, there is no need to remake it.
+        for (int i = 0; i < masterSO.deployables.Length; i++)
+        {
+            if (deployableList[i].deployable != masterSO.deployables[i])
             {
                 //Remake the list
                 return true;
@@ -1199,10 +1336,27 @@ public class UnitMaster : NetworkBehaviour
             UnitList u = unitList[i];
             //Set name of unit
             if (u.unit) u.name = u.unit.name;
+
             //Set index of unit
             u.unitIndex = i;
+
             //Set this unit to be unlocked, if it is a starter unit
             u.unlocked = u.unit.starterUnit;
+        }
+    }
+
+    private void SetMasterDeployableValues()
+    {
+        //Set the names and values of each deployable
+        for (int i = 0; i < deployableList.Count; i++)
+        {
+            DeployableList d = deployableList[i];
+
+            if (d.deployable) d.name = d.deployable.name;
+
+            d.deployableIndex = i;
+           
+            d.unlocked = true;
         }
     }
 
@@ -1238,7 +1392,7 @@ public class UnitMaster : NetworkBehaviour
 
         tintLight.enabled = top;
 
-        if (hasChosenAUnit) //If a unit is currently chosen, then enable/disable marker
+        if (hasChosenASpawnable) //If a unit is currently chosen, then enable/disable marker
         {
             //If changing to flying camera, enable the unit marker, which is mostly a visual aid.
             EnableFlyingMarker(!inTopdownView);
@@ -1274,7 +1428,7 @@ public class UnitMaster : NetworkBehaviour
 
         UnitBase unit = newUnit.GetComponent<UnitBase>();
 
-        unit.SetUnitSO(unitList[chosenUnitIndex].unit);
+        unit.SetUnitSO(unitList[chosenSpawnableIndex].unit);
         unit.SetLevel(level);
 
         //Spawn the unit on the server

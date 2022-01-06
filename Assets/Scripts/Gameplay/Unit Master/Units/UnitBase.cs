@@ -635,13 +635,12 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         }
         else
         {
-            path.Release(this);
+            if (path != null) path.Release(this);
         }
     }
 
     private void EnablePathfinding(bool enable = true, bool stopPath = false)
     {
-        print("enable " + enable);
         if (!enable && stopPath)
         {
             //Cancel the path
