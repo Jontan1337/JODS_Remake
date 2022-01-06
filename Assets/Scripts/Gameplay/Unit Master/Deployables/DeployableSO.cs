@@ -15,4 +15,5 @@ public class DeployableSO : ScriptableObject
     [Header("Details")]
     public new string name;
     [TextArea(1, 5)] public string description = "This is a deployable";
+    public Sprite deployableSprite;
 }
