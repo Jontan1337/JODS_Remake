@@ -277,7 +277,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 		{
 			float armorPercent = (float)armor / 100;
 
-			int armorLoss = Mathf.Clamp(Mathf.RoundToInt(damage * armorPercent), 1, 100);
+			int armorLoss = Mathf.Clamp(Mathf.RoundToInt(damage * armorPercent), 0, 100);
 			int healthLoss = damage - armorLoss;
 
 			Health -= healthLoss;
