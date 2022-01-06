@@ -458,24 +458,17 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 	#endregion
 
 	#region Placeable
+	public Transform Owner { get; set; }
 
 	// Invoked when the turret is put down on the ground.
 	// Starts the searching coroutine, the time until the turret dies and the cooldown on the engineers ability.
 	[Server]
 	public void Svr_OnPlaced()
 	{
-		Rpc_OnPlaced(Owner.GetComponent<NetworkIdentity>().connectionToClient, Owner);
+		Owner.GetComponentInParent<ActiveSClass>()?.Rpc_StartAbilityCooldown(Owner.GetComponent<NetworkIdentity>().connectionToClient, Owner);
 		ShowTurret();
 		StartCoroutine(StartUp());
 	}
-
-	[TargetRpc]
-	private void Rpc_OnPlaced(NetworkConnection conn, Transform owner)
-    {
-		owner.GetComponentInParent<ActiveSClass>()?.StartAbilityCooldownCo();
-	}
-
-	public Transform Owner { get; set; }
 
 	#endregion
 

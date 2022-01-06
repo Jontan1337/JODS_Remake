@@ -11,8 +11,8 @@ public class RocketLauncher : ProjectileWeapon
 		base.Shoot();
 		if (currentAmmunition == 0 && extraAmmunition == 0)
 		{
-			GetComponentInParent<ActiveSClass>().StartAbilityCooldownCo();
-			Unbind();
+            GetComponentInParent<ActiveSClass>().Rpc_StartAbilityCooldown(transform.root.GetComponent<NetworkIdentity>().connectionToClient, transform.root);
+            Unbind();
 		}
 	}
 
