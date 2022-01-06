@@ -921,7 +921,7 @@ public class UnitMaster : NetworkBehaviour
 
         if (spawningADeployable)
         {
-
+            DeployableSO chosenDeployable = deployableList[chosenSpawnableIndex].deployable;
         }
         else
         {
