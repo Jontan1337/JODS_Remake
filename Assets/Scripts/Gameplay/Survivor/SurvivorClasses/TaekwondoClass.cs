@@ -111,7 +111,7 @@ public class TaekwondoClass : SurvivorClass, IHitter
         FlyingKickEnd();
 
     }
-
+    
     private void MoveForward()
     {
         cController.Move(transform.forward * flyingKickSpeed * Time.deltaTime);

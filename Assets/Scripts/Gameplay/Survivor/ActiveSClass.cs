@@ -38,7 +38,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	[Header("Events")]
 	[SerializeField] private UnityEvent<float> onChangedHealth = null;
 
-	private bool abilityIsReady = true;
+	public bool abilityIsReady = true;
 	private bool isDead;
 
 	public bool test;
@@ -114,7 +114,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	public override void OnStartAuthority()
 	{
 		if (test) SetSurvivorClass(survivorSO);
-		JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => Cmd_Ability();
+		JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => Ability();
 	}
 
 	#region ViewModel
@@ -127,19 +127,18 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	#endregion
 
 	#region Ability Stuff
-
-	[Command]
-	void Cmd_Ability()
+	
+	private void Ability()
 	{
 		if (abilityIsReady)
 		{
 			sClass.ActiveAbility();
 		}
-		else
-		{
-			sClass.ActiveAbilitySecondary();			
-		}
-	}
+        else
+        {
+            sClass.ActiveAbilitySecondary();
+        }
+    }
 
 	public IEnumerator AbilityCooldown()
 	{
