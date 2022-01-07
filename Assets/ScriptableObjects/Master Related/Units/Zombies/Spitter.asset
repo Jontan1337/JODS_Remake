@@ -32,14 +32,18 @@ MonoBehaviour:
   energyCost: 30
   refundAmount: 15
   xpGain: 30
-  xpToUnlock: 300
+  xpToUnlock: 5
   xpToUpgrade: 300
-  upgradeMultiplier: 0.3
-  starterUnit: 1
+  starterUnit: 0
   health: 100
   isMelee: 1
   isRanged: 1
   hasSpecial: 0
+  upgrades:
+    upgradeMultiplier: 0.1
+    upgradeMovementSpeed: 1
+    movementSpeedUpgradeIncrease: 0.1
+    movementSpeedUpgradeMax: 3
   melee:
     meleeDamageMin: 2
     meleeDamageMax: 10
@@ -65,6 +69,7 @@ MonoBehaviour:
   special:
     specialCooldown: 2
     specialDamage: 0
+    specialTriggerRange: 5
     specialRange: 5
     standStill: 1
     lookAtTarget: 1

@@ -2315,36 +2315,41 @@ MonoBehaviour:
     unlocked: 1
     chosen: 0
     unitIndex: 0
+    buttonIndex: 0
   - name: Slav
     unit: {fileID: 11400000, guid: 746c20bacaa906a419ba0951252abddd, type: 2}
     level: 1
     maxAmount: 0
-    unlocked: 1
+    unlocked: 0
     chosen: 0
     unitIndex: 1
+    buttonIndex: 0
   - name: Spitter
     unit: {fileID: 11400000, guid: ac3d4f2c81696dc45a322377fecbb484, type: 2}
     level: 1
     maxAmount: 0
-    unlocked: 1
+    unlocked: 0
     chosen: 0
     unitIndex: 2
+    buttonIndex: 0
   - name: Stronk
     unit: {fileID: 11400000, guid: cdc65d9cad1af5e42b5149ac75e235d9, type: 2}
     level: 1
     maxAmount: 0
-    unlocked: 1
+    unlocked: 0
     chosen: 0
     unitIndex: 3
+    buttonIndex: 0
   - name: Tentacle
     unit: {fileID: 11400000, guid: 85b159902791cc14d9bcdbc9a9eddf26, type: 2}
     level: 1
     maxAmount: 0
-    unlocked: 1
+    unlocked: 0
     chosen: 0
     unitIndex: 4
-  chosenUnitIndex: 0
-  hasChosenAUnit: 0
+    buttonIndex: 0
+  chosenSpawnableIndex: 0
+  hasChosenASpawnable: 0
   selectedUnit: {fileID: 0}
   unitDestinationMarker: {fileID: 1076265280457255143}
   deployableList:
@@ -2352,10 +2357,18 @@ MonoBehaviour:
     deployable: {fileID: 11400000, guid: c0241b0d42bae424299e87984d7cf901, type: 2}
     unlocked: 0
     chosen: 0
+    onCooldown: 0
+    deployableCooldown: 60
+    deployableIndex: 0
+    buttonIndex: 0
   - name: Disgusting Blob
     deployable: {fileID: 11400000, guid: 14503705cd7f4ab48a87beb1300dd580, type: 2}
     unlocked: 0
     chosen: 0
+    onCooldown: 0
+    deployableCooldown: 60
+    deployableIndex: 1
+    buttonIndex: 0
   playerLayer:
     serializedVersion: 2
     m_Bits: 8192
@@ -2430,7 +2443,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.457
+  m_Volume: 0.2
   m_Pitch: 1
   Loop: 0
   Mute: 0

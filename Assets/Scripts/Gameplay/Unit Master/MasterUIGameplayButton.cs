@@ -11,16 +11,19 @@ public class MasterUIGameplayButton : NetworkBehaviour
     public GameObject upgradeButton = null; //These need to be public, because they are accessed by Master, to add onClick events.
     public GameObject unlockButton = null;
 
-    [Header("Ui References- Shared")]
+    [Header("Ui References - Shared")]
     [SerializeField] private Image imageRef = null;
     [SerializeField] private GameObject detailsBox = null;
     [SerializeField] private TMP_Text nameText = null;
     [SerializeField] private TMP_Text descriptionText = null;
 
-    [Header("Ui References- Unit")]
+    [Header("Ui References - Unit")]
     [SerializeField] private Text levelNumText = null;
     [SerializeField] private Slider powerSlider = null;
     [SerializeField] private Slider healthSlider = null;
+
+    [Header("Ui References - Deployable")]
+    [SerializeField] private Image cooldownImageRef = null;
 
     [Header("Data")]
     [SerializeField] private int buttonIndex;
@@ -71,5 +74,24 @@ public class MasterUIGameplayButton : NetworkBehaviour
 
         if (power != 0) powerSlider.value = power;
         if (health != 0) healthSlider.value = health;
+    }
+
+    public void StartCooldown(int time)
+    {
+        StartCoroutine(CooldownUI((float)time));
+    }
+    //This coroutine is purely visual
+    public IEnumerator CooldownUI(float time)
+    {
+        float refTime = time;
+
+        cooldownImageRef.fillAmount = 1;
+
+        while (time > 0)
+        {
+            yield return new WaitForSeconds(1f);
+            time--;
+            cooldownImageRef.fillAmount = time / refTime;
+        }
     }
 }

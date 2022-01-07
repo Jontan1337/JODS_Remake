@@ -31,6 +31,9 @@ public class DeployableList
     public bool unlocked;
     public bool chosen;
     [Space]
+    public bool onCooldown = false;
+    public int deployableCooldown = 0;
+    [Space]
     public int deployableIndex = 0;
     public int buttonIndex = 0;
 }
@@ -412,7 +415,7 @@ public class UnitMaster : NetworkBehaviour
         else if (ctrl && !shift) { Ctrl_RMB(); return; }
 
         //Unchoose the current unit type
-        UnchooseUnit();
+        Unchoose();
     }
     private Coroutine continuousSpawnCo;
     private bool continuousSpawnBool;
@@ -505,7 +508,7 @@ public class UnitMaster : NetworkBehaviour
             yield return new WaitForSeconds(1);
 
             //Increment the energy by energyRechargeIncrement, clamping it at the max amount of energy
-            IncreaseEnergy(stats.energyRechargeIncrement);
+            ModifyEnergy(stats.energyRechargeIncrement);
         }
     }
 
@@ -621,7 +624,7 @@ public class UnitMaster : NetworkBehaviour
             button.GetComponent<Button>().onClick.AddListener(delegate { ChooseDeployable(d.deployableIndex); });
 
             //Add events to call the functions whenever the button is pressed
-            b.unlockButton.GetComponent<Button>().onClick.AddListener(delegate { UnlockNewUnit(d.deployableIndex); });
+            b.unlockButton.GetComponent<Button>().onClick.AddListener(delegate { UnlockNewUnit(d.buttonIndex); });
 
             //Start the unit button as Unlocked or Locked
             b.Unlock(d.unlocked);
@@ -653,7 +656,6 @@ public class UnitMaster : NetworkBehaviour
 
     private void SetSpawnText(string newText)
     {
-
         if (spawnTextBool)
         {
             StopCoroutine(spawnTextCo);
@@ -664,6 +666,8 @@ public class UnitMaster : NetworkBehaviour
     private bool spawnTextBool = false;
     private IEnumerator IESpawnText(string newText)
     {
+        spawnTextBool = true;
+
         UI.spawnText.text = newText;
         UI.spawnText.gameObject.SetActive(true);
 
@@ -671,29 +675,35 @@ public class UnitMaster : NetworkBehaviour
 
         UI.spawnText.text = "";
         UI.spawnText.gameObject.SetActive(false);
+
+        spawnTextBool = false;
     }
 
     #endregion
 
     #region Particles and Effects Functions
 
-    private void SmokeEffect(Vector3 point)
+    private void SpawnEffect(Vector3 point, bool smoke = true)
     {
-        //Spawn audio
-        spawnSmokeAudio.pitch = Random.Range(0.9f, 1.1f);
-        spawnSmokeAudio.PlayOneShot(spawnSmokeAudio.clip);
-
         //Smoke particles
         spawnSmokeEffect.transform.position = point;
         spawnSmokeEffect.transform.SetParent(null);
-        spawnSmokeEffect.Emit(50);
+
+        if (smoke)
+        {
+            spawnSmokeEffect.Emit(50);
+        }
+
+        //Spawn audio
+        spawnSmokeAudio.pitch = Random.Range(0.9f, 1.1f);
+        spawnSmokeAudio.PlayOneShot(spawnSmokeAudio.clip);
     }
 
     #endregion
 
     #region Other
 
-    private void IncreaseXp(int amount)
+    private void ModifyXp(int amount)
     {
         stats.currentXp += amount;
 
@@ -701,28 +711,44 @@ public class UnitMaster : NetworkBehaviour
         UI.xpText.text = stats.currentXp.ToString() + "xp";
 
         //Check if there is an upgrade or unlock available
-        for (int i = 0; i < unitList.Count; i++)
+        for (int i = 0; i < uiGameplayButtons.Count; i++)
         {
-            UnitList unit = unitList[i];
+            int unitRange = unitList.Count;
 
-            //If the unit is unlocked
-            if (unit.unlocked)
+            if (i < unitRange)
             {
-                //If player has enough xp to upgrade it, show the upgrade button
-                if (unit.unit.xpToUpgrade <= stats.currentXp) uiGameplayButtons[i].ShowUpgradeButton(true);
-                else uiGameplayButtons[i].ShowUpgradeButton(false);
-                continue;
+                UnitList unit = unitList[i];
+
+                //If the unit is unlocked
+                if (unit.unlocked)
+                {
+                    //If player has enough xp to upgrade it, show the upgrade button
+                    if (unit.unit.xpToUpgrade <= stats.currentXp) uiGameplayButtons[i].ShowUpgradeButton(true);
+                    else uiGameplayButtons[i].ShowUpgradeButton(false);
+                    continue;
+                }
+                else
+                {
+                    //Else, if the player has enough xp to unlock it, show the unlock button
+                    if (unit.unit.xpToUnlock <= stats.currentXp) uiGameplayButtons[i].ShowUnlockButton(true);
+                    else uiGameplayButtons[i].ShowUnlockButton(false);
+                    continue;
+                }
             }
             else
             {
-                //Else, if the player has enough xp to unlock it, show the unlock button
-                if (unit.unit.xpToUnlock <= stats.currentXp) uiGameplayButtons[i].ShowUnlockButton(true);
-                else uiGameplayButtons[i].ShowUnlockButton(false);
+                DeployableList deployable = deployableList[i - unitRange];
+                 
+                if (!deployable.unlocked)
+                {
+                    if (deployable.deployable.xpToUnlock <= stats.currentXp) uiGameplayButtons[i].ShowUnlockButton(true);
+                    else uiGameplayButtons[i].ShowUnlockButton(false);
+                }
                 continue;
             }
         }
     }
-    private void IncreaseEnergy(int amount)
+    private void ModifyEnergy(int amount)
     {
         stats.currentEnergy = Mathf.Clamp(stats.currentEnergy += amount, 0, stats.maxEnergy);
         UpdateEnergyUI();
@@ -789,7 +815,7 @@ public class UnitMaster : NetworkBehaviour
         if (indexNum >= unitList.Count)
         {
             Debug.Log("There is no unit with the number " + indexNum);
-            UnchooseUnit();
+            Unchoose();
             return;
         }
 
@@ -826,11 +852,11 @@ public class UnitMaster : NetworkBehaviour
         if (indexNum >= deployableList.Count)
         {
             Debug.Log("There is no deployable with the number " + indexNum);
-            UnchooseUnit();
+            Unchoose();
             return;
         }
 
-        UnchooseUnit(true);
+        Unchoose(true);
 
         //Reference
         DeployableList deployable = deployableList[indexNum];
@@ -856,7 +882,7 @@ public class UnitMaster : NetworkBehaviour
         chosenSpawnableIndex = indexNum;
     }
 
-    private void UnchooseUnit(bool keepMarker = false)
+    private void Unchoose(bool keepMarker = false)
     {
         hasChosenASpawnable = false;
 
@@ -891,7 +917,18 @@ public class UnitMaster : NetworkBehaviour
                 //Spawn Deployable
                 if (spawningADeployable)
                 {
-                    Spawn(hit, spawningADeployable);
+                    int referenceIndex = chosenSpawnableIndex - unitList.Count;
+
+                    DeployableList listItem = deployableList[referenceIndex];
+
+                    if (listItem.onCooldown)
+                    {
+                        SetSpawnText("On cooldown");
+                    }
+                    else
+                    {
+                        Spawn(hit, spawningADeployable);
+                    }
                 }
                 else //Spawn Unit
                 {
@@ -919,33 +956,58 @@ public class UnitMaster : NetworkBehaviour
         //Check if the spawn location meets the requirements.
         if (!ViewCheck(hit.point, true)) return;
 
+        string spawnName;
+        int spawnLevel = 0;
+
+        //When spawning a deployable
         if (spawningADeployable)
         {
-            DeployableSO chosenDeployable = deployableList[chosenSpawnableIndex].deployable;
+            int referenceIndex = chosenSpawnableIndex - unitList.Count;
+
+            DeployableList listItem = deployableList[referenceIndex];
+            DeployableSO chosenDeployable = listItem.deployable;
+            spawnName = chosenDeployable.deployablePrefab.name;
+
+            uiGameplayButtons[chosenSpawnableIndex].StartCooldown(listItem.deployableCooldown);
+            StartCoroutine(DeployableCooldown(listItem));
+
+            SpawnEffect(hit.point, false);
+
+            Unchoose();
         }
-        else
+        else //When spawning a unit
         {
             //Reference
             UnitSO chosenUnit = unitList[chosenSpawnableIndex].unit;
 
             //Spawn a smoke effect to hide the instantiation of the unit.
-            SmokeEffect(hit.point);
+            SpawnEffect(hit.point);
 
             //If the spawn location meets the requirements, then spawn the currently selected unit.
 
             //A random unit from the chosen unit's prefab list gets picked, and the name gets sent to the server, which then spawns the unit.
             //This is because there can be multiple variations of one unit.
-            Cmd_SpawnMyUnit(hit.point,
-                chosenUnit.unitPrefab.name,
-                unitList[chosenSpawnableIndex].level);
+            spawnLevel = unitList[chosenSpawnableIndex].level;
+            spawnName = chosenUnit.unitPrefab.name;
 
             //Master loses energy, because nothing is free in life
-            IncreaseEnergy(-chosenUnit.energyCost);
+            ModifyEnergy(-chosenUnit.energyCost);
             UpdateEnergyUI();//Update UI
-            IncreaseXp(chosenUnit.xpGain); //Master gains xp though
+            ModifyXp(chosenUnit.xpGain); //Master gains xp though
 
             GamemodeBase.Instance.Svr_ModifyStat(GetComponent<NetworkIdentity>().netId, 1, PlayerDataStat.UnitsPlaced);
         }
+
+        Cmd_Spawn(hit.point, spawnName, spawnLevel);
+    }
+
+    IEnumerator DeployableCooldown(DeployableList deployable)
+    {
+        deployable.onCooldown = true;
+
+        yield return new WaitForSeconds(deployable.deployableCooldown);
+
+        deployable.onCooldown = false;
     }
 
     void TryToRefundUnit()
@@ -976,9 +1038,9 @@ public class UnitMaster : NetworkBehaviour
         Cmd_RefundUnit(unitToRefund.gameObject);
 
         //Spawn a smoke effect to hide the removal of the unit.
-        SmokeEffect(unitToRefund.transform.position);
+        SpawnEffect(unitToRefund.transform.position);
 
-        IncreaseEnergy(refundAmount);
+        ModifyEnergy(refundAmount);
         UpdateEnergyUI();//Update UI
     }
     #endregion
@@ -997,7 +1059,7 @@ public class UnitMaster : NetworkBehaviour
         uiGameplayButtons[which].SetUnitLevel(unit.level);
 
         //Decrease xp by amount required to upgrade the unit
-        IncreaseXp(-unit.unit.xpToUpgrade);
+        ModifyXp(-unit.unit.xpToUpgrade);
 
         //Play spooky sound
         Cmd_PlayGlobalSound(true);
@@ -1006,19 +1068,29 @@ public class UnitMaster : NetworkBehaviour
     public void UnlockNewUnit(int which)
     {
         //Reference
-        UnitList unit = unitList[which];
+        MasterUIGameplayButton button = uiGameplayButtons[which];
 
-        //If player does NOT have enough xp (Which shouldn't be possible), return.
-        if (stats.currentXp < unit.unit.xpToUnlock) return;
-
-        //Unlock the unit
-        unit.unlocked = true;
-
-        //Unlock the unit on the button
+        //Unlock the button
         uiGameplayButtons[which].Unlock(true);
 
-        //Decrease xp by amount required to upgrade the unit
-        IncreaseXp(-unit.unit.xpToUnlock);
+        if (which >= unitList.Count)
+        {
+            DeployableList deployable = deployableList[which - unitList.Count];
+
+            deployable.unlocked = true;
+
+            ModifyXp(-deployable.deployable.xpToUnlock);
+        }
+        else
+        {
+            UnitList unit = unitList[which];
+
+            //Unlock the unit
+            unit.unlocked = true;
+
+            //Decrease xp by amount required to unlock the unit
+            ModifyXp(-unit.unit.xpToUnlock);
+        }
 
         //Play spooky sound
         Cmd_PlayGlobalSound(true);
@@ -1356,7 +1428,11 @@ public class UnitMaster : NetworkBehaviour
 
             d.deployableIndex = i;
            
-            d.unlocked = true;
+            d.unlocked = false;
+
+            d.deployableCooldown = d.deployable.cooldownOnUse;
+
+            d.onCooldown = false;
         }
     }
 
@@ -1407,32 +1483,44 @@ public class UnitMaster : NetworkBehaviour
     #region Network Commands
 
     [Command]
-    void Cmd_SpawnMyUnit(Vector3 pos, string name, int level)
+    void Cmd_Spawn(Vector3 pos, string name, int level)
     {
         //Set the positions y value to be a bit higher, so that the unit doesn't spawn inside the floor
         pos = new Vector3(pos.x, pos.y + 0.5f, pos.z);
 
-        //Get the unit to spawn
-        GameObject unitToSpawn = (GameObject)Resources.Load(unitResourcesLocation+$"{name}");
-        if (unitToSpawn == null)
+        //If the level is 0, then spawn a deployable, not a unit
+        bool spawningDeployable = level == 0;
+
+        string resourceLocation = spawningDeployable ? deployableResourcesLocation : unitResourcesLocation;
+
+        //Get the spawnable to spawn
+        GameObject spawnableToSpawn = (GameObject)Resources.Load(resourceLocation + $"{name}");
+
+        if (spawnableToSpawn == null)
         {
-            Debug.LogError($"Could not spawn unit, didn't find the unit in '{unitResourcesLocation}', make sure they are in that folder");
+            string errorName = (spawningDeployable ? "deployable" : "unit");
+            Debug.LogError($"Could not spawn {name} {errorName}, didn't find the {errorName} in '{resourceLocation}', make sure they are in that folder");
             return;
         }
 
         //Instantiate the unit at the position
-        GameObject newUnit = Instantiate(unitToSpawn, pos, Quaternion.identity);
+        GameObject newSpawnable = Instantiate(spawnableToSpawn, pos, Quaternion.identity);
 
         //Set the units rotation to be random
-        newUnit.transform.rotation = Quaternion.Euler(new Vector3(0, Random.Range(0, 360), 0));
+        newSpawnable.transform.rotation = Quaternion.Euler(new Vector3(0, Random.Range(0, 360), 0));
 
-        UnitBase unit = newUnit.GetComponent<UnitBase>();
+        //If we're spawning a unit
+        if (!spawningDeployable)
+        {
+            //Then set the unit level and unit SO of that unit on spawn
+            UnitBase unit = newSpawnable.GetComponent<UnitBase>();
 
-        unit.SetUnitSO(unitList[chosenSpawnableIndex].unit);
-        unit.SetLevel(level);
+            unit.SetUnitSO(unitList[chosenSpawnableIndex].unit);
+            unit.SetLevel(level);
+        }
 
-        //Spawn the unit on the server
-        NetworkServer.Spawn(newUnit);
+        //Spawn the spawnable on the server
+        NetworkServer.Spawn(newSpawnable);
     }
     [Command]
     void Cmd_RefundUnit(GameObject unitToRefund)
