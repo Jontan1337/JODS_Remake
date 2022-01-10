@@ -7,7 +7,6 @@ using Mirror;
 [RequireComponent(typeof(BoxCollider))]
 [RequireComponent(typeof(NetworkIdentity))]
 [RequireComponent(typeof(NetworkAnimator))]
-[RequireComponent(typeof(NetworkTransform))]
 [RequireComponent(typeof(AudioSource))]
 [RequireComponent(typeof(Dissolve))]
 [RequireComponent(typeof(StatusEffectManager))]
@@ -247,7 +246,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         {
             if (value == walking) return;
             walking = value;
-            animator.SetBool("Walk", walking);
+            Rpc_UpdateMovementAnimation(walking);
         }
     }
     public bool AttackMelee
@@ -328,9 +327,9 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         }
         InitialUnitSetup();
         
-        StartCoroutine(MovementAnimationCoroutine());
 
         if (!isServer) return;
+        StartCoroutine(MovementAnimationCoroutine());
 
         CoSearch = SearchCoroutine();
         if (!searching) { StartCoroutine(CoSearch); searching = true; }
@@ -599,7 +598,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         if (!canPathfind) return; //I can't pathfind, so...
         if (!currentTarget) return; //If I have no target, then what am I pathing towards?...
 
-        repathDelay = lessRepaths ? !repathDelay : false;
+        repathDelay = lessRepaths && !repathDelay;
         if (repathDelay) return; //If there's a repath delay, then don't repath.
         //Every second repath request passes through if there's a delay
 
@@ -678,6 +677,13 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             Walking = controller.velocity.magnitude > 0.1f;
         }
     }
+
+    [ClientRpc]
+    private void Rpc_UpdateMovementAnimation(bool isWalking)
+    {
+        animator.SetBool("Walk", isWalking);
+    }
+
 
     #endregion
 
