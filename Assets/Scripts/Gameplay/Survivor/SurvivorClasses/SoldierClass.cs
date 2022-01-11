@@ -39,8 +39,14 @@ public class SoldierClass : SurvivorClass
 	{
 		if (!rocketLauncher)
 		{
-			EquipRocketLauncher();
+			Cmd_EquipRocketLauncher();
 		}
+	}
+
+	[Command]
+	private void Cmd_EquipRocketLauncher()
+	{
+		EquipRocketLauncher();
 	}
 
 	[Server]
