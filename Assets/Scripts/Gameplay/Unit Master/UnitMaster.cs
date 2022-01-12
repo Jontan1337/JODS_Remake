@@ -1308,7 +1308,6 @@ public class UnitMaster : NetworkBehaviour
 
                     //Debugs
                     Debug.DrawRay(pos, pPos, angle > 60 ? Color.green : Color.red, 10f, false);
-                    print(angle);
 
                     //Is it inside the view angle of the survivor
                     if (angle < 60)

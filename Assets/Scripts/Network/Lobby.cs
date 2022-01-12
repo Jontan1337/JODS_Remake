@@ -522,6 +522,8 @@ public class Lobby : NetworkManager
     }
     private bool IsEveryoneReady()
     {
+        if (roomPlayers.Count == 1) return false;
+
         //Iterate through each player and check if they have readied up.
         foreach (LobbyPlayer lobbyPlayer in roomPlayers)
         {

@@ -234,7 +234,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     #region Attack Bools
 
-    private bool walking;
+    [SyncVar] public bool walking;
     private bool attackMelee;
     private bool attackRange;
     private bool attackSpecial;
@@ -245,8 +245,11 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         set
         {
             if (value == walking) return;
-            walking = value;
-            Rpc_UpdateMovementAnimation(walking);
+            //Only update if the new value is actually different
+
+            if (isServer) walking = value;
+
+            animator.SetBool("Walk", walking);
         }
     }
     public bool AttackMelee
@@ -327,9 +330,16 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         }
         InitialUnitSetup();
         
-
-        if (!isServer) return;
         StartCoroutine(MovementAnimationCoroutine());
+
+        if (!isServer)
+        {
+            ai.enabled = false;
+            seeker.enabled = false;
+            //controller.enabled = false;
+
+            return;
+        }
 
         CoSearch = SearchCoroutine();
         if (!searching) { StartCoroutine(CoSearch); searching = true; }
@@ -560,7 +570,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     //This is called by the Master, who sets the unit's level, which increases it's stats.
     public void SetLevel(int level) => unitLevel = Mathf.Clamp(level,1,100);
 
-
     protected virtual void IncreaseStats()
     {
         float multiplier = upgrades.upgradeMultiplier * (unitLevel - 1);
@@ -673,17 +682,9 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         {
             yield return new WaitForSeconds(0.2f);
 
-            //Set Walk Animation, if walking
             Walking = controller.velocity.magnitude > 0.1f;
         }
     }
-
-    [ClientRpc]
-    private void Rpc_UpdateMovementAnimation(bool isWalking)
-    {
-        animator.SetBool("Walk", isWalking);
-    }
-
 
     #endregion
 
