@@ -169,7 +169,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 		// A shooting animation coroutine is played.
 		Rpc_Shoot();
 		PhysicMaterial phyMat = didHit.collider.sharedMaterial;
-		Rpc_Bullethole(didHit.point, didHit.normal, phyMat ? phyMat.name : "");
+		Rpc_Bullethole(didHit.point, didHit.normal, phyMat ? phyMat.name : "Flesh");
 		Rpc_BulletTrail(didHit.point);
 		// The turret uses a raycast to check if a damagable unit is in front of its barrel.
 		// The turret will shoot at any unit that can be damaged, even if it's not the target.
@@ -230,7 +230,6 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 				if (hit.transform == item.transform)
 				{
 					enemiesInSight.Add(item);
-					print(item);
 				}
 			}
 		}
