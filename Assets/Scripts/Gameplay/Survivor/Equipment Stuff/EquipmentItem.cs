@@ -78,8 +78,8 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 		JODSInput.Controls.Survivor.LMB.canceled += OnLMBCanceled;
 		JODSInput.Controls.Survivor.RMB.performed += OnRMBPerformed;
 		JODSInput.Controls.Survivor.RMB.canceled += OnRMBCanceled;
-		JODSInput.Controls.Survivor.Drop.performed += OnDropPerformed;
-	}
+        JODSInput.Controls.Survivor.Drop.performed += OnDropPerformed;
+    }
 	public virtual void Unbind()
 	{
 		// This method is the last thing that happens when dropping an item.
@@ -87,8 +87,8 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 		JODSInput.Controls.Survivor.LMB.canceled -= OnLMBCanceled;
 		JODSInput.Controls.Survivor.RMB.performed -= OnRMBPerformed;
 		JODSInput.Controls.Survivor.RMB.canceled -= OnRMBCanceled;
-		JODSInput.Controls.Survivor.Drop.performed -= OnDropPerformed;
-	}
+        JODSInput.Controls.Survivor.Drop.performed -= OnDropPerformed;
+    }
 	[TargetRpc]
 	protected void Rpc_Bind(NetworkConnection target)
 	{
@@ -133,6 +133,7 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	[Server]
 	public virtual void Svr_Pickup(Transform newParent, NetworkConnection conn)
 	{
+		Debug.Log("Svr_Pickup");
 		authController.Svr_GiveAuthority(conn);
 		Svr_DisablePhysics();
 		transform.parent = newParent;
@@ -181,6 +182,9 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	[Server]
 	public virtual void Svr_Equip()
 	{
+		// Apparently connecionToClient is null even
+		// though authority is given long before this on line 136???
+		Debug.Log("Svr_Equip");
 		Rpc_SetLayer(connectionToClient, true);
 		Svr_ShowItem();
 		Svr_DisablePhysics();
@@ -258,16 +262,20 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	[Command]
 	protected virtual void Cmd_InvokeOnDrop()
 	{
-		onServerDropItem?.Invoke(gameObject);
+        OnServerDropItem();
 	}
 	[Server]
 	protected virtual void Svr_InvokeOnDrop()
-	{
-		onServerDropItem?.Invoke(gameObject);
-	}
+    {
+        OnServerDropItem();
+    }
+    private void OnServerDropItem()
+    {
+        onServerDropItem?.Invoke(gameObject);
+    }
 
-	#region Toggle Show Hide
-	[Command]
+    #region Toggle Show Hide
+    [Command]
 	public void Cmd_ShowItem()
 	{
 		Svr_ShowItem();

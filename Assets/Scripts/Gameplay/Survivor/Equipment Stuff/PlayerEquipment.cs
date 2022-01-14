@@ -92,12 +92,12 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
             if (oldEquipmentItem)
             {
                 oldEquipmentItem.onServerDropItem -= Svr_OnItemDropped;
-                oldEquipmentItem.Svr_Unequip();
+                //oldEquipmentItem.Svr_Unequip();
             }
             equipmentItem = value;
             if (equipmentItem)
             {
-                equipmentItem.Svr_Equip();
+                //equipmentItem.Svr_Equip();
                 equipmentItem.onServerDropItem += Svr_OnItemDropped;
             }
         }
@@ -114,12 +114,16 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
             if (selectedEquipmentSlot)
             {
                 selectedEquipmentSlot.onServerItemChange -= Svr_SelectedSlotItemChange;
+                if (selectedEquipmentSlot.EquipmentItem)
+                    selectedEquipmentSlot.EquipmentItem.GetComponent<EquipmentItem>().Svr_Unequip();
             }
             selectedEquipmentSlot = value;
             if (selectedEquipmentSlot)
             {
                 // Listen if the new selected slot's item changes.
                 selectedEquipmentSlot.onServerItemChange += Svr_SelectedSlotItemChange;
+                if (selectedEquipmentSlot.EquipmentItem)
+                    selectedEquipmentSlot.EquipmentItem.GetComponent<EquipmentItem>().Svr_Equip();
                 ItemInHands = selectedEquipmentSlot.EquipmentItem;
             }
         }
@@ -172,7 +176,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
     [Command]
     private void Cmd_OnItemPickupBehaviourChanged(ItemPickupBehaviour pickupBehaviour)
     {
-        itemPickupBehaviour = (ItemPickupBehaviour)pickupBehaviour;
+        itemPickupBehaviour = pickupBehaviour;
     }
 
     [TargetRpc]
@@ -357,9 +361,12 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
         {
             if (SelectedEquipmentSlot.EquipmentItem)
             {
+                EquipmentItem.Svr_Unequip();
                 Svr_RemoveItem(SelectedEquipmentSlot.EquipmentItem);
             }
+            //Svr_EquipNewItem(equipment.GetComponent<EquipmentItem>());
             Svr_EquipItem(equipment);
+            equipment.GetComponent<EquipmentItem>().Svr_Equip();
         }
 
         // EquipmentType none is meant for equipment
@@ -372,13 +379,34 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
                 // Unbind current weapon
                 // Unequip current weapon
                 // Deselect item slot
-
+                Svr_EquipNewItem(equipment.GetComponent<EquipmentItem>());
                 ItemInHands = equipment;
                 Svr_DeselectSlot();
             }
         }
         Svr_InvokeItemPickedUp(ItemInHands);
         //Rpc_InvokeItemPickedUp(EquippedItem);
+    }
+
+    [Server]
+    public void Svr_Drop(PlayerEquipment item)
+    {
+
+    }
+
+    [Server]
+    public void Svr_EquipNewItem(EquipmentItem equipmentItem)
+    {
+        if (EquipmentItem)
+        {
+            Debug.Log("Unequip");
+            EquipmentItem.Svr_Unequip();
+        }
+        if (equipmentItem)
+        {
+            Debug.Log("Equip");
+            equipmentItem.Svr_Equip();
+        }
     }
 
     [Server]

@@ -63,7 +63,6 @@ public class EquipmentSlot : NetworkBehaviour
         }
     }
     public EquipmentType EquipmentType { get => equipmentType; set => equipmentType = value; }
-    public KeyCode KeyCode { get => keyCode; private set => keyCode = value; }
     public TMP_Text TextItemType {
         get => textItemType;
         private set
