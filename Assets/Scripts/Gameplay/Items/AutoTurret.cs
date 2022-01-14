@@ -230,6 +230,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 				if (hit.transform.root == item.transform)
 				{
 					enemiesInSight.Add(item);
+					print(item);
 				}
 			}
 		}
@@ -417,16 +418,6 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 		cylinder.gameObject.SetActive(true);
 	}
 
-	private void OnDrawGizmos()
-	{
-		if (target)
-		{
-			//Gizmos.color = TryShoot() ? Color.green : Color.red;
-			Gizmos.DrawSphere(new Vector3(target.position.x, target.position.y + 4, target.position.z), 1);
-		}
-	}
-
-
 	#endregion
 
 	#region IDamagable
@@ -470,7 +461,16 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 		StartCoroutine(StartUp());
 	}
 
-	#endregion
+    #endregion
 
+    private void OnDrawGizmosSelected()
+	{
+		if (target)
+		{
+			//Gizmos.color = TryShoot() ? Color.green : Color.red;
+			Gizmos.DrawSphere(new Vector3(target.position.x, target.position.y + 4, target.position.z), 1);
+		}
 
+		Gizmos.DrawWireSphere(transform.position, range);
+	}
 }

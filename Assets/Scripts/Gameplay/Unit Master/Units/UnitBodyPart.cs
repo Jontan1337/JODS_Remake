@@ -119,7 +119,7 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEff
 
 	void Start()
     {
-        unitBase = transform.root.GetComponent<UnitBase>();
+        unitBase = GetComponentInParent<UnitBase>();
 
         multiplier = multiplierArray[(int)bodyPart];
 
