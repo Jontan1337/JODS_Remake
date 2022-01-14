@@ -40,9 +40,9 @@ public class SurvivorSelectHighlight : MonoBehaviour
     }
     private void ActivateUI(bool active)
     {
-        survivorNameText.enabled = active;
-        survivorDescriptionText.enabled = active;
-        survivorSpecialText.enabled = active;
+        if (survivorNameText) survivorNameText.enabled = active;
+        if (survivorDescriptionText) survivorDescriptionText.enabled = active;
+        if (survivorSpecialText) survivorSpecialText.enabled = active;
 
         descriptionGroup.SetActive(active);
         specialGroup.SetActive(active);

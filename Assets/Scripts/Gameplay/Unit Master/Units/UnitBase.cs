@@ -7,7 +7,6 @@ using Mirror;
 [RequireComponent(typeof(BoxCollider))]
 [RequireComponent(typeof(NetworkIdentity))]
 [RequireComponent(typeof(NetworkAnimator))]
-[RequireComponent(typeof(NetworkTransform))]
 [RequireComponent(typeof(AudioSource))]
 [RequireComponent(typeof(Dissolve))]
 [RequireComponent(typeof(StatusEffectManager))]
@@ -235,7 +234,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     #region Attack Bools
 
-    private bool walking;
+    [SyncVar] public bool walking;
     private bool attackMelee;
     private bool attackRange;
     private bool attackSpecial;
@@ -246,7 +245,10 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         set
         {
             if (value == walking) return;
-            walking = value;
+            //Only update if the new value is actually different
+
+            if (isServer) walking = value;
+
             animator.SetBool("Walk", walking);
         }
     }
@@ -330,7 +332,14 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         
         StartCoroutine(MovementAnimationCoroutine());
 
-        if (!isServer) return;
+        if (!isServer)
+        {
+            ai.enabled = false;
+            seeker.enabled = false;
+            //controller.enabled = false;
+
+            return;
+        }
 
         CoSearch = SearchCoroutine();
         if (!searching) { StartCoroutine(CoSearch); searching = true; }
@@ -561,7 +570,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     //This is called by the Master, who sets the unit's level, which increases it's stats.
     public void SetLevel(int level) => unitLevel = Mathf.Clamp(level,1,100);
 
-
     protected virtual void IncreaseStats()
     {
         float multiplier = upgrades.upgradeMultiplier * (unitLevel - 1);
@@ -599,7 +607,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         if (!canPathfind) return; //I can't pathfind, so...
         if (!currentTarget) return; //If I have no target, then what am I pathing towards?...
 
-        repathDelay = lessRepaths ? !repathDelay : false;
+        repathDelay = lessRepaths && !repathDelay;
         if (repathDelay) return; //If there's a repath delay, then don't repath.
         //Every second repath request passes through if there's a delay
 
@@ -674,7 +682,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         {
             yield return new WaitForSeconds(0.2f);
 
-            //Set Walk Animation, if walking
             Walking = controller.velocity.magnitude > 0.1f;
         }
     }

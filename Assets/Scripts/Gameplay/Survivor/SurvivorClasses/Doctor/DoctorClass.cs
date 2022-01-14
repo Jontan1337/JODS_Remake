@@ -13,8 +13,14 @@ public class DoctorClass : SurvivorClass
 	{
 		if (!item)
 		{
-			EquipSyringeGun();
+			Cmd_EquipSyringeGun();
 		}
+	}
+
+	[Command]
+	private void Cmd_EquipSyringeGun()
+	{
+		EquipSyringeGun();
 	}
 
 	[Server]

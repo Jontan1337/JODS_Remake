@@ -607,7 +607,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0.0015, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0.0014872315, y: 0.0028284139, z: 0.00009327807}
+  m_ConnectedAnchor: {x: 0.0014872326, y: 0.0028284139, z: 0.00009327434}
   serializedVersion: 2
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -781,7 +781,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0.0015, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.0011523301, y: -0.0009602793, z: 0.000000008498324}
+  m_ConnectedAnchor: {x: -0.0011523324, y: -0.0009602793, z: 0.000000001338777}
   serializedVersion: 2
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -1381,7 +1381,7 @@ HingeJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 6.1303074e-11, y: 0.0039999955, z: 0.000000007916246}
+  m_ConnectedAnchor: {x: -1.3877796e-17, y: 0.0039999955, z: -4.6566156e-10}
   m_UseSpring: 0
   m_Spring:
     spring: 0
@@ -1621,7 +1621,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0.0015, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.0014616535, y: 0.0027020185, z: -0.00015740478}
+  m_ConnectedAnchor: {x: -0.0014616554, y: 0.0027020185, z: -0.00015739547}
   serializedVersion: 2
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -2413,7 +2413,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0.0015, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0.0011523301, y: -0.0009602794, z: 0.000000008498324}
+  m_ConnectedAnchor: {x: 0.0011523314, y: -0.0009602794, z: 0.000000001338777}
   serializedVersion: 2
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -2506,12 +2506,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7349955001855996467}
+  - component: {fileID: -5108869070987324431}
   - component: {fileID: 6992806520047527324}
   - component: {fileID: 1207774076651040211}
   - component: {fileID: 5238111296754403734}
   - component: {fileID: 7191904773770482532}
   - component: {fileID: 268374024232942598}
-  - component: {fileID: 927965366913144960}
   - component: {fileID: 3906718323133689231}
   - component: {fileID: 6595732941995342431}
   - component: {fileID: 3319794409114431592}
@@ -2544,6 +2544,24 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-5108869070987324431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7875557206170216585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f74aedd71d9a4f55b3ce499326d45fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  clientAuthority: 0
+  localPositionSensitivity: 0.01
+  localRotationSensitivity: 0.01
+  localScaleSensitivity: 0.01
 --- !u!114 &6992806520047527324
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2605,7 +2623,7 @@ MonoBehaviour:
     canSpecial: 0
     statusEffectToApply: {fileID: 0}
     amount: 0
-  movementSpeed: 1.5
+  movementSpeed: 2
   chaseTime: 10
   stoppedMoving: 0
   sightDistance: 20
@@ -2725,24 +2743,6 @@ MonoBehaviour:
   syncInterval: 0.1
   clientAuthority: 0
   animator: {fileID: 1207774076651040211}
---- !u!114 &927965366913144960
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7875557206170216585}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f74aedd71d9a4f55b3ce499326d45fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.05
-  clientAuthority: 0
-  localPositionSensitivity: 0.01
-  localRotationSensitivity: 0.01
-  localScaleSensitivity: 0.01
 --- !u!82 &3906718323133689231
 AudioSource:
   m_ObjectHideFlags: 0
@@ -3022,7 +3022,7 @@ HingeJoint:
   m_Anchor: {x: 0, y: 0.001, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.000016054984, y: 0.0039973175, z: 0.00007134308}
+  m_ConnectedAnchor: {x: -0.000016055048, y: 0.0039973175, z: 0.0000713468}
   m_UseSpring: 0
   m_Spring:
     spring: 0

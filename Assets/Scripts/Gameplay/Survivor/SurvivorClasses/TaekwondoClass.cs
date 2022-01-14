@@ -172,15 +172,13 @@ public class TaekwondoClass : SurvivorClass, IHitter
             Cmd_OnHit(hit.transform.root, kickDamage);
         }
     }
-
-
-    // NOGET ER GALT SOM CLIENT
+    
     private IEnumerator Kick()
     {
         unitsHit.Clear();
         kicking = true;
         sController.enabled = false;
-        Rpc_Kick(kicking);
+        Kick(kicking);
         GetComponentInParent<FullBodyBipedIK>().enabled = false;
         lowerLeg.enabled = true;
 
@@ -188,13 +186,12 @@ public class TaekwondoClass : SurvivorClass, IHitter
 
         kicking = false;
         sController.enabled = true;
-        Rpc_Kick(kicking);
+        Kick(kicking);
         GetComponentInParent<FullBodyBipedIK>().enabled = true;
         lowerLeg.enabled = false;
     }
 
-    [ClientRpc]
-    private void Rpc_Kick(bool kicking)
+    private void Kick(bool kicking)
     {
         GetComponentInParent<SurvivorAnimationManager>().anim.SetBool("Kicking", kicking);
     }
