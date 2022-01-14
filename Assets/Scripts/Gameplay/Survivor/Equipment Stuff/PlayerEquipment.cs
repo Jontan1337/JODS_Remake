@@ -92,12 +92,10 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
             if (oldEquipmentItem)
             {
                 oldEquipmentItem.onServerDropItem -= Svr_OnItemDropped;
-                //oldEquipmentItem.Svr_Unequip();
             }
             equipmentItem = value;
             if (equipmentItem)
             {
-                //equipmentItem.Svr_Equip();
                 equipmentItem.onServerDropItem += Svr_OnItemDropped;
             }
         }
