@@ -227,7 +227,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 			// Every unit that is in line of sight will be added to a new list.
 			if (hit.transform)
 			{
-				if (hit.transform.root == item.transform)
+				if (hit.transform == item.transform)
 				{
 					enemiesInSight.Add(item);
 					print(item);
