@@ -31,7 +31,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     [SerializeField] private Animator weaponAnimator = null;
     [SerializeField] private SFXPlayer sfxPlayer = null;
     [SerializeField] private Material material = null;
-    [SerializeField] private Collider col = null;
+    [SerializeField] private BoxCollider triggerCollider = null;
 
     [Header("Audio Settings")]
     [SerializeField] private AudioClip swingSound = null;
@@ -40,6 +40,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     [SyncVar] private bool isAttacking = false;
     [SyncVar] private bool canAttack = true;
     [SyncVar(hook = nameof(ToggleAnimator))] private bool animatorEnabled = false;
+    [SyncVar(hook = nameof(ToggleCollider))] private bool colliderEnabled = false;
 
     private Coroutine COSplatterShader;
     private Coroutine COAttack;
@@ -77,22 +78,38 @@ public class MeleeWeapon : EquipmentItem, IImpacter
         weaponAnimator.speed = 1f / attackInterval;
     }
 
+    public override void OnStartClient()
+    {
+        if (!isServer) return;
+        base.OnStartServer();
+        triggerCollider.enabled = false;
+        colliderEnabled = false;
+    }
+
     protected override void OnLMBPerformed(InputAction.CallbackContext context) => Cmd_StartAttack();
     protected override void OnLMBCanceled(InputAction.CallbackContext context) => Cmd_StopAttack();
 
     [Server]
     public override void Svr_Pickup(Transform newParent, NetworkConnection conn)
     {
+        print(colliderEnabled);
+        print(triggerCollider.enabled);
         base.Svr_Pickup(newParent, conn);
         weaponAnimator.enabled = true;
         animatorEnabled = true;
+        colliderEnabled = true;
+        triggerCollider.enabled = true;
+        print(colliderEnabled);
+        print(triggerCollider.enabled);
     }
 
     [Server]
     public override void Svr_Drop()
     {
         animatorEnabled = false;
+        colliderEnabled = false;
         weaponAnimator.enabled = animatorEnabled;
+        triggerCollider.enabled = false;
         base.Svr_Drop();
     }
 
@@ -124,7 +141,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
         // Wack camera shake animation played on local client.
         if (hasAuthority)
         {
-            //OnImpact?.Invoke(10);
+            OnImpact?.Invoke(10);
         }
 
         if (isServer)
@@ -143,7 +160,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
             }
             if (other.TryGetComponent(out IParticleEffect particleEffect))
             {
-                Vector3 weaponPos = new Vector3(transform.position.x, transform.position.y, transform.position.z + col.bounds.size.z / 1.5f);
+                Vector3 weaponPos = new Vector3(transform.position.x, transform.position.y, transform.position.z + triggerCollider.bounds.size.z / 1.5f);
                 Rpc_EmitParticle(other.ClosestPoint(weaponPos), particleEffect.ParticleColor);
                 Rpc_ApplySplatter(splatterAmountOnHit);
             }
@@ -168,6 +185,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
                     break;
                 case DamageTypes.Blunt:
                     weaponAnimator.CrossFadeInFixedTime("Idle", 0.5f);
+                    ImpactShake(0.5f);
                     break;
                 case DamageTypes.Pierce:
                     break;
@@ -372,6 +390,11 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     private void ToggleAnimator(bool oldValue, bool newValue)
     {
         weaponAnimator.enabled = newValue;
+    }
+
+    private void ToggleCollider(bool oldValue, bool newValue)
+    {
+        triggerCollider.enabled = newValue;
     }
 
     #endregion

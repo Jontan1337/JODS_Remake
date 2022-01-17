@@ -9,17 +9,17 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8082697254289420415}
+  - component: {fileID: 2660668563078782264}
   - component: {fileID: 5153342560877232090}
   - component: {fileID: 6944742526707157776}
   - component: {fileID: -7223713430008940046}
   - component: {fileID: -34974226543011747}
   - component: {fileID: -8637743624781331604}
   - component: {fileID: -3373306116579016095}
-  - component: {fileID: -7656887511940023217}
   - component: {fileID: 7583577345193426078}
+  - component: {fileID: 154810904661922207}
   - component: {fileID: -5200896865685060185}
   - component: {fileID: -7113823284069820927}
-  - component: {fileID: 2660668563078782264}
   - component: {fileID: 7119151799590538732}
   - component: {fileID: 1806815908194069153}
   - component: {fileID: 5247268446413630599}
@@ -46,6 +46,51 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2660668563078782264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8890196892592532165}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 411099dcad89d4141928b478ac242fb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  itemName: Item name
+  equipmentType: 1
+  unequippedLayer: 14
+  equippedLayer: 15
+  isInteractable: 1
+  authController: {fileID: -3373306116579016095}
+  objectVisuals: {fileID: -5200896865685060185}
+  owner: {fileID: 0}
+  rb: {fileID: -8637743624781331604}
+  outline: {fileID: -7113823284069820927}
+  ignoreLayer:
+    serializedVersion: 2
+    m_Bits: 8192
+  currentDamage: 10
+  normalDamage: 10
+  currentPunchthrough: 2
+  normalPunchthrough: 2
+  damageType: 1
+  attackInterval: 0.6
+  chargeable: 0
+  splatterAmount: 0
+  maxSplatterAmount: 0.35
+  splatterAmountOnHit: 0.04
+  splatterRemoveAmount: 300
+  splatterRemoveAmountOnSwing: -0.01
+  weaponAnimator: {fileID: 7119151799590538732}
+  sfxPlayer: {fileID: 5247268446413630599}
+  material: {fileID: 2100000, guid: f96cadb658ef79f4cb1d04fc10740bb9, type: 2}
+  triggerCollider: {fileID: 7583577345193426078}
+  swingSound: {fileID: 0}
+  hitSound: {fileID: 0}
 --- !u!33 &5153342560877232090
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -156,19 +201,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
---- !u!65 &-7656887511940023217
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8890196892592532165}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.06495666, y: 1.1287675, z: 0.1308788}
-  m_Center: {x: 0, y: 0.36688277, z: -0.018418126}
 --- !u!65 &7583577345193426078
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -182,6 +214,20 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.043478888, y: 1.1287675, z: 0.14014873}
   m_Center: {x: -0.00030276933, y: 0.36688277, z: -0.009981793}
+--- !u!64 &154810904661922207
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8890196892592532165}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -5495902117074765545, guid: 8b7a4402da3c96a4481ad293c52ea100, type: 3}
 --- !u!114 &-5200896865685060185
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -417,51 +463,6 @@ MonoBehaviour:
     - {x: 0.465217, y: 0.2768279, z: 0.8407969}
     - {x: 0.84781826, y: 0.5044952, z: -0.16336708}
     - {x: -0.84781826, y: 0.5044952, z: -0.16336714}
---- !u!114 &2660668563078782264
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8890196892592532165}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 411099dcad89d4141928b478ac242fb9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  itemName: Item name
-  equipmentType: 1
-  unequippedLayer: 14
-  equippedLayer: 15
-  isInteractable: 1
-  authController: {fileID: -3373306116579016095}
-  objectVisuals: {fileID: -5200896865685060185}
-  owner: {fileID: 0}
-  rb: {fileID: -8637743624781331604}
-  outline: {fileID: -7113823284069820927}
-  ignoreLayer:
-    serializedVersion: 2
-    m_Bits: 8192
-  currentDamage: 10
-  normalDamage: 10
-  currentPunchthrough: 2
-  normalPunchthrough: 2
-  damageType: 1
-  attackInterval: 0.2
-  chargeable: 0
-  splatterAmount: 0
-  maxSplatterAmount: 0.35
-  splatterAmountOnHit: 0.04
-  splatterRemoveAmount: 300
-  splatterRemoveAmountOnSwing: -0.01
-  weaponAnimator: {fileID: 7119151799590538732}
-  sfxPlayer: {fileID: 5247268446413630599}
-  material: {fileID: 2100000, guid: f96cadb658ef79f4cb1d04fc10740bb9, type: 2}
-  col: {fileID: -7656887511940023217}
-  swingSound: {fileID: 0}
-  hitSound: {fileID: 0}
 --- !u!95 &7119151799590538732
 Animator:
   serializedVersion: 3

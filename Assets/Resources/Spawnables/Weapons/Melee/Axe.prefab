@@ -15,8 +15,8 @@ GameObject:
   - component: {fileID: 605407041077953739}
   - component: {fileID: 6286724585712466880}
   - component: {fileID: 8858818039796434203}
-  - component: {fileID: 1695814313116189224}
   - component: {fileID: 8510742509104440253}
+  - component: {fileID: 7078248739036338809}
   - component: {fileID: 1141521280690699614}
   - component: {fileID: 1174335037543660417}
   - component: {fileID: 2056607922821574656}
@@ -72,10 +72,13 @@ MonoBehaviour:
   ignoreLayer:
     serializedVersion: 2
     m_Bits: 8192
-  damage: 10
+  currentDamage: 10
+  normalDamage: 10
+  currentPunchthrough: 2
+  normalPunchthrough: 2
   damageType: 0
   attackInterval: 0.7
-  slashPower: 2
+  chargeable: 0
   splatterAmount: 0
   maxSplatterAmount: 0.35
   splatterAmountOnHit: 0.04
@@ -84,7 +87,7 @@ MonoBehaviour:
   weaponAnimator: {fileID: 6225377672603672993}
   sfxPlayer: {fileID: 2177156062513161764}
   material: {fileID: 2100000, guid: f96cadb658ef79f4cb1d04fc10740bb9, type: 2}
-  col: {fileID: 1695814313116189224}
+  triggerCollider: {fileID: 8510742509104440253}
   swingSound: {fileID: 0}
   hitSound: {fileID: 0}
 --- !u!33 &930379364175218385
@@ -183,19 +186,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!65 &1695814313116189224
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 930379364178549457}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.37310994, y: 1.0353398, z: 0.12}
-  m_Center: {x: 0.019479163, y: 0.38790244, z: -0.005383974}
 --- !u!65 &8510742509104440253
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -205,10 +195,24 @@ BoxCollider:
   m_GameObject: {fileID: 930379364178549457}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 0.37310994, y: 0.34192944, z: 0.07362932}
   m_Center: {x: 0.019479156, y: 0.8120517, z: -0.005383976}
+--- !u!64 &7078248739036338809
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 930379364178549457}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: d4da500c0fb9ba24da3f7f7563454e69, type: 3}
 --- !u!114 &1141521280690699614
 MonoBehaviour:
   m_ObjectHideFlags: 0
