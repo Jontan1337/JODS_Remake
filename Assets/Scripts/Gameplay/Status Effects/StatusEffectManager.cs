@@ -51,12 +51,12 @@ public class StatusEffectManager : NetworkBehaviour
         }
     }
 
-    void RemoveVisuals(StatusEffectSO effect)
+    private void RemoveVisuals(StatusEffectSO effect)
     {
         Sprite effectVisual = effect.uIImage;
 
         //If the effect has a visual element
-        if (effectVisual)
+        if (effectVisual && imageReferenceList.Length > 0)
         {
             GameObject imgRef = statusEffectVisuals[effectVisual].gameObject;
 
@@ -82,6 +82,8 @@ public class StatusEffectManager : NetworkBehaviour
                     //Remove the effect from the list of current active effects
                     currentEffects.Remove(effect.effect);
                     statusEffects.Remove(effect.effect.name);
+
+                    RemoveVisuals(effect.effect);
                 }
             }
             if (currentEffects.Count == 0)
@@ -123,7 +125,7 @@ public class StatusEffectManager : NetworkBehaviour
             Sprite effectVisual = newEffect.effect.uIImage;
 
             //If the effect has a visual element
-            if (effectVisual)
+            if (effectVisual && imageReferenceList.Length > 0)
             {
                 foreach(Image img in imageReferenceList)
                 {
