@@ -48,7 +48,10 @@ public class EngineerClass : SurvivorClass
 	[Command]
 	private void Cmd_EquipTurret()
     {
-		EquipTurret();
+		if (!turret)
+		{
+			EquipTurret();
+		}
 	}
 
 	[Server]

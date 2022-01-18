@@ -30,6 +30,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 	[SerializeField] private GameObject singleBrokenObject = null;
 	[SerializeField] private SFXPlayer wallDestruction = null;
 	[SerializeField] private bool destroySelf = false;
+	[SerializeField] public Transform owner;
 	
 	[Header("Other entity settings")]
 	[SerializeField] private Tags objectPoolTag = Tags.ExplosionMedium;
@@ -262,7 +263,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 
 						int finalDamage = Mathf.Clamp(newExplosionDamage - (int)hit.distance * damageLossOverDistance, 0, int.MaxValue);
 						if (finalDamage > 0)
-							damagable?.Svr_Damage(finalDamage);
+							damagable?.Svr_Damage(finalDamage, owner);
 					}
 					tempGO.GetComponent<IExplodable>()?.Explode(transform);
 				}

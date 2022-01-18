@@ -112,7 +112,6 @@ public class PlaceItem : EquipmentItem
         Drop(true);
     }
 
-    // If 
     public override void Unbind()
     {
         base.Unbind();

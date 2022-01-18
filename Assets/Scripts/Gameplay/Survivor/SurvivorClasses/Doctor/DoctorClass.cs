@@ -20,7 +20,10 @@ public class DoctorClass : SurvivorClass
 	[Command]
 	private void Cmd_EquipSyringeGun()
 	{
-		EquipSyringeGun();
+		if (!item)
+		{
+			EquipSyringeGun();
+		}
 	}
 
 	[Server]

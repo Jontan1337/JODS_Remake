@@ -46,7 +46,10 @@ public class SoldierClass : SurvivorClass
 	[Command]
 	private void Cmd_EquipRocketLauncher()
 	{
-		EquipRocketLauncher();
+		if (!rocketLauncher)
+		{
+			EquipRocketLauncher();
+		}
 	}
 
 	[Server]
@@ -62,6 +65,4 @@ public class SoldierClass : SurvivorClass
 		rocketLauncher.GetComponent<EquipmentItem>().Svr_Pickup(playerEquipment.playerHands, connectionToClient);
 		playerEquipment?.Svr_Equip(rocketLauncher, EquipmentType.None);
 	}
-
-
 }

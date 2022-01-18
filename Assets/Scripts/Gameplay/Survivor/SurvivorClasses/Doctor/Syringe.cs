@@ -23,7 +23,7 @@ public class Syringe : Projectile
 		}
 		else
 		{
-			idmg?.Svr_Damage(2);
+			idmg?.Svr_Damage(200, owner);
 		}
 	}
 
