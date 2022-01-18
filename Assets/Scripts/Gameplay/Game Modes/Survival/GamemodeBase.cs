@@ -217,7 +217,7 @@ public abstract class GamemodeBase : NetworkBehaviour
     {
         AS = GetComponent<AudioSource>();
 
-        if (test)
+        if (test && isServer)
         {
             Initialize();
         }

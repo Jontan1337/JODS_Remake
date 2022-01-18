@@ -284,6 +284,17 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	[Server]
 	public void Svr_Damage(int damage, Transform target = null)
 	{
+		Damage(damage, target);
+	}
+
+	[Command]
+	public void Cmd_Damage(int damage)
+	{
+		Damage(damage);
+	}
+
+	void Damage(int damage, Transform source = null)
+    {
 		if (armor > 0)
 		{
 			float armorPercent = (float)armor / 100;

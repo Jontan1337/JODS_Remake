@@ -333,6 +333,11 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 		health -= damage;
 	}
 
+	public void Cmd_Damage(int damage)
+	{
+		throw new System.NotImplementedException();
+	}
+
 	#region Editor debugging tools
 	// Check the explosion radius by selecting the object when using unity editor.
 	private void OnDrawGizmosSelected()
