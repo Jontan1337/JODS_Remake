@@ -293,6 +293,14 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         }
         Rpc_ChangeFireModeSFX();
     }
+    
+    private Vector2 GetRandomHitPoint(float accuracy)
+    {
+        var r = 2 * Mathf.PI * accuracy;
+        var u = UnityEngine.Random.Range(-1f, 1f) + UnityEngine.Random.Range(-1f, 1f);
+        var f = u > 1 ? u - 2 : u;
+        return new Vector2(f * Mathf.Cos(r), f * Mathf.Sin(r));
+    }
 
     #endregion
 

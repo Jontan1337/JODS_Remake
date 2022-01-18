@@ -92,15 +92,15 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     [Server]
     public override void Svr_Pickup(Transform newParent, NetworkConnection conn)
     {
-        print(colliderEnabled);
-        print(triggerCollider.enabled);
+        Debug.Log(colliderEnabled, this);
+        Debug.Log(triggerCollider.enabled, this);
         base.Svr_Pickup(newParent, conn);
         weaponAnimator.enabled = true;
         animatorEnabled = true;
         colliderEnabled = true;
         triggerCollider.enabled = true;
-        print(colliderEnabled);
-        print(triggerCollider.enabled);
+        Debug.Log(colliderEnabled, this);
+        Debug.Log(triggerCollider.enabled, this);
     }
 
     [Server]
@@ -395,6 +395,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     private void ToggleCollider(bool oldValue, bool newValue)
     {
         triggerCollider.enabled = newValue;
+        Debug.Log(triggerCollider.enabled, this);
     }
 
     #endregion

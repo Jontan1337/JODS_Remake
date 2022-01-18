@@ -170,6 +170,8 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   hasPhysics: 1
+  _rigidbody: {fileID: 8858818039796434203}
+  _collider: {fileID: 7078248739036338809}
 --- !u!54 &8858818039796434203
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -183,9 +185,9 @@ Rigidbody:
   m_AngularDrag: 0.05
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 3
 --- !u!65 &8510742509104440253
 BoxCollider:
   m_ObjectHideFlags: 0

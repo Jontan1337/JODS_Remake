@@ -96,6 +96,8 @@ public class SurvivorAnimationManager : NetworkBehaviour
     {
 		if (handIKEffectors != null)
         {
+			// If no item is equipped.
+
 			// Set right side IK
 			Transform effector = handIKEffectors.rightHandEffector;
 			fullBodyIK.solver.rightHandEffector.target = effector;
@@ -127,7 +129,8 @@ public class SurvivorAnimationManager : NetworkBehaviour
 				fullBodyIK.solver.leftShoulderEffector.positionWeight = 0f;
             }
 			else
-            {
+			{
+				print("Settings left side weights to 1");
 				fullBodyIK.solver.leftShoulderEffector.target = secondPersonLeftShoulderAimingEffector;
 				fullBodyIK.solver.leftShoulderEffector.positionWeight = 1f;
 			}
@@ -138,6 +141,8 @@ public class SurvivorAnimationManager : NetworkBehaviour
 		}
 		else
         {
+			// If an item is equipped.
+
 			// Set right side IK
 			fullBodyIK.solver.rightHandEffector.target = null;
 			fullBodyIK.solver.rightHandEffector.positionWeight = 0f;
@@ -158,6 +163,7 @@ public class SurvivorAnimationManager : NetworkBehaviour
 			fullBodyIK.solver.leftHandEffector.rotationWeight = 0f;
             if (!hasAuthority)
             {
+				print("Settings left side weights to 0");
 				fullBodyIK.solver.leftShoulderEffector.positionWeight = 0f;
 				fullBodyIK.solver.leftShoulderEffector.rotationWeight = 0f;
             }
