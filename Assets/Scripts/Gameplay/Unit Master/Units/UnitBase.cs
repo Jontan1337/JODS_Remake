@@ -1157,7 +1157,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         {
             return;
         }
-        target.GetComponent<StatusEffectManager>()?.ApplyStatusEffect(effect.ApplyEffect(target.gameObject), amount);
+        target.GetComponent<StatusEffectManager>()?.Svr_ApplyStatusEffect(effect.ApplyEffect(target.gameObject), amount);
     }
 
     #endregion

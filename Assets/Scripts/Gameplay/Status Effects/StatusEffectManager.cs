@@ -2,30 +2,65 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
+using Mirror;
 
-public class StatusEffectManager : MonoBehaviour
+public class StatusEffectManager : NetworkBehaviour
 {
+
     private Dictionary<StatusEffectSO, StatusEffect> currentEffects = new Dictionary<StatusEffectSO, StatusEffect>();
+    private Dictionary<Sprite, Image> statusEffectVisuals = new Dictionary<Sprite, Image>();
+    [Header("Current Status Effects")]
     public List<string> statusEffects = new List<string>();
 
     private Coroutine effectEnumerator;
     bool isActive;
+    private bool playerObject = false;
+
+    [Header("UI References")]
+    [SerializeField] private Image[] imageReferenceList = null;
 
     private void Start()
     {
+        if (!isServer) return;
+
+        playerObject = GetComponent<ActiveSClass>();
+
+        if (playerObject)
+        {
+            foreach(Image i in imageReferenceList)
+            {
+                i.enabled = false;
+            }
+        }
+
         isActive = false;
     }
 
-    public void RemoveStatusEffect(StatusEffectSO effect)
+    [Server]
+    public void Svr_RemoveStatusEffect(StatusEffectSO effect)
     {
         if (currentEffects.ContainsKey(effect))
         {
-            Debug.Log(effect.name + " removed");
+            Debug.Log("(SVR) " + effect.name + " removed");
             currentEffects.Remove(effect);
         }
         if (statusEffects.Contains(effect.name))
         {
             statusEffects.Remove(effect.name);
+        }
+    }
+
+    void RemoveVisuals(StatusEffectSO effect)
+    {
+        Sprite effectVisual = effect.uIImage;
+
+        //If the effect has a visual element
+        if (effectVisual)
+        {
+            GameObject imgRef = statusEffectVisuals[effectVisual].gameObject;
+
+            Rpc_EnableVisual(GetComponent<NetworkIdentity>().connectionToClient, imgRef);
         }
     }
 
@@ -57,10 +92,9 @@ public class StatusEffectManager : MonoBehaviour
         }
     }
 
-
-    public void ApplyStatusEffect(StatusEffect newEffect, int? amount = null)
+    [Server]
+    public void Svr_ApplyStatusEffect(StatusEffect newEffect, int? amount = null)
     {
-
         //If the status effect is already in the list, then activate the effect
         if (currentEffects.ContainsKey(newEffect.effect))
         {
@@ -69,7 +103,7 @@ public class StatusEffectManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("New Status Effect : " + newEffect.effect.name);
+            Debug.Log("(SVR) New Status Effect : " + newEffect.effect.name);
             statusEffects.Add(newEffect.effect.name);
 
             //Add the effect to the dictionary
@@ -79,12 +113,53 @@ public class StatusEffectManager : MonoBehaviour
             newEffect.Activate(amount);
 
             //If the coroutine is not currently running, then activate it
-            //The coroutine will stop when there are no more active effects
+            //The coroutine will stop itself when there are no more active effects
             if (!isActive)
             {
                 effectEnumerator = StartCoroutine(StatusEffectEnumerator());
                 isActive = true;
             }
+
+            Sprite effectVisual = newEffect.effect.uIImage;
+
+            //If the effect has a visual element
+            if (effectVisual)
+            {
+                foreach(Image img in imageReferenceList)
+                {
+                    if (!statusEffectVisuals.ContainsValue(img))
+                    {
+                        img.sprite = effectVisual;
+                        statusEffectVisuals.Add(effectVisual, img);
+                        break;
+                    }
+                }
+
+                Rpc_EnableVisual(GetComponent<NetworkIdentity>().connectionToClient, statusEffectVisuals[effectVisual].gameObject);
+            }
         }
+    }
+
+    [TargetRpc]
+    private void Rpc_EnableVisual(NetworkConnection conn, GameObject imgRef)
+    {
+        Image newImg = imgRef.GetComponent<Image>();
+
+        bool enable = newImg.sprite != null;
+
+        foreach (Image img in imageReferenceList)
+        {
+            //Assign the sprite to an unused image
+            if (enable && !img.enabled)
+            {
+                img.sprite = newImg.sprite;
+                break;
+            }
+            else if (!enable && img.enabled && img.sprite == newImg.sprite)
+            {
+                img.sprite = null;
+            }
+            img.enabled = enable;
+        }     
     }
 }

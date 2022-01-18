@@ -34,22 +34,15 @@ public class StatusEffectApplier : NetworkBehaviour
     }
 
     private IEnumerator ApplyCoroutine(GameObject target)
-    {        
+    {
+        StatusEffectManager manager = target.GetComponent<StatusEffectManager>();
+
         while (objectsInCollider.Contains(target))
         {
             //The server applies the status effect to the object every half second
-            Rpc_ApplyStatusEffect(target.GetComponent<NetworkIdentity>().connectionToClient);
+            manager.Svr_ApplyStatusEffect(statusEffectToApply.ApplyEffect(target));
+
             yield return new WaitForSeconds(0.5f);
         }
-    }
-
-    [TargetRpc]
-    private void Rpc_ApplyStatusEffect(NetworkConnection conn)
-    {
-        GameObject target = conn.identity.gameObject;
-
-        StatusEffectManager manager = target.GetComponent<StatusEffectManager>();
-
-        manager.ApplyStatusEffect(statusEffectToApply.ApplyEffect(target));
     }
 }

@@ -48,7 +48,7 @@ public class ZombieTentacle : UnitBase, IZombie, IControllable
             Debug.LogError(name + " had no grapple debuff assigned and could not grapple the target");
             return;
         }
-        currentTarget.GetComponent<StatusEffectManager>()?.ApplyStatusEffect(special.statusEffectToApply.ApplyEffect(currentTarget.gameObject));
+        currentTarget.GetComponent<StatusEffectManager>()?.Svr_ApplyStatusEffect(special.statusEffectToApply.ApplyEffect(currentTarget.gameObject));
 
         CaughtSurvivor = true;
         animator.SetBool("Grapple", true);
@@ -83,7 +83,7 @@ public class ZombieTentacle : UnitBase, IZombie, IControllable
         {
             if (currentTarget)
             {
-                currentTarget.GetComponent<StatusEffectManager>().RemoveStatusEffect(special.statusEffectToApply);
+                currentTarget.GetComponent<StatusEffectManager>().Svr_RemoveStatusEffect(special.statusEffectToApply);
             }
         }
     }

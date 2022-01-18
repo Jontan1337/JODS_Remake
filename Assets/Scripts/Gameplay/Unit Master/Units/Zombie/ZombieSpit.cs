@@ -24,7 +24,7 @@ public class ZombieSpit : Projectile
 
             Damage(objectHit.collider.gameObject); //Damage the object hit
 
-            objectHit.collider.GetComponent<StatusEffectManager>()?.ApplyStatusEffect(statusEffectToApply.ApplyEffect(objectHit.collider.gameObject), amount); //apply DOT effect
+            objectHit.collider.GetComponent<StatusEffectManager>()?.Svr_ApplyStatusEffect(statusEffectToApply.ApplyEffect(objectHit.collider.gameObject), amount); //apply DOT effect
 
             SpitEffects(); //Apply visual effects
 

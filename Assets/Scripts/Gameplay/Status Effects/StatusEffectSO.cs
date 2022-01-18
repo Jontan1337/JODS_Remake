@@ -14,4 +14,7 @@ public abstract class StatusEffectSO : ScriptableObject
     public bool doEffectOnHit;
 
     public abstract StatusEffect ApplyEffect(GameObject target);
+
+    [Header("Visual")]
+    public Sprite uIImage;
 }
