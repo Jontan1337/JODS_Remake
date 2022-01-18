@@ -4,6 +4,12 @@ using UnityEngine.AI;
 
 public class SoldierRocket : Projectile
 {
+    public override void Start()
+    {
+		base.Start();
+		GetComponent<LiveEntity>().owner = owner;
+	}
+
 	public override void OnHit(Collision collision)
 	{
 		if (!isServer) return;
