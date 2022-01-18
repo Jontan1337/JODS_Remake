@@ -4,7 +4,8 @@ using UnityEngine.InputSystem;
 using System;
 
 [RequireComponent(typeof(PhysicsToggler), typeof(Rigidbody), typeof(BoxCollider)),
- RequireComponent(typeof(AuthorityController), typeof(SyncGameObjectVisuals), typeof(Outline))]
+ RequireComponent(typeof(AuthorityController), typeof(SyncGameObjectVisuals), typeof(Outline)),
+ RequireComponent(typeof(MeshCollider))]
 public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippable, IBindable
 {
 	[Header("Basic info")]

@@ -16,8 +16,8 @@ GameObject:
   - component: {fileID: 6484964077650548063}
   - component: {fileID: 6684747236854656919}
   - component: {fileID: 1062048407519519742}
-  - component: {fileID: 7670592048999142384}
   - component: {fileID: 2473641767622227848}
+  - component: {fileID: 3777884883632983444}
   - component: {fileID: 608700618524033809}
   - component: {fileID: 4609404701648697094}
   - component: {fileID: 4923435655667672491}
@@ -89,7 +89,7 @@ MonoBehaviour:
   weaponAnimator: {fileID: 3233265353284567669}
   sfxPlayer: {fileID: 6768451046035223808}
   material: {fileID: 2100000, guid: f96cadb658ef79f4cb1d04fc10740bb9, type: 2}
-  col: {fileID: 7670592048999142384}
+  triggerCollider: {fileID: 2473641767622227848}
   swingSound: {fileID: 0}
   hitSound: {fileID: 0}
 --- !u!114 &6768451046035223808
@@ -209,19 +209,6 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   hasPhysics: 1
---- !u!65 &7670592048999142384
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6484964077652478879}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.030275524, y: 0.95341665, z: 0.1225792}
-  m_Center: {x: 0.000000008381903, y: 0.357945, z: -0.0243662}
 --- !u!65 &2473641767622227848
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -231,10 +218,24 @@ BoxCollider:
   m_GameObject: {fileID: 6484964077652478879}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 0.02, y: 0.8, z: 0.15}
   m_Center: {x: 0.000000008381903, y: 0.55, z: -0.0243662}
+--- !u!64 &3777884883632983444
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6484964077652478879}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4493585093827132993, guid: eb0d2d82f4336bf42bbc59d8bad847c4, type: 3}
 --- !u!82 &608700618524033809
 AudioSource:
   m_ObjectHideFlags: 0
