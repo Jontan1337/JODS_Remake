@@ -9,5 +9,7 @@ public interface IDamagable
 
     [Server]
     void Svr_Damage(int damage, Transform source = null);
+    [Command]
+    void Cmd_Damage(int damage);
 
 }

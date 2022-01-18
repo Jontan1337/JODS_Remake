@@ -436,9 +436,12 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 		}
 	}
 
+	public void Cmd_Damage(int damage)
+	{
+		throw new System.NotImplementedException();
+	}
 
-
-    public int GetHealth => health;
+	public int GetHealth => health;
 	public bool IsDead => isDead;
 
 

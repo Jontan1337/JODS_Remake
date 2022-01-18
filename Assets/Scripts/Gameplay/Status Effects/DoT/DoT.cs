@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class DoT : StatusEffect
 {
@@ -31,6 +29,6 @@ public class DoT : StatusEffect
     {
         base.Tick();
         //Do Damage
-        idmg.Svr_Damage(dot.damagePerTick);
+        idmg.Cmd_Damage(dot.damagePerTick);
     }
 }
