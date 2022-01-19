@@ -51,13 +51,15 @@ public class StatusEffectManager : NetworkBehaviour
         }
     }
 
-    private void RemoveVisuals(StatusEffectSO effect)
+    [Server]
+    private void Svr_RemoveVisuals(StatusEffectSO effect)
     {
         Sprite effectVisual = effect.uIImage;
 
         //If the effect has a visual element
         if (effectVisual && imageReferenceList.Length > 0)
         {
+            print(effectVisual);
             int index = statusEffectVisuals[effectVisual];
 
             Rpc_EnableVisual(GetComponent<NetworkIdentity>().connectionToClient, index, null);
@@ -83,7 +85,7 @@ public class StatusEffectManager : NetworkBehaviour
                     currentEffects.Remove(effect.effect);
                     statusEffects.Remove(effect.effect.name);
 
-                    RemoveVisuals(effect.effect);
+                    Svr_RemoveVisuals(effect.effect);
                 }
             }
             if (currentEffects.Count == 0)
@@ -127,20 +129,16 @@ public class StatusEffectManager : NetworkBehaviour
             //If the effect has a visual element
             if (effectVisual && imageReferenceList.Length > 0)
             {
-                int index = 0;
-                for(int i = 0; i > imageReferenceList.Length; i++)
+                for(int i = 0; i < imageReferenceList.Length; i++)
                 {
-                    Image img = imageReferenceList[i];
                     if (!statusEffectVisuals.ContainsValue(i))
                     {
-                        index = i;
-                        img.sprite = effectVisual;
                         statusEffectVisuals.Add(effectVisual, i);
+
+                        Rpc_EnableVisual(GetComponent<NetworkIdentity>().connectionToClient, i, effectVisual.name);
                         break;
                     }
                 }
-
-                Rpc_EnableVisual(GetComponent<NetworkIdentity>().connectionToClient, index, effectVisual.name);
             }
         }
     }
@@ -150,7 +148,7 @@ public class StatusEffectManager : NetworkBehaviour
     {
         Image img = imageReferenceList[imageIndex];
 
-        bool enable = spriteName != null;print(enable);
+        bool enable = spriteName != null;
 
         img.enabled = enable;  
 
