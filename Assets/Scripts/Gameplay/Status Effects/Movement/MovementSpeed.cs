@@ -34,6 +34,5 @@ public class MovementSpeed : StatusEffect
     public override void Tick()
     {
         base.Tick();
-        Debug.Log("I'm slow for another " + duration + " seconds");
     }
 }

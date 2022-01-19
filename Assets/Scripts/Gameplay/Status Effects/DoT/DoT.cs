@@ -29,6 +29,6 @@ public class DoT : StatusEffect
     {
         base.Tick();
         //Do Damage
-        idmg.Cmd_Damage(dot.damagePerTick);
+        idmg.Svr_Damage(dot.damagePerTick);
     }
 }
