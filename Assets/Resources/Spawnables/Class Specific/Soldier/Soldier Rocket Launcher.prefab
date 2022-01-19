@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 6441341795825767503}
   - component: {fileID: 6633225329221974598}
   m_Layer: 0
-  m_Name: AT4
+  m_Name: Soldier Rocket Launcher
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -68,6 +68,7 @@ MonoBehaviour:
   rb: {fileID: 2790234340522229746}
   outline: {fileID: 0}
   damage: 0
+  ammunitionType: 0
   fireMode: 0
   fireModes: 
   burstBulletAmount: 3
@@ -1350,6 +1351,8 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   hasPhysics: 1
+  _rigidbody: {fileID: 2790234340522229746}
+  _collider: {fileID: 4698299209981788439}
 --- !u!54 &2790234340522229746
 Rigidbody:
   m_ObjectHideFlags: 0

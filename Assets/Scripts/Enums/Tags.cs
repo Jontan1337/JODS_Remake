@@ -24,5 +24,8 @@
 
     //Blood FX
     MeleeBloodSplatter,
-    HeadExplosionBloodSplatter
+    HeadExplosionBloodSplatter,
+
+    //Item
+    Mine
 }

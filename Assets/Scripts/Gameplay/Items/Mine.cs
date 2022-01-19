@@ -12,6 +12,7 @@ public class Mine : NetworkBehaviour, IPlaceable
     {
         if (armed && other.gameObject.layer == 10)
         {
+            if (!isServer) return;
             Svr_Explode();
         }
     }
@@ -27,6 +28,8 @@ public class Mine : NetworkBehaviour, IPlaceable
     public void Svr_OnPlaced()
     {
         GetComponent<LiveEntity>().owner = transform.root;
+        GetComponent<BlinkingLight>().StartBlinking();
+
         armed = true;
         col.enabled = true;
     }

@@ -11175,6 +11175,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 988226761}
     m_Modifications:
+    - target: {fileID: 64342779, guid: 09c37436819aaf64987cad03a37cb16e, type: 3}
+      propertyPath: sceneId
+      value: 900359010
+      objectReference: {fileID: 0}
     - target: {fileID: 8187607966051017738, guid: 09c37436819aaf64987cad03a37cb16e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -40322,6 +40326,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 988226761}
     m_Modifications:
+    - target: {fileID: 64342779, guid: 09c37436819aaf64987cad03a37cb16e, type: 3}
+      propertyPath: sceneId
+      value: 1723514229
+      objectReference: {fileID: 0}
     - target: {fileID: 8187607966051017738, guid: 09c37436819aaf64987cad03a37cb16e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -59777,6 +59785,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -1.197
       objectReference: {fileID: 0}
+    - target: {fileID: 482449996048148244, guid: 46a069801f0fdcc4cbdf9d2308d8346c,
+        type: 3}
+      propertyPath: startOn
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 753060354163710536, guid: 46a069801f0fdcc4cbdf9d2308d8346c,
         type: 3}
       propertyPath: m_Name
@@ -70722,7 +70735,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e921e07157279e438f13df240a011e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startOn: 0
+  startOn: 1
+  startWithLightsOn: 1
   onDuration: 0.5
   offDuration: 0.2
   lerpDuration: 0.5
@@ -70735,6 +70749,7 @@ MonoBehaviour:
   randomOnVariation: 0.1
   materialIndex: 1
   useMaterialIndex: 1
+  isOn: 0
 --- !u!1001 &2771262187800411138
 PrefabInstance:
   m_ObjectHideFlags: 0

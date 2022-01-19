@@ -6,10 +6,11 @@ public class BlinkingLight : MonoBehaviour
 {
     [Header("Light Settings")]
     [SerializeField] private bool startOn = true;
+    [SerializeField] private bool startWithLightsOn = true;
     [Space]
-    [SerializeField, Range(0f,10f)] private float onDuration = 1f;
-    [SerializeField, Range(0f,10f)] private float offDuration = 1f;
-    [SerializeField, Range(0f,10f)] private float lerpDuration = 1f;
+    [SerializeField, Range(0f, 10f)] private float onDuration = 1f;
+    [SerializeField, Range(0f, 10f)] private float offDuration = 1f;
+    [SerializeField, Range(0f, 10f)] private float lerpDuration = 1f;
     [Space]
     [SerializeField] private Color onColor = Color.white;
     [SerializeField] private Color offColor = Color.black;
@@ -17,17 +18,18 @@ public class BlinkingLight : MonoBehaviour
     [SerializeField] private bool lerpEmission = true;
     [Space]
     [SerializeField] private bool randomOffDuration = false;
-    [SerializeField, Range(0f,10f)] private float randomOffVariation = 2f;
+    [SerializeField, Range(0f, 10f)] private float randomOffVariation = 2f;
     [SerializeField] private bool randomOnDuration = false;
-    [SerializeField, Range(0f,10f)] private float randomOnVariation = 2f;
+    [SerializeField, Range(0f, 10f)] private float randomOnVariation = 2f;
     [Space]
     [SerializeField] private int materialIndex = 1;
-    [SerializeField,Tooltip("Uses the given material index if true. " +
-        "If false, all materials will be affected")] private bool useMaterialIndex = true;
+    [SerializeField, Tooltip("Uses the given material index if true. " +
+        "If false, all materials will be affected")]
+    private bool useMaterialIndex = true;
 
     private Material[] materials;
     private MeshRenderer meshRenderer;
-    private bool isOn = false;
+    public bool isOn = false;
 
     private void Start()
     {
@@ -54,9 +56,17 @@ public class BlinkingLight : MonoBehaviour
         }
 
         ApplyColorChanges(startOn ? onColor : offColor);
-        isOn = startOn;
+        isOn = startWithLightsOn;
 
         //Start the blinking
+        if (startOn)
+        {
+            StartBlinking();
+        }
+    }
+
+    public void StartBlinking()
+    {
         StartCoroutine(IEBlinkingLight());
     }
 
@@ -94,8 +104,8 @@ public class BlinkingLight : MonoBehaviour
             isOn = !isOn;
 
             //Then wait for an amount of time, based on the variable values applied in the editor
-            yield return new WaitForSeconds(isOn ? 
-                (randomOnDuration ? Mathf.Clamp(Random.Range(onDuration - randomOnVariation, onDuration + randomOnVariation), 0, 10) : onDuration) : 
+            yield return new WaitForSeconds(isOn ?
+                (randomOnDuration ? Mathf.Clamp(Random.Range(onDuration - randomOnVariation, onDuration + randomOnVariation), 0, 10) : onDuration) :
                 (randomOffDuration ? Mathf.Clamp(Random.Range(offDuration - randomOffVariation, offDuration + randomOffVariation), 0, 10) : offDuration));
         }
     }

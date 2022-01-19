@@ -286,14 +286,15 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 		//StartCoroutine(DestroyWait());
 		if (singleDestructable || entityType == EntityType.explosive)
 		{
-			if (objectPooled)
-			{
-				ObjectPool.Instance.ReturnToNetworkedPool(objectPoolTag, gameObject, 0);
-			}
-			else
-			{
+			//if (objectPooled)
+			//{
+			//	ObjectPool.Instance.ReturnToNetworkedPool(objectPoolTag, gameObject, 0);
+			//}
+			//else
+			//{
+			//	Destroy(gameObject);
+			//}
 				Destroy(gameObject);
-			}
 		}
 	}
 
@@ -317,9 +318,9 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 	[ClientRpc]
 	private void Rpc_StartExplosionEffect()
 	{
-		explosionEffect.gameObject.transform.parent = null;
+        explosionEffect.gameObject.transform.parent = null;
 		explosionEffect.Play();
-		explosionEffect.GetComponent<SFXPlayer>()?.PlaySFX();
+        explosionEffect.GetComponent<SFXPlayer>()?.PlaySFX();
 	}
 
 	public void Explode(Transform explosionSource)
