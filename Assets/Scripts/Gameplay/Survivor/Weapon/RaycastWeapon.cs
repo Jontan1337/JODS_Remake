@@ -13,24 +13,6 @@ public class RaycastWeapon : RangedWeapon
     [SerializeField, SyncVar] private Transform playerHead;
     [SerializeField] private ParticleSystem bulletTrail;
 
-    //public override bool OnSerialize(NetworkWriter writer, bool initialState)
-    //{
-    //    if (!initialState)
-    //    {
-    //        writer.WriteTransform(playerHead);
-    //        return true;
-    //    }
-    //    print(writer.Length);
-    //    return false;
-    //}
-    //public override void OnDeserialize(NetworkReader reader, bool initialState)
-    //{
-    //    if (!initialState)
-    //    {
-    //        reader.ReadTransform();
-    //    }
-    //}
-
     protected override void Shoot()
     {
         base.Shoot();
@@ -43,14 +25,9 @@ public class RaycastWeapon : RangedWeapon
             Vector3 targetPoint = aimHit.point;
             Ray shootRay = new Ray(shootOrigin.position, targetPoint - shootOrigin.position);
 
-            //Rpc_BulletTrail(targetPoint);
-
             if (Physics.Raycast(shootRay, out RaycastHit shootHit, range, ~ignoreLayer))
             {
                 Debug.DrawRay(shootOrigin.position, targetPoint - shootOrigin.position, Color.green, 2f);
-
-                //PhysicMaterial phyMat = shootHit.collider.sharedMaterial;
-                //Rpc_Bullethole(shootHit.point, shootHit.normal, phyMat ? phyMat.name : "");
 
                 if (shootHit.collider.TryGetComponent(out IDamagable damagable))
                 {
@@ -64,10 +41,6 @@ public class RaycastWeapon : RangedWeapon
                     }
                 }
             }
-        }
-        else
-        {
-            //Rpc_BulletTrail(playerHead.forward * range);
         }
     }
 
