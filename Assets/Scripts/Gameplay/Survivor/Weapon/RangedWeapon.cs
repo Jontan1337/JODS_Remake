@@ -128,6 +128,14 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     private void OnReload(InputAction.CallbackContext context) => Cmd_Reload();
     private void OnChangeFireMode(InputAction.CallbackContext context) => Cmd_ChangeFireMode();
 
+    protected Vector2 GetRandomPointInCircle(float radius)
+    {
+        float r = 2 * Mathf.PI * radius;
+        float u = UnityEngine.Random.Range(-1f, 1f) + UnityEngine.Random.Range(-1f, 1f);
+        float f = u > 1 ? u - 2 : u;
+        return new Vector2(f * Mathf.Cos(r), f * Mathf.Sin(r));
+    }
+
     #region Server
 
     [Command]
@@ -164,9 +172,10 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         if (!canShoot) return;
 
         int firedRounds = 0;
+        // Scatter shot ammo is a single shell with multiple bullets/pellets.
+        Shoot();
         while (currentAmmunition > 0 && firedRounds < bulletsPerShot)
         {
-            Shoot();
             firedRounds++;
             if (firedRounds == bulletsPerShot)
             {
@@ -185,6 +194,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         int firedRounds = 0;
         // The loop will keep going, as long as there
         // are bullets in the magazine and burst hasn't finished.
+        // NOTE: Consider making the bullet shot interval in a burst very fast, since that's how they actually work.
         while (currentAmmunition > 0 && firedRounds < burstBulletAmount)
         {
             if (canShoot)
@@ -292,14 +302,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
             fireMode = fireModes[++fireModeIndex];
         }
         Rpc_ChangeFireModeSFX();
-    }
-    
-    private Vector2 GetRandomHitPoint(float accuracy)
-    {
-        var r = 2 * Mathf.PI * accuracy;
-        var u = UnityEngine.Random.Range(-1f, 1f) + UnityEngine.Random.Range(-1f, 1f);
-        var f = u > 1 ? u - 2 : u;
-        return new Vector2(f * Mathf.Cos(r), f * Mathf.Sin(r));
     }
 
     #endregion
