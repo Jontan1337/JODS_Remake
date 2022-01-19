@@ -9,7 +9,11 @@ public class StatusEffectManager : NetworkBehaviour
 {
 
     private Dictionary<StatusEffectSO, StatusEffect> currentEffects = new Dictionary<StatusEffectSO, StatusEffect>();
-    private Dictionary<Sprite, int> statusEffectVisuals = new Dictionary<Sprite, int>();
+    private Dictionary<int, Sprite> statusEffectVisuals = new Dictionary<int, Sprite>();
+    private Dictionary<string, int> indexDict = new Dictionary<string, int>();
+
+    public List<string> debugStatusEffectList = new List<string>(); //Delete this eventually
+
     [Header("Current Status Effects")]
     public List<string> statusEffects = new List<string>();
 
@@ -59,10 +63,15 @@ public class StatusEffectManager : NetworkBehaviour
         //If the effect has a visual element
         if (effectVisual && imageReferenceList.Length > 0)
         {
-            print(effectVisual);
-            int index = statusEffectVisuals[effectVisual];
+            string key = effect.name;
 
-            Rpc_EnableVisual(GetComponent<NetworkIdentity>().connectionToClient, index, null);
+            Rpc_DisableVisual(connectionToClient, key);
+
+            Image img = imageReferenceList[indexDict[key]];
+            img.sprite = null;
+            img.enabled = false;
+
+            indexDict.Remove(effect.name);
         }
     }
 
@@ -84,6 +93,9 @@ public class StatusEffectManager : NetworkBehaviour
                     //Remove the effect from the list of current active effects
                     currentEffects.Remove(effect.effect);
                     statusEffects.Remove(effect.effect.name);
+                    statusEffectVisuals.Remove(indexDict[effect.effect.name]);
+
+                    debugStatusEffectList.Remove(effect.effect.name);
 
                     Svr_RemoveVisuals(effect.effect);
                 }
@@ -99,6 +111,7 @@ public class StatusEffectManager : NetworkBehaviour
     [Server]
     public void Svr_ApplyStatusEffect(StatusEffect newEffect, int? amount = null)
     {
+        print("Halllo");
         //If the status effect is already in the list, then activate the effect
         if (currentEffects.ContainsKey(newEffect.effect))
         {
@@ -126,25 +139,43 @@ public class StatusEffectManager : NetworkBehaviour
 
             Sprite effectVisual = newEffect.effect.uIImage;
 
+            
             //If the effect has a visual element
             if (effectVisual && imageReferenceList.Length > 0)
             {
-                for(int i = 0; i < imageReferenceList.Length; i++)
+                for (int i = 0; i < imageReferenceList.Length; i++)
                 {
-                    if (!statusEffectVisuals.ContainsValue(i))
+                    if (!statusEffectVisuals.ContainsKey(i))
                     {
-                        statusEffectVisuals.Add(effectVisual, i);
+                        statusEffectVisuals.Add(i, effectVisual);
 
-                        Rpc_EnableVisual(GetComponent<NetworkIdentity>().connectionToClient, i, effectVisual.name);
+                        debugStatusEffectList.Add(newEffect.effect.name);
+
+                        string key = newEffect.effect.name;
+
+                        if (!indexDict.ContainsKey(key))
+                        {
+                            indexDict.Add(key, i);
+                            Rpc_AddDictionaryKey(connectionToClient, newEffect.effect.name, i);
+                        }
+
+                        Rpc_EnableVisual(connectionToClient, i, effectVisual.name, newEffect.effect.uIImageColor);
+
                         break;
                     }
                 }
             }
         }
     }
+    [TargetRpc]
+    private void Rpc_AddDictionaryKey(NetworkConnection conn, string key, int value)
+    {
+        if (isServer) return;
+        indexDict.Add(key, value);
+    }
 
     [TargetRpc]
-    private void Rpc_EnableVisual(NetworkConnection conn, int imageIndex, string spriteName)
+    private void Rpc_EnableVisual(NetworkConnection conn, int imageIndex, string spriteName, Color col)
     {
         Image img = imageReferenceList[imageIndex];
 
@@ -156,7 +187,19 @@ public class StatusEffectManager : NetworkBehaviour
         {
             Sprite newSprite = Resources.Load<Sprite>("UI/Sprites/" + $"{spriteName}");
             img.sprite = newSprite;
+            img.color = col;
         }
 
+    }
+    [TargetRpc]
+    private void Rpc_DisableVisual(NetworkConnection conn, string key)
+    {
+        if (isServer) return;
+
+        Image img = imageReferenceList[indexDict[key]];
+        img.sprite = null;
+        img.enabled = false;
+
+        indexDict.Remove(key);
     }
 }

@@ -19,7 +19,10 @@ public class Syringe : Projectile
 		IDamagable idmg = hit.collider.GetComponent<IDamagable>();
 		if (idmg?.Team == Teams.Player)
 		{
-			hit.collider.transform.root.gameObject.GetComponent<StatusEffectManager>()?.Svr_ApplyStatusEffect(statusEffectToApply.ApplyEffect(hit.collider.transform.root.gameObject));
+			foreach (StatusEffectSO statusEffectToApply in statusEffectsToApply)
+			{
+				hit.collider.transform.root.gameObject.GetComponent<StatusEffectManager>()?.Svr_ApplyStatusEffect(statusEffectToApply.ApplyEffect(hit.collider.transform.root.gameObject));
+			}
 		}
 		else
 		{

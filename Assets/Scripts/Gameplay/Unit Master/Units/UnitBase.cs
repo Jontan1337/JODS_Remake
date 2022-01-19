@@ -1096,7 +1096,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
         Projectile uProjectile = projectile.GetComponent<Projectile>();
         uProjectile.damage = ranged.rangedDamage;
-        uProjectile.statusEffectToApply = ranged.statusEffectToApply;
+        uProjectile.statusEffectsToApply.Add(ranged.statusEffectToApply);
         uProjectile.amount = ranged.amount;
 
         //TEMPORARY
