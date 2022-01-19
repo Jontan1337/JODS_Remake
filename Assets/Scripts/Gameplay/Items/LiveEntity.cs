@@ -286,15 +286,14 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 		//StartCoroutine(DestroyWait());
 		if (singleDestructable || entityType == EntityType.explosive)
 		{
-			//if (objectPooled)
-			//{
-			//	ObjectPool.Instance.ReturnToNetworkedPool(objectPoolTag, gameObject, 0);
-			//}
-			//else
-			//{
-			//	Destroy(gameObject);
-			//}
-				Destroy(gameObject);
+            if (objectPooled)
+            {
+                ObjectPool.Instance.ReturnToNetworkedPool(objectPoolTag, gameObject, 0);
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
 		}
 	}
 
