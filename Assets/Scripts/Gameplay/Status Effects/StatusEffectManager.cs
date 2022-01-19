@@ -9,7 +9,7 @@ public class StatusEffectManager : NetworkBehaviour
 {
 
     private Dictionary<StatusEffectSO, StatusEffect> currentEffects = new Dictionary<StatusEffectSO, StatusEffect>();
-    private Dictionary<Sprite, Image> statusEffectVisuals = new Dictionary<Sprite, Image>();
+    private Dictionary<Sprite, int> statusEffectVisuals = new Dictionary<Sprite, int>();
     [Header("Current Status Effects")]
     public List<string> statusEffects = new List<string>();
 
@@ -58,9 +58,9 @@ public class StatusEffectManager : NetworkBehaviour
         //If the effect has a visual element
         if (effectVisual && imageReferenceList.Length > 0)
         {
-            GameObject imgRef = statusEffectVisuals[effectVisual].gameObject;
+            int index = statusEffectVisuals[effectVisual];
 
-            Rpc_EnableVisual(GetComponent<NetworkIdentity>().connectionToClient, imgRef);
+            Rpc_EnableVisual(GetComponent<NetworkIdentity>().connectionToClient, index, null);
         }
     }
 
@@ -127,41 +127,38 @@ public class StatusEffectManager : NetworkBehaviour
             //If the effect has a visual element
             if (effectVisual && imageReferenceList.Length > 0)
             {
-                foreach(Image img in imageReferenceList)
+                int index = 0;
+                for(int i = 0; i > imageReferenceList.Length; i++)
                 {
-                    if (!statusEffectVisuals.ContainsValue(img))
+                    Image img = imageReferenceList[i];
+                    if (!statusEffectVisuals.ContainsValue(i))
                     {
+                        index = i;
                         img.sprite = effectVisual;
-                        statusEffectVisuals.Add(effectVisual, img);
+                        statusEffectVisuals.Add(effectVisual, i);
                         break;
                     }
                 }
 
-                Rpc_EnableVisual(GetComponent<NetworkIdentity>().connectionToClient, statusEffectVisuals[effectVisual].gameObject);
+                Rpc_EnableVisual(GetComponent<NetworkIdentity>().connectionToClient, index, effectVisual.name);
             }
         }
     }
 
     [TargetRpc]
-    private void Rpc_EnableVisual(NetworkConnection conn, GameObject imgRef)
+    private void Rpc_EnableVisual(NetworkConnection conn, int imageIndex, string spriteName)
     {
-        Image newImg = imgRef.GetComponent<Image>();
+        Image img = imageReferenceList[imageIndex];
 
-        bool enable = newImg.sprite != null;
+        bool enable = spriteName != null;print(enable);
 
-        foreach (Image img in imageReferenceList)
+        img.enabled = enable;  
+
+        if (enable)
         {
-            //Assign the sprite to an unused image
-            if (enable && !img.enabled)
-            {
-                img.sprite = newImg.sprite;
-                break;
-            }
-            else if (!enable && img.enabled && img.sprite == newImg.sprite)
-            {
-                img.sprite = null;
-            }
-            img.enabled = enable;
-        }     
+            Sprite newSprite = Resources.Load<Sprite>("UI/Sprites/" + $"{spriteName}");
+            img.sprite = newSprite;
+        }
+
     }
 }
