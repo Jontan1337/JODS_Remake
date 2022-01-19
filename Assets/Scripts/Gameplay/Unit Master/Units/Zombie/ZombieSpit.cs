@@ -18,13 +18,17 @@ public class ZombieSpit : Projectile
 
 	public override void OnHit(Collision objectHit)
     {
+        if (!isServer) return;
         if (!piercing && !hasHit)
         {
             hasHit = true;
 
             Damage(objectHit.collider.gameObject); //Damage the object hit
 
-            objectHit.collider.GetComponent<StatusEffectManager>()?.Svr_ApplyStatusEffect(statusEffectToApply.ApplyEffect(objectHit.collider.gameObject), amount); //apply DOT effect
+            foreach (StatusEffectSO statusEffectToApply in statusEffectsToApply)
+            {
+                objectHit.collider.GetComponent<StatusEffectManager>()?.Svr_ApplyStatusEffect(statusEffectToApply.ApplyEffect(objectHit.collider.gameObject), amount); //apply effect
+            }
 
             SpitEffects(); //Apply visual effects
 

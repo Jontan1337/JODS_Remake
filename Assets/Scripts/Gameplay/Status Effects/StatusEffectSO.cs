@@ -8,6 +8,7 @@ public abstract class StatusEffectSO : ScriptableObject
     public bool activeUntilRemoved;
     public float duration;
     public bool canDurationStack;
+    public bool canDurationReset;
     public bool canEffectStack;
 
     [Header("On Hit Settings")]
@@ -17,4 +18,5 @@ public abstract class StatusEffectSO : ScriptableObject
 
     [Header("Visual")]
     public Sprite uIImage;
+    public Color uIImageColor = Color.white;
 }

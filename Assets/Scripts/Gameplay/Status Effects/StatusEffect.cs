@@ -61,6 +61,11 @@ public abstract class StatusEffect
             //If the effect duration can stack or if duration is 0, extend the duration.
             duration += effect.duration;
         }
+
+        if ((effect.canDurationReset && !effect.canDurationStack) || duration <= 0)
+        {
+            duration = effect.duration;
+        }
     }
 
     public abstract void OnEffectApplied();
