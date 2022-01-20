@@ -26,17 +26,19 @@ public class StatusEffectManager : NetworkBehaviour
 
     private void Start()
     {
-        if (!isServer) return;
-
         playerObject = GetComponent<ActiveSClass>();
 
-        if (playerObject)
+        if (playerObject && imageReferenceList.Length > 0)
         {
             foreach(Image i in imageReferenceList)
             {
                 i.enabled = false;
             }
         }
+
+        if (!isServer) return;
+
+
 
         isActive = false;
     }
@@ -111,7 +113,6 @@ public class StatusEffectManager : NetworkBehaviour
     [Server]
     public void Svr_ApplyStatusEffect(StatusEffect newEffect, int? amount = null)
     {
-        print("Halllo");
         //If the status effect is already in the list, then activate the effect
         if (currentEffects.ContainsKey(newEffect.effect))
         {

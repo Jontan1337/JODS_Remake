@@ -217,6 +217,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         { 
             rangedCooldown = value;
             ranged.canRanged = !value;
+            projectileSpawns = value == true ? 0 : 1;
         }
     }
     public bool SpecialCooldown
@@ -941,23 +942,33 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     private IEnumerator AttackCoroutine()
     {
+            print("Attack");
+        Transform myTarget = null;
+        IDamagable damagable = null;
+
         while (true)
         {
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.5f);
 
-            if (!currentTarget)
+            if (!currentTarget) // I don't have a target, so what am I attacking?
             {
+                print("!currentTarget");
                 LoseTarget();
-                yield return null;
+                break;
             }
-
-            if (currentTarget.TryGetComponent(out IDamagable idmg))
+            if (currentTarget != myTarget) //Is my current target a new target?
             {
-                if (idmg.IsDead)
+                myTarget = currentTarget; //If so, get the IDamageable component and store it as a variable so we don't have to get it each iteration
+                if (currentTarget.TryGetComponent(out IDamagable idmg))
                 {
-                    LoseTarget();
+                    damagable = idmg;
+                    print("getcompot");
                 }
-                yield return null;
+            }
+            if (damagable.IsDead)
+            {
+                print("isdedad");
+                LoseTarget();
             }
 
             Attack();
@@ -1060,6 +1071,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     // Called by animation event.
     public virtual void RangedShoot()
     {
+        if (!isServer) return;
         AttackRange = false;
 
         if (ranged.standStill) ResumeMovement();
@@ -1072,8 +1084,10 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         StartCoroutine(RangedCooldownCoroutine());
         Debug.LogError("Direct ranged damage not implemented");
     }
+    int projectileSpawns = 1;
     public virtual void SpawnProjectile()
     {
+        if (!isServer) return;
         if (ranged.standStill) ResumeMovement();
         if (ranged.directRangedAttack)
         {
@@ -1081,6 +1095,9 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
                 $" Is the correct method set in the animation event?");
             return;
         }
+
+        if (projectileSpawns == 0) return;
+
         //Spawn the projectile
         GameObject projectile = Instantiate(ranged.TEMPProjectilePrefab, transform.TransformPoint(ranged.projectileSpawnLocation), Quaternion.identity);
         //GameObject projectile = ObjectPool.Instance.SpawnFromNetworkedPool(ranged.projectileTag, transform.TransformPoint(ranged.projectileSpawnLocation), Quaternion.identity);
@@ -1104,6 +1121,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
         AttackRange = false; //Disables this bool, allowing the unit to do another ranged attack.
         StartCoroutine(RangedCooldownCoroutine()); //Start cooldown
+
+
     }
     protected bool AtPreferredDistance()
     {
@@ -1141,6 +1160,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     //This is the actual special, which is usually called from an animation event.
     public virtual void SpecialAttack()
     {
+        if (!isServer) return;
         ResumeMovement();
 
         if (special.statusEffectToApply) ApplyStatusEffect(special.statusEffectToApply, currentTarget, special.amount);
