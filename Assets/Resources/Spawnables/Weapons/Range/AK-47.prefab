@@ -240,8 +240,36 @@ MonoBehaviour:
   maxCurrentAmmunition: 90
   extraAmmunition: 90
   highPower: 1
-  recoil: 1
+  recoil: 0.2
+  currentAccuracy: 0
+  currentCurveAccuracy: 0
+  recoilCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 10
+      outSlope: 10
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 10
+      inSlope: 10
+      outSlope: 10
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   shootOrigin: {fileID: 8677567994327279421}
+  playerHead: {fileID: 0}
+  playerCamera: {fileID: 0}
   muzzleFlash: {fileID: 1986087315752043727}
   sfxPlayer: {fileID: 8677567993216096715}
   shootSound: {fileID: 8300000, guid: 209b5b9f5033ab3448abedb2a7ccbeff, type: 3}
@@ -251,7 +279,6 @@ MonoBehaviour:
   ignoreLayer:
     serializedVersion: 2
     m_Bits: 92676
-  playerHead: {fileID: 0}
   bulletTrail: {fileID: 8476541660368454486}
 --- !u!114 &8677567993216096715
 MonoBehaviour:

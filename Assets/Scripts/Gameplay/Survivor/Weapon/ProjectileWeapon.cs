@@ -15,7 +15,7 @@ public class ProjectileWeapon : RangedWeapon
 	protected override void Shoot()
 	{
 		base.Shoot();
-		Rpc_Shoot();
+		Rpc_Shoot(Vector2.zero);
 		GameObject projectileToSpawn = Instantiate(projectile, shootOrigin.position, shootOrigin.rotation);
 		NetworkServer.Spawn(projectileToSpawn);
 		projectileToSpawn.GetComponent<Projectile>().owner = transform.root;

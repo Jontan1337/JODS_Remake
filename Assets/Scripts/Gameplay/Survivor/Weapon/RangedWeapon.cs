@@ -25,10 +25,15 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
     [Header("Game details")]
     //[SerializeField, SyncVar] private string player = "Player name";
-    [SerializeField] protected float recoil = 1f;
+    [SerializeField] protected float recoil = 0.1f;
+    [SerializeField] protected float currentAccuracy = 0f;
+    [SerializeField] protected float currentCurveAccuracy = 0f;
+    [SerializeField] protected AnimationCurve recoilCurve;
 
     [Header("References")]
     [SerializeField] protected Transform shootOrigin = null;
+    [SerializeField, SyncVar] protected Transform playerHead;
+    [SerializeField] protected Camera playerCamera;
     [SerializeField] private GameObject muzzleFlash = null;
     [SerializeField] private SFXPlayer sfxPlayer = null;
 
@@ -39,6 +44,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
     private Coroutine COShootLoop;
     private Coroutine COStopShootLoop;
+    private Coroutine COAccuracyStabilizer;
 
     [SerializeField] private ParticleSystem muzzleParticle;
 
@@ -52,6 +58,14 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     public AmmunitionTypes AmmunitionType { get => ammunitionType; set => ammunitionType = value; }
     public FireModes FireMode { get => fireMode; }
     public FireModes[] AllFireModes { get => fireModes; }
+    protected float CurrentAccuracy
+    {
+        get => currentAccuracy;
+        set
+        {
+            currentAccuracy = Mathf.Clamp01(value);
+        }
+    }
 
     private void OnValidate()
     {
@@ -83,6 +97,22 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     {
         base.OnStopClient();
         OnImpact -= ImpactShake;
+    }
+
+    [Server]
+    public override void Svr_Interact(GameObject interacter)
+    {
+        base.Svr_Interact(interacter);
+        playerHead = interacter.GetComponent<LookController>().RotateVertical;
+        playerCamera = playerHead.GetChild(0).GetComponent<Camera>();
+        Rpc_GetPlayerHead(connectionToClient, playerHead);
+    }
+
+    [TargetRpc]
+    private void Rpc_GetPlayerHead(NetworkConnection target, Transform head)
+    {
+        playerHead = head;
+        playerCamera = playerHead.GetChild(0).GetComponent<Camera>();
     }
 
     public override void Bind()
@@ -128,13 +158,16 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     private void OnReload(InputAction.CallbackContext context) => Cmd_Reload();
     private void OnChangeFireMode(InputAction.CallbackContext context) => Cmd_ChangeFireMode();
 
-    protected Vector2 GetRandomPointInCircle(float radius)
-    {
-        float r = 2 * Mathf.PI * radius;
-        float u = UnityEngine.Random.Range(-1f, 1f) + UnityEngine.Random.Range(-1f, 1f);
-        float f = u > 1 ? u - 2 : u;
-        return new Vector2(f * Mathf.Cos(r), f * Mathf.Sin(r));
-    }
+    // Why is Y axis (Sin) dumb pls help.
+    //protected Vector2 GetRandomPointInCircle(float radius)
+    //{
+    //    float r = 2 * Mathf.PI * radius;
+    //    float u = UnityEngine.Random.Range(-1f, 1f) + UnityEngine.Random.Range(-1f, 1f);
+    //    float f = u > 1 ? u - 2 : u;
+    //    print(Mathf.Cos(r));
+    //    print(Mathf.Sin(r));
+    //    return new Vector2(f * Mathf.Cos(r), f * Mathf.Sin(r));
+    //}
 
     #region Server
 
@@ -142,6 +175,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     private void Cmd_Shoot()
     {
         if (!canShoot) return;
+        StartAccuracyStabilizer();
 
         switch (fireMode)
         {
@@ -256,6 +290,12 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     {
         StartCoroutine(IEShootCooldown());
     }
+    private void StartAccuracyStabilizer()
+    {
+        if (COAccuracyStabilizer != null) return;
+
+        COAccuracyStabilizer = StartCoroutine(IEAccuracyStabilizer());
+    }
     // A cooldown to simulate the time it takes
     // for a bullet to get chambered.
     private IEnumerator IEShootCooldown()
@@ -264,9 +304,23 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         yield return new WaitForSeconds(fireInterval);
         canShoot = true;
     }
+    private IEnumerator IEAccuracyStabilizer()
+    {
+        while (CurrentAccuracy > 0f)
+        {
+            CurrentAccuracy -= 0.4f * Time.deltaTime;
+            currentCurveAccuracy = recoilCurve.Evaluate(CurrentAccuracy);
+            //print(currentCurveAccuracy);
+            yield return null;
+        }
+
+        COAccuracyStabilizer = null;
+    }
 
     protected virtual void Shoot()
     {
+        CurrentAccuracy += recoil;
+        StartAccuracyStabilizer();
         currentAmmunition -= 1;
     }
 
@@ -309,7 +363,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     #region Clients
 
     [ClientRpc]
-    protected virtual void Rpc_Shoot()
+    protected virtual void Rpc_Shoot(Vector2 recoil)
     {
         ShootFX();
     }

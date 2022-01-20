@@ -115,7 +115,14 @@ public class Interactor : NetworkBehaviour
             // Check if the interacted object is networked.
             if (!rayHit.collider.GetComponent<NetworkIdentity>()) return;
 
-            Cmd_Interact(rayHit.collider.gameObject);
+            GameObject rayHitObject = rayHit.collider.gameObject;
+            if (rayHitObject.TryGetComponent(out IInteractable interactable))
+            {
+                if (!interactable.IsInteractable) return;
+
+                Cmd_Interact(rayHit.collider.gameObject);
+            }
+
         }
     }
 

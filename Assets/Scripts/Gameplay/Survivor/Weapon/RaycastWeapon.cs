@@ -10,16 +10,15 @@ public class RaycastWeapon : RangedWeapon
     [Header("Settings")]
     [SerializeField] private LayerMask ignoreLayer = 13;
     [Header("References")]
-    [SerializeField, SyncVar] private Transform playerHead;
     [SerializeField] private ParticleSystem bulletTrail;
 
     protected override void Shoot()
     {
         base.Shoot();
-        Rpc_Shoot();
-        
-        Ray aimRay = new Ray(playerHead.position + new Vector3(0f, 0.1f), playerHead.forward);
-        
+
+        Vector2 recoil = Random.insideUnitCircle * currentCurveAccuracy;
+        Ray aimRay = playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2 + recoil.x, Screen.height / 2 + recoil.y));
+        Rpc_Shoot(recoil);
         if (Physics.Raycast(aimRay, out RaycastHit aimHit, range, ~ignoreLayer))
         {
             Vector3 targetPoint = aimHit.point;
@@ -44,28 +43,19 @@ public class RaycastWeapon : RangedWeapon
         }
     }
 
-    [Server]
-    public override void Svr_Interact(GameObject interacter)
-    {
-        base.Svr_Interact(interacter);
-        playerHead = interacter.GetComponent<LookController>().RotateVertical;
-        Rpc_GetPlayerHead(playerHead);
-    }
+    // Consider changing to TargetRpc and change only the effects
+    // (BulletTrail and BulletHole) to ClientRpc.
     [ClientRpc]
-    private void Rpc_GetPlayerHead(Transform head)
+    protected override void Rpc_Shoot(Vector2 recoil)
     {
-        playerHead = head;
-    }
+        base.Rpc_Shoot(recoil);
+        Ray aimRay = playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2 + recoil.x, Screen.height / 2 + recoil.y));
 
-    [ClientRpc]
-    protected override void Rpc_Shoot()
-    {
-        base.Rpc_Shoot();
-        Ray aimRay = new Ray(playerHead.position + new Vector3(0f, 0.1f), playerHead.forward);
         if (Physics.Raycast(aimRay, out RaycastHit aimHit, range, ~ignoreLayer))
         {
             Vector3 targetPoint = aimHit.point;
             Ray shootRay = new Ray(shootOrigin.position, targetPoint - shootOrigin.position);
+            //Debug.DrawRay(shootRay.origin, shootRay.direction, Color.green, 2f);
             BulletTrail(targetPoint);
             if (Physics.Raycast(shootRay, out RaycastHit shootHit, range, ~ignoreLayer))
             {
