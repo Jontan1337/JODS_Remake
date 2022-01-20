@@ -942,7 +942,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     private IEnumerator AttackCoroutine()
     {
-            print("Attack");
         Transform myTarget = null;
         IDamagable damagable = null;
 
@@ -952,7 +951,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
             if (!currentTarget) // I don't have a target, so what am I attacking?
             {
-                print("!currentTarget");
                 LoseTarget();
                 break;
             }
@@ -962,12 +960,10 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
                 if (currentTarget.TryGetComponent(out IDamagable idmg))
                 {
                     damagable = idmg;
-                    print("getcompot");
                 }
             }
             if (damagable.IsDead)
             {
-                print("isdedad");
                 LoseTarget();
             }
 
