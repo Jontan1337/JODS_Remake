@@ -1,7 +1,5 @@
-﻿using Mirror;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using Mirror;
 
 public class SoldierClass : SurvivorClass
 {
@@ -46,7 +44,7 @@ public class SoldierClass : SurvivorClass
 	[Command]
 	private void Cmd_EquipRocketLauncher()
 	{
-		if (!rocketLauncher)
+		if (!rocketLauncher)	
 		{
 			EquipRocketLauncher();
 		}
@@ -55,11 +53,8 @@ public class SoldierClass : SurvivorClass
 	[Server]
 	private void EquipRocketLauncher()
 	{
-		print("Rocket launcher was instantiated. Change to object pool");
-
 		rocketLauncher = Instantiate(abilityObject, transform.position, transform.rotation);
 		NetworkServer.Spawn(rocketLauncher);
-
 		playerEquipment = transform.parent.GetComponentInChildren<PlayerEquipment>();
 
 		rocketLauncher.GetComponent<EquipmentItem>().Svr_Pickup(playerEquipment.playerHands, connectionToClient);

@@ -26,6 +26,7 @@ public class ProjectileWeapon : RangedWeapon
 	[ClientRpc]
 	private void ProjectileShoot(GameObject projectile)
 	{
-		projectile.GetComponent<Rigidbody>().AddForce(shootOrigin.forward * projectileSpeed, ForceMode.Impulse);
+		Rigidbody rb = projectile.GetComponent<Rigidbody>();
+		rb.AddForce(shootOrigin.forward * (projectileSpeed * rb.mass), ForceMode.Impulse);
 	}
 }

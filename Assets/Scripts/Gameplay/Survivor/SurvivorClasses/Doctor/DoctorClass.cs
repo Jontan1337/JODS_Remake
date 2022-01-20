@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Mirror;
 
 public class DoctorClass : SurvivorClass
 {
 	private PlayerEquipment playerEquipment;
-	private GameObject item;
+	private GameObject syringeGun;
 
 	public override void ActiveAbility()
 	{
-		if (!item)
+		if (!syringeGun)
 		{
 			Cmd_EquipSyringeGun();
 		}
@@ -20,7 +17,7 @@ public class DoctorClass : SurvivorClass
 	[Command]
 	private void Cmd_EquipSyringeGun()
 	{
-		if (!item)
+		if (!syringeGun)
 		{
 			EquipSyringeGun();
 		}
@@ -29,11 +26,11 @@ public class DoctorClass : SurvivorClass
 	[Server]
 	private void EquipSyringeGun()
 	{
-		item = Instantiate(abilityObject, transform.position, transform.rotation);
-		NetworkServer.Spawn(item);
+		syringeGun = Instantiate(abilityObject, transform.position, transform.rotation);
+		NetworkServer.Spawn(syringeGun);
 		playerEquipment = transform.parent.GetComponentInChildren<PlayerEquipment>();
 
-		item.GetComponent<EquipmentItem>().Svr_Pickup(playerEquipment.playerHands, connectionToClient);
-		playerEquipment?.Svr_Equip(item, EquipmentType.None);
+		syringeGun.GetComponent<EquipmentItem>().Svr_Pickup(playerEquipment.playerHands, connectionToClient);
+		playerEquipment?.Svr_Equip(syringeGun, EquipmentType.None);
 	}
 }

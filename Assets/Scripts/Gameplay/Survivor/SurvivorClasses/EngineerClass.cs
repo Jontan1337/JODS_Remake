@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Mirror;
 
 public class EngineerClass : SurvivorClass
@@ -57,10 +54,8 @@ public class EngineerClass : SurvivorClass
 	[Server]
 	private void EquipTurret()
 	{
-		print("Turret was instantiated. Change to object pool");
 		turret = Instantiate(abilityObject, transform.position, transform.rotation);
 		NetworkServer.Spawn(turret);
-
 		playerEquipment = transform.parent.GetComponentInChildren<PlayerEquipment>();
 
 		turret.GetComponent<EquipmentItem>().Svr_Pickup(playerEquipment.playerHands, connectionToClient);
