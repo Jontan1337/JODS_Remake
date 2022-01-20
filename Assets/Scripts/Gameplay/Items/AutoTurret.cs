@@ -252,7 +252,6 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 		RotateYCo = RotateY();
 		RotateXCo = RotateX();
 
-
 		StartCoroutine(RotateXCo);
 		StartCoroutine(RotateYCo);
 	}
