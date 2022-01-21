@@ -14,8 +14,7 @@ public class RaycastWeapon : RangedWeapon
 
     protected override void Shoot()
     {
-        base.Shoot();
-
+        //Vector2 poitn = Random.insideUnitCircle * spread; kun shotgun
         Vector2 recoil = Random.insideUnitCircle * currentCurveAccuracy;
         Ray aimRay = playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2 + recoil.x, Screen.height / 2 + recoil.y));
         Rpc_Shoot(recoil);
@@ -23,11 +22,8 @@ public class RaycastWeapon : RangedWeapon
         {
             Vector3 targetPoint = aimHit.point;
             Ray shootRay = new Ray(shootOrigin.position, targetPoint - shootOrigin.position);
-
             if (Physics.Raycast(shootRay, out RaycastHit shootHit, range, ~ignoreLayer))
             {
-                Debug.DrawRay(shootOrigin.position, targetPoint - shootOrigin.position, Color.green, 2f);
-
                 if (shootHit.collider.TryGetComponent(out IDamagable damagable))
                 {
                     damagable?.Svr_Damage(damage, owner);
@@ -50,16 +46,13 @@ public class RaycastWeapon : RangedWeapon
     {
         base.Rpc_Shoot(recoil);
         Ray aimRay = playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2 + recoil.x, Screen.height / 2 + recoil.y));
-
         if (Physics.Raycast(aimRay, out RaycastHit aimHit, range, ~ignoreLayer))
         {
             Vector3 targetPoint = aimHit.point;
             Ray shootRay = new Ray(shootOrigin.position, targetPoint - shootOrigin.position);
-            //Debug.DrawRay(shootRay.origin, shootRay.direction, Color.green, 2f);
             BulletTrail(targetPoint);
             if (Physics.Raycast(shootRay, out RaycastHit shootHit, range, ~ignoreLayer))
             {
-                Debug.DrawRay(shootOrigin.position, targetPoint - shootOrigin.position, Color.green, 2f);
                 PhysicMaterial phyMat = shootHit.collider.sharedMaterial;
                 Bullethole(shootHit.point, shootHit.normal, phyMat ? phyMat.name : "");
             }

@@ -188,13 +188,41 @@ MonoBehaviour:
   burstBulletAmount: 3
   fireRate: 600
   fireInterval: 0.1
-  bulletsPerShot: 1
+  bulletsPerShot: 8
   currentAmmunition: 10
   maxCurrentAmmunition: 10
   extraAmmunition: 20
   highPower: 0
   recoil: 2
+  currentAccuracy: 0
+  currentCurveAccuracy: 0
+  recoilCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 15
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 15
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   shootOrigin: {fileID: 7403599430842215513}
+  playerHead: {fileID: 0}
+  playerCamera: {fileID: 0}
   muzzleFlash: {fileID: 9078682435858770314}
   sfxPlayer: {fileID: 4005420340618086769}
   shootSound: {fileID: 8300000, guid: 97993f933f24ef84188d173b66a2e596, type: 3}
@@ -204,7 +232,6 @@ MonoBehaviour:
   ignoreLayer:
     serializedVersion: 2
     m_Bits: 92676
-  playerHead: {fileID: 0}
   bulletTrail: {fileID: 4482488975975196505}
 --- !u!114 &7884664084252250766
 MonoBehaviour:

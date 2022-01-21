@@ -207,10 +207,11 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
         int firedRounds = 0;
         // Scatter shot ammo is a single shell with multiple bullets/pellets.
-        Shoot();
+        What();
         while (currentAmmunition > 0 && firedRounds < bulletsPerShot)
         {
             firedRounds++;
+            Shoot();
             if (firedRounds == bulletsPerShot)
             {
                 StartCooldown();
@@ -234,6 +235,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
             if (canShoot)
             {
                 Shoot();
+                What();
                 StartCooldown();
                 firedRounds++;
             }
@@ -254,6 +256,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
             if (canShoot)
             {
                 Shoot();
+                What();
                 StartCooldown();
             }
             yield return null;
@@ -270,6 +273,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
             return;
         }
         Shoot();
+        What();
         StartCooldown();
     }
 
@@ -318,6 +322,10 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     }
 
     protected virtual void Shoot()
+    {
+    }
+
+    private void What()
     {
         CurrentAccuracy += recoil;
         StartAccuracyStabilizer();
