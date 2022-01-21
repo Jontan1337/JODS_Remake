@@ -95,7 +95,7 @@ public class StatusEffectManager : NetworkBehaviour
                     //Remove the effect from the list of current active effects
                     currentEffects.Remove(effect.effect);
                     statusEffects.Remove(effect.effect.name);
-                    statusEffectVisuals.Remove(indexDict[effect.effect.name]);
+                    if (effect.effect.uIImage) statusEffectVisuals.Remove(indexDict[effect.effect.name]);
 
                     debugStatusEffectList.Remove(effect.effect.name);
 
