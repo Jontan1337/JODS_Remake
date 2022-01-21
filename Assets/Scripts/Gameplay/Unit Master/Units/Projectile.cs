@@ -65,6 +65,7 @@ public abstract class Projectile : NetworkBehaviour
 	}
 	private void OnCollisionEnter(Collision col)
 	{
+		print(col.transform.name);
 		OnHit(col);
 	}
 
