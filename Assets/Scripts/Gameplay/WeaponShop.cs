@@ -52,6 +52,7 @@ public class WeaponShop : NetworkBehaviour, IInteractable
     [SerializeField] private float topOpenValue = 330f;
     [Space]
     [SerializeField] private Text playerPointsText = null;
+    [SerializeField, SyncVar] private bool isInteractable = true;
 
     [Header("Network Related")]
     private List<GameObject> playersInShop = new List<GameObject>();
@@ -63,9 +64,9 @@ public class WeaponShop : NetworkBehaviour, IInteractable
     [Header("Debug")]
     [SerializeField] private bool test = false;
 
-    public bool IsInteractable { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+    public bool IsInteractable { get => isInteractable; set => isInteractable = value; }
 
-    public string ObjectName => throw new System.NotImplementedException();
+    public string ObjectName => transform.name;
 
     private void Awake()
     {
