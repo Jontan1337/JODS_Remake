@@ -208,10 +208,11 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         int firedRounds = 0;
         // Scatter shot ammo is a single shell with multiple bullets/pellets.
         What();
+        Vector2 aimPoint = UnityEngine.Random.insideUnitCircle * currentAccuracy * 10;
         while (currentAmmunition > 0 && firedRounds < bulletsPerShot)
         {
             firedRounds++;
-            Shoot();
+            Shoot(aimPoint);
             if (firedRounds == bulletsPerShot)
             {
                 StartCooldown();
@@ -234,7 +235,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         {
             if (canShoot)
             {
-                Shoot();
+                Shoot(Vector2.zero);
                 What();
                 StartCooldown();
                 firedRounds++;
@@ -255,7 +256,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         {
             if (canShoot)
             {
-                Shoot();
+                Shoot(Vector2.zero);
                 What();
                 StartCooldown();
             }
@@ -272,7 +273,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
             Rpc_EmptySFX();
             return;
         }
-        Shoot();
+        Shoot(Vector2.zero);
         What();
         StartCooldown();
     }
@@ -314,14 +315,13 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         {
             CurrentAccuracy -= 0.4f * Time.deltaTime;
             currentCurveAccuracy = recoilCurve.Evaluate(CurrentAccuracy);
-            //print(currentCurveAccuracy);
             yield return null;
         }
 
         COAccuracyStabilizer = null;
     }
 
-    protected virtual void Shoot()
+    protected virtual void Shoot(Vector2 aimPoint)
     {
     }
 
@@ -364,6 +364,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
             fireMode = fireModes[++fireModeIndex];
         }
         Rpc_ChangeFireModeSFX();
+        transform.DOComplete();
+        transform.DOPunchRotation(new Vector3(0f, 2f, -5f), 0.2f, 0, 0.5f);
     }
 
     #endregion
@@ -401,6 +403,12 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     protected void Rpc_ChangeFireModeSFX()
     {
         sfxPlayer.PlaySFX(emptySound);
+    }
+    [ClientRpc]
+    protected void Rpc_Reload()
+    {
+        transform.DOComplete();
+        transform.DOPunchRotation(new Vector3(0f, 2f, -5f), 0.2f, 0, 0.5f);
     }
 
     #endregion

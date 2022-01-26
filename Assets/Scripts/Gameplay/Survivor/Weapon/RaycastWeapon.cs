@@ -12,10 +12,10 @@ public class RaycastWeapon : RangedWeapon
     [Header("References")]
     [SerializeField] private ParticleSystem bulletTrail;
 
-    protected override void Shoot()
+    protected override void Shoot(Vector2 aimPoint)
     {
-        //Vector2 poitn = Random.insideUnitCircle * spread; kun shotgun
-        Vector2 recoil = Random.insideUnitCircle * currentCurveAccuracy;
+
+        Vector2 recoil = (Random.insideUnitCircle * currentCurveAccuracy) + aimPoint;
         Ray aimRay = playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2 + recoil.x, Screen.height / 2 + recoil.y));
         Rpc_Shoot(recoil);
         if (Physics.Raycast(aimRay, out RaycastHit aimHit, range, ~ignoreLayer))

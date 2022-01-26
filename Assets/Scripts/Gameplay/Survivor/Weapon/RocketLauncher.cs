@@ -6,9 +6,9 @@ using UnityEngine.InputSystem;
 
 public class RocketLauncher : ProjectileWeapon
 {
-	protected override void Shoot()
+	protected override void Shoot(Vector2 aimPoint)
 	{
-		base.Shoot();
+		base.Shoot(aimPoint);
 		if (currentAmmunition == 0 && extraAmmunition == 0)
 		{
             GetComponentInParent<ActiveSClass>().Rpc_StartAbilityCooldown(transform.root.GetComponent<NetworkIdentity>().connectionToClient, transform.root);

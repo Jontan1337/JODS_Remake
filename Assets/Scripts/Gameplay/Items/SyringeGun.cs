@@ -8,9 +8,9 @@ public class SyringeGun : ProjectileWeapon
 {
 	[SerializeField] private GameObject syringe1;
 	[SerializeField] private GameObject syringe2;
-	protected override void Shoot()
+	protected override void Shoot(Vector2 aimPoint)
 	{
-		base.Shoot();
+		base.Shoot(aimPoint);
 
 		switch (currentAmmunition)
 		{
