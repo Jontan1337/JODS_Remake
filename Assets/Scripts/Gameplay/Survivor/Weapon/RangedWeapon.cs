@@ -336,6 +336,9 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [Command]
     private void Cmd_Reload()
     {
+        if (currentAmmunition == maxCurrentAmmunition) return;
+
+        Rpc_Reload();
         if (extraAmmunition > (maxCurrentAmmunition - currentAmmunition))
         {
             extraAmmunition = extraAmmunition - (maxCurrentAmmunition - currentAmmunition);
@@ -408,7 +411,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     protected void Rpc_Reload()
     {
         transform.DOComplete();
-        transform.DOPunchRotation(new Vector3(0f, 2f, -5f), 0.2f, 0, 0.5f);
+        transform.DOPunchRotation(new Vector3(20f, 5f, -10f), 1f, 2, 1f);
+        transform.DOPunchPosition(new Vector3(0.05f, -0.04f, 0f), 1f, 2, 0.1f);
     }
 
     #endregion
