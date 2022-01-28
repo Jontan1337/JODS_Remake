@@ -70,6 +70,7 @@ public class UnitMaster : NetworkBehaviour
 
     [Header("Deployables")]
     [SerializeField] private List<DeployableList> deployableList = new List<DeployableList>();
+    private Dictionary<string, GameObject> deployableDict = new Dictionary<string, GameObject>();
 
     [Header("Spawning")]
     [SerializeField] private LayerMask playerLayer = 1 << 13;
@@ -974,6 +975,18 @@ public class UnitMaster : NetworkBehaviour
             SpawnEffect(hit.point, false);
 
             Unchoose();
+
+            if (deployableDict.ContainsKey(spawnName))
+            {
+                Cmd_MoveDeployable(hit.point, spawnName);
+                return;
+            }
+            else
+            {
+                deployableDict.Add(spawnName, null); //Add an entry to the dictionary with a null value.
+                //The server will have its own version of this dictionary, but it will contain a valid gameobject.
+                //The client only needs the key.
+            }
         }
         else //When spawning a unit
         {
@@ -1484,8 +1497,8 @@ public class UnitMaster : NetworkBehaviour
     [Command]
     void Cmd_Spawn(Vector3 pos, string name, int level)
     {
-        //Set the positions y value to be a bit higher, so that the unit doesn't spawn inside the floor
-        pos = new Vector3(pos.x, pos.y + 0.5f, pos.z);
+        //Set the positions y value to be a bit higher, so that the spawnable doesn't spawn inside the floor
+        pos = new Vector3(pos.x, pos.y + 0.1f, pos.z);
 
         //If the level is 0, then spawn a deployable, not a unit
         bool spawningDeployable = level == 0;
@@ -1502,10 +1515,10 @@ public class UnitMaster : NetworkBehaviour
             return;
         }
 
-        //Instantiate the unit at the position
+        //Instantiate the spawnable at the position
         GameObject newSpawnable = Instantiate(spawnableToSpawn, pos, Quaternion.identity);
 
-        //Set the units rotation to be random
+        //Set the spawnable's rotation to be random
         newSpawnable.transform.rotation = Quaternion.Euler(new Vector3(0, Random.Range(0, 360), 0));
 
         //If we're spawning a unit
@@ -1517,9 +1530,31 @@ public class UnitMaster : NetworkBehaviour
             unit.SetUnitSO(unitList[chosenSpawnableIndex].unit);
             unit.SetLevel(level);
         }
+        else
+        {
+            Debug.LogError("CHECK IF ENTRY ALREADY EXISTS!");
+            deployableDict.Add(name, newSpawnable);
+            //The client has its own version of this dictionary, just without the gameobject.
+        }
 
         //Spawn the spawnable on the server
         NetworkServer.Spawn(newSpawnable);
+    }
+
+    [Command] 
+    void Cmd_MoveDeployable(Vector3 pos, string name)
+    {
+        GameObject deployable = deployableDict[name];
+
+        //Teleport the deployable to the new position
+        deployable.transform.position = pos;
+
+        //Set the deployable's rotation to be random
+        deployable.transform.rotation = Quaternion.Euler(new Vector3(0, Random.Range(0, 360), 0));
+
+        //OPTIONAL
+        //Do an effect here.
+        //Like make the deployable rise up from the ground. Or reverse dissolve.
     }
     [Command]
     void Cmd_RefundUnit(GameObject unitToRefund)
