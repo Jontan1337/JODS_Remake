@@ -288,7 +288,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 		{
             if (objectPooled)
             {
-                ObjectPool.Instance.ReturnToNetworkedPool(objectPoolTag, gameObject, 0);
+                ObjectPool.Instance.ReturnToLocalPool(objectPoolTag, gameObject, 0);
             }
             else
             {

@@ -13,7 +13,6 @@ public class SoldierRocket : Projectile
 	public override void OnHit(Collision collision)
 	{
 		if (!isServer) return;
-		print("go");
 		Svr_Explode();
 		base.OnHit(collision);
 	}
