@@ -495,6 +495,9 @@ public class UnitMaster : NetworkBehaviour
 
             UpdateEnergyUI();
         }
+
+        //Update scoreboard stat
+        GamemodeBase.Instance.Svr_ModifyStat(GetComponent<NetworkIdentity>().netId, 1, PlayerDataStat.TotalUpgrades);
     }
 
     #endregion
@@ -1076,6 +1079,9 @@ public class UnitMaster : NetworkBehaviour
 
         //Play spooky sound
         Cmd_PlayGlobalSound(true);
+
+        //Update scoreboard stat
+        GamemodeBase.Instance.Svr_ModifyStat(GetComponent<NetworkIdentity>().netId, 1, PlayerDataStat.TotalUnitUpgrades);
     }
 
     public void UnlockNewUnit(int which)

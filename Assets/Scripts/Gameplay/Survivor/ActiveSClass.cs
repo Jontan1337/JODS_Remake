@@ -38,15 +38,23 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	[Header("Events")]
 	[SerializeField] private UnityEvent<float> onChangedHealth = null;
 
-	public bool abilityIsReady = true;
+	private bool abilityIsReady = true;
+
 	private bool isDead;
+    public bool IsDead
+    {
+        get { return isDead; }
+        set 
+		{
+			//Update scoreboard stat
+			GamemodeBase.Instance.Svr_ModifyStat(GetComponent<NetworkIdentity>().netId, 0, PlayerDataStat.Alive);
 
-	public bool test;
+			isDead = value; 
 
-	public bool IsDead => isDead;
-
-	public float MovementSpeed => movementSpeed;
-
+			NetworkServer.Destroy(gameObject);
+		}
+    }
+    public float MovementSpeed => movementSpeed;
 	public int GetHealth => currentHealth;
 	public int Health
 	{
@@ -62,8 +70,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 			}
 			if (currentHealth <= 0)
 			{
-				isDead = true;
-				Die();
+				IsDead = true;
 			}
 			if (isServer)
 			{
@@ -174,8 +181,6 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	#endregion
 
 	#region Class Stuff
-
-
 	[ClientRpc]
 	public void Rpc_SetSurvivorClass(string _class)
 	{
@@ -327,10 +332,8 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 		GetComponentInChildren<IHitter>()?.OnFlyingKickHit(hit);
 	}
 
-	void Die()
-	{
-		NetworkServer.Destroy(gameObject);
-	}
+	[Header("Debug")]
+	public bool test;
 
 	private void OnGUI()
 	{
@@ -339,4 +342,5 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 			GUI.TextField(new Rect(20, 20, 150, 20), "Active S Class Test ON");
 		}
 	}
+
 }

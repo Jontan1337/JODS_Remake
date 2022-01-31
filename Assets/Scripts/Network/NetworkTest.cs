@@ -7,6 +7,10 @@ using System;
 
 public class NetworkTest : NetworkManager
 {
+    [Space]
+    [SerializeField] private GameObject masterPrefab = null;
+    [SerializeField] private GameObject survivorPrefab = null;
+    [Space]
     [SerializeField]
     private bool hostOnly = false;
     [SerializeField]
@@ -64,7 +68,8 @@ public class NetworkTest : NetworkManager
     public override void OnServerAddPlayer(NetworkConnection conn)
     {
         base.OnServerAddPlayer(conn);
-        GamemodeBase.Instance.Svr_AddPlayer(conn.identity.netId, "Player");
+        bool master = playerPrefab == masterPrefab;
+        GamemodeBase.Instance.Svr_AddPlayer(conn.identity.netId, "Player", master);
         playerIds.Add(conn);
         StartCoroutine(DispatchNewConnection(conn));
     }

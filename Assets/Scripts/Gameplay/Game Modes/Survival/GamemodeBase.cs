@@ -14,20 +14,23 @@ public class PlayerData
         this.playerName = playerName;
         this.score = score;
         this.isMaster = isMaster;
+
+        if (isMaster) return;
+
+        alive = true;
         points = score;
     }
 
-    //Shared stats
-    [SyncVar] public uint playerId;
     [SyncVar] public string playerName;
+    [Header("Shared")]
+    [SyncVar] public uint playerId;
     [SyncVar] public int score;
     [SyncVar] public bool isMaster;
-
-    //Survivor Stats
+    [Header("Survivor")]
     [SyncVar] public int points;
     [SyncVar] public int kills;
-
-    //Master Stats
+    [SyncVar] public bool alive;
+    [Header("Master")]
     [SyncVar] public int unitsPlaced;
     [SyncVar] public int totalUpgrades;
     [SyncVar] public int totalUnitUpgrades;
@@ -40,7 +43,8 @@ public enum PlayerDataStat
     Kills,
     UnitsPlaced,
     TotalUpgrades,
-    TotalUnitUpgrades
+    TotalUnitUpgrades,
+    Alive
 }
 
 [RequireComponent(typeof(AudioSource))]
@@ -64,6 +68,7 @@ public abstract class GamemodeBase : NetworkBehaviour
 
     [Header("Points System Management")]
     [SerializeField] private int defaultStartingPoints = 0;
+    [Space]
     [SerializeField] private List<PlayerData> playerList = new List<PlayerData>();
 
     #region Point System and Player Scores
@@ -89,7 +94,6 @@ public abstract class GamemodeBase : NetworkBehaviour
         }
 
         else playerList.Add(playerData);
-
 
         //Assign the player to a scoreboard row
         foreach (ScoreboardRow row in playerData.isMaster ? masterRows : survivorRows)
@@ -125,35 +129,6 @@ public abstract class GamemodeBase : NetworkBehaviour
     [Server]
     public void Svr_ModifyStat(uint playerId, int amount, PlayerDataStat stat = PlayerDataStat.Score)
     {
-        /*
-        PlayerData playerToModify = GetPlayer(playerId);
-
-        switch (stat)
-        {
-            case PlayerDataStat.Points:
-                playerToModify.points += amount;
-                break;
-            case PlayerDataStat.Kills:
-                playerToModify.kills += amount;
-                break;
-            case PlayerDataStat.UnitsPlaced:
-                playerToModify.unitsPlaced += amount;
-                break;
-            case PlayerDataStat.TotalUnitUpgrades:
-                playerToModify.totalUnitUpgrades += amount;
-                break;
-            case PlayerDataStat.TotalUpgrades:
-                playerToModify.totalUpgrades += amount;
-                break;
-        }
-
-        if (amount > 0)
-        {
-            playerToModify.score += amount;
-        }
-
-        */
-
         Rpc_ModifyPlayerData(playerId, amount, stat);
     }
 
@@ -180,6 +155,9 @@ public abstract class GamemodeBase : NetworkBehaviour
             case PlayerDataStat.TotalUpgrades:
                 playerToModify.totalUpgrades += amount;
                 break;
+            case PlayerDataStat.Alive:
+                playerToModify.alive = amount != 0; //False if 0, true if 1
+                break;
         }
 
         if (amount > 0)
@@ -189,20 +167,12 @@ public abstract class GamemodeBase : NetworkBehaviour
 
         UpdateScoreboardRow(playerToModify);
     }
-    
-
-    [ClientRpc]
-    private void Rpc_UpdateScoreboardRow(PlayerData playerToModify)
-    {
-        UpdateScoreboardRow(playerToModify);
-    }
 
     [Server]
     public void Svr_AddPlayer(uint playerId, string playerName, bool isMaster = false)
     {
         PlayerData newPlayer = new PlayerData(playerId, playerName, defaultStartingPoints, isMaster);
 
-        // playerList.Add(newPlayer);
         Rpc_ChangePlayerList(newPlayer);
     }
 
@@ -308,7 +278,7 @@ public abstract class GamemodeBase : NetworkBehaviour
 
     #region Scoreboard
 
-    [Header("Scoreboard")]
+    [Header("Scoreboard Management")]
     [SerializeField] private GameObject scoreboard = null;
     [Space]
     [SerializeField] private ScoreboardRow[] survivorRows = null;
@@ -319,7 +289,7 @@ public abstract class GamemodeBase : NetworkBehaviour
     //TEMPORARY
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (Input.GetKeyDown(KeyCode.LeftAlt))
         {
             OpenScoreboard();
         }
