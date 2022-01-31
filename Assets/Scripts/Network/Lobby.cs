@@ -21,6 +21,10 @@ public struct NetworkBufferItem
 
 public class Lobby : NetworkManager
 {
+    [Header("Lobby Settings")]
+    [SerializeField, Range(0,5)] private int requiredAmountOfPlayers = 1;
+    [SerializeField] private bool mustHaveMaster;
+
     [Header("References")]
     public Transform matchListContent;
     [Space]
@@ -60,15 +64,13 @@ public class Lobby : NetworkManager
     public List<LobbyPlayer> roomPlayers = new List<LobbyPlayer>();
     public MatchListing MatchListing;
 
-    [Header("Map Settings")] 
+    [Header("Map Settings (Runtime)")] 
     public MapSettingsSO currentMapSettings;
     [Scene] private string gameplayScene;
     [Space]
     public int gamemodeInt;
 
     [Header("Debug")]
-    public bool mustHaveMaster;
-
     private bool isInitialized = false;
 
     private static Action<NetworkConnection> RelayOnServerPlayerReady;
@@ -522,7 +524,7 @@ public class Lobby : NetworkManager
     }
     private bool IsEveryoneReady()
     {
-        if (roomPlayers.Count == 1) return false;
+        if (roomPlayers.Count < requiredAmountOfPlayers) return false;
 
         //Iterate through each player and check if they have readied up.
         foreach (LobbyPlayer lobbyPlayer in roomPlayers)
