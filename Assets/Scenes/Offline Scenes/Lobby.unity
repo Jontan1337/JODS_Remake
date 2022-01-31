@@ -11707,6 +11707,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2101411695}
     m_Modifications:
+    - target: {fileID: 64342779, guid: 09c37436819aaf64987cad03a37cb16e, type: 3}
+      propertyPath: sceneId
+      value: 2974524646
+      objectReference: {fileID: 0}
     - target: {fileID: 8187607966051017738, guid: 09c37436819aaf64987cad03a37cb16e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -12177,6 +12181,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2101411695}
     m_Modifications:
+    - target: {fileID: 64342779, guid: 09c37436819aaf64987cad03a37cb16e, type: 3}
+      propertyPath: sceneId
+      value: 872451486
+      objectReference: {fileID: 0}
     - target: {fileID: 8187607966051017738, guid: 09c37436819aaf64987cad03a37cb16e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -34742,6 +34750,8 @@ MonoBehaviour:
   - {fileID: 6407276093970849346, guid: 4986cc4ba9229e344aaa5402ebc136fc, type: 3}
   - {fileID: 814314852993368252, guid: 01c4a3d1834a449439a57ffa8ea61184, type: 3}
   - {fileID: 579142006993177050, guid: 54b2c4ebd847c6d4b9a13dd609d0aefc, type: 3}
+  requiredAmountOfPlayers: 1
+  mustHaveMaster: 0
   matchListContent: {fileID: 7107372926176858247}
   matchNameInputField: {fileID: 987336046}
   ipAddressInputField: {fileID: 1307129596}
@@ -34782,7 +34792,6 @@ MonoBehaviour:
   MatchListing: {fileID: 7107372926057023631}
   currentMapSettings: {fileID: 0}
   gamemodeInt: 0
-  mustHaveMaster: 0
 --- !u!4 &7107372927296446061
 Transform:
   m_ObjectHideFlags: 0
