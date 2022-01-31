@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class ScoreboardRow : MonoBehaviour
 {
     public uint playerId;
+    [Space]
+    [SerializeField] private Image overlayImage = null;
 
     [Header("Shared Stats")]
     [SerializeField] private Text playerNameText = null;
@@ -29,6 +31,10 @@ public class ScoreboardRow : MonoBehaviour
         if (unitsPlacedText) unitsPlacedText.text = unitsPlacedTextDefault + playerData.unitsPlaced;
         if (totalUpgradesText) totalUpgradesText.text = totalUpgradesTextDefault + playerData.totalUpgrades;
         if (totalUnitUpgradesText) totalUnitUpgradesText.text = totalUnitUpgradesTextDefault + playerData.totalUnitUpgrades;
+
+        Color col = overlayImage.color;
+        col.a = playerData.alive ? 0 : 0.2f;
+        overlayImage.color = col;
     }
 
     public void SetupPlayerScore(PlayerData playerData)

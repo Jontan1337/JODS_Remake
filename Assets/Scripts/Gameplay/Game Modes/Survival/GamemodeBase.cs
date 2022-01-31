@@ -218,6 +218,7 @@ public abstract class GamemodeBase : NetworkBehaviour
     [ClientRpc]
     private void Rpc_Countdown(int number)
     {
+        gameStartCountdownText.enabled = true;
         gameStartCountdownText.text = number.ToString();
 
         float numberToDecimal = (float)(number * 0.1);

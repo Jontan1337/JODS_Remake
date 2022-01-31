@@ -1084,6 +1084,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     public virtual void SpawnProjectile()
     {
         if (!isServer) return;
+        if (!currentTarget) return;
         if (ranged.standStill) ResumeMovement();
         if (ranged.directRangedAttack)
         {
@@ -1092,7 +1093,10 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             return;
         }
 
-        if (projectileSpawns == 0) return;
+
+        if (projectileSpawns == 0) return; //This bool ensures that only 1 projectile spawns during each attack
+        //This wouldn't be necessary if the server wasn't delayed by like 0.001s....
+
 
         //Spawn the projectile
         GameObject projectile = Instantiate(ranged.TEMPProjectilePrefab, transform.TransformPoint(ranged.projectileSpawnLocation), Quaternion.identity);

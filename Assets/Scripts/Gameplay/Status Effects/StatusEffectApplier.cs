@@ -39,6 +39,8 @@ public class StatusEffectApplier : NetworkBehaviour
 
         while (objectsInCollider.Contains(target))
         {
+            if (target == null) break;
+
             //The server applies the status effect to the object every half second
             manager.Svr_ApplyStatusEffect(statusEffectToApply.ApplyEffect(target));
 

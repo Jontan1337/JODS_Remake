@@ -40,6 +40,7 @@ public class NetworkTest : NetworkManager
             Instance = this;
         }
 
+        canvas.SetActive(true);
         if (hostOnly)
         {
             singleton.StartHost();

@@ -11,6 +11,8 @@ public class BurnSO : StatusEffectSO
     [Space]
     public GameObject burnParticles;
     public GameObject onFireParticles;
+    [Space]
+    public Sprite onFireSprite;
     public override StatusEffect ApplyEffect(GameObject target)
     {
         return new Burn(this, target);
