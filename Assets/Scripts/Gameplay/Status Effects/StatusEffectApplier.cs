@@ -12,6 +12,7 @@ public class StatusEffectApplier : NetworkBehaviour
     [SerializeField] private List<GameObject> objectsInCollider = new List<GameObject>();
     private void OnTriggerEnter(Collider other)
     {
+        Debug.LogError("ZOMBIES DO NOT GET STATUS EFFECTS APPLIED!");
         if (!isServer) return;
 
         GameObject root = other.transform.root.gameObject;
