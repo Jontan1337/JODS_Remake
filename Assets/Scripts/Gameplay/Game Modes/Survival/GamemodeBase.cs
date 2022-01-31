@@ -380,6 +380,8 @@ public abstract class GamemodeBase : NetworkBehaviour
         foreach (Camera cam in Camera.allCameras) { cam.enabled = false; } //Disable all enabled cameras in the scene
 
         endgameCamera.SetActive(true); //Enable the endgame camera
+        endgameCamera.transform.position = new Vector3(0, 5, 0);
+        /*
         if (mapSettings)
         {
             if (mapSettings.endGameCameraPoints.Length > 0)
@@ -390,6 +392,7 @@ public abstract class GamemodeBase : NetworkBehaviour
             }
         }
         else { endgameCamera.transform.position = new Vector3(0, 5, 0); }
+        */
 
         if (!scoreboardIsOpen) OpenScoreboard(); //Open the scoreboard
 

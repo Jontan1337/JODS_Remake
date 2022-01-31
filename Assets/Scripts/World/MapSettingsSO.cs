@@ -17,6 +17,6 @@ public class MapSettingsSO : ScriptableObject
     public Vector3[] spawnPoints;
     [Space]
     public PositionAndRotationPoint[] shopSpawnPoints;
-    [Space]
-    public PositionAndRotationPoint[] endGameCameraPoints;
+    //[Space]
+    //public PositionAndRotationPoint[] endGameCameraPoints;
 }
