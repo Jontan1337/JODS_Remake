@@ -983,7 +983,7 @@ public class UnitMaster : NetworkBehaviour
             }
             else
             {
-                deployableDict.Add(spawnName, null); //Add an entry to the dictionary with a null value.
+                if (!isServer) deployableDict.Add(spawnName, null); //Add an entry to the dictionary with a null value.
                 //The server will have its own version of this dictionary, but it will contain a valid gameobject.
                 //The client only needs the key.
             }
@@ -1532,9 +1532,22 @@ public class UnitMaster : NetworkBehaviour
         }
         else
         {
-            Debug.LogError("CHECK IF ENTRY ALREADY EXISTS!");
-            deployableDict.Add(name, newSpawnable);
-            //The client has its own version of this dictionary, just without the gameobject.
+            print("TF");
+            //If the dictionary does not contain this deployable
+            if (!deployableDict.ContainsKey(name))
+            {
+                print("spwanable: " + newSpawnable);
+                //Then add it 
+                deployableDict.Add(name, newSpawnable);
+                //The client has its own version of this dictionary, just without the gameobject.
+                //This dictionary is used to move the deployable, instead of spawning a new one.
+                //(Only 1 instance of a deployable is permitted in the world at a time. So when a deployable is instantiated into the world, it will stay there until the match ends.)
+            }
+        }
+        foreach (KeyValuePair<string, GameObject> d in deployableDict)
+        {
+            print(d.Key);
+            print(d.Value);
         }
 
         //Spawn the spawnable on the server
@@ -1544,7 +1557,19 @@ public class UnitMaster : NetworkBehaviour
     [Command] 
     void Cmd_MoveDeployable(Vector3 pos, string name)
     {
+        foreach(KeyValuePair<string,GameObject> d in deployableDict)
+        {
+            print(d.Key);
+            print(d.Value);
+        }
+
         GameObject deployable = deployableDict[name];
+
+        if (deployable == null)
+        {
+            Debug.LogError("Deployable had no gameobject reference in dictionary.");
+            return;
+        }
 
         //Teleport the deployable to the new position
         deployable.transform.position = pos;
