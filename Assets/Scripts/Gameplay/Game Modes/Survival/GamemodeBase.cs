@@ -71,9 +71,23 @@ public abstract class GamemodeBase : NetworkBehaviour
     [Space]
     [SerializeField] private List<PlayerData> playerList = new List<PlayerData>();
 
+    [Header("Endgame Management")]
+    [SerializeField] private GameObject endgameCamera = null;
+
     public int PlayerCount
     {
         get => playerList.Count;
+    }
+
+    private void Start()
+    {
+        AS = GetComponent<AudioSource>();
+        endgameCamera.SetActive(false);
+
+        if (test && isServer)
+        {
+            Rpc_CountdownEnd();
+        }
     }
 
     #region Point System and Player Scores
@@ -136,7 +150,6 @@ public abstract class GamemodeBase : NetworkBehaviour
     {
         Rpc_ModifyPlayerData(playerId, amount, stat);
     }
-
     
     [ClientRpc]
     private void Rpc_ModifyPlayerData(uint playerId, int amount, PlayerDataStat stat)
@@ -187,17 +200,6 @@ public abstract class GamemodeBase : NetworkBehaviour
     {
         Lobby.OnPlayersLoaded += Initialize;
     }
-
-    private void Start()
-    {
-        AS = GetComponent<AudioSource>();
-
-        if (test && isServer)
-        {
-            Initialize();
-        }
-    }
-
     private void Initialize()
     {
         StartCoroutine(IEGameStartCountdown());
