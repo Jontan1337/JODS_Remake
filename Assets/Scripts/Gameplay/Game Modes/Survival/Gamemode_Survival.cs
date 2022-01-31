@@ -82,4 +82,8 @@ public class Gamemode_Survival : GamemodeBase
         NetworkServer.Destroy(shop);
     }
 
+    public override void EndGame()
+    {
+        StopCoroutine(survivalTimerCo);
+    }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Mirror;
 
@@ -73,6 +74,8 @@ public abstract class GamemodeBase : NetworkBehaviour
 
     [Header("Endgame Management")]
     [SerializeField] private GameObject endgameCamera = null;
+    [SerializeField] private AudioClip endgameSound = null;
+    [SerializeField] private Image endgameFade = null;
 
     public int PlayerCount
     {
@@ -87,6 +90,7 @@ public abstract class GamemodeBase : NetworkBehaviour
         if (test && isServer)
         {
             Rpc_CountdownEnd();
+            InitializeGamemode();
         }
     }
 
@@ -149,6 +153,21 @@ public abstract class GamemodeBase : NetworkBehaviour
     public void Svr_ModifyStat(uint playerId, int amount, PlayerDataStat stat = PlayerDataStat.Score)
     {
         Rpc_ModifyPlayerData(playerId, amount, stat);
+
+        PlayerData player = GetPlayer(playerId);
+        if (!player.isMaster && amount == 0 && stat == PlayerDataStat.Alive) //Did the Alive stat get changed to 0? (Someone died)
+        {
+            bool everyoneIsDead = true;
+
+            //Iterate through all players and check if they're alive.
+            foreach(PlayerData pd in playerList)
+            {
+                if (pd == player) continue; //Skip the initial player, we know it's dead.
+
+                if (pd.alive) everyoneIsDead = false; //If the player we're checking is alive, then we don't end the game
+            }
+            if (everyoneIsDead) Svr_EndGame(); //All players are dead, end the game.
+        }
     }
     
     [ClientRpc]
@@ -283,7 +302,6 @@ public abstract class GamemodeBase : NetworkBehaviour
 
     public abstract void InitializeGamemode();
 
-
     #region Scoreboard
 
     [Header("Scoreboard Management")]
@@ -339,6 +357,65 @@ public abstract class GamemodeBase : NetworkBehaviour
                 break;
             }
         }
+    }
+
+    #endregion
+
+    #region Endgame
+
+    [Server]
+    private void Svr_EndGame()
+    {
+        EndGame();
+        Rpc_EndGame(); //Client stuff, like disable controls and cameras, enable end game camera and enable scoreboard.
+
+        Invoke(nameof(StopGame), endgameSound.length);
+    }
+
+    [ClientRpc]
+    private void Rpc_EndGame()
+    {
+        JODSInput.Controls.Disable(); //Disable all controls
+
+        foreach (Camera cam in Camera.allCameras) { cam.enabled = false; } //Disable all enabled cameras in the scene
+
+        endgameCamera.SetActive(true); //Enable the endgame camera
+        if (mapSettings)
+        {
+            
+        }
+        else { endgameCamera.transform.position = new Vector3(0, 5, 0); }
+
+        if (!scoreboardIsOpen) OpenScoreboard(); //Open the scoreboard
+
+        AS.PlayOneShot(endgameSound, 1f);
+
+        StartCoroutine(EndGameIE(endgameSound.length));
+    }
+
+    public abstract void EndGame();
+
+    private IEnumerator EndGameIE(float time)
+    {
+        float timeToFade = time / 5;
+        yield return new WaitForSeconds(time - timeToFade);
+
+        endgameFade.gameObject.SetActive(true);
+        float curTime = 0;
+        Color fadeCol = endgameFade.color;
+        while(curTime < timeToFade)
+        {
+            curTime += Time.deltaTime;
+            fadeCol.a = curTime / timeToFade;
+            endgameFade.color = fadeCol;
+            yield return null;
+        }
+    }
+
+    private void StopGame()
+    {
+        NetworkTest.Instance.StopHost();
+        SceneManager.LoadScene(0);
     }
 
     #endregion

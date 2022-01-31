@@ -20,11 +20,13 @@ public class Burn : StatusEffect
     }
     private void SetOnFire()
     {
+        if (onFireParticlesPrefab == null) return;
         onFireParticles = GameObject.Instantiate(onFireParticlesPrefab, obj.transform);
     }
 
     public override void OnEffectApplied()
     {
+        if (burnParticlesPrefab == null) return;
         burnParticles = GameObject.Instantiate(burnParticlesPrefab, obj.transform);
     }
     public override void ApplyEffect(int? amount)

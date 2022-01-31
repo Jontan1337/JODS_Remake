@@ -21,11 +21,6 @@ public class ScoreboardRow : MonoBehaviour
     [SerializeField] private Text totalUpgradesText = null; private const string totalUpgradesTextDefault = "Total Upgrades: ";
     [SerializeField] private Text totalUnitUpgradesText = null; private const string totalUnitUpgradesTextDefault = "Total Unit Upgrades: ";
 
-    private void Start()
-    {
-        foregroundImage.enabled = true;
-    }
-
     public void ChangeScores(PlayerData playerData)
     {
         playerScoreText.text = playerScoreTextDefault + playerData.score;
