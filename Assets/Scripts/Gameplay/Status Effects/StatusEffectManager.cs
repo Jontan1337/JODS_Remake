@@ -12,8 +12,6 @@ public class StatusEffectManager : NetworkBehaviour
     private Dictionary<int, Sprite> statusEffectVisuals = new Dictionary<int, Sprite>();
     private Dictionary<string, int> indexDict = new Dictionary<string, int>();
 
-    public List<string> debugStatusEffectList = new List<string>(); //Delete this eventually
-
     [Header("Current Status Effects")]
     public List<string> statusEffects = new List<string>();
 
@@ -97,8 +95,6 @@ public class StatusEffectManager : NetworkBehaviour
                     statusEffects.Remove(effect.effect.name);
                     if (effect.effect.uIImage) statusEffectVisuals.Remove(indexDict[effect.effect.name]);
 
-                    debugStatusEffectList.Remove(effect.effect.name);
-
                     Svr_RemoveVisuals(effect.effect);
                 }
             }
@@ -139,7 +135,6 @@ public class StatusEffectManager : NetworkBehaviour
             }
 
             Sprite effectVisual = newEffect.effect.uIImage;
-
             
             //If the effect has a visual element
             if (effectVisual && imageReferenceList.Length > 0)
@@ -149,8 +144,6 @@ public class StatusEffectManager : NetworkBehaviour
                     if (!statusEffectVisuals.ContainsKey(i))
                     {
                         statusEffectVisuals.Add(i, effectVisual);
-
-                        debugStatusEffectList.Add(newEffect.effect.name);
 
                         string key = newEffect.effect.name;
 

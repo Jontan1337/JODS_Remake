@@ -71,6 +71,11 @@ public abstract class GamemodeBase : NetworkBehaviour
     [Space]
     [SerializeField] private List<PlayerData> playerList = new List<PlayerData>();
 
+    public int PlayerCount
+    {
+        get => playerList.Count;
+    }
+
     #region Point System and Player Scores
 
     [ClientRpc]
