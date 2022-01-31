@@ -382,7 +382,12 @@ public abstract class GamemodeBase : NetworkBehaviour
         endgameCamera.SetActive(true); //Enable the endgame camera
         if (mapSettings)
         {
-            
+            if (mapSettings.endGameCameraPoints.Length > 0)
+            {
+                PositionAndRotationPoint camPoint = mapSettings.endGameCameraPoints[Random.Range(0, mapSettings.endGameCameraPoints.Length)];
+                endgameCamera.transform.position = camPoint.position;
+                endgameCamera.transform.rotation = camPoint.rotation;
+            }
         }
         else { endgameCamera.transform.position = new Vector3(0, 5, 0); }
 

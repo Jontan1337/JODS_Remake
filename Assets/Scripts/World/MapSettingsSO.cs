@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public struct ShopSpawnPoint
+public struct PositionAndRotationPoint
 {
     public Vector3 position;
     public Quaternion rotation;
@@ -16,5 +16,7 @@ public class MapSettingsSO : ScriptableObject
 
     public Vector3[] spawnPoints;
     [Space]
-    public ShopSpawnPoint[] shopSpawnPoints;
+    public PositionAndRotationPoint[] shopSpawnPoints;
+    [Space]
+    public PositionAndRotationPoint[] endGameCameraPoints;
 }

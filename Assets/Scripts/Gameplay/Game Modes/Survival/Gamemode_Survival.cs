@@ -65,7 +65,7 @@ public class Gamemode_Survival : GamemodeBase
 
         AS.PlayOneShot(shopPeriodSpawnAudio, 1f);
 
-        ShopSpawnPoint spawnpoint = mapSettings.shopSpawnPoints[Random.Range(0, mapSettings.shopSpawnPoints.Length)];
+        PositionAndRotationPoint spawnpoint = mapSettings.shopSpawnPoints[Random.Range(0, mapSettings.shopSpawnPoints.Length)];
 
         GameObject newShop = Instantiate(shopPrefab, spawnpoint.position, spawnpoint.rotation);
 
