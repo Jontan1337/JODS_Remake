@@ -14,12 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   activeUntilRemoved: 1
   duration: 1
+  maxDuration: 5
   canDurationStack: 1
   canDurationReset: 0
   canEffectStack: 0
   doEffectOnHit: 1
   uIImage: {fileID: 21300000, guid: 350c6a7e0b429cc44b4cd56bc36f54eb, type: 3}
   uIImageColor: {r: 1, g: 0.05694356, b: 0, a: 1}
+  useImageAlpha: 1
+  useDurationAsAlpha: 0
   damagePerTick: 1000
   onFireDamagePerTick: 1000
   burnParticles: {fileID: 0}
