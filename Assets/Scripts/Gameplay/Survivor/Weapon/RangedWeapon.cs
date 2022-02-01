@@ -325,7 +325,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
     protected virtual void Shoot(Vector2 aimPoint)
     {
-        Debug.LogError("You broke this. Rocket launcher didn't work because it never lost ammunition.");
+        Debug.LogError("You broke this. Rocket launcher didn't work because it never lost ammunition. I temporarily fixed by removing an If statement in rocket launcher script. Fix.");
     }
 
     private void What()

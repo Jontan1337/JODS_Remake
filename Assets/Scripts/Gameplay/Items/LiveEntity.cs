@@ -191,7 +191,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 			Rpc_StartExplosionEffect();
 			// Save all Colliders from the gameobjects the OverlapSphere hits.
 			Collider[] tempHitObjects = Physics.OverlapSphere(transform.position, explosionRadius, ~zombiePartLayer); // Ignore individual zombie parts.
-			Debug.LogError("Zombies do not get force applied because only their limbs have rigidbodies. " +
+			Debug.LogError("Zombies do not get force applied because only their limbs have rigidbodies, not the main body which is what explosions SHOULD interact with." +
 				"This script ignores bodyparts because we do not want to damage them 10x. fix.");																						  // Run through each collider the OverlapSphere hit.
 			foreach (Collider targetCollider in tempHitObjects)
 			{
