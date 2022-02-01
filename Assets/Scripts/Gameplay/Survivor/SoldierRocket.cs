@@ -19,6 +19,6 @@ public class SoldierRocket : Projectile
 	[Server]
 	private void Svr_Explode()
 	{
-		GetComponent<LiveEntity>()?.DestroyEntity(transform);
+		GetComponent<LiveEntity>()?.Svr_DestroyEntity(transform);
 	}
 }

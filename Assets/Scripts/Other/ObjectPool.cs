@@ -124,6 +124,7 @@ public class ObjectPool : NetworkBehaviour
 
 	public GameObject SpawnFromLocalPool(Tags Tag, Vector3 position, Quaternion rotation, float? time = null)
 	{
+		print(Tag.ToString());
 		string tag = Tag.ToString();
 
 		//If the tag does not exist within the pool dictionary, return nothing.

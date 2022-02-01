@@ -20,7 +20,7 @@ public class Mine : NetworkBehaviour, IPlaceable
     [Server]
     private void Svr_Explode()
     {
-        GetComponent<LiveEntity>()?.DestroyEntity(transform);
+        GetComponent<LiveEntity>()?.Svr_DestroyEntity(transform);
     }
 
     public Transform Owner { get; set; }

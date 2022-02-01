@@ -12,6 +12,8 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 	public EntityType entityType = EntityType.explosive;
 
 	[Header("Explosive entity settings")]
+	[SerializeField] private Tags explosionTag = Tags.ExplosionMedium;
+	[Space]
 	[SerializeField] private ParticleSystem explosionEffect = null;
 	[SerializeField] private ParticleSystem criticalEffect = null;
 	[SerializeField] private int criticalHealth = 20;
@@ -78,7 +80,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 		}
 		if (health <= 0f)
 		{
-			DestroyEntity();
+			Svr_DestroyEntity();
 		}
 	}
 
@@ -166,7 +168,8 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 		piece.GetComponent<Timer>()?.StartTimer(true, 5f, interval);
 	}
 
-	public void DestroyEntity(Transform sourceOfExplosion = null)
+	[Server]
+	public void Svr_DestroyEntity(Transform sourceOfExplosion = null)
 	{
 		isDead = true;
 		// Prevent this entity from running code with bool
@@ -188,7 +191,8 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 			Rpc_StartExplosionEffect();
 			// Save all Colliders from the gameobjects the OverlapSphere hits.
 			Collider[] tempHitObjects = Physics.OverlapSphere(transform.position, explosionRadius, ~zombiePartLayer); // Ignore individual zombie parts.
-																													  // Run through each collider the OverlapSphere hit.
+			Debug.LogError("Zombies do not get force applied because only their limbs have rigidbodies. " +
+				"This script ignores bodyparts because we do not want to damage them 10x. fix.");																						  // Run through each collider the OverlapSphere hit.
 			foreach (Collider targetCollider in tempHitObjects)
 			{
 				// OverlapSphere also detects itself,
@@ -283,7 +287,9 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 		}
 		// Is the entity a single destructable object or an explosive
 
-		//StartCoroutine(DestroyWait());
+		StartCoroutine(DestroyWait()); //This is necessary for some reason
+
+		/*
 		if (singleDestructable || entityType == EntityType.explosive)
 		{
             if (objectPooled)
@@ -292,34 +298,40 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
             }
             else
             {
-                Destroy(gameObject);
+                NetworkServer.Destroy(gameObject);
             }
 		}
+		*/
 	}
 
-	//IEnumerator DestroyWait()
-	//{
-	//	yield return new WaitForSeconds(0.1f);
-	//	if (singleDestructable || entityType == EntityType.explosive)
-	//	{
-	//		if (objectPooled)
-	//		{
-	//			ObjectPool.Instance.ReturnToNetworkedPool(objectPoolTag, gameObject, 0);
-	//		}
-	//		else
-	//		{
-	//			Destroy(gameObject);
-	//		}
-	//	}
-	//}
+    IEnumerator DestroyWait()
+    {
+        yield return new WaitForSeconds(0.1f);
+        if (singleDestructable || entityType == EntityType.explosive)
+        {
+            if (objectPooled)
+            {
+                ObjectPool.Instance.ReturnToNetworkedPool(objectPoolTag, gameObject, 0);
+            }
+            else
+            {
+				NetworkServer.Destroy(gameObject);
+            }
+        }
+    }
 
-	// Doesn't work properly... Test as client
-	[ClientRpc]
+    // Doesn't work properly... Test as client
+    [ClientRpc]
 	private void Rpc_StartExplosionEffect()
 	{
-        explosionEffect.gameObject.transform.parent = null;
+		print("???");
+		ObjectPool.Instance.SpawnFromLocalPool(explosionTag, transform.position, Quaternion.identity, 1);
+
+		/*
+		explosionEffect.gameObject.transform.parent = null;
 		explosionEffect.Play();
         explosionEffect.GetComponent<SFXPlayer>()?.PlaySFX();
+		*/
 	}
 
 	public void Explode(Transform explosionSource)

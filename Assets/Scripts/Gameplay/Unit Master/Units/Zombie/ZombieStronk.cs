@@ -36,7 +36,7 @@ public class ZombieStronk : UnitBase, IZombie, IControllable
         print("sepck");
         if (!WithinMeleeRange() || !CanSee(currentTarget)) return;
 
-        currentTarget.GetComponent<LiveEntity>().DestroyEntity(transform);
+        currentTarget.GetComponent<LiveEntity>().Svr_DestroyEntity(transform);
 
         base.SpecialAttack();
     }

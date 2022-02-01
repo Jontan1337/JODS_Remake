@@ -14,7 +14,7 @@ public class RaycastWeapon : RangedWeapon
 
     protected override void Shoot(Vector2 aimPoint)
     {
-
+        print("shoot");
         Vector2 recoil = (Random.insideUnitCircle * currentCurveAccuracy) + aimPoint;
         Ray aimRay = playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2 + recoil.x, Screen.height / 2 + recoil.y));
         Rpc_Shoot(recoil);

@@ -79,6 +79,9 @@ public class Outline : MonoBehaviour {
   private Material outlineMaskMaterial;
   private Material outlineFillMaterial;
 
+    [SerializeField] private int materialIndex = 0;
+    [SerializeField] private bool useMaterialIndex = true;
+
   private bool needsUpdate;
 
   void Awake() {
@@ -100,18 +103,18 @@ public class Outline : MonoBehaviour {
     needsUpdate = true;
   }
 
-  void OnEnable() {
-    foreach (var renderer in renderers) {
+    void OnEnable() {
+        foreach (var renderer in renderers) {
 
-      // Append outline shaders
-      var materials = renderer.sharedMaterials.ToList();
+            // Append outline shaders
+            var materials = renderer.sharedMaterials.ToList();
 
-      materials.Add(outlineMaskMaterial);
-      materials.Add(outlineFillMaterial);
+            materials.Add(outlineMaskMaterial);
+            materials.Add(outlineFillMaterial);
 
-      renderer.materials = materials.ToArray();
+            renderer.materials = materials.ToArray();    
+        }
     }
-  }
 
   void OnValidate() {
 
