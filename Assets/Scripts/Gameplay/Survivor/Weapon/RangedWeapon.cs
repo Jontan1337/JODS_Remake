@@ -135,7 +135,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
     protected override void OnLMBPerformed(InputAction.CallbackContext obj)
     {
-        Debug.LogError("This is still bound to LMB after player dies, resulting in command errors on click. Fix.");
+        Debug.LogWarning("This is still bound to LMB after player dies, resulting in command errors on click. Fix.");
 
         JODSInput.Controls.Survivor.Drop.Disable();
         JODSInput.Controls.Survivor.Interact.Disable();
@@ -325,6 +325,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
     protected virtual void Shoot(Vector2 aimPoint)
     {
+        Debug.LogError("You broke this. Rocket launcher didn't work because it never lost ammunition.");
     }
 
     private void What()

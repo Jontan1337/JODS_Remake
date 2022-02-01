@@ -9,11 +9,15 @@ public class RocketLauncher : ProjectileWeapon
 	protected override void Shoot(Vector2 aimPoint)
 	{
 		base.Shoot(aimPoint);
+
+		/* surely this if isnt necessary? 
 		if (currentAmmunition == 0 && extraAmmunition == 0)
 		{
-            GetComponentInParent<ActiveSClass>().Rpc_StartAbilityCooldown(transform.root.GetComponent<NetworkIdentity>().connectionToClient, transform.root);
-            Unbind();
 		}
+		*/
+
+        GetComponentInParent<ActiveSClass>().Rpc_StartAbilityCooldown(transform.root.GetComponent<NetworkIdentity>().connectionToClient, transform.root);
+        Unbind();
 	}
 
 	protected override void OnDropPerformed(InputAction.CallbackContext obj)
