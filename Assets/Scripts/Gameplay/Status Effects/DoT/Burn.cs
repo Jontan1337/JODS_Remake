@@ -52,4 +52,5 @@ public class Burn : StatusEffect
         //Do Damage
         idmg.Svr_Damage(onFire ? burn.onFireDamagePerTick : burn.damagePerTick);
     }
+    public override float GetImageAlpha() => onFire ? 200 : 90;
 }

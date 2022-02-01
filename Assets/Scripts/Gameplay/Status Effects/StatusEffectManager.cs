@@ -36,8 +36,6 @@ public class StatusEffectManager : NetworkBehaviour
 
         if (!isServer) return;
 
-
-
         isActive = false;
     }
 
@@ -87,13 +85,15 @@ public class StatusEffectManager : NetworkBehaviour
                 //Call Tick, which does an effect over time and reduces the duration of the effect
                 effect.Tick();
 
+                Rpc_ChangeVisualAlpha(connectionToClient, indexDict[effect.effect.name], effect.GetImageAlpha());
+
                 //If the duration of this effect has reached 0, then stop the effect and remove it.
                 if (effect.isFinished)
                 {
                     //Remove the effect from the list of current active effects
                     currentEffects.Remove(effect.effect);
                     statusEffects.Remove(effect.effect.name);
-                    if (effect.effect.uIImage) statusEffectVisuals.Remove(indexDict[effect.effect.name]);
+                    if (effect.effect.uIImage && imageReferenceList.Length > 0) statusEffectVisuals.Remove(indexDict[effect.effect.name]);
 
                     Svr_RemoveVisuals(effect.effect);
                 }
@@ -154,6 +154,7 @@ public class StatusEffectManager : NetworkBehaviour
                         }
 
                         Rpc_EnableVisual(connectionToClient, i, effectVisual.name, newEffect.effect.uIImageColor);
+                        Rpc_ChangeVisualAlpha(connectionToClient, i, newEffect.GetImageAlpha());
 
                         break;
                     }
@@ -183,8 +184,21 @@ public class StatusEffectManager : NetworkBehaviour
             img.sprite = newSprite;
             img.color = col;
         }
-
     }
+
+    [TargetRpc]
+    private void Rpc_ChangeVisualAlpha(NetworkConnection conn, int imageIndex, float alpha)
+    {
+        Image img = imageReferenceList[imageIndex];
+
+        if (img != null)
+        {
+            Color col = img.color;
+            col.a = alpha > 1 ? (alpha / 255) : alpha;
+            img.color = col;
+        }
+    }
+
     [TargetRpc]
     private void Rpc_DisableVisual(NetworkConnection conn, string key)
     {

@@ -38,7 +38,7 @@ public abstract class StatusEffect
     }
 
     //This function is called when the status effect is applied 
-    public virtual void Activate(int? amount)
+    public virtual void Activate(int? amount) //Amount could be the amount of damage to apply or amount to heal etc.
     {
         if (!isApplied)
         {
@@ -59,7 +59,7 @@ public abstract class StatusEffect
         if (effect.canDurationStack || duration <= 0)
         {
             //If the effect duration can stack or if duration is 0, extend the duration.
-            duration += effect.duration;
+            duration = Mathf.Clamp(duration += effect.duration, 0, effect.maxDuration);
         }
 
         if ((effect.canDurationReset && !effect.canDurationStack) || duration <= 0)
@@ -71,4 +71,12 @@ public abstract class StatusEffect
     public abstract void OnEffectApplied();
     public abstract void ApplyEffect(int? amount);//This will apply the actual effect.
     public abstract void End(); //This function is called when the effect ends, either by duration or stopped by some other means.
+    public virtual float GetImageAlpha()
+    {
+        if (effect.useImageAlpha) return effect.uIImageColor.a;
+
+        if (effect.useDurationAsAlpha) return duration / effect.maxDuration;
+
+        else return 100;
+    }
 }

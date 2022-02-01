@@ -10,8 +10,13 @@ public class Mine : NetworkBehaviour, IPlaceable
 
     private void OnTriggerEnter(Collider other)
     {
-        if (armed && other.gameObject.layer == 10)
-        {
+        Debug.LogError("OTHER EXPLOSIONS AFFECT MINE! " +
+            "IF YOU SHOOT ROCKET NEAR DEPLOYED MINE, MINE GOES FLYING.");
+        if (armed && other.gameObject.layer == 10) // Why check layer? ONLY Layer 10 should even be able to interact with this, so there is no need to check.
+        {   //This onTriggerEnter triggers when it is deployed, meaning it interacts with something that ISN'T layer 10. This should not happen.
+            //Fix.
+            //If the issue is that the mine will fall through the world if it can only interact with layer 10, then find a workaround (1 world collider 1 trigger?). Don't check layer.
+            
             if (!isServer) return;
             Svr_Explode();
         }

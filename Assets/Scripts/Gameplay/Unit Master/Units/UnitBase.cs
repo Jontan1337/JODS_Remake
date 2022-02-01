@@ -1535,7 +1535,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         {
             if (!target)
             {
-                Debug.LogError("Unit doesn't know who killed em, so can't give points");
                 return;
             }
 

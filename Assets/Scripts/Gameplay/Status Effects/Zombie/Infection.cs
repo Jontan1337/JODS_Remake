@@ -5,7 +5,7 @@ using UnityEngine;
 public class Infection : StatusEffect
 {
     [Range(0, 3)] public int infectionLevel = 0;
-    [Range(0, 100)] public float infectionRate = 0;
+    [Range(0, 100)] public int infectionRate = 0;
 
     public Infection(StatusEffectSO effect, GameObject obj) : base(effect, obj)
     {
@@ -21,14 +21,10 @@ public class Infection : StatusEffect
 
         infectionRate = Mathf.Clamp(infectionRate += newAmount, 0, 100);
 
-        //Debug.Log("My infection rate is: " + infectionRate);
-
         if (infectionRate >= 100)
         {
             IncreaseInfectionLevel();
         }
-
-        //Debug.Log("My infection level is: " + infectionLevel);
     }
 
     public override void End()
@@ -39,6 +35,7 @@ public class Infection : StatusEffect
 
     public override void Tick()
     {
+        Debug.Log(duration);
         if (infectionLevel == 3) return;
 
         infectionRate = Mathf.Clamp(infectionRate -= 1, 0, 100);
@@ -64,4 +61,6 @@ public class Infection : StatusEffect
     {
         
     }
+
+    public override float GetImageAlpha() => (infectionLevel / 4f) + (infectionRate * 0.0025f);
 }

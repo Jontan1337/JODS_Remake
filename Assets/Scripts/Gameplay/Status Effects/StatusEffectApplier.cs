@@ -7,12 +7,12 @@ public class StatusEffectApplier : NetworkBehaviour
 {
     [Header("Status Effect")]
     [SerializeField] private StatusEffectSO statusEffectToApply = null;
+    [SerializeField] private int amount = 0;
 
     [Header("Objects In Collider")]
     [SerializeField] private List<GameObject> objectsInCollider = new List<GameObject>();
     private void OnTriggerEnter(Collider other)
     {
-        Debug.LogError("ZOMBIES DO NOT GET STATUS EFFECTS APPLIED!");
         if (!isServer) return;
 
         GameObject root = other.transform.root.gameObject;
@@ -43,7 +43,7 @@ public class StatusEffectApplier : NetworkBehaviour
             if (target == null) break;
 
             //The server applies the status effect to the object every half second
-            manager.Svr_ApplyStatusEffect(statusEffectToApply.ApplyEffect(target));
+            manager.Svr_ApplyStatusEffect(statusEffectToApply.ApplyEffect(target), amount);
 
             yield return new WaitForSeconds(0.5f);
         }
