@@ -135,7 +135,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
     protected override void OnLMBPerformed(InputAction.CallbackContext obj)
     {
-        Debug.LogWarning("This is still bound to LMB after player dies, resulting in command errors on click. Fix.");
+        Debug.LogError("This is still bound to LMB after player dies, resulting in command errors on click. Fix.");
 
         JODSInput.Controls.Survivor.Drop.Disable();
         JODSInput.Controls.Survivor.Interact.Disable();
