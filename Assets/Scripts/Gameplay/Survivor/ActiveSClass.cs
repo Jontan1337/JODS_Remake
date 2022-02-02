@@ -36,7 +36,8 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	[SerializeField] private Image abilityCooldownUI = null;
 
 	[Header("Events")]
-	[SerializeField] private UnityEvent<float> onChangedHealth = null;
+	public UnityEvent<float> onChangedHealth = null;
+	public UnityEvent onDied = null;
 
 	private bool abilityIsReady = true;
 
@@ -49,8 +50,8 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 			//Update scoreboard stat
 			GamemodeBase.Instance.Svr_ModifyStat(GetComponent<NetworkIdentity>().netId, 0, PlayerDataStat.Alive);
 
-			isDead = value; 
-
+			isDead = value;
+			onDied?.Invoke();
 			NetworkServer.Destroy(gameObject);
 		}
     }
@@ -316,6 +317,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 		}
 	}
 
+	// Why are we using an Rpc to update the player's armor instead of just making it a SyncVar?????
 	[TargetRpc]
 	public void Rpc_SyncStats(NetworkConnection target, int newHealth, int newArmor)
 	{

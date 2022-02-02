@@ -35,8 +35,13 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [SerializeField, SyncVar] protected Transform playerHead;
     [SerializeField] protected Camera playerCamera;
     [SerializeField] private GameObject muzzleFlash = null;
+    [SerializeField] private ParticleSystem muzzleParticle;
     [SerializeField] private SFXPlayer sfxPlayer = null;
+    [SerializeField] private Transform crosshairParent;
+    [SerializeField] private Crosshair crosshair;
 
+    [Header("Prefabs")]
+    [SerializeField] private GameObject crosshairPrefab;
 
     [Header("Audio Settings")]
     [SerializeField] private AudioClip shootSound = null;
@@ -46,7 +51,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     private Coroutine COStopShootLoop;
     private Coroutine COAccuracyStabilizer;
 
-    [SerializeField] private ParticleSystem muzzleParticle;
 
     private bool canShoot = true;
 
@@ -120,6 +124,13 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         base.Bind();
         JODSInput.Controls.Survivor.Reload.performed += OnReload;
         JODSInput.Controls.Survivor.Changefiremode.performed += OnChangeFireMode;
+        if (crosshair != null) return;
+        crosshairParent = transform.root.Find("UI/Canvas - In Game/Crosshair");
+        if (crosshairParent != null)
+        {
+            currentAccuracy = 0;
+            crosshair = Instantiate(crosshairPrefab, crosshairParent).GetComponent<Crosshair>();
+        }
     }
     public override void Unbind()
     {
@@ -131,6 +142,11 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         base.Unbind();
         JODSInput.Controls.Survivor.Reload.performed -= OnReload;
         JODSInput.Controls.Survivor.Changefiremode.performed -= OnChangeFireMode;
+        if (crosshair != null)
+        {
+            Destroy(crosshair.gameObject);
+            crosshair = null;
+        }
     }
 
     protected override void OnLMBPerformed(InputAction.CallbackContext obj)
@@ -315,11 +331,14 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     {
         while (CurrentAccuracy > 0f)
         {
-            CurrentAccuracy -= 0.4f * Time.deltaTime;
+            CurrentAccuracy -= 1f * Time.deltaTime;
             currentCurveAccuracy = recoilCurve.Evaluate(CurrentAccuracy);
+            if (crosshair)
+            {
+                crosshair.SetSize(currentCurveAccuracy*2);
+            }
             yield return null;
         }
-
         COAccuracyStabilizer = null;
     }
 
