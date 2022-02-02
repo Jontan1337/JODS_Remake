@@ -54,7 +54,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 		nonexplosive
 	}
 
-	public LayerMask zombiePartLayer = 0;
+	public LayerMask unitPartLayer = 0;
 
 	public int GetHealth => health;
 	public bool IsDead => isDead;
@@ -190,9 +190,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 			// Play the explosion particle system effect.
 			Rpc_StartExplosionEffect();
 			// Save all Colliders from the gameobjects the OverlapSphere hits.
-			Collider[] tempHitObjects = Physics.OverlapSphere(transform.position, explosionRadius, ~zombiePartLayer); // Ignore individual zombie parts.
-			Debug.LogError("Zombies do not get force applied because only their limbs have rigidbodies, not the main body which is what explosions SHOULD interact with." +
-				"This script ignores bodyparts because we do not want to damage them 10x. fix.");																						  // Run through each collider the OverlapSphere hit.
+			Collider[] tempHitObjects = Physics.OverlapSphere(transform.position, explosionRadius, ~unitPartLayer); // Ignore individual zombie parts.																						  // Run through each collider the OverlapSphere hit.
 			foreach (Collider targetCollider in tempHitObjects)
 			{
 				// OverlapSphere also detects itself,
@@ -209,12 +207,13 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 					targetLE = tempLE;
 				}
 				// Does the object it hit have a Rigidbody component. Used for simple rigidbody objects near the explosion.
-				if (targetCollider.TryGetComponent(out Rigidbody tempRB))
-				{
-					targetRB = tempRB;
-					// Apply an ExplosionForce to the object Rigidbody
-					targetRB.AddExplosionForce(explosionForce, transform.position, explosionRadius, upwardExplosionForce, ForceMode.Impulse);
-				}
+				targetCollider.GetComponentInChildren<Rigidbody>()?.AddExplosionForce(explosionForce, transform.position, explosionRadius, upwardExplosionForce, ForceMode.Impulse);
+				//if (targetCollider.TryGetComponent(out Rigidbody tempRB))
+				//{
+				//	targetRB = tempRB;
+				//	// Apply an ExplosionForce to the object Rigidbody
+				//	targetRB.AddExplosionForce(explosionForce, transform.position, explosionRadius, upwardExplosionForce, ForceMode.Impulse);
+				//}
 				#endregion
 
 				RaycastHit hit;
@@ -320,18 +319,10 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
         }
     }
 
-    // Doesn't work properly... Test as client
     [ClientRpc]
 	private void Rpc_StartExplosionEffect()
 	{
-		print("???");
 		ObjectPool.Instance.SpawnFromLocalPool(explosionTag, transform.position, Quaternion.identity, 1);
-
-		/*
-		explosionEffect.gameObject.transform.parent = null;
-		explosionEffect.Play();
-        explosionEffect.GetComponent<SFXPlayer>()?.PlaySFX();
-		*/
 	}
 
 	public void Explode(Transform explosionSource)
