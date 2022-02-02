@@ -10,6 +10,12 @@ public class RocketLauncher : ProjectileWeapon
 	{
 		base.Shoot(aimPoint);
 
+		/* surely this if isnt necessary? 
+		if (currentAmmunition == 0 && extraAmmunition == 0)
+		{
+		}
+		*/
+
         GetComponentInParent<ActiveSClass>().Rpc_StartAbilityCooldown(transform.root.GetComponent<NetworkIdentity>().connectionToClient, transform.root);
         Unbind();
 	}
