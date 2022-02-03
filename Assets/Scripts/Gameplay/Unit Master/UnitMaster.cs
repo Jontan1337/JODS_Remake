@@ -390,9 +390,9 @@ public class UnitMaster : NetworkBehaviour
         if (EventSystem.current.IsPointerOverGameObject()) { return; }
         if (shift && !ctrl) { Shift_LMB(); return; }
         else if (ctrl && !shift) { Ctrl_LMB(); return; }
+        DeselectUnit();
 
         //Somehow check if master clicks on a unit button, if so do not spawn anything.
-        DeselectUnit();
         TryToSpawnUnit();
     }
     private void RMB()
