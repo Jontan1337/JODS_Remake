@@ -54,8 +54,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [SerializeField] private AudioClip shootSound = null;
     [SerializeField] private AudioClip emptySound = null;
 
-    private ActiveSClass playerClass = null;
-
     private Coroutine COShootLoop;
     private Coroutine COStopShootLoop;
     private Coroutine COAccuracyStabilizer;
@@ -140,7 +138,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     {
         base.Svr_Interact(interacter);
         GetUIElements(interacter.transform);
-        playerClass = interacter.GetComponent<ActiveSClass>();
         playerHead = interacter.GetComponent<LookController>().RotateVertical;
         playerCamera = playerHead.GetChild(0).GetComponent<Camera>();
         Rpc_GetPlayerHead(connectionToClient, playerHead);
@@ -159,7 +156,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         JODSInput.Controls.Survivor.Reload.performed += OnReload;
         JODSInput.Controls.Survivor.Changefiremode.performed += OnChangeFireMode;
         CreateCrosshair();
-        playerClass.onDied.AddListener(delegate() { Unbind(); });
     }
     public override void Unbind()
     {
@@ -171,7 +167,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         JODSInput.Controls.Survivor.Reload.performed -= OnReload;
         JODSInput.Controls.Survivor.Changefiremode.performed -= OnChangeFireMode;
         RemoveCrosshair();
-        playerClass.onDied.RemoveListener(delegate() { Unbind(); });
     }
 
     private void GetUIElements(Transform root)

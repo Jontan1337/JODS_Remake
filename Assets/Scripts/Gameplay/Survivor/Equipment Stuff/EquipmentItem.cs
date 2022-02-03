@@ -28,8 +28,9 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	[SerializeField] private Outline outline;
 
 	public Action<GameObject> onServerDropItem;
+    private ActiveSClass playerClass;
 
-	public bool IsInteractable { get => isInteractable; set => isInteractable = value; }
+    public bool IsInteractable { get => isInteractable; set => isInteractable = value; }
 	public string ObjectName => gameObject.name;
 	public string Name => itemName;
 	public GameObject Item => gameObject;
@@ -64,6 +65,7 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 			// This should not be possible, but just to be absolutely sure.
 			Debug.LogWarning($"{interacter} does not have a PlayerEquipment component", this);
 		}
+		playerClass = interacter.GetComponent<ActiveSClass>();
 	}
 
 	[TargetRpc]
@@ -80,7 +82,8 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 		JODSInput.Controls.Survivor.RMB.performed += OnRMBPerformed;
 		JODSInput.Controls.Survivor.RMB.canceled += OnRMBCanceled;
         JODSInput.Controls.Survivor.Drop.performed += OnDropPerformed;
-    }
+		playerClass.onDied.AddListener(delegate () { Unbind(); });
+	}
 	public virtual void Unbind()
 	{
 		// This method is the last thing that happens when dropping an item.
@@ -89,7 +92,8 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 		JODSInput.Controls.Survivor.RMB.performed -= OnRMBPerformed;
 		JODSInput.Controls.Survivor.RMB.canceled -= OnRMBCanceled;
         JODSInput.Controls.Survivor.Drop.performed -= OnDropPerformed;
-    }
+		playerClass.onDied.RemoveListener(delegate () { Unbind(); });
+	}
 	[TargetRpc]
 	protected void Rpc_Bind(NetworkConnection target)
 	{
