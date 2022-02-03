@@ -38,7 +38,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8890196892592532165}
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.3304353, y: 0, z: 0.41630083}
   m_LocalScale: {x: 0.8277183, y: 0.8277183, z: 0.8277183}
   m_Children:
@@ -78,7 +78,7 @@ MonoBehaviour:
   currentPunchthrough: 2
   normalPunchthrough: 2
   damageType: 1
-  attackInterval: 0.6
+  attackInterval: 0.9
   chargeable: 0
   splatterAmount: 0
   maxSplatterAmount: 0.35
@@ -465,6 +465,8 @@ MonoBehaviour:
     - {x: 0.465217, y: 0.2768279, z: 0.8407969}
     - {x: 0.84781826, y: 0.5044952, z: -0.16336708}
     - {x: -0.84781826, y: 0.5044952, z: -0.16336714}
+  materialIndex: 0
+  useMaterialIndex: 1
 --- !u!95 &7119151799590538732
 Animator:
   serializedVersion: 3
@@ -473,7 +475,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8890196892592532165}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 54cbe08b96bca444aa23c4376bd8c15b, type: 2}
   m_CullingMode: 0

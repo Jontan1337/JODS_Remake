@@ -47,6 +47,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [SerializeField] private AudioClip shootSound = null;
     [SerializeField] private AudioClip emptySound = null;
 
+    private ActiveSClass playerClass = null;
+
     private Coroutine COShootLoop;
     private Coroutine COStopShootLoop;
     private Coroutine COAccuracyStabilizer;
@@ -107,6 +109,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     public override void Svr_Interact(GameObject interacter)
     {
         base.Svr_Interact(interacter);
+        playerClass = interacter.GetComponent<ActiveSClass>();
         playerHead = interacter.GetComponent<LookController>().RotateVertical;
         playerCamera = playerHead.GetChild(0).GetComponent<Camera>();
         Rpc_GetPlayerHead(connectionToClient, playerHead);
@@ -124,13 +127,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         base.Bind();
         JODSInput.Controls.Survivor.Reload.performed += OnReload;
         JODSInput.Controls.Survivor.Changefiremode.performed += OnChangeFireMode;
-        if (crosshair != null) return;
-        crosshairParent = transform.root.Find("UI/Canvas - In Game/Crosshair");
-        if (crosshairParent != null)
-        {
-            currentAccuracy = 0;
-            crosshair = Instantiate(crosshairPrefab, crosshairParent).GetComponent<Crosshair>();
-        }
+        CreateCrosshair();
+        playerClass.onDied.AddListener(delegate() { Unbind(); });
     }
     public override void Unbind()
     {
@@ -138,10 +136,26 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         {
             OnLMBCanceled(default);
         }
-
         base.Unbind();
         JODSInput.Controls.Survivor.Reload.performed -= OnReload;
         JODSInput.Controls.Survivor.Changefiremode.performed -= OnChangeFireMode;
+        RemoveCrosshair();
+        playerClass.onDied.RemoveListener(delegate() { Unbind(); });
+    }
+    private void CreateCrosshair()
+    {
+        if (crosshair != null) return;
+        crosshairParent = transform.root.Find("UI/Canvas - In Game/Crosshair");
+        if (crosshairParent != null)
+        {
+            crosshair = Instantiate(crosshairPrefab, crosshairParent).GetComponent<Crosshair>();
+        }
+        // Set the crosshair min and max size to the weapon recoil min and max values.
+        crosshair.minSize = recoilCurve.keys[0].value;
+        crosshair.maxSize = recoilCurve.keys[1].value;
+    }
+    private void RemoveCrosshair()
+    {
         if (crosshair != null)
         {
             Destroy(crosshair.gameObject);
@@ -151,8 +165,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
     protected override void OnLMBPerformed(InputAction.CallbackContext obj)
     {
-        Debug.LogError("This is still bound to LMB after player dies, resulting in command errors on click. Fix.");
-
         JODSInput.Controls.Survivor.Drop.Disable();
         JODSInput.Controls.Survivor.Interact.Disable();
 
@@ -193,7 +205,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     private void Cmd_Shoot()
     {
         if (!canShoot) return;
-        StartAccuracyStabilizer();
+        Svr_StartAccuracyStabilizer();
+        Rpc_StartAccuracyStabilizer(connectionToClient);
 
         switch (fireMode)
         {
@@ -225,7 +238,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
         int firedRounds = 0;
         // Scatter shot ammo is a single shell with multiple bullets/pellets.
-        What();
+        PostShoot();
         Vector2 aimPoint = UnityEngine.Random.insideUnitCircle * currentAccuracy * 10;
         while (currentAmmunition > 0 && firedRounds < bulletsPerShot)
         {
@@ -233,7 +246,9 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
             Shoot(aimPoint);
             if (firedRounds == bulletsPerShot)
             {
-                StartCooldown();
+                Svr_StartCooldown();
+                if (!hasAuthority)
+                    Rpc_StartCooldown(connectionToClient);
                 if (currentAmmunition == 0)
                 {
                     Rpc_EmptySFX();
@@ -254,8 +269,10 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
             if (canShoot)
             {
                 Shoot(Vector2.zero);
-                What();
-                StartCooldown();
+                PostShoot();
+                Svr_StartCooldown();
+                if (!hasAuthority)
+                    Rpc_StartCooldown(connectionToClient);
                 firedRounds++;
             }
             yield return null;
@@ -275,8 +292,10 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
             if (canShoot)
             {
                 Shoot(Vector2.zero);
-                What();
-                StartCooldown();
+                PostShoot();
+                Svr_StartCooldown();
+                if (!hasAuthority)
+                    Rpc_StartCooldown(connectionToClient);
             }
             yield return null;
         }
@@ -292,8 +311,10 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
             return;
         }
         Shoot(Vector2.zero);
-        What();
-        StartCooldown();
+        PostShoot();
+        Svr_StartCooldown();
+        if (!hasAuthority)
+            Rpc_StartCooldown(connectionToClient);
     }
 
     [Command]
@@ -309,37 +330,18 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         }
     }
 
-    private void StartCooldown()
+    [Server]
+    private void Svr_StartCooldown()
     {
         StartCoroutine(IEShootCooldown());
     }
-    private void StartAccuracyStabilizer()
+
+    [Server]
+    private void Svr_StartAccuracyStabilizer()
     {
         if (COAccuracyStabilizer != null) return;
 
         COAccuracyStabilizer = StartCoroutine(IEAccuracyStabilizer());
-    }
-    // A cooldown to simulate the time it takes
-    // for a bullet to get chambered.
-    private IEnumerator IEShootCooldown()
-    {
-        canShoot = false;
-        yield return new WaitForSeconds(fireInterval);
-        canShoot = true;
-    }
-    private IEnumerator IEAccuracyStabilizer()
-    {
-        while (CurrentAccuracy > 0f)
-        {
-            CurrentAccuracy -= 1f * Time.deltaTime;
-            currentCurveAccuracy = recoilCurve.Evaluate(CurrentAccuracy);
-            if (crosshair)
-            {
-                crosshair.SetSize(currentCurveAccuracy*2);
-            }
-            yield return null;
-        }
-        COAccuracyStabilizer = null;
     }
 
     protected virtual void Shoot(Vector2 aimPoint)
@@ -347,10 +349,10 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         Debug.LogError("You broke this. Rocket launcher didn't work because it never lost ammunition. I temporarily fixed by removing an If statement in rocket launcher script. Fix.");
     }
 
-    private void What()
+    private void PostShoot()
     {
         CurrentAccuracy += recoil;
-        StartAccuracyStabilizer();
+        Svr_StartAccuracyStabilizer();
         currentAmmunition -= 1;
     }
 
@@ -397,6 +399,42 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
     #region Clients
 
+    [TargetRpc]
+    private void Rpc_StartCooldown(NetworkConnection target)
+    {
+        StartCoroutine(IEShootCooldown());
+    }
+
+    [TargetRpc]
+    private void Rpc_StartAccuracyStabilizer(NetworkConnection target)
+    {
+        if (COAccuracyStabilizer != null) return;
+
+        COAccuracyStabilizer = StartCoroutine(IEAccuracyStabilizer());
+    }
+
+    private IEnumerator IEShootCooldown()
+    {
+        canShoot = false;
+        yield return new WaitForSeconds(fireInterval);
+        canShoot = true;
+    }
+
+    private IEnumerator IEAccuracyStabilizer()
+    {
+        while (CurrentAccuracy > 0f)
+        {
+            CurrentAccuracy -= 1f * Time.deltaTime;
+            currentCurveAccuracy = recoilCurve.Evaluate(CurrentAccuracy);
+            if (crosshair)
+            {
+                crosshair.SetSize(currentCurveAccuracy);
+            }
+            yield return null;
+        }
+        COAccuracyStabilizer = null;
+    }
+
     [ClientRpc]
     protected virtual void Rpc_Shoot(Vector2 recoil)
     {
@@ -407,9 +445,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     {
         sfxPlayer.PlaySFX(shootSound);
         muzzleParticle.Emit(10);
-        if (hasAuthority)
-        {
-        }
         OnImpact?.Invoke(recoil);
     }
     protected void ImpactShake(float amount)

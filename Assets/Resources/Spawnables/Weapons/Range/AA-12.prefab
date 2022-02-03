@@ -193,7 +193,7 @@ MonoBehaviour:
   maxCurrentAmmunition: 10
   extraAmmunition: 20
   highPower: 0
-  recoil: 2
+  recoil: 10
   currentAccuracy: 0
   currentCurveAccuracy: 0
   recoilCurve:
@@ -201,18 +201,18 @@ MonoBehaviour:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 15
-      inSlope: 0
-      outSlope: 0
+      value: 10
+      inSlope: 10
+      outSlope: 10
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 1
-      value: 15
-      inSlope: 0
-      outSlope: 0
+      value: 20
+      inSlope: 10
+      outSlope: 10
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334

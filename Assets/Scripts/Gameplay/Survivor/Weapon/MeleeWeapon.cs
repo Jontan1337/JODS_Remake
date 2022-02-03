@@ -73,7 +73,6 @@ public class MeleeWeapon : EquipmentItem, IImpacter
 
     private void Awake()
     {
-        Debug.LogError("Axe and Plank are bugged, they reset to 0,0,0 at the start of the scene for some reason. (At least on DTest)");
         material = GetComponent<MeshRenderer>().material;
         networkAnimator = GetComponent<NetworkAnimator>();
         weaponAnimator.speed = 1f / attackInterval;
