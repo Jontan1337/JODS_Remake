@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2938398389472099266}
   - component: {fileID: 3322709644881785353}
   - component: {fileID: -8555552605095726501}
-  m_Layer: 0
+  m_Layer: 23
   m_Name: ZM Damage Deployable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -125,6 +125,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8292a433ddcdc741a932dea14f27bc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   statusEffectToApply: {fileID: 11400000, guid: 273915536578c494c9ac3f927f859cee,
     type: 2}
+  amount: 0
   objectsInCollider: []

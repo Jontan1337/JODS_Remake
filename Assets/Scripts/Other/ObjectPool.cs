@@ -341,7 +341,7 @@ public class ObjectPool : NetworkBehaviour
         foreach (Pool pool in pools)
         {
 			pool.tagName = pool.tag.ToString();
-
+			if (!pool.prefab[0]) return;
 			pool.networked = pool.prefab[0].GetComponent<NetworkIdentity>();
 
 		}
