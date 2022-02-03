@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using TMPro;
 using Mirror;
 using UnityEngine.InputSystem;
 using System.Collections;
@@ -37,8 +38,14 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [SerializeField] private GameObject muzzleFlash = null;
     [SerializeField] private ParticleSystem muzzleParticle;
     [SerializeField] private SFXPlayer sfxPlayer = null;
-    [SerializeField] private Transform crosshairParent;
-    [SerializeField] private Crosshair crosshair;
+
+    [Header("UI References")]
+    [SerializeField] private Transform crosshairUIParent;
+    [SerializeField] private Crosshair crosshairUI;
+    [SerializeField] private Transform ammunitionUI;
+    [SerializeField] private TextMeshProUGUI ammunitionUIText;
+    [SerializeField] private Transform fireModeUI;
+    [SerializeField] private TextMeshProUGUI fireModeUIText;
 
     [Header("Prefabs")]
     [SerializeField] private GameObject crosshairPrefab;
@@ -53,6 +60,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     private Coroutine COStopShootLoop;
     private Coroutine COAccuracyStabilizer;
 
+    private const string playerUIPath = "UI/Canvas - In Game/";
 
     private bool canShoot = true;
 
@@ -60,9 +68,31 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
     public Action<float> OnImpact { get; set; }
 
+    public int CurrentAmmunition { 
+        get => currentAmmunition;
+        private set
+        {
+            currentAmmunition = value;
+            ammunitionUIText.text = $"{value}/{MaxCurrentAmmunition}";
+        }
+    }
+    public int MaxCurrentAmmunition { 
+        get => maxCurrentAmmunition;
+        private set
+        {
+            maxCurrentAmmunition = value;
+        }
+    }
     public int Damage { get => damage; }
     public AmmunitionTypes AmmunitionType { get => ammunitionType; set => ammunitionType = value; }
-    public FireModes FireMode { get => fireMode; }
+    public FireModes FireMode {
+        get => fireMode;
+        private set
+        {
+            fireMode = value;
+            fireModeUIText.text = FireMode.ToString();
+        }
+    }
     public FireModes[] AllFireModes { get => fireModes; }
     protected float CurrentAccuracy
     {
@@ -81,7 +111,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         fireModeIndex = 0;
         foreach (int modeIndex in fireModes)
         {
-            if ((int)fireMode == modeIndex) break;
+            if ((int)FireMode == modeIndex) break;
             fireModeIndex++;
         }
         if (muzzleFlash != null)
@@ -109,6 +139,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     public override void Svr_Interact(GameObject interacter)
     {
         base.Svr_Interact(interacter);
+        GetUIElements(interacter.transform);
         playerClass = interacter.GetComponent<ActiveSClass>();
         playerHead = interacter.GetComponent<LookController>().RotateVertical;
         playerCamera = playerHead.GetChild(0).GetComponent<Camera>();
@@ -142,24 +173,33 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         RemoveCrosshair();
         playerClass.onDied.RemoveListener(delegate() { Unbind(); });
     }
+
+    private void GetUIElements(Transform root)
+    {
+        crosshairUIParent = root.Find($"{playerUIPath}Crosshair");
+        ammunitionUI = root.Find($"{playerUIPath}Weapon ammunition");
+        fireModeUI = root.Find($"{playerUIPath}Weapon fire mode");
+        ammunitionUIText = ammunitionUI.GetComponent<TextMeshProUGUI>();
+        fireModeUIText = fireModeUI.GetComponent<TextMeshProUGUI>();
+    }
+
     private void CreateCrosshair()
     {
-        if (crosshair != null) return;
-        crosshairParent = transform.root.Find("UI/Canvas - In Game/Crosshair");
-        if (crosshairParent != null)
+        if (crosshairUI != null) return;
+        if (crosshairUIParent != null)
         {
-            crosshair = Instantiate(crosshairPrefab, crosshairParent).GetComponent<Crosshair>();
+            crosshairUI = Instantiate(crosshairPrefab, crosshairUIParent).GetComponent<Crosshair>();
         }
         // Set the crosshair min and max size to the weapon recoil min and max values.
-        crosshair.minSize = recoilCurve.keys[0].value;
-        crosshair.maxSize = recoilCurve.keys[1].value;
+        crosshairUI.minSize = recoilCurve.keys[0].value;
+        crosshairUI.maxSize = recoilCurve.keys[1].value;
     }
     private void RemoveCrosshair()
     {
-        if (crosshair != null)
+        if (crosshairUI != null)
         {
-            Destroy(crosshair.gameObject);
-            crosshair = null;
+            Destroy(crosshairUI.gameObject);
+            crosshairUI = null;
         }
     }
 
@@ -208,7 +248,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         Svr_StartAccuracyStabilizer();
         Rpc_StartAccuracyStabilizer(connectionToClient);
 
-        switch (fireMode)
+        switch (FireMode)
         {
             case FireModes.Single:
             case FireModes.SemiAuto:
@@ -240,7 +280,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         // Scatter shot ammo is a single shell with multiple bullets/pellets.
         PostShoot();
         Vector2 aimPoint = UnityEngine.Random.insideUnitCircle * currentAccuracy * 10;
-        while (currentAmmunition > 0 && firedRounds < bulletsPerShot)
+        while (CurrentAmmunition > 0 && firedRounds < bulletsPerShot)
         {
             firedRounds++;
             Shoot(aimPoint);
@@ -249,7 +289,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
                 Svr_StartCooldown();
                 if (!hasAuthority)
                     Rpc_StartCooldown(connectionToClient);
-                if (currentAmmunition == 0)
+                if (CurrentAmmunition == 0)
                 {
                     Rpc_EmptySFX();
                 }
@@ -264,7 +304,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         // The loop will keep going, as long as there
         // are bullets in the magazine and burst hasn't finished.
         // NOTE: Consider making the bullet shot interval in a burst very fast, since that's how they actually work.
-        while (currentAmmunition > 0 && firedRounds < burstBulletAmount)
+        while (CurrentAmmunition > 0 && firedRounds < burstBulletAmount)
         {
             if (canShoot)
             {
@@ -277,7 +317,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
             }
             yield return null;
         }
-        if (currentAmmunition == 0)
+        if (CurrentAmmunition == 0)
         {
             Rpc_EmptySFX();
         }
@@ -287,7 +327,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     {
         // The loop will keep going, as long as there
         // are bullets in the magazine.
-        while (currentAmmunition > 0)
+        while (CurrentAmmunition > 0)
         {
             if (canShoot)
             {
@@ -305,7 +345,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
     private void ShootSingle()
     {
-        if (currentAmmunition == 0)
+        if (CurrentAmmunition == 0)
         {
             Rpc_EmptySFX();
             return;
@@ -323,7 +363,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     {
         // Stop shoot loops from firing except burst mode because
         // it needs to shoot all burst rounds before stopping.
-        if (COShootLoop != null && fireMode != FireModes.Burst)
+        if (COShootLoop != null && FireMode != FireModes.Burst)
         {
             StopCoroutine(COShootLoop);
             COShootLoop = null;
@@ -353,24 +393,24 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     {
         CurrentAccuracy += recoil;
         Svr_StartAccuracyStabilizer();
-        currentAmmunition -= 1;
+        CurrentAmmunition -= 1;
     }
 
     // Later this should be called by a reload animation event.
     [Command]
     private void Cmd_Reload()
     {
-        if (currentAmmunition == maxCurrentAmmunition) return;
+        if (CurrentAmmunition == MaxCurrentAmmunition) return;
 
         Rpc_Reload();
-        if (extraAmmunition > (maxCurrentAmmunition - currentAmmunition))
+        if (extraAmmunition > (MaxCurrentAmmunition - CurrentAmmunition))
         {
-            extraAmmunition = extraAmmunition - (maxCurrentAmmunition - currentAmmunition);
-            currentAmmunition = maxCurrentAmmunition;
+            extraAmmunition = extraAmmunition - (MaxCurrentAmmunition - CurrentAmmunition);
+            CurrentAmmunition = MaxCurrentAmmunition;
         }
         else
         {
-            currentAmmunition = currentAmmunition + extraAmmunition;
+            CurrentAmmunition += extraAmmunition;
             extraAmmunition = 0;
         }
     }
@@ -384,11 +424,11 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         if (fireModeIndex == fireModes.Length - 1)
         {
             fireModeIndex = 0;
-            fireMode = fireModes[fireModeIndex];
+            FireMode = fireModes[fireModeIndex];
         }
         else
         {
-            fireMode = fireModes[++fireModeIndex];
+            FireMode = fireModes[++fireModeIndex];
         }
         Rpc_ChangeFireModeSFX();
         transform.DOComplete();
@@ -426,9 +466,9 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         {
             CurrentAccuracy -= 1f * Time.deltaTime;
             currentCurveAccuracy = recoilCurve.Evaluate(CurrentAccuracy);
-            if (crosshair)
+            if (crosshairUI)
             {
-                crosshair.SetSize(currentCurveAccuracy);
+                crosshairUI.SetSize(currentCurveAccuracy);
             }
             yield return null;
         }
