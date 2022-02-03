@@ -33,8 +33,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 	[SerializeField] private SFXPlayer wallDestruction = null;
 	[SerializeField] private bool destroySelf = false;
 	[SerializeField] private LayerMask unitPartLayer = 0;
-	[SerializeField] private LayerMask bigExplosionForce = 0;
-	[SerializeField] private LayerMask smallExplosionForce = 0;
+	[SerializeField] private LayerMask lesserExplosionForce = 0;
 	public Transform owner;
 	
 	[Header("Other entity settings")]
@@ -194,7 +193,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 			Rpc_StartExplosionEffect();
             // Save all Colliders from the gameobjects the OverlapSphere hits.
             //Collider[] tempHitObjectsDamage = Physics.OverlapSphere(transform.position, explosionRadius, ~unitPartLayer); // Ignore individual unit parts.																						  // Run through each collider the OverlapSphere hit.
-            Collider[] tempHitObjectsDamage = Physics.OverlapSphere(transform.position, explosionRadius); // Ignore individual unit parts.																						  // Run through each collider the OverlapSphere hit.
+            Collider[] tempHitObjectsDamage = Physics.OverlapSphere(transform.position, explosionRadius);																					  // Run through each collider the OverlapSphere hit.
 			foreach (Collider targetCollider in tempHitObjectsDamage)
 			{
 				// OverlapSphere also detects itself,
@@ -211,26 +210,14 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 					targetLE = tempLE;
 				}
                 // Does the object it hit have a Rigidbody component. Used for simple rigidbody objects near the explosion.
-                if (smallExplosionForce == (smallExplosionForce | (1 << targetCollider.gameObject.layer)))
+                if (lesserExplosionForce == (lesserExplosionForce | (1 << targetCollider.gameObject.layer)))
                 {
-					targetCollider.GetComponentInChildren<Rigidbody>()?.AddExplosionForce(explosionForce / 10, transform.position, explosionRadius, upwardExplosionForce, ForceMode.Impulse);
-
+					ExplosionForce(targetCollider, explosionForce / 10);
 				}
-				print("FIX");
-				if (bigExplosionForce == (bigExplosionForce | (1 << targetCollider.gameObject.layer)))
-				{
-					targetCollider.GetComponentInChildren<Rigidbody>()?.AddExplosionForce(explosionForce, transform.position, explosionRadius, upwardExplosionForce, ForceMode.Impulse);
+                else
+                {
+					ExplosionForce(targetCollider, explosionForce);
 				}
-				//switch (targetCollider.gameObject.layer)
-				//{
-				//    case:
-
-				//        break;
-				//    default:
-				//        break;
-				//}
-				//targetCollider.GetComponentInChildren<Rigidbody>()?.AddExplosionForce(explosionForce, transform.position, explosionRadius, upwardExplosionForce, ForceMode.Impulse);
-
 				#endregion
 
 				RaycastHit hit;
@@ -301,28 +288,20 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 				DestroyWall(sourceOfExplosion);
 			}
 		}
-		// Is the entity a single destructable object or an explosive
 
 		StartCoroutine(DestroyWait()); //This is necessary for some reason
 
-		/*
-		if (singleDestructable || entityType == EntityType.explosive)
-		{
-            if (objectPooled)
-            {
-                ObjectPool.Instance.ReturnToLocalPool(objectPoolTag, gameObject, 0);
-            }
-            else
-            {
-                NetworkServer.Destroy(gameObject);
-            }
-		}
-		*/
 	}
 
-    IEnumerator DestroyWait()
+	private void ExplosionForce(Collider targetCollider, float explosionForce)
     {
-        yield return new WaitForSeconds(0.1f);
+		targetCollider.GetComponentInChildren<Rigidbody>()?.AddExplosionForce(explosionForce, transform.position, explosionRadius, upwardExplosionForce, ForceMode.Impulse);
+	}
+
+	IEnumerator DestroyWait()
+    {
+		yield return new WaitForSeconds(0.1f);
+		// Is the entity a single destructable object or an explosive
         if (singleDestructable || entityType == EntityType.explosive)
         {
             if (objectPooled)
