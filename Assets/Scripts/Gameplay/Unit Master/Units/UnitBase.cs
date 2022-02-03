@@ -129,6 +129,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     [Header("AI")]
     [SerializeField] protected Transform currentTarget = null;
     [SerializeField] private bool permanentTarget = true;
+    public bool canPathfind = true;
     protected bool targetIsLiveEntity = false;
     private Seeker seeker;
     private AIPath ai;
@@ -602,12 +603,11 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     #region Pathfinding
 
     bool repathDelay = false;
-    public bool canPathfind = true;
-    private void Repath(bool lessRepaths = false, Vector3? commandLocation = null)
+    private void Repath(bool lessRepaths = false, Vector3? commandLocation = null, bool masterOverride = false)
     {
         if (!canPathfind) return; //I can't pathfind, so...
-        if (!currentTarget) return; //If I have no target, then what am I pathing towards?...
-
+        if (!masterOverride && !currentTarget) return; //If I have no target, then what am I pathing towards?...
+        
         repathDelay = lessRepaths && !repathDelay;
         if (repathDelay) return; //If there's a repath delay, then don't repath.
         //Every second repath request passes through if there's a delay
@@ -1438,8 +1438,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         if (currentTarget) return;
         if (chasing) return;
 
-
-        Repath(false, pos);
+        Repath(false, pos, true);
     }
 
     #endregion

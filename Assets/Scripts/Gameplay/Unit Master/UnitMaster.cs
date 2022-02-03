@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using UnityEngine.UI;
-using UnityEngine.InputSystem;
-using System.Linq;
-using System.Reflection;
 using UnityEngine.EventSystems;
-using UnityEngine.AI;
+using Pathfinding;
 
 [System.Serializable]
 public class UnitList
@@ -66,7 +63,6 @@ public class UnitMaster : NetworkBehaviour
     [SerializeField, SyncVar] private int chosenSpawnableIndex = 0;
     [SerializeField] private bool hasChosenASpawnable = false;
     [SerializeField] private UnitBase selectedUnit = null;
-    [SerializeField] private GameObject unitDestinationMarker = null;
 
     [Header("Deployables")]
     [SerializeField] private List<DeployableList> deployableList = new List<DeployableList>();
@@ -208,15 +204,6 @@ public class UnitMaster : NetworkBehaviour
         //Change the Flying controller's marker visuals (Mesh and colour)
         flying.flyingController.ChangeMarker(masterSO.markerMesh, masterSO.markerColor);
         EnableFlyingMarker(false); //Disable the marker on start. Default view mode is Topdown.
-
-        //Change Select's position marker visuals (Mesh and colour)
-        Material markerMat = unitDestinationMarker.GetComponent<MeshRenderer>().sharedMaterial;
-        markerMat.color = masterSO.selectPositionMarkerColor;
-        markerMat.SetColor("_EmissionColor", masterSO.selectPositionMarkerColor);
-        unitDestinationMarker.GetComponent<MeshFilter>().mesh = masterSO.selectPositionMarkerMesh;
-        unitDestinationMarker.transform.SetParent(null);
-
-        SetUnitDestinationMarker(false);
 
         //-----------------------
 
@@ -405,7 +392,7 @@ public class UnitMaster : NetworkBehaviour
         else if (ctrl && !shift) { Ctrl_LMB(); return; }
 
         //Somehow check if master clicks on a unit button, if so do not spawn anything.
-
+        DeselectUnit();
         TryToSpawnUnit();
     }
     private void RMB()
@@ -415,6 +402,7 @@ public class UnitMaster : NetworkBehaviour
         if (shift && !ctrl) { Shift_RMB(); return; }
         else if (ctrl && !shift) { Ctrl_RMB(); return; }
 
+        DeselectUnit();
         //Unchoose the current unit type
         Unchoose();
     }
@@ -457,10 +445,12 @@ public class UnitMaster : NetworkBehaviour
     #region CTRL Mouse Raycasts
     private void Ctrl_LMB()
     {
+        DeselectUnit();
         TryToSpawnUnit();
     }
     private void Ctrl_RMB()
     {
+        DeselectUnit();
         TryToRefundUnit();
     }
     #endregion
@@ -522,18 +512,6 @@ public class UnitMaster : NetworkBehaviour
 
         //Activate the upgrade decisions
         ActivateUpgradeDecisions(true);
-    }
-
-    private Coroutine selectCo;
-    private bool selectCoroutineActive;
-    private IEnumerator SelectCoroutine()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(0.5f);
-
-            SetUnitDestinationMarker(!IsUnitCloseToDestination());
-        }
     }
 
     #endregion
@@ -757,30 +735,11 @@ public class UnitMaster : NetworkBehaviour
         stats.currentEnergy = Mathf.Clamp(stats.currentEnergy += amount, 0, stats.maxEnergy);
         UpdateEnergyUI();
     }
-
-    private void SetUnitDestinationMarker(bool enable)
-    {
-        if (enable)
-        {
-            if (selectedUnit)
-            {
-                unitDestinationMarker.SetActive(true);
-                unitDestinationMarker.transform.Rotate(0, Random.Range(0, 360),0);
-                unitDestinationMarker.transform.position = selectedUnit.GetComponent<NavMeshAgent>().destination;
-            }
-            else unitDestinationMarker.SetActive(false);
-        }
-        else unitDestinationMarker.SetActive(false);
-    }
     private bool IsUnitCloseToDestination()
     {
         if (selectedUnit)
         {
-            NavMeshAgent nav = selectedUnit.GetComponent<NavMeshAgent>();
-            return Vector3.Distance(
-                nav.transform.position,
-                nav.destination
-                ) < nav.stoppingDistance;
+            return selectedUnit.GetComponent<AIPath>().reachedDestination;
         }
         else return false;
     }
@@ -1134,36 +1093,22 @@ public class UnitMaster : NetworkBehaviour
             //If I click on nothing, deselect my unit.
             else
             {
-                if (selectedUnit != null)
-                {
-                    DeselectUnit();
-                }
+                DeselectUnit();
             }
         }
     }
     private void SelectUnit(UnitBase unit)
     {
         //If a unit is already selected, deselect it before selecting the new one.
-        if (selectedUnit)
-        {
-            DeselectUnit();
-        }
+        DeselectUnit();
 
         //Select the unit
         selectedUnit = unit;
         selectedUnit.Select(masterSO.unitSelectColor);
-
-        StartSelectCoroutine();
     }
     private void DeselectUnit()
     {
-        if (selectCoroutineActive)
-        {
-            StopCoroutine(selectCo);
-            selectCoroutineActive = false;
-        }
-        SetUnitDestinationMarker(false);
-
+        if (!selectedUnit) return;
         selectedUnit.Deselect();
         selectedUnit = null;
     }
@@ -1176,30 +1121,13 @@ public class UnitMaster : NetworkBehaviour
 
         if (didHit)
         {
-            print(hit.transform.name);
             if (hit.transform.TryGetComponent(out LiveEntity destructible))
             {
-                print("wall");
                 selectedUnit.AcquireTarget(hit.transform, true, true, true);
             }
 
             //Command my selected unit to move to the location
             selectedUnit.Svr_MoveToLocation(hit.point);
-
-            StartSelectCoroutine();
-        }
-    }
-    private void StartSelectCoroutine()
-    {
-        if (!IsUnitCloseToDestination())
-        {
-            SetUnitDestinationMarker(true);
-        }
-
-        if (!selectCoroutineActive) 
-        {
-            selectCo = StartCoroutine(SelectCoroutine());
-            selectCoroutineActive = true; 
         }
     }
     #endregion

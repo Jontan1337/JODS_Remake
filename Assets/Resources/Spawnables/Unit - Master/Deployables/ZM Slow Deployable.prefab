@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3782162070554735218}
   - component: {fileID: 1059587983473241587}
   - component: {fileID: 3421479990123402701}
-  m_Layer: 0
+  m_Layer: 23
   m_Name: ZM Slow Deployable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -125,6 +125,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8292a433ddcdc741a932dea14f27bc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   statusEffectToApply: {fileID: 11400000, guid: 44121d39dd188824c924ea17f648a8ee,
     type: 2}
+  amount: 0
   objectsInCollider: []
