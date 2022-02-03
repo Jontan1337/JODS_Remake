@@ -120,8 +120,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  health: 10
-  maxHealth: 10
+  health: 100
+  maxHealth: 100
   entityType: 0
   explosionTag: 1
   explosionEffect: {fileID: 0}
@@ -139,14 +139,14 @@ MonoBehaviour:
   singleBrokenObject: {fileID: 0}
   wallDestruction: {fileID: 0}
   destroySelf: 0
+  damageLayer:
+    serializedVersion: 2
+    m_Bits: 512
   owner: {fileID: 0}
   objectPoolTag: 14
   objectPooled: 0
   isBurning: 0
   destroyed: 0
-  unitPartLayer:
-    serializedVersion: 2
-    m_Bits: 1024
 --- !u!114 &7786109763298066481
 MonoBehaviour:
   m_ObjectHideFlags: 0

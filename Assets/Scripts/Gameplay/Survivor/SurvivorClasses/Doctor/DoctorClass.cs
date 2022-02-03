@@ -30,7 +30,7 @@ public class DoctorClass : SurvivorClass
 		NetworkServer.Spawn(syringeGun);
 		playerEquipment = transform.parent.GetComponentInChildren<PlayerEquipment>();
 
-		syringeGun.GetComponent<EquipmentItem>().Svr_Pickup(playerEquipment.playerHands, connectionToClient);
-		playerEquipment?.Svr_Equip(syringeGun, EquipmentType.None);
+		syringeGun.GetComponent<IInteractable>().Svr_Interact(transform.root.gameObject);
+		//playerEquipment?.Svr_Equip(syringeGun, EquipmentType.None);
 	}
 }
