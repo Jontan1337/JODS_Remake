@@ -224,10 +224,14 @@ MonoBehaviour:
   playerHead: {fileID: 0}
   playerCamera: {fileID: 0}
   muzzleFlash: {fileID: 9078682435858770314}
+  muzzleParticle: {fileID: 5237220273849932051}
   sfxPlayer: {fileID: 4005420340618086769}
+  crosshairParent: {fileID: 0}
+  crosshair: {fileID: 0}
+  crosshairPrefab: {fileID: 1860549463220532411, guid: ab95d625f4bfbed4186dd3f7ae178b1c,
+    type: 3}
   shootSound: {fileID: 8300000, guid: 97993f933f24ef84188d173b66a2e596, type: 3}
   emptySound: {fileID: 8300000, guid: 6e8772b49f34d402a90016ed445d8a2f, type: 3}
-  muzzleParticle: {fileID: 5237220273849932051}
   range: 1000
   ignoreLayer:
     serializedVersion: 2
@@ -774,6 +778,8 @@ MonoBehaviour:
     - {x: 0.9140377, y: 0.34993947, z: 0.20512767}
     - {x: 0.9794315, y: 0.004184022, z: 0.20173356}
     - {x: -0.6407685, y: 0.01592102, z: 0.767569}
+  materialIndex: 0
+  useMaterialIndex: 1
 --- !u!82 &503955039548741920
 AudioSource:
   m_ObjectHideFlags: 0

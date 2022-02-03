@@ -32,7 +32,10 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 	[SerializeField] private GameObject singleBrokenObject = null;
 	[SerializeField] private SFXPlayer wallDestruction = null;
 	[SerializeField] private bool destroySelf = false;
-	[SerializeField] public Transform owner;
+	[SerializeField] private LayerMask unitPartLayer = 0;
+	[SerializeField] private LayerMask bigExplosionForce = 0;
+	[SerializeField] private LayerMask smallExplosionForce = 0;
+	public Transform owner;
 	
 	[Header("Other entity settings")]
 	[SerializeField] private Tags objectPoolTag = Tags.ExplosionMedium;
@@ -54,7 +57,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 		nonexplosive
 	}
 
-	public LayerMask unitPartLayer = 0;
+	
 
 	public int GetHealth => health;
 	public bool IsDead => isDead;
@@ -189,9 +192,10 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 
 			// Play the explosion particle system effect.
 			Rpc_StartExplosionEffect();
-			// Save all Colliders from the gameobjects the OverlapSphere hits.
-			Collider[] tempHitObjects = Physics.OverlapSphere(transform.position, explosionRadius, ~unitPartLayer); // Ignore individual zombie parts.																						  // Run through each collider the OverlapSphere hit.
-			foreach (Collider targetCollider in tempHitObjects)
+            // Save all Colliders from the gameobjects the OverlapSphere hits.
+            //Collider[] tempHitObjectsDamage = Physics.OverlapSphere(transform.position, explosionRadius, ~unitPartLayer); // Ignore individual unit parts.																						  // Run through each collider the OverlapSphere hit.
+            Collider[] tempHitObjectsDamage = Physics.OverlapSphere(transform.position, explosionRadius); // Ignore individual unit parts.																						  // Run through each collider the OverlapSphere hit.
+			foreach (Collider targetCollider in tempHitObjectsDamage)
 			{
 				// OverlapSphere also detects itself,
 				// so we first check if the current target is that.
@@ -206,14 +210,27 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 				{
 					targetLE = tempLE;
 				}
-				// Does the object it hit have a Rigidbody component. Used for simple rigidbody objects near the explosion.
-				targetCollider.GetComponentInChildren<Rigidbody>()?.AddExplosionForce(explosionForce, transform.position, explosionRadius, upwardExplosionForce, ForceMode.Impulse);
-				//if (targetCollider.TryGetComponent(out Rigidbody tempRB))
+                // Does the object it hit have a Rigidbody component. Used for simple rigidbody objects near the explosion.
+                if (smallExplosionForce == (smallExplosionForce | (1 << targetCollider.gameObject.layer)))
+                {
+					targetCollider.GetComponentInChildren<Rigidbody>()?.AddExplosionForce(explosionForce / 10, transform.position, explosionRadius, upwardExplosionForce, ForceMode.Impulse);
+
+				}
+				print("FIX");
+				if (bigExplosionForce == (bigExplosionForce | (1 << targetCollider.gameObject.layer)))
+				{
+					targetCollider.GetComponentInChildren<Rigidbody>()?.AddExplosionForce(explosionForce, transform.position, explosionRadius, upwardExplosionForce, ForceMode.Impulse);
+				}
+				//switch (targetCollider.gameObject.layer)
 				//{
-				//	targetRB = tempRB;
-				//	// Apply an ExplosionForce to the object Rigidbody
-				//	targetRB.AddExplosionForce(explosionForce, transform.position, explosionRadius, upwardExplosionForce, ForceMode.Impulse);
+				//    case:
+
+				//        break;
+				//    default:
+				//        break;
 				//}
+				//targetCollider.GetComponentInChildren<Rigidbody>()?.AddExplosionForce(explosionForce, transform.position, explosionRadius, upwardExplosionForce, ForceMode.Impulse);
+
 				#endregion
 
 				RaycastHit hit;
