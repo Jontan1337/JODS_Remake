@@ -524,12 +524,7 @@ PrefabInstance:
     - target: {fileID: 8677567993216096706, guid: 01c4a3d1834a449439a57ffa8ea61184,
         type: 3}
       propertyPath: sceneId
-      value: 3989188611
-      objectReference: {fileID: 0}
-    - target: {fileID: 8677567993216096706, guid: 01c4a3d1834a449439a57ffa8ea61184,
-        type: 3}
-      propertyPath: m_AssetId
-      value: 01c4a3d1834a449439a57ffa8ea61184
+      value: 2398449559
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 01c4a3d1834a449439a57ffa8ea61184, type: 3}
@@ -6011,6 +6006,7 @@ MonoBehaviour:
   extraAmmunition: 20
   highPower: 0
   recoil: 1
+  stabilization: 0.5
   currentAccuracy: 1
   currentCurveAccuracy: 0
   recoilCurve:
@@ -6025,8 +6021,14 @@ MonoBehaviour:
   muzzleFlash: {fileID: 0}
   muzzleParticle: {fileID: 0}
   sfxPlayer: {fileID: 0}
-  crosshairParent: {fileID: 0}
-  crosshair: {fileID: 0}
+  crosshairUIParent: {fileID: 0}
+  crosshairUI: {fileID: 0}
+  currentAmmunitionUI: {fileID: 0}
+  currentAmmunitionUIText: {fileID: 0}
+  extraAmmunitionUI: {fileID: 0}
+  extraAmmunitionUIText: {fileID: 0}
+  fireModeUI: {fileID: 0}
+  fireModeUIText: {fileID: 0}
   crosshairPrefab: {fileID: 0}
   shootSound: {fileID: 0}
   emptySound: {fileID: 0}
