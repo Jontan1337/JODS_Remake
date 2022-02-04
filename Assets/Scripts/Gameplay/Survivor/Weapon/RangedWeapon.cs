@@ -11,15 +11,15 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [Header("Weapon stats")]
     [SerializeField] protected int damage = 10;
     [SerializeField] private AmmunitionTypes ammunitionType = AmmunitionTypes.Small;
-    [SerializeField] private FireModes fireMode = FireModes.Single;
+    [SerializeField, SyncVar(hook = nameof(UpdateFireMode))] private FireModes fireMode = FireModes.Single;
     [SerializeField] private FireModes[] fireModes = null;
     [SerializeField] private int burstBulletAmount = 3;
     [SerializeField] private float fireRate = 600f;
     [SerializeField] private float fireInterval = 0f;
     [SerializeField] private int bulletsPerShot = 1;
-    [SerializeField, SyncVar] protected int currentAmmunition = 10;
+    [SerializeField, SyncVar(hook = nameof(UpdateCurrentAmmunition))] protected int currentAmmunition = 10;
     [SerializeField] protected int maxCurrentAmmunition = 10;
-    [SerializeField, SyncVar] protected int extraAmmunition = 20;
+    [SerializeField, SyncVar(hook = nameof(UpdateExtraAmmunition))] protected int extraAmmunition = 20;
     [Space]
     [SerializeField] protected bool highPower = false;
     //[SerializeField] protected int maxExtraAmmunition = 20;
@@ -27,6 +27,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [Header("Game details")]
     //[SerializeField, SyncVar] private string player = "Player name";
     [SerializeField] protected float recoil = 0.1f;
+    [SerializeField] protected float stabilization = 1f;
     [SerializeField] protected float currentAccuracy = 0f;
     [SerializeField] protected float currentCurveAccuracy = 0f;
     [SerializeField] protected AnimationCurve recoilCurve;
@@ -42,8 +43,10 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [Header("UI References")]
     [SerializeField] private Transform crosshairUIParent;
     [SerializeField] private Crosshair crosshairUI;
-    [SerializeField] private Transform ammunitionUI;
-    [SerializeField] private TextMeshProUGUI ammunitionUIText;
+    [SerializeField] private Transform currentAmmunitionUI;
+    [SerializeField] private TextMeshProUGUI currentAmmunitionUIText;
+    [SerializeField] private Transform extraAmmunitionUI;
+    [SerializeField] private TextMeshProUGUI extraAmmunitionUIText;
     [SerializeField] private Transform fireModeUI;
     [SerializeField] private TextMeshProUGUI fireModeUIText;
 
@@ -71,7 +74,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         private set
         {
             currentAmmunition = value;
-            ammunitionUIText.text = $"{value}/{MaxCurrentAmmunition}";
+            currentAmmunitionUIText.text = $"{value}";
         }
     }
     public int MaxCurrentAmmunition { 
@@ -79,6 +82,14 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         private set
         {
             maxCurrentAmmunition = value;
+        }
+    }
+    public int ExtraAmmunition { 
+        get => extraAmmunition;
+        private set
+        {
+            extraAmmunition = value;
+            extraAmmunitionUIText.text = $"/ {value}";
         }
     }
     public int Damage { get => damage; }
@@ -89,6 +100,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         {
             fireMode = value;
             fireModeUIText.text = FireMode.ToString();
+            TeaseFireMode();
         }
     }
     public FireModes[] AllFireModes { get => fireModes; }
@@ -100,6 +112,23 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
             currentAccuracy = Mathf.Clamp01(value);
         }
     }
+
+    #region Update UI
+
+    private void UpdateCurrentAmmunition(int oldValue, int newValue)
+    {
+        currentAmmunitionUIText.text = $"{newValue}";
+    }
+    private void UpdateExtraAmmunition(int oldValue, int newValue)
+    {
+        extraAmmunitionUIText.text = $"{newValue}";
+    }
+    private void UpdateFireMode(FireModes oldValue, FireModes newValue)
+    {
+        fireModeUIText.text = newValue.ToString();
+    }
+
+    #endregion
 
     private void OnValidate()
     {
@@ -140,6 +169,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         GetUIElements(interacter.transform);
         playerHead = interacter.GetComponent<LookController>().RotateVertical;
         playerCamera = playerHead.GetChild(0).GetComponent<Camera>();
+        CurrentAmmunition = CurrentAmmunition;
+        FireMode = FireMode;
         Rpc_GetPlayerHead(connectionToClient, playerHead);
     }
 
@@ -156,6 +187,14 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         JODSInput.Controls.Survivor.Reload.performed += OnReload;
         JODSInput.Controls.Survivor.Changefiremode.performed += OnChangeFireMode;
         CreateCrosshair();
+        currentAmmunitionUIText.enabled = true;
+        extraAmmunitionUIText.enabled = true;
+        fireModeUIText.enabled = true;
+        // Update UI.
+        FireMode = FireMode;
+        CurrentAmmunition = CurrentAmmunition;
+        ExtraAmmunition = ExtraAmmunition;
+        TeaseFireMode();
     }
     public override void Unbind()
     {
@@ -167,15 +206,30 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         JODSInput.Controls.Survivor.Reload.performed -= OnReload;
         JODSInput.Controls.Survivor.Changefiremode.performed -= OnChangeFireMode;
         RemoveCrosshair();
+        currentAmmunitionUIText.enabled = false;
+        extraAmmunitionUIText.enabled = false;
+        fireModeUIText.enabled = false;
+        FadeFireMode(0f);
     }
 
     private void GetUIElements(Transform root)
     {
         crosshairUIParent = root.Find($"{playerUIPath}Crosshair");
-        ammunitionUI = root.Find($"{playerUIPath}Weapon ammunition");
+        currentAmmunitionUI = root.Find($"{playerUIPath}Weapon ammunition");
+        extraAmmunitionUI = root.Find($"{playerUIPath}Weapon extra ammunition");
         fireModeUI = root.Find($"{playerUIPath}Weapon fire mode");
-        ammunitionUIText = ammunitionUI.GetComponent<TextMeshProUGUI>();
+        currentAmmunitionUIText = currentAmmunitionUI.GetComponent<TextMeshProUGUI>();
+        extraAmmunitionUIText = extraAmmunitionUI.GetComponent<TextMeshProUGUI>();
         fireModeUIText = fireModeUI.GetComponent<TextMeshProUGUI>();
+    }
+
+    private void TeaseFireMode()
+    {
+        fireModeUIText.DOFade(1f, 0.5f).OnComplete(() => { fireModeUIText.DOFade(0f, 0.5f); });
+    }
+    private void FadeFireMode(float value)
+    {
+        fireModeUIText.DOFade(value, 0.5f);
     }
 
     private void CreateCrosshair()
@@ -188,6 +242,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         // Set the crosshair min and max size to the weapon recoil min and max values.
         crosshairUI.minSize = recoilCurve.keys[0].value;
         crosshairUI.maxSize = recoilCurve.keys[1].value;
+        crosshairUI.SetSize(currentCurveAccuracy);
     }
     private void RemoveCrosshair()
     {
@@ -241,7 +296,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     {
         if (!canShoot) return;
         Svr_StartAccuracyStabilizer();
-        Rpc_StartAccuracyStabilizer(connectionToClient);
+        if (!hasAuthority)
+            Rpc_StartAccuracyStabilizer(connectionToClient);
 
         switch (FireMode)
         {
@@ -398,15 +454,15 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         if (CurrentAmmunition == MaxCurrentAmmunition) return;
 
         Rpc_Reload();
-        if (extraAmmunition > (MaxCurrentAmmunition - CurrentAmmunition))
+        if (ExtraAmmunition > (MaxCurrentAmmunition - CurrentAmmunition))
         {
-            extraAmmunition = extraAmmunition - (MaxCurrentAmmunition - CurrentAmmunition);
+            ExtraAmmunition = ExtraAmmunition - (MaxCurrentAmmunition - CurrentAmmunition);
             CurrentAmmunition = MaxCurrentAmmunition;
         }
         else
         {
-            CurrentAmmunition += extraAmmunition;
-            extraAmmunition = 0;
+            CurrentAmmunition += ExtraAmmunition;
+            ExtraAmmunition = 0;
         }
     }
 
@@ -459,7 +515,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     {
         while (CurrentAccuracy > 0f)
         {
-            CurrentAccuracy -= 1f * Time.deltaTime;
+            CurrentAccuracy -= stabilization * Time.deltaTime;
             currentCurveAccuracy = recoilCurve.Evaluate(CurrentAccuracy);
             if (crosshairUI)
             {

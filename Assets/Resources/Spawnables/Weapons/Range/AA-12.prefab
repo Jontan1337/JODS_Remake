@@ -194,6 +194,7 @@ MonoBehaviour:
   extraAmmunition: 20
   highPower: 0
   recoil: 10
+  stabilization: 4
   currentAccuracy: 0
   currentCurveAccuracy: 0
   recoilCurve:
@@ -226,8 +227,14 @@ MonoBehaviour:
   muzzleFlash: {fileID: 9078682435858770314}
   muzzleParticle: {fileID: 5237220273849932051}
   sfxPlayer: {fileID: 4005420340618086769}
-  crosshairParent: {fileID: 0}
-  crosshair: {fileID: 0}
+  crosshairUIParent: {fileID: 0}
+  crosshairUI: {fileID: 0}
+  currentAmmunitionUI: {fileID: 0}
+  currentAmmunitionUIText: {fileID: 0}
+  extraAmmunitionUI: {fileID: 0}
+  extraAmmunitionUIText: {fileID: 0}
+  fireModeUI: {fileID: 0}
+  fireModeUIText: {fileID: 0}
   crosshairPrefab: {fileID: 1860549463220532411, guid: ab95d625f4bfbed4186dd3f7ae178b1c,
     type: 3}
   shootSound: {fileID: 8300000, guid: 97993f933f24ef84188d173b66a2e596, type: 3}

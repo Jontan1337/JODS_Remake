@@ -35,7 +35,6 @@ public class Infection : StatusEffect
 
     public override void Tick()
     {
-        Debug.Log(duration);
         if (infectionLevel == 3) return;
 
         infectionRate = Mathf.Clamp(infectionRate -= 1, 0, 100);
