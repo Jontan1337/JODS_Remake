@@ -1621,6 +1621,7 @@ MonoBehaviour:
   extraAmmunition: 0
   highPower: 0
   recoil: 1
+  stabilization: 1
   currentAccuracy: 0
   currentCurveAccuracy: 0
   recoilCurve:
@@ -1655,8 +1656,10 @@ MonoBehaviour:
   sfxPlayer: {fileID: 1826734668806866363}
   crosshairUIParent: {fileID: 0}
   crosshairUI: {fileID: 0}
-  ammunitionUI: {fileID: 0}
-  ammunitionUIText: {fileID: 0}
+  currentAmmunitionUI: {fileID: 0}
+  currentAmmunitionUIText: {fileID: 0}
+  extraAmmunitionUI: {fileID: 0}
+  extraAmmunitionUIText: {fileID: 0}
   fireModeUI: {fileID: 0}
   fireModeUIText: {fileID: 0}
   crosshairPrefab: {fileID: 5974645982962048393, guid: b319fa02b6118d54ba57865866c9198b,
@@ -1667,6 +1670,9 @@ MonoBehaviour:
   timeToLive: 5
   projectile: {fileID: 3668033450558484208, guid: 91c995c6987471b4c82209267e7c9782,
     type: 3}
+  syringes:
+  - {fileID: 8155684875320609775}
+  - {fileID: 1353034367429859139}
   syringe1: {fileID: 1353034367429859139}
   syringe2: {fileID: 8155684875320609775}
 --- !u!1 &8155684875320609775

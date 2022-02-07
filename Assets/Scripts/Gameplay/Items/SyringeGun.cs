@@ -6,27 +6,23 @@ using UnityEngine.InputSystem;
 
 public class SyringeGun : ProjectileWeapon
 {
-	[SerializeField] private GameObject syringe1;
-	[SerializeField] private GameObject syringe2;
+	[SerializeField]
+	private List<GameObject> syringes = new List<GameObject>();
+	//[SerializeField] private GameObject syringe1;
+	//[SerializeField] private GameObject syringe2;
 	protected override void Shoot(Vector2 aimPoint)
 	{
 		base.Shoot(aimPoint);
 
-		switch (currentAmmunition)
-		{
-			case 0:
-				GetComponentInParent<ActiveSClass>().Rpc_StartAbilityCooldown(transform.root.GetComponent<NetworkIdentity>().connectionToClient, transform.root);
-				Unbind();
-				break;
-			case 1:
-				syringe1.SetActive(false);
-				break;
-			case 2:
-				syringe2.SetActive(false);
-				break;
-			default:
-				break;
+		if(syringes.Count == 0)
+        {
+			GetComponentInParent<ActiveSClass>().Rpc_StartAbilityCooldown(transform.root.GetComponent<NetworkIdentity>().connectionToClient, transform.root);
+			Unbind();
+			return;
 		}
+
+		syringes[0].SetActive(false);
+		syringes.RemoveAt(0);
 	}
 	protected override void OnDropPerformed(InputAction.CallbackContext obj)
 	{
