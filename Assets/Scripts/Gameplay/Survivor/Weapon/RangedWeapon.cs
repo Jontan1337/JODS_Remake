@@ -359,8 +359,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         {
             if (canShoot)
             {
-                Shoot(Vector2.zero);
                 PostShoot();
+                Shoot(Vector2.zero);
                 Svr_StartCooldown();
                 if (!hasAuthority)
                     Rpc_StartCooldown(connectionToClient);
@@ -382,8 +382,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         {
             if (canShoot)
             {
-                Shoot(Vector2.zero);
                 PostShoot();
+                Shoot(Vector2.zero);
                 Svr_StartCooldown();
                 if (!hasAuthority)
                     Rpc_StartCooldown(connectionToClient);
@@ -401,8 +401,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
             Rpc_EmptySFX();
             return;
         }
-        Shoot(Vector2.zero);
         PostShoot();
+        Shoot(Vector2.zero);
         Svr_StartCooldown();
         if (!hasAuthority)
             Rpc_StartCooldown(connectionToClient);
