@@ -32,6 +32,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     [SerializeField] private SFXPlayer sfxPlayer = null;
     [SerializeField] private Material material = null;
     [SerializeField] private BoxCollider triggerCollider = null;
+    [SerializeField] private ParticleSystem particleTrail = null;
 
     [Header("Audio Settings")]
     [SerializeField] private AudioClip swingSound = null;
@@ -272,6 +273,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
         Rpc_ApplySplatter(splatterRemoveAmountOnSwing);
         previousHitColliderParent = null;
         isAttacking = true;
+        Rpc_StartOfAttack();
     }
 
     [Command]
@@ -281,18 +283,22 @@ public class MeleeWeapon : EquipmentItem, IImpacter
         currentDamage = normalDamage;
         currentPunchthrough = normalPunchthrough;
         isAttacking = false;
+        Rpc_EndOfAttack();
     }
 
     private IEnumerator IEAttack()
     {
         while (true)
         {
-            if (canAttack)
+            if (true)
             {
                 //networkAnimator.SetTrigger(AttackTrigger);
                 //weaponAnimator.speed = attackInterval * 1f;
                 weaponAnimator.SetBool(AttackingBool, true);
-                StartAttackInterval();
+                if (canAttack)
+                {
+                    StartAttackInterval();
+                }
             }
             else
             {
@@ -330,6 +336,18 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     #endregion
 
     #region Client
+
+    [ClientRpc]
+    private void Rpc_StartOfAttack()
+    {
+        particleTrail.Emit(40);
+    }
+
+    [ClientRpc]
+    private void Rpc_EndOfAttack()
+    {
+
+    }
 
     private void ImpactShake(float amount)
     {
