@@ -14,7 +14,7 @@ public class Crosshair : MonoBehaviour
 
     public void SetSize(float size)
     {
-        size = Mathf.Clamp(4f*size, minSize, 200f+maxSize);
+        size = Mathf.Clamp(4f*size, 4*minSize, 200f+maxSize);
         rect.sizeDelta = new Vector2(size, size);
     }
 }
