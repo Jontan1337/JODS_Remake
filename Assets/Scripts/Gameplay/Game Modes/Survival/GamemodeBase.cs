@@ -422,8 +422,7 @@ public abstract class GamemodeBase : NetworkBehaviour
 
     private void StopGame()
     {
-        NetworkTest.Instance.StopHost();
-        SceneManager.LoadScene(0);
+        Lobby.Instance.ReturnToLobby();
     }
 
     #endregion
