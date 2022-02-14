@@ -166,6 +166,8 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   hasPhysics: 1
+  _rigidbody: {fileID: 6265878891622937674}
+  _collider: {fileID: 6265878891622937673}
 --- !u!54 &6265878891622937674
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -258,8 +260,6 @@ MonoBehaviour:
   syncParent: 1
   syncPosition: 1
   syncRotation: 1
-  syncVisibility: 1
-  objectRenderer: {fileID: 0}
 --- !u!114 &6265878891622937681
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1422,6 +1422,8 @@ MonoBehaviour:
     - {x: -0.47253016, y: -0.6231821, z: -0.62318486}
     - {x: -0.45478523, y: -0.89060116, z: -0.00000047898624}
     - {x: -0.47110233, y: -0.8820786, z: -0.0000004884486}
+  materialIndex: 0
+  useMaterialIndex: 1
 --- !u!114 &6265878891622937680
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1443,6 +1445,7 @@ MonoBehaviour:
   isInteractable: 1
   authController: {fileID: 6265878891622937684}
   objectVisuals: {fileID: 6265878891622937686}
+  owner: {fileID: 0}
   rb: {fileID: 6265878891622937674}
   outline: {fileID: 6265878891622937681}
   healAmount: 33

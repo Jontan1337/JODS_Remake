@@ -2,6 +2,7 @@
 using Mirror;
 using UnityEngine.AI;
 using System.Collections;
+using System.Collections.Generic;
 
 public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 {
@@ -32,7 +33,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
     [SerializeField] private GameObject singleBrokenObject = null;
     [SerializeField] private SFXPlayer wallDestruction = null;
     [SerializeField] private bool destroySelf = false;
-    [SerializeField] private LayerMask damageLayer = 0;
+    private LayerMask damageLayer = 0;
     private LayerMask lesserExplosionForce = 0;
     public Transform owner;
 
@@ -53,6 +54,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
     private void Awake()
     {
         lesserExplosionForce = LayerMask.GetMask("PickUp", "Weapon");
+        damageLayer = LayerMask.GetMask("Unit", "Survivor");
     }
 
     public enum EntityType
@@ -197,24 +199,33 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
             // Play the explosion particle system effect.
             Rpc_StartExplosionEffect();
             // Save all Colliders from the gameobjects the OverlapSphere hits.
-            Collider[] tempHitObjectsDamage = Physics.OverlapSphere(transform.position, explosionRadius);																						  // Run through each collider the OverlapSphere hit.
-            foreach (Collider targetCollider in tempHitObjectsDamage)
+            Collider[] collidersInRange = Physics.OverlapSphere(transform.position, explosionRadius);	  // Run through each collider the OverlapSphere hit.
+            List<GameObject> list = new List<GameObject>();
+            foreach (Collider targetCollider in collidersInRange)
             {
+                if (!list.Contains(targetCollider.gameObject))
+                {
+                    list.Add(targetCollider.gameObject);
+                }
+            }
+            foreach (GameObject target in list)
+            {
+                Collider targetCollider = target.GetComponent<Collider>();
                 // OverlapSphere also detects itself,
                 // so we first check if the current target is that.
-                if (targetCollider.gameObject == gameObject) { continue; }
+                if (target.gameObject == gameObject) { continue; }
 
                 #region TryGet_Target_Components
 
                 LiveEntity targetLE = null;
                 Rigidbody targetRB = null;
                 // Does the object it hit have a LiveEntity component.
-                if (targetCollider.TryGetComponent(out LiveEntity tempLE))
+                if (target.TryGetComponent(out LiveEntity tempLE))
                 {
                     targetLE = tempLE;
                 }
                 // Does the object it hit have a Rigidbody component. Used for simple rigidbody objects near the explosion.
-                if (lesserExplosionForce == (lesserExplosionForce | (1 << targetCollider.gameObject.layer)))
+                if (lesserExplosionForce == (lesserExplosionForce | (1 << target.gameObject.layer)))
                 {
                     ExplosionForce(targetCollider, explosionForce / 10);
                 }
@@ -231,7 +242,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
                 #region Explosion_Raycast_Checking
                 // -- MIDDLE --
                 // Temporary position to look at the middle of the figure
-                Vector3 tempPosMid = new Vector3(targetCollider.transform.position.x, targetCollider.transform.position.y + targetCollider.transform.localScale.y / 2, targetCollider.transform.position.z);
+                Vector3 tempPosMid = new Vector3(target.transform.position.x, target.transform.position.y + target.transform.localScale.y / 2, target.transform.position.z);
                 // Did the raycast hit something and is it not Untagged
                 tempCheckIsHit = Physics.Raycast(fromPosMid, tempPosMid - fromPosMid, out hit, explosionRadius);
 
@@ -241,7 +252,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
                 {
                     // Temporary position to look at the top of the figure
                     // if an object is in the way in the middle
-                    Vector3 tempPosTop = new Vector3(tempPosMid.x, targetCollider.transform.position.y + targetCollider.transform.localScale.y - 0.01f, tempPosMid.z);
+                    Vector3 tempPosTop = new Vector3(tempPosMid.x, target.transform.position.y + target.transform.localScale.y - 0.01f, tempPosMid.z);
                     // Did the raycast hit something and is it not Untagged
                     tempCheckIsHit = Physics.Raycast(fromPosTop, tempPosTop - fromPosTop, out hit, explosionRadius);
                 }
@@ -252,18 +263,18 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
                 {
                     // Temporary position to look at the top of the figure
                     // if an object is in the way at the top
-                    Vector3 tempPosBottom = new Vector3(tempPosMid.x, targetCollider.transform.position.y, tempPosMid.z);
+                    Vector3 tempPosBottom = new Vector3(tempPosMid.x, target.transform.position.y, tempPosMid.z);
                     // Did the raycast hit something and is it not Untagged
                     tempCheckIsHit = Physics.Raycast(fromPosBottom, tempPosBottom - fromPosBottom, out hit, explosionRadius);
                 }
                 #endregion
 
                 // Did any of the raycasts hit a part of the object
-                if (damageLayer == (damageLayer | (1 << targetCollider.gameObject.layer)))
+                if (damageLayer == (damageLayer | (1 << target.gameObject.layer)))
                 {
                     if (tempCheckIsHit)
                     {
-                        GameObject tempGO = targetCollider.gameObject;
+                        GameObject tempGO = target.gameObject;
                         if (isServer)
                         {
                             IDamagable damagable = tempGO.GetComponent<IDamagable>();
@@ -274,7 +285,13 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
                             //        if (damagable?.Team == Teams.Player)
                             //            newExplosionDamage /= friendlyFireReduction;
 
+                            for (int i = 0; i < 3; i++)
+                            {
+                                target.GetComponent<UnitBase>()?.Dismember_BodyPart(i, Random.Range(0, 2));
+                            }
+
                             int finalDamage = Mathf.Clamp(newExplosionDamage - (int)hit.distance * damageLossOverDistance, 0, int.MaxValue);
+
                             if (finalDamage > 0)
                                 damagable?.Svr_Damage(finalDamage, owner);
                         }
