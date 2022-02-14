@@ -278,17 +278,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     private void OnReload(InputAction.CallbackContext context) => Cmd_Reload();
     private void OnChangeFireMode(InputAction.CallbackContext context) => Cmd_ChangeFireMode();
 
-    // Why is Y axis (Sin) dumb pls help.
-    //protected Vector2 GetRandomPointInCircle(float radius)
-    //{
-    //    float r = 2 * Mathf.PI * radius;
-    //    float u = UnityEngine.Random.Range(-1f, 1f) + UnityEngine.Random.Range(-1f, 1f);
-    //    float f = u > 1 ? u - 2 : u;
-    //    print(Mathf.Cos(r));
-    //    print(Mathf.Sin(r));
-    //    return new Vector2(f * Mathf.Cos(r), f * Mathf.Sin(r));
-    //}
-
     #region Server
 
     [Command]
