@@ -374,6 +374,12 @@ public class Lobby : NetworkManager
         ServerChangeScene(gameplayScene);
     }
 
+    public void ReturnToLobby()
+    {
+        ServerChangeScene(offlineScene);
+        //This doesn't actually work properly
+    }
+
     private bool PickMaster()
     {
         List<GameObject> masters = new List<GameObject>();
