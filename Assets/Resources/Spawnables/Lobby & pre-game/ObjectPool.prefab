@@ -51,26 +51,26 @@ MonoBehaviour:
     tag: 0
     prefab:
     - {fileID: 7159264716783688873, guid: e3f1918a78208254d809e8506d7b2cf6, type: 3}
-    amount: 1
+    amount: 20
     networked: 0
   - tagName: ExplosionMedium
     tag: 1
     prefab:
     - {fileID: 7159264716783688873, guid: b57da175be56b144a951a13a1b2f05e9, type: 3}
-    amount: 1
+    amount: 20
     networked: 0
-  - tagName: TurretSmoke
-    tag: 3
+  - tagName: ExplosionSmall
+    tag: 2
     prefab:
     - {fileID: 6798459583282562993, guid: 1fad6ce93e3bcea4ea0cc6a43ba690e1, type: 3}
-    amount: 1
+    amount: 20
     networked: 0
-  - tagName: Rocket
-    tag: 7
+  - tagName: ExplosionBarrel
+    tag: 3
     prefab:
-    - {fileID: 3668033450558484208, guid: 688023c254216764891da7115d73253e, type: 3}
-    amount: 50
-    networked: 1
+    - {fileID: 7159264716783688873, guid: 2bc94ba510eda054d995ea2339f818b2, type: 3}
+    amount: 20
+    networked: 0
   - tagName: BodyPart
     tag: 4
     prefab:
@@ -87,12 +87,18 @@ MonoBehaviour:
     tag: 6
     prefab:
     - {fileID: 3668033450558484208, guid: 91c995c6987471b4c82209267e7c9782, type: 3}
-    amount: 1
+    amount: 5
     networked: 1
   - tagName: BulletHole
     tag: 8
     prefab:
     - {fileID: 6769152677893134217, guid: 592c00ff53a4e844fa0dc2b729653521, type: 3}
+    amount: 100
+    networked: 0
+  - tagName: BulletTrail
+    tag: 9
+    prefab:
+    - {fileID: 1867544516436985866, guid: 4c822443f4a4107458334b35c4ffdde4, type: 3}
     amount: 100
     networked: 0
   - tagName: MeleeBloodSplatter
@@ -105,12 +111,6 @@ MonoBehaviour:
     tag: 13
     prefab:
     - {fileID: 6687541496331228464, guid: 962b9b12cbf21e445b0a520d395c4dd7, type: 3}
-    amount: 50
-    networked: 0
-  - tagName: BulletTrail
-    tag: 9
-    prefab:
-    - {fileID: 1867544516436985866, guid: 4c822443f4a4107458334b35c4ffdde4, type: 3}
     amount: 50
     networked: 0
   - tagName: BulletMetalImpact

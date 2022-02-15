@@ -4,9 +4,7 @@
     ExplosionBig,
     ExplosionMedium,
     ExplosionSmall,
-
-    //Smoke and other
-    TurretSmoke,
+    ExplosionBarrel,
 
     //Unit Related
     BodyPart,

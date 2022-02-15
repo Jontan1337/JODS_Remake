@@ -15,7 +15,6 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
     [Header("Explosive entity settings")]
     [SerializeField] private Tags explosionTag = Tags.ExplosionMedium;
     [Space]
-    [SerializeField] private ParticleSystem explosionEffect = null;
     [SerializeField] private ParticleSystem criticalEffect = null;
     [SerializeField] private int criticalHealth = 20;
     [SerializeField] private float explosionRadius = 4.5f;
@@ -24,6 +23,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
     [SerializeField] private float upwardExplosionForce = 1f;
     [SerializeField] private int criticalEffectDamage = 3;
     [SerializeField] private float criticalDamageInterval = 0.8f;
+    [SerializeField] private int damageLossOverDistance = 2;
     //[SerializeField] private int friendlyFireReduction = 16;
 
     [Header("NonExplosive entity settings")]
@@ -47,13 +47,12 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
     private Vector3 fromPosMid = Vector3.zero;
     private Vector3 fromPosTop = Vector3.zero;
     private Vector3 fromPosBottom = Vector3.zero;
-    private int damageLossOverDistance = 2;
 
     private Rigidbody[] explodableRBs = null;
 
     private void Awake()
     {
-        lesserExplosionForce = LayerMask.GetMask("PickUp", "Weapon", "Dynamic Object");
+        lesserExplosionForce = LayerMask.GetMask("PickUp", "Weapon");
         damageLayer = LayerMask.GetMask("Unit", "Survivor", "Dynamic Object");
     }
 
@@ -288,7 +287,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
                             //            newExplosionDamage /= friendlyFireReduction;
 
                             int finalDamage = Mathf.Clamp(newExplosionDamage - (int)hit.distance * damageLossOverDistance, 0, int.MaxValue);
-
+                            print(finalDamage);
                             if (finalDamage > 0)
                                 damagable?.Svr_Damage(finalDamage, owner);
 
@@ -355,13 +354,15 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 
     private void ExplosionForce(Collider targetCollider, float explosionForce)
     {
+        explosionForce *= Random.Range(0.75f, 1.25f); //just some randomness for visual satisfaction
+
         targetCollider.GetComponentInChildren<Rigidbody>()?.AddExplosionForce(explosionForce, transform.position, explosionRadius, upwardExplosionForce, ForceMode.Impulse);
     }
 
     [ClientRpc]
     private void Rpc_StartExplosionEffect()
     {
-        ObjectPool.Instance.SpawnFromLocalPool(explosionTag, transform.position, Quaternion.identity, 1);
+        ObjectPool.Instance.SpawnFromLocalPool(explosionTag, transform.position, Quaternion.identity, 5);
     }
 
     public void Explode(Transform explosionSource)
