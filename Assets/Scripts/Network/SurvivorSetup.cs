@@ -107,7 +107,8 @@ public class SurvivorSetup : NetworkBehaviour
     }
 
     [TargetRpc]
-    private void Rpc_SetSyncLists(NetworkConnection target,
+    private void Rpc_SetSyncLists(
+        NetworkConnection target,
         List<GameObject> disableIfPlayer,
         List<GameObject> disableIfNotPlayer,
         List<GameObject> enableIfPlayer,
@@ -143,7 +144,6 @@ public class SurvivorSetup : NetworkBehaviour
         {
             armsMesh.gameObject.layer = LayerMask.NameToLayer("FirstPerson");
             bodyMesh.gameObject.layer = LayerMask.NameToLayer("FirstPerson");
-            //bodyMesh.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly;
             headMesh.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly;
             armatureTransform.localPosition += new Vector3(0f, 0f, armatureForwardOffset);
 
@@ -183,7 +183,6 @@ public class SurvivorSetup : NetworkBehaviour
     private void Cmd_SpawnEssentials()
     {
         Svr_SpawnItems();
-        //Svr_SpawnHands();
     }
 
     [Server]
@@ -248,63 +247,4 @@ public class SurvivorSetup : NetworkBehaviour
         dynamicallySpawnedItems.Add(GOItem);
         return GOItem;
     }
-
-    //[Command]
-    //public void CmdChangeName(string newName)
-    //{
-    //    playerName = newName;
-    //    name = playerName;
-    //    RpcChangeName(newName);
-    //}
-    //[ClientRpc]
-    //public void RpcChangeName(string newName)
-    //{
-    //    playerName = newName;
-    //    if (playerNameText)
-    //    {
-    //        playerNameText.text = newName;
-    //    }
-    //}
-
-    //public void Die()
-    //{
-    //    CmdDestroyPlayer();
-    //}
-
-    //// Replace the player as a spectator when they die
-    //[Command]
-    //void CmdDestroyPlayer()
-    //{
-    //    Debug.Log(gameObject.name + " has died");
-    //    GameObject spectator = (GameObject)Resources.Load("Spawnables/Spectator");
-    //    Vector3 pos = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + 2, gameObject.transform.position.z);
-    //    GameObject me = Instantiate(spectator, pos, gameObject.transform.rotation);
-    //    NetworkServer.Spawn(me);
-
-    //    if (NetworkServer.ReplacePlayerForConnection(connectionToClient, me))
-    //    {
-    //        NetworkServer.Destroy(gameObject);
-    //    }
-    //}
-
-    //public void DestroyUnit(GameObject unit, float time)
-    //{
-    //    Debug.Log("Destroying unit : " + unit);
-    //    if (hasAuthority)
-    //    {
-    //        CmdDestroyUnit(unit, time);
-    //    }
-    //}
-
-    //[Command]
-    //void CmdDestroyUnit(GameObject unit, float time)
-    //{
-    //    StartCoroutine(DestroyFX(time,unit));
-    //}
-    //IEnumerator DestroyFX(float tiem, GameObject go)
-    //{
-    //    yield return new WaitForSeconds(tiem);
-
-    //    NetworkServer.Destroy(go);
-    //}
 }

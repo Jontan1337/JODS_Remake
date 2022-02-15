@@ -292,7 +292,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
                                 damagable?.Svr_Damage(finalDamage, owner);
 
                             //Is this a unit that we're damaging?
-                            if (damagable.Team == Teams.Unit)
+                            if (damagable?.Team == Teams.Unit)
                             {
                                 float chance = 1 - (((hit.distance / explosionRadius) * 100) * 0.01f);
 
