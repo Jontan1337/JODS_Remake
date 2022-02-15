@@ -53,8 +53,8 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
 
     private void Awake()
     {
-        lesserExplosionForce = LayerMask.GetMask("PickUp", "Weapon");
-        damageLayer = LayerMask.GetMask("Unit", "Survivor");
+        lesserExplosionForce = LayerMask.GetMask("PickUp", "Weapon", "Dynamic Object");
+        damageLayer = LayerMask.GetMask("Unit", "Survivor", "Dynamic Object");
     }
 
     public enum EntityType
@@ -200,9 +200,10 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
             Rpc_StartExplosionEffect();
             // Save all Colliders from the gameobjects the OverlapSphere hits.
             Collider[] collidersInRange = Physics.OverlapSphere(transform.position, explosionRadius);	  // Run through each collider the OverlapSphere hit.
-            List<GameObject> list = new List<GameObject>();
+            List<GameObject> list = new List<GameObject>(); //Add all the gameobjects connected to each collider to a list
             foreach (Collider targetCollider in collidersInRange)
             {
+                //One gameobject may container more than one collider
                 if (!list.Contains(targetCollider.gameObject))
                 {
                     list.Add(targetCollider.gameObject);
@@ -210,7 +211,9 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
             }
             foreach (GameObject target in list)
             {
+                //store the collider component for later use
                 Collider targetCollider = target.GetComponent<Collider>();
+
                 // OverlapSphere also detects itself,
                 // so we first check if the current target is that.
                 if (target.gameObject == gameObject) { continue; }
@@ -274,10 +277,9 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
                 {
                     if (tempCheckIsHit)
                     {
-                        GameObject tempGO = target.gameObject;
                         if (isServer)
                         {
-                            IDamagable damagable = tempGO.GetComponent<IDamagable>();
+                            IDamagable damagable = target.GetComponent<IDamagable>();
                             int newExplosionDamage = explosionDamage;
                             // Check if explosion is from a rocket, then it is friendly fire.
                             //if (TryGetComponent(out WeaponType weaponType))
@@ -285,17 +287,31 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
                             //        if (damagable?.Team == Teams.Player)
                             //            newExplosionDamage /= friendlyFireReduction;
 
-                            for (int i = 0; i < 3; i++)
-                            {
-                                target.GetComponent<UnitBase>()?.Dismember_BodyPart(i, Random.Range(0, 2));
-                            }
-
                             int finalDamage = Mathf.Clamp(newExplosionDamage - (int)hit.distance * damageLossOverDistance, 0, int.MaxValue);
 
                             if (finalDamage > 0)
                                 damagable?.Svr_Damage(finalDamage, owner);
+
+                            //Is this a unit that we're damaging?
+                            if (damagable.Team == Teams.Unit)
+                            {
+                                float chance = 1 - (((hit.distance / explosionRadius) * 100) * 0.01f);
+
+                                if (chance > 0)
+                                {
+                                    for (int i = 1; i < 4; i++)
+                                    {
+                                        bool chanceToDetach = Random.value < chance;
+                                        if (chanceToDetach)
+                                        {
+                                            bool explode = chance > 0.75f ? Random.value > 0.30f : Random.value > 0.70f;
+                                            target.GetComponent<UnitBase>()?.Dismember_BodyPart(i, explode ? 1 : 0);
+                                        }
+                                    }   
+                                }
+                            }
                         }
-                        tempGO.GetComponent<IExplodable>()?.Explode(transform);
+                        target.GetComponent<IExplodable>()?.Explode(transform);
                     }
                 }
 

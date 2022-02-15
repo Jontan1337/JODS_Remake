@@ -9,15 +9,16 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3914505573456922966}
+  - component: {fileID: 7813527812450451226}
   - component: {fileID: 3914505573455595894}
   - component: {fileID: 3914505573454498742}
   - component: {fileID: 765327464297101063}
-  - component: {fileID: 7813527812450451226}
   - component: {fileID: 6226108917360863398}
   - component: {fileID: 6720971553803112677}
   - component: {fileID: -1245025082395372227}
   - component: {fileID: 1864721018575147907}
-  m_Layer: 0
+  - component: {fileID: 3253977266074356508}
+  m_Layer: 26
   m_Name: Explosive Barrel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -41,6 +42,44 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7813527812450451226
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3914505573456434550}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 707f53f782d0f044982b5af80ab22aaa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  health: 100
+  maxHealth: 100
+  entityType: 0
+  explosionTag: 1
+  explosionEffect: {fileID: 3589633132364685885}
+  criticalEffect: {fileID: 7461540455616731881}
+  criticalHealth: 20
+  explosionRadius: 5
+  explosionDamage: 100
+  explosionForce: 50
+  upwardExplosionForce: 1
+  criticalEffectDamage: 3
+  criticalDamageInterval: 1
+  pieces: []
+  singleDestructable: 0
+  removeDebris: 0
+  singleBrokenObject: {fileID: 0}
+  wallDestruction: {fileID: 0}
+  destroySelf: 0
+  owner: {fileID: 0}
+  objectPoolTag: 0
+  objectPooled: 0
+  isBurning: 0
+  destroyed: 0
 --- !u!33 &3914505573455595894
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -104,45 +143,6 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: c78cc7ddc2dc707419785ea2652ad155, type: 3}
---- !u!114 &7813527812450451226
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3914505573456434550}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 707f53f782d0f044982b5af80ab22aaa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  health: 100
-  maxHealth: 100
-  entityType: 0
-  explosionEffect: {fileID: 3589633132364685885}
-  criticalEffect: {fileID: 7461540455616731881}
-  criticalHealth: 20
-  explosionRadius: 5
-  explosionDamage: 100
-  explosionForce: 50
-  upwardExplosionForce: 1
-  criticalEffectDamage: 3
-  criticalDamageInterval: 1
-  pieces: []
-  singleDestructable: 0
-  removeDebris: 0
-  singleBrokenObject: {fileID: 0}
-  wallDestruction: {fileID: 0}
-  destroySelf: 0
-  objectPoolTag: 0
-  objectPooled: 0
-  isBurning: 0
-  destroyed: 0
-  zombiePartLayer:
-    serializedVersion: 2
-    m_Bits: 512
 --- !u!208 &6226108917360863398
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -289,6 +289,24 @@ MonoBehaviour:
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []
+  materialIndex: 0
+  useMaterialIndex: 1
+--- !u!54 &3253977266074356508
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3914505573456434550}
+  serializedVersion: 2
+  m_Mass: 20
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &6980209220762181162
 GameObject:
   m_ObjectHideFlags: 0
