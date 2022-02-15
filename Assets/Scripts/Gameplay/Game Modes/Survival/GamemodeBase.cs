@@ -380,6 +380,7 @@ public abstract class GamemodeBase : NetworkBehaviour
         foreach (Camera cam in Camera.allCameras) { cam.enabled = false; } //Disable all enabled cameras in the scene
 
         endgameCamera.SetActive(true); //Enable the endgame camera
+        endgameCamera.GetComponent<Camera>().enabled = true; //Enable the endgame camera
         endgameCamera.transform.position = new Vector3(0, 5, 0);
         /*
         if (mapSettings)
@@ -422,7 +423,16 @@ public abstract class GamemodeBase : NetworkBehaviour
 
     private void StopGame()
     {
-        Lobby.Instance.ReturnToLobby();
+        if (Lobby.Instance)
+        {
+            Lobby.Instance.ReturnToLobby();
+        }
+        else
+        {
+            //TEST SCENES
+            NetworkManager.singleton.StopHost();
+            SceneManager.LoadScene(0);
+        }
     }
 
     #endregion

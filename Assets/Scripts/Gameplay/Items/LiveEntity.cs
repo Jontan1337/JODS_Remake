@@ -287,7 +287,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
                             //            newExplosionDamage /= friendlyFireReduction;
 
                             int finalDamage = Mathf.Clamp(newExplosionDamage - (int)hit.distance * damageLossOverDistance, 0, int.MaxValue);
-                            print(finalDamage);
+                            print(name + ": " + finalDamage + " | " + target.name);
                             if (finalDamage > 0)
                                 damagable?.Svr_Damage(finalDamage, owner);
 
