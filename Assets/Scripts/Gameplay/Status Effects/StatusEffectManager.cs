@@ -46,6 +46,7 @@ public class StatusEffectManager : NetworkBehaviour
         {
             Debug.Log("(SVR) " + effect.name + " removed");
             currentEffects.Remove(effect);
+            Svr_RemoveVisuals(effect);
         }
         if (statusEffects.Contains(effect.name))
         {
@@ -61,6 +62,8 @@ public class StatusEffectManager : NetworkBehaviour
         //If the effect has a visual element
         if (effectVisual && imageReferenceList.Length > 0)
         {
+            statusEffectVisuals.Remove(indexDict[effect.name]);
+
             string key = effect.name;
 
             Rpc_DisableVisual(connectionToClient, key);
@@ -91,10 +94,8 @@ public class StatusEffectManager : NetworkBehaviour
                 if (effect.isFinished)
                 {
                     //Remove the effect from the list of current active effects
-                    currentEffects.Remove(effect.effect);
-                    statusEffects.Remove(effect.effect.name);
-                    if (effect.effect.uIImage && imageReferenceList.Length > 0) statusEffectVisuals.Remove(indexDict[effect.effect.name]);
-
+                    Svr_RemoveStatusEffect(effect.effect);
+                    //Remove the associated visuals
                     Svr_RemoveVisuals(effect.effect);
                 }
             }

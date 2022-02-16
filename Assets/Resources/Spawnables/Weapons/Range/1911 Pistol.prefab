@@ -75,9 +75,9 @@ MonoBehaviour:
   fireRate: 600
   fireInterval: 0.1
   bulletsPerShot: 1
-  currentAmmunition: 10
-  maxCurrentAmmunition: 10
-  extraAmmunition: 20
+  magazine: 8
+  magazineSize: 8
+  extraAmmunition: 16
   highPower: 0
   recoil: 1
   stabilization: 3
@@ -128,7 +128,7 @@ MonoBehaviour:
   range: 1000
   ignoreLayer:
     serializedVersion: 2
-    m_Bits: 92676
+    m_Bits: 817981956
   bulletTrail: {fileID: 3155211786755514768}
 --- !u!33 &5345695691695145118
 MeshFilter:
