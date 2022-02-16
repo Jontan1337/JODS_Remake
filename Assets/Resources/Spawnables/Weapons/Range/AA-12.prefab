@@ -181,20 +181,20 @@ MonoBehaviour:
   owner: {fileID: 0}
   rb: {fileID: 708324484507987019}
   outline: {fileID: 2345228393594716439}
-  damage: 10
-  ammunitionType: 0
+  damage: 8
+  ammunitionType: 1
   fireMode: 2
   fireModes: 02000000
   burstBulletAmount: 3
-  fireRate: 600
-  fireInterval: 0.1
+  fireRate: 300
+  fireInterval: 0.2
   bulletsPerShot: 8
   currentAmmunition: 10
   maxCurrentAmmunition: 10
   extraAmmunition: 20
   highPower: 0
-  recoil: 10
-  stabilization: 4
+  recoil: 7
+  stabilization: 2
   currentAccuracy: 0
   currentCurveAccuracy: 0
   recoilCurve:
@@ -203,17 +203,17 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 10
-      inSlope: 10
-      outSlope: 10
+      inSlope: 30
+      outSlope: 30
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 1
-      value: 20
-      inSlope: 10
-      outSlope: 10
+      value: 40
+      inSlope: 30
+      outSlope: 30
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334

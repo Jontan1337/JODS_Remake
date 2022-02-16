@@ -151,7 +151,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
                 if (other.TryGetComponent(out damagable))
                 {
                     previousHitColliderParent = other.transform.root;
-                    damagable?.Svr_Damage(currentDamage);
+                    damagable?.Svr_Damage(currentDamage, transform.root);
                 }
                 amountSlashed++;
             }
