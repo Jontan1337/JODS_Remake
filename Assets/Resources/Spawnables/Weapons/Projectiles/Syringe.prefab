@@ -9,12 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3668033450558780112}
+  - component: {fileID: 7319243675220648799}
   - component: {fileID: 3668033450561647344}
   - component: {fileID: 3668033450560679984}
   - component: {fileID: 3668033450558384238}
   - component: {fileID: 7068715810846515424}
   - component: {fileID: -5787199836997570594}
-  - component: {fileID: 7319243675220648799}
   m_Layer: 18
   m_Name: Syringe
   m_TagString: Untagged
@@ -36,6 +36,33 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!114 &7319243675220648799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3668033450558484208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac69e1d46af220245a8f05dbef04806d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  damage: 0
+  lifetime: 5
+  destroyAfterLifetime: 0
+  sticky: 1
+  objectPoolTag: 6
+  owner: {fileID: 0}
+  hasDropoff: 0
+  timeBeforeDropoff: 5
+  piercing: 0
+  statusEffectsToApply: []
+  amount: 1
+  statusEffectToRemove: {fileID: 11400000, guid: 4e4e7de589f30bf40907ea1d117607fe,
+    type: 2}
 --- !u!33 &3668033450561647344
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -130,28 +157,3 @@ MonoBehaviour:
   serverOnly: 0
   m_AssetId: 
   hasSpawned: 0
---- !u!114 &7319243675220648799
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3668033450558484208}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac69e1d46af220245a8f05dbef04806d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  damage: 0
-  lifetime: 5
-  destroyAfterLifetime: 0
-  sticky: 1
-  objectPoolTag: 6
-  owner: {fileID: 0}
-  hasDropoff: 0
-  timeBeforeDropoff: 5
-  piercing: 0
-  statusEffectsToApply: []
-  amount: 1
