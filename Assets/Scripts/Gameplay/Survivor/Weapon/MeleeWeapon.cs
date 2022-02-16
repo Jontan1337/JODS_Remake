@@ -174,15 +174,14 @@ public class MeleeWeapon : EquipmentItem, IImpacter
                         {
                             weaponAnimator.speed = 0f;
                             //weaponAnimator.CrossFadeInFixedTime("Idle", 0.5f);
-                            weaponAnimator.SetBool(AttackingBool, false);
-                            ImpactShake(1f);
-                            amountSlashed = 0;
+                            //weaponAnimator.SetBool(AttackingBool, false);
+                            ImpactShake(1f, 0.2f);
                         }
                     }
                     break;
                 case DamageTypes.Blunt:
                     weaponAnimator.CrossFadeInFixedTime("Idle", 0.5f);
-                    ImpactShake(0.5f);
+                    ImpactShake(0.5f, 0.2f);
                     break;
                 case DamageTypes.Pierce:
                     break;
@@ -349,12 +348,12 @@ public class MeleeWeapon : EquipmentItem, IImpacter
 
     }
 
-    private void ImpactShake(float amount)
+    private void ImpactShake(float amount, float duration)
     {
         Cmd_EndOfAttack();
         transform.parent.DOComplete();
-        transform.parent.DOPunchPosition(new Vector3(0f, 0.1f, -0.1f), 0.4f, 10, 0.1f);
-        transform.parent.DOPunchRotation(new Vector3(2f, 1f, UnityEngine.Random.Range(-1f, 1f)), 0.4f, 10, 0.1f).OnComplete(OnPunchThroughLimitReached);
+        transform.parent.DOPunchPosition(new Vector3(0f, 0.1f, -0.1f), duration, 10, 0.1f);
+        transform.parent.DOPunchRotation(new Vector3(2f, 1f, UnityEngine.Random.Range(-1f, 1f)), duration, 10, 0.1f).OnComplete(OnPunchThroughLimitReached);
     }
 
     [ClientRpc]

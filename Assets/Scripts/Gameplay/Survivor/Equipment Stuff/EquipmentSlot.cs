@@ -10,30 +10,20 @@ public class EquipmentSlot : NetworkBehaviour
     public Action<GameObject, GameObject> onServerItemChange;
 
     [Header("Item info")]
-    [SerializeField, SyncVar(hook = nameof(OnEquipmentChanged))]
-    private GameObject equipmentItem;
-    [SerializeField, SyncVar]
-    private EquipmentType equipmentType;
+    [SerializeField, SyncVar(hook = nameof(OnEquipmentChanged))] private GameObject equipmentItem;
+    [SerializeField, SyncVar] private EquipmentType equipmentType;
 
     [Header("Item index")]
-    [SerializeField]
-    private KeyCode keyCode;
-    [SerializeField]
-    private int keyNumber;
+    [SerializeField] private KeyCode keyCode;
+    [SerializeField] private int keyNumber;
 
     [Header("Hotbar Slot Visuals")]
-    [SerializeField]
-    private GameObject uiSlot;
-    [SerializeField]
-    private Color selectedColor = Color.white;
-    [SerializeField]
-    private Color deselectedColor = Color.gray;
-    [SerializeField]
-    private TMP_Text textItemName;
-    [SerializeField]
-    private TMP_Text textItemType;
-    [SerializeField]
-    private Image slotImage;
+    [SerializeField] private GameObject uiSlot;
+    [SerializeField] private Color selectedColor = Color.white;
+    [SerializeField] private Color deselectedColor = Color.gray;
+    [SerializeField] private TMP_Text textItemName;
+    [SerializeField] private TMP_Text textItemType;
+    [SerializeField] private Image slotImage;
 
     private PlayerEquipment playerEquipment;
 
@@ -181,8 +171,6 @@ public class EquipmentSlot : NetworkBehaviour
     [Server]
     public void Svr_RemoveItem()
     {
-        if (EquipmentItem)
-
         EquipmentItem = null;
     }
 

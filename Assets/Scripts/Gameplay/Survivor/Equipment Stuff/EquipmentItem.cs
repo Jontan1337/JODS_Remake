@@ -188,6 +188,7 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	{
 		// Apparently connecionToClient is null even
 		// though authority is given long before this on line 136???
+		Debug.Log("Equip", this);
 		Rpc_SetLayer(connectionToClient, true);
 		Svr_ShowItem();
 		Svr_DisablePhysics();
@@ -195,6 +196,7 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	[Server]
 	public virtual void Svr_Unequip()
 	{
+		Debug.Log("Unequip", this);
 		Rpc_SetLayer(connectionToClient, false);
 		Svr_HideItem();
 	}

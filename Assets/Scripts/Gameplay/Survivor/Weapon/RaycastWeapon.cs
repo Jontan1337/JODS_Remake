@@ -16,13 +16,14 @@ public class RaycastWeapon : RangedWeapon
     {
         Vector2 recoil = (Random.insideUnitCircle * currentCurveAccuracy) + aimPoint;
         Ray aimRay = playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2 + recoil.x, Screen.height / 2 + recoil.y));
-        Rpc_Shoot(recoil);
         if (Physics.Raycast(aimRay, out RaycastHit aimHit, range, ~ignoreLayer))
         {
             Vector3 targetPoint = aimHit.point;
             Ray shootRay = new Ray(shootOrigin.position, targetPoint - shootOrigin.position);
             if (Physics.Raycast(shootRay, out RaycastHit shootHit, range, ~ignoreLayer))
             {
+                PhysicMaterial phyMat = shootHit.collider.sharedMaterial;
+                Rpc_BulletEffect(aimHit.point, shootHit.point, shootHit.normal, phyMat ? phyMat.name : "");
                 if (shootHit.collider.TryGetComponent(out IDamagable damagable))
                 {
                     damagable?.Svr_Damage(damage, owner);
@@ -41,26 +42,34 @@ public class RaycastWeapon : RangedWeapon
     // Consider changing to TargetRpc and change only the effects
     // (BulletTrail and BulletHole) to ClientRpc.
     [ClientRpc]
-    protected override void Rpc_Shoot(Vector2 recoil)
+    private void Rpc_BulletEffect(Vector3 aimHitPoint, Vector3 shootHitPoint, Vector3 shootHitNormal, string matName)
     {
-        base.Rpc_Shoot(recoil);
-        Ray aimRay = playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2 + recoil.x, Screen.height / 2 + recoil.y));
-        if (Physics.Raycast(aimRay, out RaycastHit aimHit, range, ~ignoreLayer))
-        {
-            Vector3 targetPoint = aimHit.point;
-            Ray shootRay = new Ray(shootOrigin.position, targetPoint - shootOrigin.position);
-            BulletTrail(targetPoint);
-            if (Physics.Raycast(shootRay, out RaycastHit shootHit, range, ~ignoreLayer))
-            {
-                PhysicMaterial phyMat = shootHit.collider.sharedMaterial;
-                Bullethole(shootHit.point, shootHit.normal, phyMat ? phyMat.name : "");
-            }
-        }
-        else
-        {
-            BulletTrail(playerHead.forward * range);
-        }
+        BulletTrail(aimHitPoint);
+        Bullethole(shootHitPoint, shootHitNormal, matName);
+        ShootFX();
+        //BulletTrail(playerHead.forward * range);
     }
+    //[ClientRpc]
+    //protected override void Rpc_Shoot(Vector2 recoil)
+    //{
+    //    base.Rpc_Shoot(recoil);
+    //    Ray aimRay = playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2 + recoil.x, Screen.height / 2 + recoil.y));
+    //    if (Physics.Raycast(aimRay, out RaycastHit aimHit, range, ~ignoreLayer))
+    //    {
+    //        Vector3 targetPoint = aimHit.point;
+    //        Ray shootRay = new Ray(shootOrigin.position, targetPoint - shootOrigin.position);
+    //        BulletTrail(targetPoint);
+    //        if (Physics.Raycast(shootRay, out RaycastHit shootHit, range, ~ignoreLayer))
+    //        {
+    //            PhysicMaterial phyMat = shootHit.collider.sharedMaterial;
+    //            Bullethole(shootHit.point, shootHit.normal, phyMat ? phyMat.name : "");
+    //        }
+    //    }
+    //    else
+    //    {
+    //        BulletTrail(playerHead.forward * range);
+    //    }
+    //}
 
     private void Bullethole(Vector3 point, Vector3 normal, string phyMatName)
     {
