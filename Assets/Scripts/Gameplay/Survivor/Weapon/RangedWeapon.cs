@@ -27,7 +27,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
     [Header("Game details")]
     //[SerializeField, SyncVar] private string player = "Player name";
-    [SerializeField] protected float recoil = 0.1f;
+    [SerializeField, Range(0f, 1f)] protected float recoil = 0.1f;
     [SerializeField] protected float stabilization = 1f;
     [SerializeField] protected float currentAccuracy = 0f;
     [SerializeField] protected float currentCurveAccuracy = 0f;

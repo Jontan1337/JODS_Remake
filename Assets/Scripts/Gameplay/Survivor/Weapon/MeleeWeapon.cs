@@ -115,7 +115,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     {
         base.Svr_Unequip();
         StopIEAttack();
-        weaponAnimator.Play("Idle");
+        //weaponAnimator.Play("Idle");
     }
 
     private void ResetAnimatorSpeed()
@@ -173,15 +173,13 @@ public class MeleeWeapon : EquipmentItem, IImpacter
                         if (amountSlashed == currentPunchthrough)
                         {
                             weaponAnimator.speed = 0f;
-                            //weaponAnimator.CrossFadeInFixedTime("Idle", 0.5f);
-                            //weaponAnimator.SetBool(AttackingBool, false);
-                            ImpactShake(1f, 0.2f);
+                            ImpactShake(1f, 0.15f);
                         }
                     }
                     break;
                 case DamageTypes.Blunt:
-                    weaponAnimator.CrossFadeInFixedTime("Idle", 0.5f);
-                    ImpactShake(0.5f, 0.2f);
+                    weaponAnimator.CrossFadeInFixedTime("Idle", 0.3f);
+                    ImpactShake(1f, 0.2f);
                     break;
                 case DamageTypes.Pierce:
                     break;
@@ -246,7 +244,6 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     private void Cmd_StopAttack()
     {
         // Stop the melee attack animation.
-        isAttacking = false;
         StopIEAttack();
     }
 
@@ -289,19 +286,10 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     {
         while (true)
         {
-            if (true)
+            weaponAnimator.SetBool(AttackingBool, true);
+            if (canAttack)
             {
-                //networkAnimator.SetTrigger(AttackTrigger);
-                //weaponAnimator.speed = attackInterval * 1f;
-                weaponAnimator.SetBool(AttackingBool, true);
-                if (canAttack)
-                {
-                    StartAttackInterval();
-                }
-            }
-            else
-            {
-
+                StartAttackInterval();
             }
             yield return null;
         }
@@ -329,7 +317,6 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     private void Cmd_OnPunchThroughLimitReached()
     {
         Cmd_ResetAnimatorSpeed();
-        weaponAnimator.CrossFadeInFixedTime("Idle", 0.1f);
     }
 
     #endregion
@@ -339,7 +326,10 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     [ClientRpc]
     private void Rpc_StartOfAttack()
     {
-        particleTrail.Emit(40);
+        if (particleTrail)
+        {
+            particleTrail.Emit(40);
+        }
     }
 
     [ClientRpc]
