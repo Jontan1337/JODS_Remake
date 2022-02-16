@@ -18,7 +18,7 @@ public class RaycastWeapon : RangedWeapon
         Ray aimRay = playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2 + recoil.x, Screen.height / 2 + recoil.y));
         Rpc_Shoot(recoil);
         if (Physics.Raycast(aimRay, out RaycastHit aimHit, range, ~ignoreLayer))
-        {
+        {            
             Vector3 targetPoint = aimHit.point;
             Ray shootRay = new Ray(shootOrigin.position, targetPoint - shootOrigin.position);
             if (Physics.Raycast(shootRay, out RaycastHit shootHit, range, ~ignoreLayer))
@@ -47,11 +47,13 @@ public class RaycastWeapon : RangedWeapon
         Ray aimRay = playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2 + recoil.x, Screen.height / 2 + recoil.y));
         if (Physics.Raycast(aimRay, out RaycastHit aimHit, range, ~ignoreLayer))
         {
+            print(aimHit.collider.gameObject.name);
             Vector3 targetPoint = aimHit.point;
             Ray shootRay = new Ray(shootOrigin.position, targetPoint - shootOrigin.position);
             BulletTrail(targetPoint);
             if (Physics.Raycast(shootRay, out RaycastHit shootHit, range, ~ignoreLayer))
             {
+                print(shootHit.collider.gameObject.name);
                 PhysicMaterial phyMat = shootHit.collider.sharedMaterial;
                 Bullethole(shootHit.point, shootHit.normal, phyMat ? phyMat.name : "");
             }

@@ -31,7 +31,7 @@ public class SyringeGun : ProjectileWeapon
 
 	public override void Unbind()
 	{
-		if (currentAmmunition < maxCurrentAmmunition)
+		if (magazine < magazineSize)
 		{
 			GetComponentInParent<ActiveSClass>().Rpc_StartAbilityCooldown(transform.root.GetComponent<NetworkIdentity>().connectionToClient, transform.root);
 		}

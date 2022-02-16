@@ -17,8 +17,9 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [SerializeField] private float fireRate = 600f;
     [SerializeField] private float fireInterval = 0f;
     [SerializeField] private int bulletsPerShot = 1;
-    [SerializeField, SyncVar(hook = nameof(UpdateCurrentAmmunition))] protected int currentAmmunition = 10;
-    [SerializeField] protected int maxCurrentAmmunition = 10;
+    [Space]
+    [SerializeField, SyncVar(hook = nameof(UpdateCurrentAmmunition))] protected int magazine = 10;
+    [SerializeField] protected int magazineSize = 10;
     [SerializeField, SyncVar(hook = nameof(UpdateExtraAmmunition))] protected int extraAmmunition = 20;
     [Space]
     [SerializeField] protected bool highPower = false;
@@ -70,18 +71,18 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     public Action<float> OnImpact { get; set; }
 
     public int CurrentAmmunition { 
-        get => currentAmmunition;
+        get => magazine;
         private set
         {
-            currentAmmunition = value;
+            magazine = value;
             currentAmmunitionUIText.text = $"{value}";
         }
     }
     public int MaxCurrentAmmunition { 
-        get => maxCurrentAmmunition;
+        get => magazineSize;
         private set
         {
-            maxCurrentAmmunition = value;
+            magazineSize = value;
         }
     }
     public int ExtraAmmunition { 
