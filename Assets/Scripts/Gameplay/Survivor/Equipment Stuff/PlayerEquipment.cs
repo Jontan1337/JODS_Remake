@@ -107,10 +107,10 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
         private set
         {
             if (!isServer) return;
-
-            // Stop listening if the old selected slot's item changes.
+            if (selectedEquipmentSlot == value) return;
             if (selectedEquipmentSlot)
             {
+                // Stop listening if the old selected slot's item changes.
                 selectedEquipmentSlot.onServerItemChange -= Svr_SelectedSlotItemChange;
                 if (selectedEquipmentSlot.EquipmentItem)
                     selectedEquipmentSlot.EquipmentItem.GetComponent<EquipmentItem>().Svr_Unequip();
