@@ -474,8 +474,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         seeker.pathCallback += OnPathComplete;
         controller = GetComponent<CharacterController>();
         ai = GetComponent<AIPath>();
-        ai.maxSpeed = movementSpeed;
-        
+        ai.maxSpeed = movementSpeed;        
 
         //Animations -----------------------
         animator = GetComponent<Animator>();

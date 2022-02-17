@@ -8,9 +8,6 @@ using System;
 public class NetworkTest : NetworkManager
 {
     [Space]
-    [SerializeField] private GameObject masterPrefab = null;
-    [SerializeField] private GameObject survivorPrefab = null;
-    [Space]
     [SerializeField]
     private bool hostOnly = false;
     [SerializeField]
@@ -18,6 +15,10 @@ public class NetworkTest : NetworkManager
 
     public List<NetworkConnection> playerIds = new List<NetworkConnection>();
     public static Action<NetworkConnection> RelayOnServerAddPlayer;
+
+    [Header("Debug")]
+    public GameObject masterPrefab = null;
+    public GameObject survivorPrefab = null;
 
     NetworkManager manager;
 
