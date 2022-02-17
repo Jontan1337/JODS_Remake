@@ -6,8 +6,8 @@ using UnityEngine;
 public class HoTSO : StatusEffectSO
 {
 	[Header("Heal Settings")]
-	public int healPerTick = 3;
-	public int healOnApply = 12;
+	public int healPerTick = 0;
+	public int healOnApply = 0;
 
     public override StatusEffect ApplyEffect(GameObject target)
     {

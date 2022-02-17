@@ -56,8 +56,18 @@ public class Infection : StatusEffect
 
         infectionRate = 0;
 
+        switch (infectionLevel)
+        {
+            case 1:
+
+                break;
+            case 2:
+
+                break;
+        }
+
         if (infectionLevel == maxInfectionLevel) return;
-        currentImageIndex++; Debug.Log("Infection CII: " + currentImageIndex); // INDEX IS CORRECT, BUT IT DOES NOT RECEIVE THE CORRECT SPRITE????
+        currentImageIndex++;
     }
 
     public override void OnEffectApplied()
@@ -65,5 +75,5 @@ public class Infection : StatusEffect
         
     }
 
-    public override float GetImageAlpha() => ((float)infectionLevel / (float)((float)maxInfectionLevel + 1)) + ((float)infectionRate * 0.0025f);
+    public override float GetImageAlpha() => (infectionLevel / (float)(maxInfectionLevel + 1f)) + (infectionRate * 0.0025f);
 }

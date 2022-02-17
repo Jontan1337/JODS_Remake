@@ -19,8 +19,9 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	[SerializeField] private int maxHealth = 100;
 	[SerializeField] private int armor = 0;
 	[SerializeField] private float abilityCooldown = 0;
-	[SerializeField] private float abilityCooldownCount = 0;
+	//[SerializeField] private float abilityCooldownCount = 0;
 	[SerializeField] private float movementSpeed = 0;
+	public float abilityCooldownCount = 0;
 
 	[Space]
 	[Header("Weapon Stats")]
@@ -152,13 +153,12 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	{
 		abilityIsReady = false;
 		abilityCooldownUI.fillAmount = 0;
-		while (abilityCooldownCount > 0)
+		while (abilityCooldownCount < abilityCooldown)
 		{
-			abilityCooldownCount -= Time.deltaTime;
-			abilityCooldownUI.fillAmount += Time.deltaTime / abilityCooldown;
-			yield return null;
+			abilityCooldownCount += Time.deltaTime;
+            abilityCooldownUI.fillAmount = abilityCooldownCount / abilityCooldown;
+            yield return null;
 		}
-		abilityCooldownCount = abilityCooldown;
 		abilityIsReady = true;
 	}
 
@@ -227,7 +227,6 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 		GetComponent<SurvivorAnimationManager>().anim.speed = movementSpeed;
 
 		abilityCooldown = survivorSO.abilityCooldown;
-		abilityCooldownCount = abilityCooldown;
 
 		bodyRenderer.sharedMesh = survivorSO.bodyMesh;
 		headRenderer.sharedMesh = survivorSO.headMesh;

@@ -27,12 +27,12 @@ public class Syringe : Projectile
         }
         else
         {
-            idmg?.Svr_Damage(200, owner);
+            idmg?.Svr_Damage(damage, owner);
         }
-        if (statusEffectToRemove.name == "Burn")
+        if (statusEffectToRemove.name == "Infection")
         {
-            hit.collider.transform.root.gameObject.GetComponent<StatusEffectManager>()?.Svr_RemoveStatusEffect(statusEffectToRemove);
         }
+        hit.collider.transform.root.gameObject.GetComponent<StatusEffectManager>()?.Svr_RemoveStatusEffect(statusEffectToRemove);
     }
 
     IEnumerator LifeTime()

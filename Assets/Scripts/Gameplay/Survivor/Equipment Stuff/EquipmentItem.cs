@@ -81,7 +81,7 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 		JODSInput.Controls.Survivor.RMB.performed += OnRMBPerformed;
 		JODSInput.Controls.Survivor.RMB.canceled += OnRMBCanceled;
         JODSInput.Controls.Survivor.Drop.performed += OnDropPerformed;
-		playerClass.onDied.AddListener(delegate () { Unbind(); });
+		//playerClass.onDied.AddListener(delegate () { Unbind(); });
 	}
 	public virtual void Unbind()
 	{
@@ -91,7 +91,7 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 		JODSInput.Controls.Survivor.RMB.performed -= OnRMBPerformed;
 		JODSInput.Controls.Survivor.RMB.canceled -= OnRMBCanceled;
         JODSInput.Controls.Survivor.Drop.performed -= OnDropPerformed;
-		playerClass.onDied.RemoveListener(delegate () { Unbind(); });
+		//playerClass.onDied.RemoveListener(delegate () { Unbind(); });
 	}
 	[TargetRpc]
 	protected void Rpc_Bind(NetworkConnection target)

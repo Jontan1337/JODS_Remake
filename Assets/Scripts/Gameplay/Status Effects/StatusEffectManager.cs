@@ -117,7 +117,7 @@ public class StatusEffectManager : NetworkBehaviour
             StatusEffect effect = currentEffects[newEffect.effect];
 
             Sprite effectVisual = effect.GetImage();
-            print("SEM CII: " + effect.currentImageIndex);
+
             int index = indexDict[effect.effect.name];
 
             //Does the effect have a new visual? If so, update the current visual to the new one
@@ -128,6 +128,7 @@ public class StatusEffectManager : NetworkBehaviour
                 statusEffectVisuals[index] = effectVisual;
                 Rpc_ChangeDictionaryKey(connectionToClient, effect.effect.name, index);
                 Rpc_EnableVisual(connectionToClient, index, effectVisual.name, effect.effect.uIImageColor);
+                Rpc_ChangeVisualAlpha(connectionToClient, index, effect.GetImageAlpha());
             }
 
             //If this effect can stack in any way, it will stack when activated again.
