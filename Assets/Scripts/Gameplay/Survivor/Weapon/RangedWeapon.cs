@@ -27,7 +27,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
     [Header("Game details")]
     //[SerializeField, SyncVar] private string player = "Player name";
-    [SerializeField, Range(0f, 1f)] protected float recoil = 0.1f;
+    [SerializeField, Range(0f, 1f), Tooltip("Affects weapon accuracy")] protected float recoil = 0.1f;
+    [SerializeField, Tooltip("Affects weapon and camera shake")] protected float visualPunchback = 0.2f;
     [SerializeField] protected float stabilization = 1f;
     [SerializeField] protected float currentAccuracy = 0f;
     [SerializeField] protected float currentCurveAccuracy = 0f;
@@ -526,7 +527,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     {
         sfxPlayer.PlaySFX(shootSound);
         muzzleParticle.Emit(10);
-        OnImpact?.Invoke(recoil);
+        OnImpact?.Invoke(visualPunchback);
     }
     protected void ImpactShake(float amount)
     {
