@@ -188,8 +188,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [TargetRpc]
     public override void Rpc_Interact(NetworkConnection target, GameObject interacter)
     {
-        print("Rpc_Interact");
-        print(hasAuthority);
         base.Rpc_Interact(target, interacter);
         GetUIElements(interacter.transform);
     }
