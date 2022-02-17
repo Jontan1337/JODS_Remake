@@ -65,13 +65,12 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 			// This should not be possible, but just to be absolutely sure.
 			Debug.LogWarning($"{interacter} does not have a PlayerEquipment component", this);
 		}
-		playerClass = interacter.GetComponent<ActiveSClass>();
 	}
 
 	[TargetRpc]
 	public virtual void Rpc_Interact(NetworkConnection target, GameObject interacter)
 	{
-
+		playerClass = interacter.GetComponent<ActiveSClass>();
 	}
 
 	public virtual void Bind()
@@ -188,7 +187,6 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	{
 		// Apparently connecionToClient is null even
 		// though authority is given long before this on line 136???
-		Debug.Log("Equip", this);
 		Rpc_SetLayer(connectionToClient, true);
 		Svr_ShowItem();
 		Svr_DisablePhysics();
@@ -196,7 +194,6 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	[Server]
 	public virtual void Svr_Unequip()
 	{
-		Debug.Log("Unequip", this);
 		Rpc_SetLayer(connectionToClient, false);
 		Svr_HideItem();
 	}
