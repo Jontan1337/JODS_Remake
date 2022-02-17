@@ -18,7 +18,8 @@ public abstract class StatusEffectSO : ScriptableObject
     public abstract StatusEffect ApplyEffect(GameObject target);
 
     [Header("Visual")]
-    public Sprite uIImage;
+    public bool useVisual = true;
+    public Sprite[] uIImage;
     public Color uIImageColor = Color.white;
     [Space]
     public bool useImageAlpha = true;

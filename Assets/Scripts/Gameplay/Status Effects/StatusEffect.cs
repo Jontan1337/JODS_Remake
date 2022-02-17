@@ -11,6 +11,8 @@ public abstract class StatusEffect
     protected readonly GameObject obj;
     public bool isFinished;
     private bool isApplied = false;
+    [Header("Visual")]
+    public int currentImageIndex = 0;
 
     public StatusEffect(StatusEffectSO effect, GameObject obj)
     {
@@ -79,4 +81,5 @@ public abstract class StatusEffect
 
         else return 100;
     }
+    public virtual Sprite GetImage() => effect.uIImage[currentImageIndex];
 }
