@@ -57,7 +57,7 @@ public class StatusEffectManager : NetworkBehaviour
     [Server]
     private void Svr_RemoveVisuals(StatusEffectSO effect)
     {
-        Sprite effectVisual = effect.uIImage;
+        bool effectVisual = effect.useVisual;
 
         //If the effect has a visual element
         if (effectVisual && imageReferenceList.Length > 0)
@@ -113,8 +113,25 @@ public class StatusEffectManager : NetworkBehaviour
         //If the status effect is already in the list, then activate the effect
         if (currentEffects.ContainsKey(newEffect.effect))
         {
+            //Get the effect which is already applied
+            StatusEffect effect = currentEffects[newEffect.effect];
+
+            Sprite effectVisual = effect.GetImage();
+            print("SEM CII: " + effect.currentImageIndex);
+            int index = indexDict[effect.effect.name];
+
+            //Does the effect have a new visual? If so, update the current visual to the new one
+            if (effectVisual && imageReferenceList.Length > 0 && effectVisual != statusEffectVisuals[index])
+            {
+                
+
+                statusEffectVisuals[index] = effectVisual;
+                Rpc_ChangeDictionaryKey(connectionToClient, effect.effect.name, index);
+                Rpc_EnableVisual(connectionToClient, index, effectVisual.name, effect.effect.uIImageColor);
+            }
+
             //If this effect can stack in any way, it will stack when activated again.
-            currentEffects[newEffect.effect].Activate(amount);
+            currentEffects[effect.effect].Activate(amount);
         }
         else
         {
@@ -135,7 +152,7 @@ public class StatusEffectManager : NetworkBehaviour
                 isActive = true;
             }
 
-            Sprite effectVisual = newEffect.effect.uIImage;
+            Sprite effectVisual = newEffect.GetImage();
             
             //If the effect has a visual element
             if (effectVisual && imageReferenceList.Length > 0)
@@ -168,6 +185,13 @@ public class StatusEffectManager : NetworkBehaviour
     {
         if (isServer) return;
         indexDict.Add(key, value);
+    }
+
+    [TargetRpc]
+    private void Rpc_ChangeDictionaryKey(NetworkConnection conn, string key, int value)
+    {
+        if (isServer) return;
+        if(indexDict.ContainsKey(key)) indexDict[key] = value;
     }
 
     [TargetRpc]
