@@ -11,16 +11,16 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [Header("Weapon stats")]
     [SerializeField] protected int damage = 10;
     [SerializeField] private AmmunitionTypes ammunitionType = AmmunitionTypes.Small;
-    [SerializeField, SyncVar(hook = nameof(UpdateFireMode))] private FireModes fireMode = FireModes.Single;
+    [SerializeField, SyncVar(hook = nameof(UpdateFireModeText))] private FireModes fireMode = FireModes.Single;
     [SerializeField] private FireModes[] fireModes = null;
     [SerializeField] private int burstBulletAmount = 3;
     [SerializeField] private float fireRate = 600f;
     [SerializeField] private float fireInterval = 0f;
     [SerializeField] private int bulletsPerShot = 1;
     [Space]
-    [SerializeField, SyncVar(hook = nameof(UpdateCurrentAmmunition))] protected int magazine = 10;
+    [SerializeField, SyncVar(hook = nameof(UpdateMagazineText))] protected int magazine = 10;
     [SerializeField] protected int magazineSize = 10;
-    [SerializeField, SyncVar(hook = nameof(UpdateExtraAmmunition))] protected int extraAmmunition = 20;
+    [SerializeField, SyncVar(hook = nameof(UpdateExtraAmmunitionText))] protected int extraAmmunition = 20;
     [Space]
     [SerializeField] protected bool highPower = false;
     //[SerializeField] protected int maxExtraAmmunition = 20;
@@ -71,15 +71,14 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
     public Action<float> OnImpact { get; set; }
 
-    public int CurrentAmmunition { 
+    public int Magazine { 
         get => magazine;
         private set
         {
             magazine = value;
-            currentAmmunitionUIText.text = $"{value}";
         }
     }
-    public int MaxCurrentAmmunition { 
+    public int MagazineSize { 
         get => magazineSize;
         private set
         {
@@ -91,7 +90,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         private set
         {
             extraAmmunition = value;
-            extraAmmunitionUIText.text = $"/ {value}";
         }
     }
     public int Damage { get => damage; }
@@ -101,7 +99,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         private set
         {
             fireMode = value;
-            fireModeUIText.text = FireMode.ToString();
             TeaseFireMode();
         }
     }
@@ -117,16 +114,22 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
     #region Update UI
 
-    private void UpdateCurrentAmmunition(int oldValue, int newValue)
+    private void UpdateMagazineText(int oldValue, int newValue)
     {
-        currentAmmunitionUIText.text = $"{newValue}";
+        if (!hasAuthority) return;
+
+        currentAmmunitionUIText.text = newValue.ToString();
     }
-    private void UpdateExtraAmmunition(int oldValue, int newValue)
+    private void UpdateExtraAmmunitionText(int oldValue, int newValue)
     {
-        extraAmmunitionUIText.text = $"{newValue}";
+        if (!hasAuthority) return;
+
+        extraAmmunitionUIText.text = newValue.ToString();
     }
-    private void UpdateFireMode(FireModes oldValue, FireModes newValue)
+    private void UpdateFireModeText(FireModes oldValue, FireModes newValue)
     {
+        if (!hasAuthority) return;
+
         fireModeUIText.text = newValue.ToString();
     }
 
@@ -135,6 +138,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     private void OnValidate()
     {
         equipmentType = EquipmentType.Weapon;
+        currentCurveAccuracy = recoilCurve.Evaluate(0f);
         fireRate = Mathf.Clamp(fireRate, 0.01f, float.MaxValue);
         fireInterval = 60 / fireRate;
         fireModeIndex = 0;
@@ -158,6 +162,11 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         OnImpact += ImpactShake;
     }
 
+    public override void OnStartAuthority()
+    {
+        base.OnStartAuthority();
+    }
+
     public override void OnStopClient()
     {
         base.OnStopClient();
@@ -168,12 +177,21 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     public override void Svr_Interact(GameObject interacter)
     {
         base.Svr_Interact(interacter);
-        GetUIElements(interacter.transform);
         playerHead = interacter.GetComponent<LookController>().RotateVertical;
         playerCamera = playerHead.GetChild(0).GetComponent<Camera>();
-        CurrentAmmunition = CurrentAmmunition;
-        FireMode = FireMode;
+        //magazine = Magazine;
+        //extraAmmunition = ExtraAmmunition;
+        //fireMode = FireMode;
         Rpc_GetPlayerHead(connectionToClient, playerHead);
+    }
+
+    [TargetRpc]
+    public override void Rpc_Interact(NetworkConnection target, GameObject interacter)
+    {
+        print("Rpc_Interact");
+        print(hasAuthority);
+        base.Rpc_Interact(target, interacter);
+        GetUIElements(interacter.transform);
     }
 
     [TargetRpc]
@@ -193,9 +211,9 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         extraAmmunitionUIText.enabled = true;
         fireModeUIText.enabled = true;
         // Update UI.
-        FireMode = FireMode;
-        CurrentAmmunition = CurrentAmmunition;
-        ExtraAmmunition = ExtraAmmunition;
+        UpdateMagazineText(0, magazine);
+        UpdateExtraAmmunitionText(0, extraAmmunition);
+        UpdateFireModeText(0, fireMode);
         TeaseFireMode();
     }
     public override void Unbind()
@@ -320,9 +338,9 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
         int firedRounds = 0;
         // Scatter shot ammo is a single shell with multiple bullets/pellets.
-        PostShoot();
+        PreShoot();
         Vector2 aimPoint = UnityEngine.Random.insideUnitCircle * currentAccuracy * 10;
-        while (CurrentAmmunition > 0 && firedRounds < bulletsPerShot)
+        while (Magazine > 0 && firedRounds < bulletsPerShot)
         {
             firedRounds++;
             Shoot(aimPoint);
@@ -331,13 +349,14 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
                 Svr_StartCooldown();
                 if (!hasAuthority)
                     Rpc_StartCooldown(connectionToClient);
-                if (CurrentAmmunition == 0)
+                if (Magazine == 0)
                 {
                     Rpc_EmptySFX();
                 }
-                return;
+                break;
             }
         }
+        PostShoot();
     }
 
     private IEnumerator IEBurstShootLoop()
@@ -346,11 +365,11 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         // The loop will keep going, as long as there
         // are bullets in the magazine and burst hasn't finished.
         // NOTE: Consider making the bullet shot interval in a burst very fast, since that's how they actually work.
-        while (CurrentAmmunition > 0 && firedRounds < burstBulletAmount)
+        while (Magazine > 0 && firedRounds < burstBulletAmount)
         {
             if (canShoot)
             {
-                PostShoot();
+                PreShoot();
                 Shoot(Vector2.zero);
                 Svr_StartCooldown();
                 if (!hasAuthority)
@@ -359,7 +378,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
             }
             yield return null;
         }
-        if (CurrentAmmunition == 0)
+        PostShoot();
+        if (Magazine == 0)
         {
             Rpc_EmptySFX();
         }
@@ -369,12 +389,13 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     {
         // The loop will keep going, as long as there
         // are bullets in the magazine.
-        while (CurrentAmmunition > 0)
+        while (Magazine > 0)
         {
             if (canShoot)
             {
-                PostShoot();
+                PreShoot();
                 Shoot(Vector2.zero);
+                PostShoot();
                 Svr_StartCooldown();
                 if (!hasAuthority)
                     Rpc_StartCooldown(connectionToClient);
@@ -387,13 +408,14 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
     private void ShootSingle()
     {
-        if (CurrentAmmunition == 0)
+        if (Magazine == 0)
         {
             Rpc_EmptySFX();
             return;
         }
-        PostShoot();
+        PreShoot();
         Shoot(Vector2.zero);
+        PostShoot();
         Svr_StartCooldown();
         if (!hasAuthority)
             Rpc_StartCooldown(connectionToClient);
@@ -431,28 +453,31 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         Debug.LogError("You broke this. Rocket launcher didn't work because it never lost ammunition. I temporarily fixed by removing an If statement in rocket launcher script. Fix.");
     }
 
+    private void PreShoot()
+    {
+        Magazine -= 1;
+    }
     private void PostShoot()
     {
         CurrentAccuracy += recoil;
         Svr_StartAccuracyStabilizer();
-        CurrentAmmunition -= 1;
     }
 
     // Later this should be called by a reload animation event.
     [Command]
     private void Cmd_Reload()
     {
-        if (CurrentAmmunition == MaxCurrentAmmunition) return;
+        if (Magazine == MagazineSize) return;
 
         Rpc_Reload();
-        if (ExtraAmmunition > (MaxCurrentAmmunition - CurrentAmmunition))
+        if (ExtraAmmunition > (MagazineSize - Magazine))
         {
-            ExtraAmmunition = ExtraAmmunition - (MaxCurrentAmmunition - CurrentAmmunition);
-            CurrentAmmunition = MaxCurrentAmmunition;
+            ExtraAmmunition = ExtraAmmunition - (MagazineSize - Magazine);
+            Magazine = MagazineSize;
         }
         else
         {
-            CurrentAmmunition += ExtraAmmunition;
+            Magazine += ExtraAmmunition;
             ExtraAmmunition = 0;
         }
     }

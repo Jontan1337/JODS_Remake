@@ -26,9 +26,16 @@ public class RaycastWeapon : RangedWeapon
                 Rpc_BulletEffect(aimHit.point, shootHit.point, shootHit.normal, phyMat ? phyMat.name : "");
                 if (shootHit.collider.TryGetComponent(out IDamagable damagable))
                 {
-                    damagable?.Svr_Damage(damage, owner);
+                    damagable.Svr_Damage(damage, owner);
                     if (highPower)
                     {
+                        if (damagable.IsDead)
+                        {
+                            if (shootHit.collider.TryGetComponent(out Rigidbody rb))
+                            {
+                                rb.AddForce(transform.forward * visualPunchback, ForceMode.Impulse);
+                            }
+                        }
                         if (shootHit.collider.TryGetComponent(out IDetachable detachable))
                         {
                             detachable.Detach((int)DamageTypes.Pierce);
@@ -36,6 +43,14 @@ public class RaycastWeapon : RangedWeapon
                     }
                 }
             }
+        }
+        else
+        {
+            Vector2 randomCircle = Random.insideUnitCircle;
+            Rpc_BulletEffect((playerHead.forward + new Vector3(
+                randomCircle.x,
+                randomCircle.y) / 200f * (currentCurveAccuracy)) * range,
+                Vector3.zero, Vector3.zero, "");
         }
     }
 
@@ -45,7 +60,10 @@ public class RaycastWeapon : RangedWeapon
     private void Rpc_BulletEffect(Vector3 aimHitPoint, Vector3 shootHitPoint, Vector3 shootHitNormal, string matName)
     {
         BulletTrail(aimHitPoint);
-        Bullethole(shootHitPoint, shootHitNormal, matName);
+        if (shootHitPoint != Vector3.zero && shootHitNormal != Vector3.zero)
+        {
+            Bullethole(shootHitPoint, shootHitNormal, matName);
+        }
         ShootFX();
         //BulletTrail(playerHead.forward * range);
     }
