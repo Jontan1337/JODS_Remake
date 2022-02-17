@@ -324,7 +324,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
         {
             Svr_SelectSlot(0);
         }
-
+        EquipmentItem newItem = equipment.GetComponent<EquipmentItem>();
         // If selected equipment hotbar slot is empty, equip item in that hotbar slot,
         // else look for an available hotbar slot.
         if (SelectedEquipmentSlot.EquipmentType != equipmentType || SelectedEquipmentSlot.EquipmentItem != null)
@@ -364,7 +364,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
             }
             //Svr_EquipNewItem(equipment.GetComponent<EquipmentItem>());
             Svr_EquipItem(equipment);
-            equipment.GetComponent<EquipmentItem>().Svr_Equip();
+            newItem.Svr_Equip();
         }
 
         // EquipmentType none is meant for equipment
@@ -377,7 +377,8 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
                 // Unbind current weapon
                 // Unequip current weapon
                 // Deselect item slot
-                Svr_EquipNewItem(equipment.GetComponent<EquipmentItem>());
+                newItem.Svr_Pickup(playerHands, connectionToClient);
+                Svr_EquipNewItem(newItem);
                 ItemInHands = equipment;
                 Svr_DeselectSlot();
             }

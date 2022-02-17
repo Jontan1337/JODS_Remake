@@ -52,7 +52,6 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	public virtual void Svr_Interact(GameObject interacter)
 	{
 		if (!IsInteractable) return;
-		Rpc_Interact(interacter.GetComponent<NetworkIdentity>().connectionToClient, interacter);
 		// Equipment should be on a child object of the player.
 		PlayerEquipment equipment = interacter.GetComponentInChildren<PlayerEquipment>();
 		owner = interacter.transform;
@@ -65,6 +64,7 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 			// This should not be possible, but just to be absolutely sure.
 			Debug.LogWarning($"{interacter} does not have a PlayerEquipment component", this);
 		}
+		Rpc_Interact(interacter.GetComponent<NetworkIdentity>().connectionToClient, interacter);
 	}
 
 	[TargetRpc]

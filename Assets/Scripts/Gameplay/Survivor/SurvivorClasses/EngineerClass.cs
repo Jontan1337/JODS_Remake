@@ -58,8 +58,9 @@ public class EngineerClass : SurvivorClass
 		NetworkServer.Spawn(turret);
 		playerEquipment = transform.parent.GetComponentInChildren<PlayerEquipment>();
 
-		turret.GetComponent<EquipmentItem>().Svr_Pickup(playerEquipment.playerHands, connectionToClient);
-		playerEquipment?.Svr_Equip(turret, EquipmentType.None);		
+		turret.GetComponent<IInteractable>().Svr_Interact(transform.root.gameObject);
+		//turret.GetComponent<EquipmentItem>().Svr_Pickup(playerEquipment.playerHands, connectionToClient);
+		//playerEquipment?.Svr_Equip(turret, EquipmentType.None);		
 	}
 
 }
