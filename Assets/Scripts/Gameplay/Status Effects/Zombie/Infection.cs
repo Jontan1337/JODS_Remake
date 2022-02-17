@@ -65,5 +65,5 @@ public class Infection : StatusEffect
         
     }
 
-    public override float GetImageAlpha() => (infectionLevel / (float)(maxInfectionLevel + 1)) + (infectionRate * 0.0025f);
+    public override float GetImageAlpha() => ((float)infectionLevel / (float)((float)maxInfectionLevel + 1)) + ((float)infectionRate * 0.0025f);
 }
