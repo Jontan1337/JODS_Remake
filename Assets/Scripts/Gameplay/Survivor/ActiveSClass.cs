@@ -21,6 +21,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	[SerializeField] private float abilityCooldown = 0;
 	//[SerializeField] private float abilityCooldownCount = 0;
 	[SerializeField] private float movementSpeed = 0;
+	//[SerializeField] private float cooldownReducion = 0;
 	public float abilityCooldownCount = 0;
 
 	[Space]

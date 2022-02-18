@@ -3532,6 +3532,7 @@ GameObject:
   - component: {fileID: 6043028673134938683}
   - component: {fileID: 8049337140043942677}
   - component: {fileID: 4047303356966882284}
+  - component: {fileID: 6904755547420367345}
   m_Layer: 13
   m_Name: Survivor
   m_TagString: Player
@@ -4461,6 +4462,23 @@ MonoBehaviour:
     poleTarget: {fileID: 0}
     clampWeight: 0.1
     clampSmoothing: 2
+--- !u!114 &6904755547420367345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5922127114707202486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36c70d60edf9bb34d8744e58ed9ce7c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movementSpeed: 1
+  cooldown: 1
+  healing: 1
+  meleeDamage: 1
+  rangedDamage: 1
 --- !u!1 &5988042953158973949
 GameObject:
   m_ObjectHideFlags: 0
@@ -7221,12 +7239,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9391a5d900ecdd640b5af37994dea7d1, type: 3}
---- !u!224 &5359896376376361524 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 3929581517643042875, guid: 9391a5d900ecdd640b5af37994dea7d1,
-    type: 3}
-  m_PrefabInstance: {fileID: 9001148406866694671}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &8513568407848534108 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 778214079386882643, guid: 9391a5d900ecdd640b5af37994dea7d1,
@@ -7239,3 +7251,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d0b652f32a2cc243917e4028fa0f046, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &5359896376376361524 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 3929581517643042875, guid: 9391a5d900ecdd640b5af37994dea7d1,
+    type: 3}
+  m_PrefabInstance: {fileID: 9001148406866694671}
+  m_PrefabAsset: {fileID: 0}

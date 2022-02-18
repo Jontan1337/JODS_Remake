@@ -20,8 +20,9 @@ public class SurvivorController : NetworkBehaviour
 	[SerializeField] private Transform groundCheck = null;
 	[SerializeField] private LayerMask groundMask = 0;
 
-	CharacterController cc;
+	CharacterController cController;
 	SurvivorAnimationManager anim;
+	ModifierManager modifiers;
 	public float walkSpeedMultiplier;
 	public float sprintSpeedMultiplier;
 	public float speedMultiplier;
@@ -40,8 +41,9 @@ public class SurvivorController : NetworkBehaviour
 
 	private void Start()
 	{
-		cc = GetComponent<CharacterController>();
+		cController = GetComponent<CharacterController>();
 		anim = GetComponent<SurvivorAnimationManager>();
+		modifiers = GetComponent<ModifierManager>();
 	}
 
 	#region NetworkBehaviour Callbacks
@@ -67,7 +69,7 @@ public class SurvivorController : NetworkBehaviour
 
 		CheckGround();
 
-		if (cc.isGrounded)
+		if (cController.isGrounded)
 		{
 			moveDirection = transform.TransformDirection(new Vector3(horizontal, 0.00f, vertical)) * (speedMultiplier * baseSpeed);
 			if (isJumping)
@@ -77,7 +79,7 @@ public class SurvivorController : NetworkBehaviour
 			}
 		}
 		moveDirection.y -= gravity * Time.deltaTime;
-		cc.Move(moveDirection * Time.deltaTime);
+		cController.Move(moveDirection * Time.deltaTime);
 		if (isSprinting && vertical > 0.65)
 		{
 			speedMultiplier = sprintSpeedMultiplier;
