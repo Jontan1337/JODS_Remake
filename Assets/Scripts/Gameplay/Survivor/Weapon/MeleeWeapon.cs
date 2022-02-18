@@ -26,6 +26,8 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     [SerializeField, Range(0, 0.35f)] private float splatterAmountOnHit = 0.04f;
     [SerializeField, Range(0f, 300f)] private float splatterRemoveAmount = 300f;
     [SerializeField, Range(-0.35f, 0f)] private float splatterRemoveAmountOnSwing = -0.01f;
+    [SerializeField] private float impactDuration = 0.2f;
+    [SerializeField] private float impactAmount = 1f;
 
     [Header("References")]
     [SerializeField] private Animator weaponAnimator = null;
@@ -173,14 +175,14 @@ public class MeleeWeapon : EquipmentItem, IImpacter
                         if (amountSlashed == currentPunchthrough)
                         {
                             weaponAnimator.speed = 0f;
-                            ImpactShake(1f, 0.15f).OnComplete(delegate() { Cmd_ResetAnimatorSpeed(); });
+                            ImpactShake(impactDuration, impactAmount).OnComplete(delegate() { Cmd_ResetAnimatorSpeed(); });
                         }
                     }
                     break;
                 case DamageTypes.Blunt:
                     weaponAnimator.speed = 0f;
                     weaponAnimator.CrossFadeInFixedTime("Idle", 0.3f);
-                    ImpactShake(1f, 0.2f).OnComplete(delegate () {
+                    ImpactShake(impactDuration, impactAmount).OnComplete(delegate () {
                         Cmd_ResetAnimatorSpeed();
                     });
                     break;
@@ -341,7 +343,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
 
     }
 
-    private Tweener ImpactShake(float amount, float duration)
+    private Tweener ImpactShake(float duration, float amount)
     {
         Cmd_EndOfAttack();
         transform.parent.DOComplete();
