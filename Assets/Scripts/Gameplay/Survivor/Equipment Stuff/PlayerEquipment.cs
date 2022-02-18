@@ -322,9 +322,9 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
     {
         if (!SelectedEquipmentSlot)
         {
-            Svr_SelectSlot(0);
+            Svr_SelectEquipmentSlot(0);
         }
-        EquipmentItem newItem = equipment.GetComponent<EquipmentItem>();
+        EquipmentItem newEquipmentItem = equipment.GetComponent<EquipmentItem>();
         // If selected equipment hotbar slot is empty, equip item in that hotbar slot,
         // else look for an available hotbar slot.
         if (SelectedEquipmentSlot.EquipmentType != equipmentType || SelectedEquipmentSlot.EquipmentItem != null)
@@ -337,12 +337,12 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
                 switch (itemPickupBehaviour)
                 {
                     case ItemPickupBehaviour.EquipAny:
-                        Svr_SelectSlot(equipmentSlots.IndexOf(newSelectedSlot));
+                        Svr_SelectEquipmentSlot(equipmentSlots.IndexOf(newSelectedSlot));
                         break;
                     case ItemPickupBehaviour.EquipWeapon:
                         if (equipmentType == EquipmentType.Weapon)
                         {
-                            Svr_SelectSlot(equipmentSlots.IndexOf(newSelectedSlot));
+                            Svr_SelectEquipmentSlot(equipmentSlots.IndexOf(newSelectedSlot));
                         }
                         break;
                     case ItemPickupBehaviour.EquipNone:
@@ -355,16 +355,15 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
             }
         }
 
-        if (SelectedEquipmentSlot.EquipmentType == equipmentType)
+        if (equipmentType == SelectedEquipmentSlot.EquipmentType)
         {
             if (SelectedEquipmentSlot.EquipmentItem)
             {
                 EquipmentItem.Svr_Unequip();
                 Svr_RemoveItem(SelectedEquipmentSlot.EquipmentItem);
             }
-            //Svr_EquipNewItem(equipment.GetComponent<EquipmentItem>());
-            Svr_EquipItem(equipment);
-            newItem.Svr_Equip();
+            Svr_PickupAndAssignItem(equipment);
+            newEquipmentItem.Svr_Equip();
         }
 
         // EquipmentType none is meant for equipment
@@ -377,10 +376,10 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
                 // Unbind current weapon
                 // Unequip current weapon
                 // Deselect item slot
-                newItem.Svr_Pickup(playerHands, connectionToClient);
-                Svr_EquipNewItem(newItem);
+                newEquipmentItem.Svr_Pickup(playerHands, connectionToClient);
+                Svr_EquipNewItem(newEquipmentItem);
                 ItemInHands = equipment;
-                Svr_DeselectSlot();
+                Svr_DeselectEquipmentSlot();
             }
         }
         Svr_InvokeItemPickedUp(ItemInHands);
@@ -398,12 +397,10 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
     {
         if (EquipmentItem)
         {
-            Debug.Log("Unequip");
             EquipmentItem.Svr_Unequip();
         }
         if (equipmentItem)
         {
-            Debug.Log("Equip");
             equipmentItem.Svr_Equip();
         }
     }
@@ -501,11 +498,11 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
         Rpc_OnItemDropped(item);
         if (SelectedEquipmentSlot)
         {
-            SelectedEquipmentSlot.Svr_RemoveItem();
+            SelectedEquipmentSlot.Svr_UnassignItem();
         }
         else
         {
-            Svr_SelectSlot(0);
+            Svr_SelectEquipmentSlot(0);
         }
     }
     [ClientRpc]
@@ -533,10 +530,10 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
             // Drop the previous item.
             equipmentSlotsEquipmentItem.Svr_Drop();
             // Remove the item in the equipmentslot.
-            equipmentSlot.Svr_RemoveItem();
+            equipmentSlot.Svr_UnassignItem();
         }
         // Equip the new item in the equipment slot.
-        equipmentSlot.Svr_EquipItem(newItem);
+        equipmentSlot.Svr_AssignItem(newItem);
         newItem.TryGetComponent(out EquipmentItem newEquipmentItem);
         // Assign the new item to this player and parent to playerhands.
         newEquipmentItem?.Svr_Pickup(playerHands, connectionToClient);
@@ -553,10 +550,10 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
     [Command]
     public void Cmd_SelectSlot(int slotIndex)
     {
-        Svr_SelectSlot(slotIndex);
+        Svr_SelectEquipmentSlot(slotIndex);
     }
     [Server]
-    public void Svr_SelectSlot(int slotIndex)
+    public void Svr_SelectEquipmentSlot(int slotIndex)
     {
         if (slotIndex + 1 <= equipmentSlotsCount && slotIndex + 1 >= 0)
         {
@@ -569,7 +566,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
         }
     }
     [Server]
-    public void Svr_DeselectSlot()
+    public void Svr_DeselectEquipmentSlot()
     {
         SelectedEquipmentSlot?.Rpc_Deselect(connectionToClient);
         SelectedEquipmentSlot = null;
@@ -606,13 +603,13 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
     }
 
     [Server]
-    private void Svr_EquipItem(GameObject item)
+    private void Svr_PickupAndAssignItem(GameObject item)
     {
         if (item.TryGetComponent(out EquipmentItem equipmentItem))
         {
             equipmentItem.Svr_Pickup(playerHands, connectionToClient);
         }
-        SelectedEquipmentSlot.Svr_EquipItem(item);
+        SelectedEquipmentSlot.Svr_AssignItem(item);
     }
 
     [Command]
@@ -645,7 +642,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
     [Server]
     private void Svr_ClearHotbarSlot(EquipmentSlot equipmentSlot)
     {
-        equipmentSlot.Svr_RemoveItem();
+        equipmentSlot.Svr_UnassignItem();
     }
 
     [Command]
@@ -673,7 +670,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
                 Rpc_UpdateEquipmentSlots(connectionToClient, tempSlot, 1);
         }
         equipmentSlotsCount = EquipmentSlots.Count;
-        Svr_SelectSlot(0);
+        Svr_SelectEquipmentSlot(0);
     }
 
     // Setup local player UI hotbar.

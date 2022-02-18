@@ -53,6 +53,7 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	{
 		if (!IsInteractable) return;
 		// Equipment should be on a child object of the player.
+		Rpc_Interact(interacter.GetComponent<NetworkIdentity>().connectionToClient, interacter);
 		PlayerEquipment equipment = interacter.GetComponentInChildren<PlayerEquipment>();
 		owner = interacter.transform;
 		if (equipment != null)
@@ -64,7 +65,6 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 			// This should not be possible, but just to be absolutely sure.
 			Debug.LogWarning($"{interacter} does not have a PlayerEquipment component", this);
 		}
-		Rpc_Interact(interacter.GetComponent<NetworkIdentity>().connectionToClient, interacter);
 	}
 
 	[TargetRpc]
@@ -81,8 +81,8 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 		JODSInput.Controls.Survivor.RMB.performed += OnRMBPerformed;
 		JODSInput.Controls.Survivor.RMB.canceled += OnRMBCanceled;
         JODSInput.Controls.Survivor.Drop.performed += OnDropPerformed;
-		//playerClass.onDied.AddListener(delegate () { Unbind(); });
-	}
+        playerClass.onDied.AddListener(delegate () { Unbind(); });
+    }
 	public virtual void Unbind()
 	{
 		// This method is the last thing that happens when dropping an item.
@@ -91,8 +91,8 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 		JODSInput.Controls.Survivor.RMB.performed -= OnRMBPerformed;
 		JODSInput.Controls.Survivor.RMB.canceled -= OnRMBCanceled;
         JODSInput.Controls.Survivor.Drop.performed -= OnDropPerformed;
-		//playerClass.onDied.RemoveListener(delegate () { Unbind(); });
-	}
+        playerClass.onDied.RemoveListener(delegate () { Unbind(); });
+    }
 	[TargetRpc]
 	protected void Rpc_Bind(NetworkConnection target)
 	{

@@ -91,7 +91,7 @@ public class RaycastWeapon : RangedWeapon
 
     private void Bullethole(Vector3 point, Vector3 normal, string phyMatName)
     {
-        if (GlobalVariables.hallo.TryGetValue(phyMatName, out Tags fxTag))
+        if (GlobalVariables.SurfaceTypes.TryGetValue(phyMatName, out Tags fxTag))
         {
             GameObject bulletHole = ObjectPool.Instance.SpawnFromLocalPool(fxTag, point + normal * 0.01f, Quaternion.identity, 5);
             bulletHole.transform.LookAt(point + normal);

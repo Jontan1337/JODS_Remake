@@ -151,14 +151,14 @@ public class EquipmentSlot : NetworkBehaviour
     #endregion
 
     [Server]
-    public void Svr_EquipItem(GameObject equipment)
+    public void Svr_AssignItem(GameObject equipment)
     {
         EquipmentItem = equipment;
     }
     // This method is strict, so it won't equip the item if the type doesn't match this slot.
     // Returns true if item is equipped, false if the item is not equipped.
     [Server]
-    public bool Svr_EquipItemStrict(GameObject equipment, EquipmentType equipmentType)
+    public bool Svr_AssignItemStrict(GameObject equipment, EquipmentType equipmentType)
     {
         if (equipmentType == EquipmentType)
         {
@@ -169,7 +169,7 @@ public class EquipmentSlot : NetworkBehaviour
     }
 
     [Server]
-    public void Svr_RemoveItem()
+    public void Svr_UnassignItem()
     {
         EquipmentItem = null;
     }
