@@ -116,21 +116,23 @@ public class StatusEffectManager : NetworkBehaviour
             //Get the effect which is already applied
             StatusEffect effect = currentEffects[newEffect.effect];
 
-            Sprite effectVisual = effect.GetImage();
-
-            int index = indexDict[effect.effect.name];
-
-            //Does the effect have a new visual? If so, update the current visual to the new one
-            if (effectVisual && imageReferenceList.Length > 0 && effectVisual != statusEffectVisuals[index])
+            if (playerObject)
             {
-                
+                Sprite effectVisual = effect.GetImage();
 
-                statusEffectVisuals[index] = effectVisual;
-                Rpc_ChangeDictionaryKey(connectionToClient, effect.effect.name, index);
-                Rpc_EnableVisual(connectionToClient, index, effectVisual.name, effect.effect.uIImageColor);
-                Rpc_ChangeVisualAlpha(connectionToClient, index, effect.GetImageAlpha());
+                int index = indexDict[effect.effect.name];
+
+                //Does the effect have a new visual? If so, update the current visual to the new one
+                if (effectVisual && imageReferenceList.Length > 0 && effectVisual != statusEffectVisuals[index])
+                {
+
+
+                    statusEffectVisuals[index] = effectVisual;
+                    Rpc_ChangeDictionaryKey(connectionToClient, effect.effect.name, index);
+                    Rpc_EnableVisual(connectionToClient, index, effectVisual.name, effect.effect.uIImageColor);
+                    Rpc_ChangeVisualAlpha(connectionToClient, index, effect.GetImageAlpha());
+                }
             }
-
             //If this effect can stack in any way, it will stack when activated again.
             currentEffects[effect.effect].Activate(amount);
         }
