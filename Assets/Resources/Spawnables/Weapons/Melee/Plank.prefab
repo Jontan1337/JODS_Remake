@@ -85,10 +85,13 @@ MonoBehaviour:
   splatterAmountOnHit: 0.04
   splatterRemoveAmount: 300
   splatterRemoveAmountOnSwing: -0.01
+  impactDuration: 0.2
+  impactAmount: 1
   weaponAnimator: {fileID: 7119151799590538732}
   sfxPlayer: {fileID: 5247268446413630599}
   material: {fileID: 2100000, guid: f96cadb658ef79f4cb1d04fc10740bb9, type: 2}
   triggerCollider: {fileID: 7583577345193426078}
+  particleTrail: {fileID: 0}
   swingSound: {fileID: 0}
   hitSound: {fileID: 0}
 --- !u!33 &5153342560877232090
@@ -616,7 +619,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncMode: 0
-  syncInterval: 0.1
+  syncInterval: 0.01
   clientAuthority: 0
   animator: {fileID: 7119151799590538732}
 --- !u!1001 &4318616693017219260

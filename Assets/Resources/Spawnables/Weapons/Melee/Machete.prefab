@@ -5510,6 +5510,8 @@ MonoBehaviour:
   splatterAmountOnHit: 0.04
   splatterRemoveAmount: 250
   splatterRemoveAmountOnSwing: -0.005
+  impactDuration: 0.2
+  impactAmount: 1
   weaponAnimator: {fileID: 3233265353284567669}
   sfxPlayer: {fileID: 6768451046035223808}
   material: {fileID: 2100000, guid: f96cadb658ef79f4cb1d04fc10740bb9, type: 2}
@@ -6288,7 +6290,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncMode: 0
-  syncInterval: 0.1
+  syncInterval: 0.01
   clientAuthority: 0
   animator: {fileID: 3233265353284567669}
 --- !u!65 &437768736

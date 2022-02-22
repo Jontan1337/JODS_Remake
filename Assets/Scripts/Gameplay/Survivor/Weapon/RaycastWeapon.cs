@@ -23,7 +23,8 @@ public class RaycastWeapon : RangedWeapon
             if (Physics.Raycast(shootRay, out RaycastHit shootHit, range, ~ignoreLayer))
             {
                 PhysicMaterial phyMat = shootHit.collider.sharedMaterial;
-                Rpc_BulletEffect(aimHit.point, shootHit.point, shootHit.normal, phyMat ? phyMat.name : "");
+
+                //Rpc_BulletEffect(aimHit.point, shootHit.point, shootHit.normal, phyMat ? phyMat.name : "");
                 if (shootHit.collider.TryGetComponent(out IDamagable damagable))
                 {
                     damagable.Svr_Damage(damage, owner);
@@ -46,48 +47,49 @@ public class RaycastWeapon : RangedWeapon
         }
         else
         {
-            Vector2 randomCircle = Random.insideUnitCircle;
-            Rpc_BulletEffect((playerHead.forward + new Vector3(
-                randomCircle.x,
-                randomCircle.y) / 200f * (currentCurveAccuracy)) * range,
-                Vector3.zero, Vector3.zero, "");
+            //Vector2 randomCircle = Random.insideUnitCircle;
+            //Rpc_BulletEffect((playerHead.forward + new Vector3(
+            //    randomCircle.x,
+            //    randomCircle.y) / 200f * (currentCurveAccuracy)) * range,
+            //    Vector3.zero, Vector3.zero, "");
         }
+        Rpc_Shoot(recoil);
     }
 
     // Consider changing to TargetRpc and change only the effects
     // (BulletTrail and BulletHole) to ClientRpc.
-    [ClientRpc]
-    private void Rpc_BulletEffect(Vector3 aimHitPoint, Vector3 shootHitPoint, Vector3 shootHitNormal, string matName)
-    {
-        BulletTrail(aimHitPoint);
-        if (shootHitPoint != Vector3.zero && shootHitNormal != Vector3.zero)
-        {
-            Bullethole(shootHitPoint, shootHitNormal, matName);
-        }
-        ShootFX();
-        //BulletTrail(playerHead.forward * range);
-    }
     //[ClientRpc]
-    //protected override void Rpc_Shoot(Vector2 recoil)
+    //private void Rpc_BulletEffect(Vector3 aimHitPoint, Vector3 shootHitPoint, Vector3 shootHitNormal, string matName)
     //{
-    //    base.Rpc_Shoot(recoil);
-    //    Ray aimRay = playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2 + recoil.x, Screen.height / 2 + recoil.y));
-    //    if (Physics.Raycast(aimRay, out RaycastHit aimHit, range, ~ignoreLayer))
+    //    BulletTrail(aimHitPoint);
+    //    if (shootHitPoint != Vector3.zero && shootHitNormal != Vector3.zero)
     //    {
-    //        Vector3 targetPoint = aimHit.point;
-    //        Ray shootRay = new Ray(shootOrigin.position, targetPoint - shootOrigin.position);
-    //        BulletTrail(targetPoint);
-    //        if (Physics.Raycast(shootRay, out RaycastHit shootHit, range, ~ignoreLayer))
-    //        {
-    //            PhysicMaterial phyMat = shootHit.collider.sharedMaterial;
-    //            Bullethole(shootHit.point, shootHit.normal, phyMat ? phyMat.name : "");
-    //        }
+    //        Bullethole(shootHitPoint, shootHitNormal, matName);
     //    }
-    //    else
-    //    {
-    //        BulletTrail(playerHead.forward * range);
-    //    }
+    //    ShootFX();
+    //    //BulletTrail(playerHead.forward * range);
     //}
+    [ClientRpc]
+    protected override void Rpc_Shoot(Vector2 recoil)
+    {
+        base.Rpc_Shoot(recoil);
+        Ray aimRay = playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2 + recoil.x, Screen.height / 2 + recoil.y));
+        if (Physics.Raycast(aimRay, out RaycastHit aimHit, range, ~ignoreLayer))
+        {
+            Vector3 targetPoint = aimHit.point;
+            Ray shootRay = new Ray(shootOrigin.position, targetPoint - shootOrigin.position);
+            BulletTrail(targetPoint);
+            if (Physics.Raycast(shootRay, out RaycastHit shootHit, range, ~ignoreLayer))
+            {
+                PhysicMaterial phyMat = shootHit.collider.sharedMaterial;
+                Bullethole(shootHit.point, shootHit.normal, phyMat ? phyMat.name : "");
+            }
+        }
+        else
+        {
+            BulletTrail(playerHead.forward * range);
+        }
+    }
 
     private void Bullethole(Vector3 point, Vector3 normal, string phyMatName)
     {

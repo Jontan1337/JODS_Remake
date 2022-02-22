@@ -63,7 +63,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     private Coroutine COStopShootLoop;
     private Coroutine COAccuracyStabilizer;
 
-    private const string playerUIPath = "UI/Canvas - In Game/";
+    private const string playerUIPath = "UI/Canvas - In Game";
 
     private bool canShoot = true;
 
@@ -232,10 +232,10 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
     private void GetUIElements(Transform root)
     {
-        crosshairUIParent = root.Find($"{playerUIPath}Crosshair");
-        currentAmmunitionUI = root.Find($"{playerUIPath}Weapon ammunition");
-        extraAmmunitionUI = root.Find($"{playerUIPath}Weapon extra ammunition");
-        fireModeUI = root.Find($"{playerUIPath}Weapon fire mode");
+        crosshairUIParent = root.Find($"{playerUIPath}/Crosshair");
+        currentAmmunitionUI = root.Find($"{playerUIPath}/Weapon ammunition");
+        extraAmmunitionUI = root.Find($"{playerUIPath}/Weapon extra ammunition");
+        fireModeUI = root.Find($"{playerUIPath}/Weapon fire mode");
         currentAmmunitionUIText = currentAmmunitionUI.GetComponent<TextMeshProUGUI>();
         extraAmmunitionUIText = extraAmmunitionUI.GetComponent<TextMeshProUGUI>();
         fireModeUIText = fireModeUI.GetComponent<TextMeshProUGUI>();
@@ -275,6 +275,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     {
         JODSInput.Controls.Survivor.Drop.Disable();
         JODSInput.Controls.Survivor.Interact.Disable();
+        JODSInput.Controls.Survivor.Hotbarselecting.Disable();
 
         if (hasAuthority)
         {
@@ -286,6 +287,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     {
         JODSInput.Controls.Survivor.Drop.Enable();
         JODSInput.Controls.Survivor.Interact.Enable();
+        JODSInput.Controls.Survivor.Hotbarselecting.Enable();
 
         if (hasAuthority)
         {
@@ -302,9 +304,9 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     private void Cmd_Shoot()
     {
         if (!canShoot) return;
-        Svr_StartAccuracyStabilizer();
-        if (!hasAuthority)
-            Rpc_StartAccuracyStabilizer(connectionToClient);
+        //Svr_StartAccuracyStabilizer();
+        //if (!hasAuthority)
+        //    Rpc_StartAccuracyStabilizer(connectionToClient);
 
         switch (FireMode)
         {
@@ -355,6 +357,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
             }
         }
         PostShoot();
+        if (!isLocalPlayer)
+            Rpc_PostShoot(connectionToClient);
     }
 
     private IEnumerator IEBurstShootLoop()
@@ -377,6 +381,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
             yield return null;
         }
         PostShoot();
+        if (!isLocalPlayer)
+            Rpc_PostShoot(connectionToClient);
         if (Magazine == 0)
         {
             Rpc_EmptySFX();
@@ -394,6 +400,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
                 PreShoot();
                 Shoot(Vector2.zero);
                 PostShoot();
+                if (!isLocalPlayer)
+                    Rpc_PostShoot(connectionToClient);
                 Svr_StartCooldown();
                 if (!hasAuthority)
                     Rpc_StartCooldown(connectionToClient);
@@ -414,8 +422,10 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         PreShoot();
         Shoot(Vector2.zero);
         PostShoot();
+        if (!isLocalPlayer)
+            Rpc_PostShoot(connectionToClient);
         Svr_StartCooldown();
-        if (!hasAuthority)
+        if (!isLocalPlayer)
             Rpc_StartCooldown(connectionToClient);
     }
 
@@ -438,8 +448,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         StartCoroutine(IEShootCooldown());
     }
 
-    [Server]
-    private void Svr_StartAccuracyStabilizer()
+    //[Server]
+    private void StartAccuracyStabilizer()
     {
         if (COAccuracyStabilizer != null) return;
 
@@ -458,7 +468,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     private void PostShoot()
     {
         CurrentAccuracy += recoil;
-        Svr_StartAccuracyStabilizer();
+        StartAccuracyStabilizer();
     }
 
     // Later this should be called by a reload animation event.
@@ -495,14 +505,19 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         {
             FireMode = fireModes[++fireModeIndex];
         }
-        Rpc_ChangeFireModeSFX();
-        transform.DOComplete();
-        transform.DOPunchRotation(new Vector3(0f, 2f, -5f), 0.2f, 0, 0.5f);
+        Rpc_ChangeFireMode();
     }
 
     #endregion
 
     #region Clients
+
+    [TargetRpc]
+    private void Rpc_PostShoot(NetworkConnection target)
+    {
+        print("Rpc_PostShoot!");
+        PostShoot();
+    }
 
     [TargetRpc]
     private void Rpc_StartCooldown(NetworkConnection target)
@@ -565,9 +580,11 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         sfxPlayer.PlaySFX(emptySound);
     }
     [ClientRpc]
-    protected void Rpc_ChangeFireModeSFX()
+    protected void Rpc_ChangeFireMode()
     {
         sfxPlayer.PlaySFX(emptySound);
+        transform.DOComplete();
+        transform.DOPunchRotation(new Vector3(0f, 2f, -5f), 0.2f, 0, 0.5f);
     }
     [ClientRpc]
     protected void Rpc_Reload()
