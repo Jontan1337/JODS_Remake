@@ -71,7 +71,7 @@ public class SurvivorController : NetworkBehaviour
 
 		if (cController.isGrounded)
 		{
-			moveDirection = transform.TransformDirection(new Vector3(horizontal, 0.00f, vertical)) * (modifiers.MovementSpeed * speedMultiplier * baseSpeed);
+			moveDirection = transform.TransformDirection(new Vector3(horizontal, 0.00f, vertical)) * (speedMultiplier * baseSpeed);
 			if (isJumping)
 			{
 				moveDirection.y = jumpSpeed;

@@ -13,6 +13,7 @@ public class ModifierManager : NetworkBehaviour
 
 
     public float MovementSpeed { get; set; }
+    public float Movementspeed { get; internal set; }
     public float Cooldown { get; set; }
     public float Healing { get; set; }
     public float MeleeDamage { get; set; }
