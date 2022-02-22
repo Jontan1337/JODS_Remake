@@ -130,6 +130,11 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     [Command]
     private void Cmd_ResetAnimatorSpeed()
     {
+        Svr_ResetAnimatorSpeed();
+    }
+    [Server]
+    private void Svr_ResetAnimatorSpeed()
+    {
         weaponAnimator.speed = 1f / attackInterval;
     }
 
@@ -175,16 +180,22 @@ public class MeleeWeapon : EquipmentItem, IImpacter
                         if (amountSlashed == currentPunchthrough)
                         {
                             weaponAnimator.speed = 0f;
-                            ImpactShake(impactDuration, impactAmount).OnComplete(delegate() { Cmd_ResetAnimatorSpeed(); });
+                            ImpactShake(impactDuration, impactAmount).OnComplete(delegate() { 
+                                Svr_ResetAnimatorSpeed();
+                                Svr_EndOfAttack();
+                            });
+                            Rpc_ImpactShake(connectionToClient, impactDuration, impactAmount);
                         }
                     }
                     break;
                 case DamageTypes.Blunt:
                     weaponAnimator.speed = 0f;
-                    weaponAnimator.CrossFadeInFixedTime("Idle", 0.3f);
+                    weaponAnimator.CrossFadeInFixedTime("Idle", impactDuration);
                     ImpactShake(impactDuration, impactAmount).OnComplete(delegate () {
-                        Cmd_ResetAnimatorSpeed();
+                        Svr_ResetAnimatorSpeed();
+                        Svr_EndOfAttack();
                     });
+                    Rpc_ImpactShake(connectionToClient, impactDuration, impactAmount);
                     break;
                 case DamageTypes.Pierce:
                     break;
@@ -280,6 +291,11 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     [Command]
     private void Cmd_EndOfAttack()
     {
+        Svr_EndOfAttack();
+    }
+    [Server]
+    private void Svr_EndOfAttack()
+    {
         amountSlashed = 0;
         currentDamage = normalDamage;
         currentPunchthrough = normalPunchthrough;
@@ -345,10 +361,15 @@ public class MeleeWeapon : EquipmentItem, IImpacter
 
     private Tweener ImpactShake(float duration, float amount)
     {
-        Cmd_EndOfAttack();
+        transform.parent.DOComplete();
+        return transform.parent.DOPunchRotation(new Vector3(0f, 0f, 0f), duration, 0, 0f);
+    }
+    [TargetRpc]
+    private void Rpc_ImpactShake(NetworkConnection target, float duration, float amount)
+    {
         transform.parent.DOComplete();
         transform.parent.DOPunchPosition(new Vector3(0f, 0.1f, -0.1f), duration, 10, 0.1f);
-        return transform.parent.DOPunchRotation(new Vector3(2f, 1f, UnityEngine.Random.Range(-1f, 1f)), duration, 10, 0.1f);
+        transform.parent.DOPunchRotation(new Vector3(2f, 1f, UnityEngine.Random.Range(-1f, 1f)), duration, 10, 0.1f);
     }
 
     [ClientRpc]
