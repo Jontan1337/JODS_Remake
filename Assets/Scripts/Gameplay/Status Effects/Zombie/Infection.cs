@@ -28,12 +28,6 @@ public class Infection : StatusEffect
         }
     }
 
-    public override void End()
-    {
-        infectionLevel = 0;
-        infectionRate = 0;
-    }
-
     public override void Tick()
     {
         if (infectionLevel == maxInfectionLevel) return;
@@ -56,13 +50,18 @@ public class Infection : StatusEffect
 
         infectionRate = 0;
 
+        ModifierManager mm = obj.GetComponent<ModifierManager>();
+
         switch (infectionLevel)
         {
             case 1:
-
+                mm.MovementSpeed -= 0.3f;
                 break;
             case 2:
-
+                mm.MeleeDamage -= 0.3f;
+                break;
+            case 3:
+                mm.RangedDamage -= 0.3f;
                 break;
         }
 
@@ -76,4 +75,31 @@ public class Infection : StatusEffect
     }
 
     public override float GetImageAlpha() => (infectionLevel / (float)(maxInfectionLevel + 1f)) + (infectionRate * 0.0025f);
+
+    public override void End()
+    {
+        ModifierManager mm = obj.GetComponent<ModifierManager>();
+
+        if (infectionLevel > 0)
+        {
+           mm .MovementSpeed += 0.3f;
+        }
+        if (infectionLevel > 1)
+        {
+            mm.MeleeDamage += 0.3f;
+        }
+        if (infectionLevel > 2)
+        {
+            mm.RangedDamage += 0.3f;
+        }
+
+        infectionLevel = 0;
+        infectionRate = 0;
+    }
 }
+
+
+
+
+
+
