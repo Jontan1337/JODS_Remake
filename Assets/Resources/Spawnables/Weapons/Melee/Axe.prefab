@@ -23,6 +23,7 @@ GameObject:
   - component: {fileID: 3706381100500651572}
   - component: {fileID: 2177156062513161764}
   - component: {fileID: 6225377672603672993}
+  - component: {fileID: 8924631460771411969}
   m_Layer: 0
   m_Name: Axe
   m_TagString: Untagged
@@ -84,10 +85,13 @@ MonoBehaviour:
   splatterAmountOnHit: 0.04
   splatterRemoveAmount: 300
   splatterRemoveAmountOnSwing: -0.01
+  impactDuration: 0.2
+  impactAmount: 1
   weaponAnimator: {fileID: 6225377672603672993}
   sfxPlayer: {fileID: 2177156062513161764}
   material: {fileID: 2100000, guid: f96cadb658ef79f4cb1d04fc10740bb9, type: 2}
   triggerCollider: {fileID: 8510742509104440253}
+  particleTrail: {fileID: 0}
   swingSound: {fileID: 0}
   hitSound: {fileID: 0}
 --- !u!33 &930379364175218385
@@ -406,6 +410,22 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &8924631460771411969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 930379364178549457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f6f3bf89aa97405989c802ba270f815, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.01
+  clientAuthority: 0
+  animator: {fileID: 6225377672603672993}
 --- !u!1001 &1955591215630551713
 PrefabInstance:
   m_ObjectHideFlags: 0
