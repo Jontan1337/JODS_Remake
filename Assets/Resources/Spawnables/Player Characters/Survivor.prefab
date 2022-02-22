@@ -3584,7 +3584,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   sClass: {fileID: 0}
-  survivorSO: {fileID: 11400000, guid: 6e02f3f114526574798927bb6afebdfd, type: 2}
+  survivorSO: {fileID: 11400000, guid: 1217c7de04298614a84ebffa22d3814c, type: 2}
   bodyRenderer: {fileID: 8146840676092125171}
   headRenderer: {fileID: 2690098373533844718}
   currentHealth: 100
@@ -3640,7 +3640,6 @@ MonoBehaviour:
     m_Bits: 1
   walkSpeedMultiplier: 1
   sprintSpeedMultiplier: 2
-  speedMultiplier: 1
   jumpSpeed: 5
   isSprinting: 0
   isGrounded: 1
@@ -4474,6 +4473,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36c70d60edf9bb34d8744e58ed9ce7c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   movementSpeed: 1
   cooldown: 1
   healing: 1

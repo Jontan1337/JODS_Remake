@@ -17,7 +17,13 @@ public class ModifierManager : NetworkBehaviour
     public float Healing { get; set; }
     public float MeleeDamage { get; set; }
     public float RangedDamage { get; set; }
-    
+}
 
-
+public enum Stats
+{
+    Movementspeed,
+    Cooldown,
+    Healing,
+    MeleeDamage,
+    RangedDamage
 }
