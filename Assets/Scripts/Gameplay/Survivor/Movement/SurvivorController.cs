@@ -23,9 +23,8 @@ public class SurvivorController : NetworkBehaviour
 	CharacterController cController;
 	SurvivorAnimationManager anim;
 	ModifierManager modifiers;
-	public float walkSpeedMultiplier;
-	public float sprintSpeedMultiplier;
-	public float speedMultiplier;
+	//public float walkSpeedMultiplier;
+	//public float sprintSpeedMultiplier;
 	public float jumpSpeed;
 	public bool isSprinting;
 	public bool isGrounded;
@@ -71,7 +70,8 @@ public class SurvivorController : NetworkBehaviour
 
 		if (cController.isGrounded)
 		{
-			moveDirection = transform.TransformDirection(new Vector3(horizontal, 0.00f, vertical)) * (speedMultiplier * baseSpeed);
+			float speed = (isSprinting ? baseSpeed * 2 : baseSpeed) * modifiers.MovementSpeed;
+			moveDirection = transform.TransformDirection(new Vector3(horizontal, 0.00f, vertical)) * (speed);
 			if (isJumping)
 			{
 				moveDirection.y = jumpSpeed;
@@ -80,16 +80,8 @@ public class SurvivorController : NetworkBehaviour
 		}
 		moveDirection.y -= gravity * Time.deltaTime;
 		cController.Move(moveDirection * Time.deltaTime);
-		if (isSprinting && vertical > 0.65)
-		{
-			speedMultiplier = sprintSpeedMultiplier;
-		}
-		else
-		{
-			speedMultiplier = walkSpeedMultiplier;
-		}
 		anim.SetFloat("xVelocity", x = Mathf.Lerp(x, horizontal, Time.deltaTime * 10));
-		anim.SetFloat("yVelocity", y = Mathf.Lerp(y, Mathf.Clamp(vertical * speedMultiplier, -1f, 2f), Time.deltaTime * 10));
+		anim.SetFloat("yVelocity", y = Mathf.Lerp(y, Mathf.Clamp(vertical * modifiers.MovementSpeed, -1f, 2f), Time.deltaTime * 10));
 	}
 
 	private void Move(InputAction.CallbackContext context)

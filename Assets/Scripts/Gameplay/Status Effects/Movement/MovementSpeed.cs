@@ -4,23 +4,19 @@ using UnityEngine;
 
 public class MovementSpeed : StatusEffect
 {
-    private SurvivorController sClass;
+    private ModifierManager modifierManager;    
     private MovementSpeedSO movementSpeed;
-    private float defaultWalkSpeed;
-    private float defaultSprintSpeed;
+
     public MovementSpeed(StatusEffectSO effect, GameObject obj) : base(effect, obj)
     {
-        sClass = obj.GetComponent<SurvivorController>();
+        modifierManager = obj.GetComponent<ModifierManager>();
         movementSpeed = (MovementSpeedSO) effect;
-        defaultWalkSpeed = sClass.walkSpeedMultiplier;
-        defaultSprintSpeed = sClass.sprintSpeedMultiplier;
+
     }
     public override void OnEffectApplied()
     {
-        Debug.Log("Movement Speed Status effects do not work on clients because the server is handling all of the status effects.");
-        Debug.Log("The actual effects are therefor also run on the server. Fix.");
-        sClass.walkSpeedMultiplier += defaultWalkSpeed * movementSpeed.speedModifier;
-        sClass.sprintSpeedMultiplier += defaultSprintSpeed * movementSpeed.speedModifier;
+        modifierManager.MovementSpeed += movementSpeed.speedModifier;
+
     }
     public override void ApplyEffect(int? amount)
     {
@@ -29,8 +25,7 @@ public class MovementSpeed : StatusEffect
 
     public override void End()
     {
-        sClass.walkSpeedMultiplier = defaultWalkSpeed;
-        sClass.sprintSpeedMultiplier = defaultSprintSpeed;
+        modifierManager.MovementSpeed -= movementSpeed.speedModifier;
     }
 
     public override void Tick()

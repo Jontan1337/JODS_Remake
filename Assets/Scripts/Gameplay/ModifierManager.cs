@@ -12,8 +12,12 @@ public class ModifierManager : NetworkBehaviour
     [SyncVar, SerializeField] private float rangedDamage = 1;
 
 
-    public float MovementSpeed { get; set; }
-    public float Movementspeed { get; internal set; }
+    public float MovementSpeed
+    {
+        get { return movementSpeed; }
+        set { movementSpeed = value; }
+    }
+
     public float Cooldown { get; set; }
     public float Healing { get; set; }
     public float MeleeDamage { get; set; }
