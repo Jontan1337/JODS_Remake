@@ -236,18 +236,58 @@ MonoBehaviour:
   - shopItemName: AA-12
     shopItemPrefab: {fileID: 6407276093970849346, guid: 4986cc4ba9229e344aaa5402ebc136fc,
       type: 3}
-    shopItemPrice: 50
+    shopItemPrice: 200
   - shopItemName: AK-47
     shopItemPrefab: {fileID: 814314852993368252, guid: 01c4a3d1834a449439a57ffa8ea61184,
       type: 3}
+    shopItemPrice: 250
+  - shopItemName: Glock
+    shopItemPrefab: {fileID: 1295379368891098024, guid: 6383c873767b6a84c945efb53197ab0b,
+      type: 3}
+    shopItemPrice: 30
+  - shopItemName: Karabiner
+    shopItemPrefab: {fileID: 7858174057812244678, guid: 575039cfa43c72b42ba828ce9cf4aff3,
+      type: 3}
+    shopItemPrice: 140
+  - shopItemName: M4A1
+    shopItemPrefab: {fileID: 1503187357618671214, guid: fa9eaf2be7bd51f4e875e6e1813527cf,
+      type: 3}
     shopItemPrice: 70
+  - shopItemName: M24
+    shopItemPrefab: {fileID: 8486432283558350546, guid: fc8ca70a49b8ec0489f1e3eacf2535e2,
+      type: 3}
+    shopItemPrice: 200
+  - shopItemName: MP5
+    shopItemPrefab: {fileID: 5799773097203344797, guid: f7adbad662c741b41943e7ecf998d939,
+      type: 3}
+    shopItemPrice: 70
+  - shopItemName: Pump Shotgun
+    shopItemPrefab: {fileID: 5799773097203344797, guid: eeae782c43868674fbc06706a3b95c5e,
+      type: 3}
+    shopItemPrice: 150
+  - shopItemName: Revolver
+    shopItemPrefab: {fileID: 5799773097203344797, guid: e9f5cae451d606c47829fa583924e352,
+      type: 3}
+    shopItemPrice: 70
+  - shopItemName: Uzi
+    shopItemPrefab: {fileID: 5799773097203344797, guid: 324c8e03d8d729b41996adb7ee150a2a,
+      type: 3}
+    shopItemPrice: 100
   meleeWeapons:
   - shopItemName: Plank
     shopItemPrefab: {fileID: 8890196892592532165, guid: 7de23485e7829f44fba47a37cd3f3df2,
       type: 3}
-    shopItemPrice: 5
+    shopItemPrice: 10
   - shopItemName: Machete
     shopItemPrefab: {fileID: 6484964077652478879, guid: f438cd29d6d19a14598cb02467f7b01a,
+      type: 3}
+    shopItemPrice: 70
+  - shopItemName: Axe
+    shopItemPrefab: {fileID: 930379364178549457, guid: cf07e03a1251a1b45a41156af5417c9a,
+      type: 3}
+    shopItemPrice: 100
+  - shopItemName: Wrench
+    shopItemPrefab: {fileID: 4676847733597018450, guid: 7289d1c9669283643b5f6ae25cbedca9,
       type: 3}
     shopItemPrice: 50
   healingEquipment:
@@ -289,6 +329,7 @@ MonoBehaviour:
   topPartOfCrate: {fileID: 6140357131660082084}
   topOpenValue: 330
   playerPointsText: {fileID: 8836977276779008881}
+  isInteractable: 1
   test: 0
 --- !u!114 &344788462489629876
 MonoBehaviour:
