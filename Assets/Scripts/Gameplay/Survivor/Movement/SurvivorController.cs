@@ -15,7 +15,7 @@ public class SurvivorController : NetworkBehaviour
 	private float x, y = 0;
 	private bool isJumping;
 	private float gravity = 20;
-	private float baseSpeed = 2.7f;
+	private float baseSpeed = 2.9f;
 
 	[SerializeField] private Transform groundCheck = null;
 	[SerializeField] private LayerMask groundMask = 0;
