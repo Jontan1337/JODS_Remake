@@ -515,7 +515,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [TargetRpc]
     private void Rpc_PostShoot(NetworkConnection target)
     {
-        print("Rpc_PostShoot!");
         PostShoot();
     }
 

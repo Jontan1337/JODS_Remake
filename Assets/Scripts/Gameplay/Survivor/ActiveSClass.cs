@@ -223,8 +223,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 
 		sController = GetComponent<SurvivorController>();
 		movementSpeed = survivorSO.movementSpeed;
-		sController.walkSpeedMultiplier *= movementSpeed;
-		sController.sprintSpeedMultiplier = sController.walkSpeedMultiplier * 2;
+		GetComponent<ModifierManager>().MovementSpeed = movementSpeed;
 		GetComponent<SurvivorAnimationManager>().anim.speed = movementSpeed;
 
 		abilityCooldown = survivorSO.abilityCooldown;

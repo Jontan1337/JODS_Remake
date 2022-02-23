@@ -146,7 +146,7 @@ public class WeaponShop : NetworkBehaviour, IInteractable
 
     public void CloseShop()
     {
-        if (isClient)
+        if (hasAuthority)
         {
             Cmd_CloseShop(playerGameObject);
         }

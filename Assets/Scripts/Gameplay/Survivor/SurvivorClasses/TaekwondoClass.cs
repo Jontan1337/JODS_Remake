@@ -202,6 +202,6 @@ public class TaekwondoClass : SurvivorClass, IHitter
     [Command]
     private void Cmd_OnHit(Transform hitObject, int dmg)
     {
-        hitObject.GetComponent<IDamagable>()?.Svr_Damage(dmg);
+        hitObject.GetComponent<IDamagable>()?.Svr_Damage(dmg, gameObject.transform.root);
     }
 }
