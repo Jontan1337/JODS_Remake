@@ -8,6 +8,8 @@ public class EngineerClass : SurvivorClass
 	private PlayerEquipment playerEquipment;
 	private GameObject turret;
 	private SurvivorController sController;
+	private ActiveSClass sClass;
+	private ModifierManager modifierManager;
 
 	private bool recharging = false;
 
@@ -43,6 +45,8 @@ public class EngineerClass : SurvivorClass
 		if (hasAuthority || isServer)
 		{
 			sController = GetComponentInParent<SurvivorController>();
+			sClass = GetComponentInParent<ActiveSClass>();
+			modifierManager = GetComponentInParent<ModifierManager>();
 		}
 	}
 	public override void ActiveAbility()
@@ -74,17 +78,19 @@ public class EngineerClass : SurvivorClass
 		sController.enabled = false;
 		recharging = true;
 		yield return new WaitForSeconds(2f);
-        while (true)
+		modifierManager.Cooldown = 2;
+        while (!sClass.AbilityIsReady)
         {
-			yield return new WaitForSeconds(1f);
-			GetComponentInParent<ActiveSClass>().abilityCooldownCount += 1;
+			yield return null;
 		}
+		StartCoroutine(StopRecharge());
 	}
 
 	IEnumerator StopRechargeCo;
 	private IEnumerator StopRecharge()
 	{
 		yield return new WaitForSeconds(2f);
+		GetComponentInParent<ModifierManager>().Cooldown = 1;
 		sController.enabled = true;
 		recharging = false;
 	}
