@@ -62,17 +62,19 @@ public class StatusEffectManager : NetworkBehaviour
         //If the effect has a visual element
         if (effectVisual && imageReferenceList.Length > 0)
         {
-            statusEffectVisuals.Remove(indexDict[effect.name]);
-
             string key = effect.name;
+            if (indexDict.ContainsKey(key))
+            {
+                statusEffectVisuals.Remove(indexDict[key]);
 
-            Rpc_DisableVisual(connectionToClient, key);
+                Rpc_DisableVisual(connectionToClient, key);
 
-            Image img = imageReferenceList[indexDict[key]];
-            img.sprite = null;
-            img.enabled = false;
+                Image img = imageReferenceList[indexDict[key]];
+                img.sprite = null;
+                img.enabled = false;
 
-            indexDict.Remove(effect.name);
+                indexDict.Remove(key);
+            }
         }
     }
 
@@ -120,17 +122,21 @@ public class StatusEffectManager : NetworkBehaviour
             {
                 Sprite effectVisual = effect.GetImage();
 
-                int index = indexDict[effect.effect.name];
-
-                //Does the effect have a new visual? If so, update the current visual to the new one
-                if (effectVisual && imageReferenceList.Length > 0 && effectVisual != statusEffectVisuals[index])
+                string key = effect.effect.name;
+                if (indexDict.ContainsKey(key))
                 {
+                    int index = indexDict[key];
+
+                    //Does the effect have a new visual? If so, update the current visual to the new one
+                    if (effectVisual && imageReferenceList.Length > 0 && effectVisual != statusEffectVisuals[index])
+                    {
 
 
-                    statusEffectVisuals[index] = effectVisual;
-                    Rpc_ChangeDictionaryKey(connectionToClient, effect.effect.name, index);
-                    Rpc_EnableVisual(connectionToClient, index, effectVisual.name, effect.effect.uIImageColor);
-                    Rpc_ChangeVisualAlpha(connectionToClient, index, effect.GetImageAlpha());
+                        statusEffectVisuals[index] = effectVisual;
+                        Rpc_ChangeDictionaryKey(connectionToClient, key, index);
+                        Rpc_EnableVisual(connectionToClient, index, effectVisual.name, effect.effect.uIImageColor);
+                        Rpc_ChangeVisualAlpha(connectionToClient, index, effect.GetImageAlpha());
+                    }
                 }
             }
             //If this effect can stack in any way, it will stack when activated again.

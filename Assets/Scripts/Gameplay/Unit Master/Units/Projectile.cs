@@ -5,7 +5,8 @@ using Mirror;
 
 public abstract class Projectile : NetworkBehaviour
 {
-
+	[Header("Settings")]
+	[SerializeField] private bool objectPooled = false; //TEMPORARY
 	[Header("Projectile Stats")]
 	public int damage = 0;
 	[SerializeField] protected int lifetime = 5;
@@ -61,16 +62,22 @@ public abstract class Projectile : NetworkBehaviour
 
 	public void OnTriggerEnter(Collider col)
 	{
+		if (!isServer) return;
+
 		OnHit(col);
 	}
 	private void OnCollisionEnter(Collision col)
 	{
+		if (!isServer) return;
+
 		OnHit(col);
 	}
 
 
 	public virtual void OnHit(Collider objectHit)
 	{
+		if (!isServer) return;
+
 		if (!piercing && !hasHit)
 		{
 			hasHit = true; //Prevents the projectile from hitting multiple times
@@ -109,6 +116,7 @@ public abstract class Projectile : NetworkBehaviour
 
 	public virtual void ReturnObjectToPool(float time)
 	{
+		if (!objectPooled) return;
 		ObjectPool.Instance.ReturnToNetworkedPool(objectPoolTag, gameObject, time);
 	}
 

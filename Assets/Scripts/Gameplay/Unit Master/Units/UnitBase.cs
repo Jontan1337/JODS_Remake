@@ -1080,6 +1080,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         Debug.LogError("Direct ranged damage not implemented");
     }
     int projectileSpawns = 1;
+    
     public virtual void SpawnProjectile()
     {
         if (!isServer) return;
@@ -1095,7 +1096,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
         if (projectileSpawns == 0) return; //This bool ensures that only 1 projectile spawns during each attack
         //This wouldn't be necessary if the server wasn't delayed by like 0.001s....
-
 
         //Spawn the projectile
         GameObject projectile = Instantiate(ranged.TEMPProjectilePrefab, transform.TransformPoint(ranged.projectileSpawnLocation), Quaternion.identity);
@@ -1120,9 +1120,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
         AttackRange = false; //Disables this bool, allowing the unit to do another ranged attack.
         StartCoroutine(RangedCooldownCoroutine()); //Start cooldown
-
-
     }
+    
     protected bool AtPreferredDistance()
     {
         if (!currentTarget) return false;

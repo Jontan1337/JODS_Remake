@@ -30,13 +30,14 @@ public class ZombieSpit : Projectile
                 objectHit.collider.GetComponent<StatusEffectManager>()?.Svr_ApplyStatusEffect(statusEffectToApply.ApplyEffect(objectHit.collider.gameObject), amount); //apply effect
             }
 
-            SpitEffects(); //Apply visual effects
+            Rpc_SpitEffects(); //Apply visual effects
 
             StartCoroutine(DestroyEnumerator()); //Actually destroy the spit later
         }
     }
 
-    private void SpitEffects()
+    [ClientRpc]
+    private void Rpc_SpitEffects()
     {
         //Disable the spitball visual
         spitBall.SetActive(false);
