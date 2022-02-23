@@ -43,7 +43,15 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 
 	private bool abilityIsReady = true;
 
-	private bool isDead;
+
+    public bool AbilityIsReady
+	{
+        get { return abilityIsReady; }
+        private set { abilityIsReady = value; }
+    }
+
+
+    private bool isDead;
     public bool IsDead
     {
         get { return isDead; }
@@ -152,15 +160,16 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 
 	public IEnumerator AbilityCooldown()
 	{
-		abilityIsReady = false;
+		AbilityIsReady = false;
 		abilityCooldownUI.fillAmount = 0;
 		while (abilityCooldownCount < abilityCooldown)
 		{
-			abilityCooldownCount += Time.deltaTime;
+			abilityCooldownCount += (Time.deltaTime * GetComponent<ModifierManager>().Cooldown);
             abilityCooldownUI.fillAmount = abilityCooldownCount / abilityCooldown;
             yield return null;
 		}
-		abilityIsReady = true;
+		abilityCooldownCount = 0;
+		AbilityIsReady = true;
 	}
 
 	public void StartAbilityCooldownCo()

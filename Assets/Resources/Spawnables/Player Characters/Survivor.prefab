@@ -3519,6 +3519,7 @@ GameObject:
   - component: {fileID: 5953086225513061613}
   - component: {fileID: 6043028673134938684}
   - component: {fileID: 5375102334846030558}
+  - component: {fileID: 6904755547420367345}
   - component: {fileID: 6930014499059818200}
   - component: {fileID: 7813640879047218699}
   - component: {fileID: -8129304323802531665}
@@ -3532,7 +3533,6 @@ GameObject:
   - component: {fileID: 6043028673134938683}
   - component: {fileID: 8049337140043942677}
   - component: {fileID: 4047303356966882284}
-  - component: {fileID: 6904755547420367345}
   m_Layer: 13
   m_Name: Survivor
   m_TagString: Player
@@ -3584,7 +3584,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   sClass: {fileID: 0}
-  survivorSO: {fileID: 11400000, guid: 1217c7de04298614a84ebffa22d3814c, type: 2}
+  survivorSO: {fileID: 11400000, guid: 6e02f3f114526574798927bb6afebdfd, type: 2}
   bodyRenderer: {fileID: 8146840676092125171}
   headRenderer: {fileID: 2690098373533844718}
   currentHealth: 100
@@ -3681,6 +3681,25 @@ MonoBehaviour:
   easingSpeed: 500
   minRotY: -75
   maxRotY: 75
+--- !u!114 &6904755547420367345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5922127114707202486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36c70d60edf9bb34d8744e58ed9ce7c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  movementSpeed: 1
+  cooldown: 1
+  healing: 1
+  meleeDamage: 1
+  rangedDamage: 1
 --- !u!114 &6930014499059818200
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4459,25 +4478,6 @@ MonoBehaviour:
     poleTarget: {fileID: 0}
     clampWeight: 0.1
     clampSmoothing: 2
---- !u!114 &6904755547420367345
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5922127114707202486}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36c70d60edf9bb34d8744e58ed9ce7c0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  movementSpeed: 1
-  cooldown: 1
-  healing: 1
-  meleeDamage: 1
-  rangedDamage: 1
 --- !u!1 &5988042953158973949
 GameObject:
   m_ObjectHideFlags: 0

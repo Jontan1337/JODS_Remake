@@ -23,8 +23,6 @@ public class SurvivorController : NetworkBehaviour
 	CharacterController cController;
 	SurvivorAnimationManager anim;
 	ModifierManager modifiers;
-	//public float walkSpeedMultiplier;
-	//public float sprintSpeedMultiplier;
 	public float jumpSpeed;
 	public bool isSprinting;
 	public bool isGrounded;
@@ -70,7 +68,7 @@ public class SurvivorController : NetworkBehaviour
 
 		if (cController.isGrounded)
 		{
-			float speed = (isSprinting ? baseSpeed * 2 : baseSpeed) * modifiers.MovementSpeed;
+			float speed = (isSprinting ? baseSpeed * 1.75f : baseSpeed) * modifiers.MovementSpeed;
 			moveDirection = transform.TransformDirection(new Vector3(horizontal, 0.00f, vertical)) * (speed);
 			if (isJumping)
 			{
