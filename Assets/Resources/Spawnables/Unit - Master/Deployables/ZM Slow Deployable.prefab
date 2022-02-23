@@ -9,11 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4272586343987966314}
+  - component: {fileID: 3421479990123402701}
   - component: {fileID: 6644094446880312217}
   - component: {fileID: 4973787135879115674}
   - component: {fileID: 3782162070554735218}
   - component: {fileID: 1059587983473241587}
-  - component: {fileID: 3421479990123402701}
   m_Layer: 23
   m_Name: ZM Slow Deployable
   m_TagString: Untagged
@@ -35,6 +35,24 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3421479990123402701
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4272586343987966315}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8292a433ddcdc741a932dea14f27bc0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  statusEffectToApply: {fileID: 11400000, guid: 44121d39dd188824c924ea17f648a8ee,
+    type: 2}
+  amount: 0
+  objectsInCollider: []
 --- !u!114 &6644094446880312217
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -113,21 +131,3 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 1.401715
   m_Center: {x: 0.081695974, y: -0.15469165, z: -0.024415016}
---- !u!114 &3421479990123402701
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4272586343987966315}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c8292a433ddcdc741a932dea14f27bc0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  statusEffectToApply: {fileID: 11400000, guid: 44121d39dd188824c924ea17f648a8ee,
-    type: 2}
-  amount: 0
-  objectsInCollider: []
