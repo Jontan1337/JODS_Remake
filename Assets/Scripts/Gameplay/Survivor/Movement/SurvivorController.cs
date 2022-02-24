@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 
 public class SurvivorController : NetworkBehaviour
 {
-	float targetY;
+    float targetY;
 	Vector3 moveDirection = Vector3.zero;
 
 	private float horizontal;
@@ -26,6 +26,9 @@ public class SurvivorController : NetworkBehaviour
 	public float jumpSpeed;
 	public bool isSprinting;
 	public bool isGrounded;
+
+    private const string xVelocity = "xVelocity";
+    private const string yVelocity = "yVelocity";
 
 	public float BaseSpeed
 	{
@@ -78,8 +81,8 @@ public class SurvivorController : NetworkBehaviour
 		}
 		moveDirection.y -= gravity * Time.deltaTime;
 		cController.Move(moveDirection * Time.deltaTime);
-		anim.SetFloat("xVelocity", x = Mathf.Lerp(x, horizontal, Time.deltaTime * 10));
-		anim.SetFloat("yVelocity", y = Mathf.Lerp(y, Mathf.Clamp(vertical * modifiers.MovementSpeed, -1f, 2f), Time.deltaTime * 10));
+		anim.SetFloat(xVelocity, x = Mathf.Lerp(x, horizontal, Time.deltaTime * 10));
+		anim.SetFloat(yVelocity, y = Mathf.Lerp(y, Mathf.Clamp(vertical * modifiers.MovementSpeed, -1f, 2f), Time.deltaTime * 10));
 	}
 
 	private void Move(InputAction.CallbackContext context)
