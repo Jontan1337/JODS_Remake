@@ -100,18 +100,20 @@ public class SurvivorAnimationManager : NetworkBehaviour
 			Transform effector = null;
 
 			if (handIKEffectors.rightHandEffector)
-            {
-				// Set right side IK
+			{
+				// If item does have right hand effector.
+				// Set right side IK.
 				effector = handIKEffectors.rightHandEffector;
 				fullBodyIK.solver.rightHandEffector.target = effector;
 				fullBodyIK.solver.rightHandEffector.positionWeight = 1f;
 				fullBodyIK.solver.rightHandEffector.rotationWeight = 1f;
 				fullBodyIK.solver.rightShoulderEffector.positionWeight = 1f;
 				fullBodyIK.solver.rightShoulderEffector.rotationWeight = 1f;
-				// Each player should see other players shoulder more forward.
+				// Other players should see the players shoulder more forward.
 				if (hasAuthority)
 				{
-					fullBodyIK.solver.rightShoulderEffector.target = firstPersonRightShoulderAimingEffector;
+					//fullBodyIK.solver.rightShoulderEffector.target = firstPersonRightShoulderAimingEffector;
+					fullBodyIK.solver.rightShoulderEffector.target = secondPersonRightShoulderAimingEffector;
 				}
 				else
 				{
@@ -123,38 +125,28 @@ public class SurvivorAnimationManager : NetworkBehaviour
             }
 			else
             {
-				// Set right side IK
-				fullBodyIK.solver.rightHandEffector.target = null;
-				fullBodyIK.solver.rightHandEffector.positionWeight = 0f;
-				fullBodyIK.solver.rightHandEffector.rotationWeight = 0f;
-				if (!hasAuthority)
-				{
-					fullBodyIK.solver.rightShoulderEffector.positionWeight = 0f;
-					fullBodyIK.solver.rightShoulderEffector.rotationWeight = 0f;
-				}
-				fullBodyIK.solver.rightShoulderEffector.target = firstPersonRightShoulderEffector;
-				rightHandPoser.poseRoot = null;
-				rightHandPoser.localPositionWeight = 0f;
-				rightHandPoser.localRotationWeight = 0f;
-			}
+                // If item doesn't have right hand effector.
+                // Set right side IK.
+                ResetRightEffectors();
+            }
 
             if (handIKEffectors.leftHandEffector)
-            {
-				// Set left side IK
+			{
+				// If item does have left hand effector.
+				// Set left side IK.
 				effector = handIKEffectors.leftHandEffector;
 				fullBodyIK.solver.leftHandEffector.target = effector;
 				fullBodyIK.solver.leftHandEffector.positionWeight = 1f;
 				fullBodyIK.solver.leftHandEffector.rotationWeight = 1f;
 				if (hasAuthority)
 				{
-					fullBodyIK.solver.leftShoulderEffector.target = firstPersonLeftShoulderAimingEffector;
-					fullBodyIK.solver.leftShoulderEffector.positionWeight = 0f;
+                    fullBodyIK.solver.leftShoulderEffector.target = firstPersonLeftShoulderAimingEffector;
+                    fullBodyIK.solver.leftShoulderEffector.positionWeight = 1f;
 				}
 				else
 				{
-					print("Setting left shoulder weights to 1");
-					fullBodyIK.solver.leftShoulderEffector.target = secondPersonLeftShoulderAimingEffector;
 					fullBodyIK.solver.leftShoulderEffector.positionWeight = 1f;
+				    fullBodyIK.solver.leftShoulderEffector.target = secondPersonLeftShoulderAimingEffector;
 				}
 				fullBodyIK.solver.leftShoulderEffector.rotationWeight = 1f;
 				leftHandPoser.poseRoot = effector;
@@ -163,111 +155,120 @@ public class SurvivorAnimationManager : NetworkBehaviour
             }
 			else
             {
-				// Set left side IK
-				fullBodyIK.solver.leftHandEffector.target = null;
-				fullBodyIK.solver.leftHandEffector.positionWeight = 0f;
-				fullBodyIK.solver.leftHandEffector.rotationWeight = 0f;
-				if (!hasAuthority)
-				{
-					print("Settings left side weights to 0");
-					fullBodyIK.solver.leftShoulderEffector.positionWeight = 0f;
-					fullBodyIK.solver.leftShoulderEffector.rotationWeight = 0f;
-				}
-				fullBodyIK.solver.leftShoulderEffector.target = firstPersonLeftShoulderEffector;
-				leftHandPoser.poseRoot = null;
-				leftHandPoser.localPositionWeight = 0f;
-				leftHandPoser.localRotationWeight = 0f;
-			}
-		}
+                // If item doesn't have left hand effector.
+                // Set left side IK.
+                ResetLeftEffectors();
+            }
+        }
 		else
 		{
-			// Set right side IK
-			fullBodyIK.solver.rightHandEffector.target = null;
-			fullBodyIK.solver.rightHandEffector.positionWeight = 0f;
-			fullBodyIK.solver.rightHandEffector.rotationWeight = 0f;
-			if (!hasAuthority)
-			{
-				fullBodyIK.solver.rightShoulderEffector.positionWeight = 0f;
-				fullBodyIK.solver.rightShoulderEffector.rotationWeight = 0f;
-			}
-			fullBodyIK.solver.rightShoulderEffector.target = firstPersonRightShoulderEffector;
-			rightHandPoser.poseRoot = null;
-			rightHandPoser.localPositionWeight = 0f;
-			rightHandPoser.localRotationWeight = 0f;
+            // If no item is equipped.
+            // Set right side IK
+            ResetRightEffectors();
 
 			// Set left side IK
-			fullBodyIK.solver.leftHandEffector.target = null;
-			fullBodyIK.solver.leftHandEffector.positionWeight = 0f;
-			fullBodyIK.solver.leftHandEffector.rotationWeight = 0f;
-			if (!hasAuthority)
-			{
-				print("Settings left side weights to 0");
-				fullBodyIK.solver.leftShoulderEffector.positionWeight = 0f;
-				fullBodyIK.solver.leftShoulderEffector.rotationWeight = 0f;
-			}
-			fullBodyIK.solver.leftShoulderEffector.target = firstPersonLeftShoulderEffector;
-			leftHandPoser.poseRoot = null;
-			leftHandPoser.localPositionWeight = 0f;
-			leftHandPoser.localRotationWeight = 0f;
+			ResetLeftEffectors();
 		}
     }
 
-	//[ClientRpc]
-	//public void Rpc_SetIKRightHandEffector(HandIKEffectors handIKEffectors)
-	//{
-	//	if (handIKEffectors != null)
-	//	{
-	//		Transform effector = handIKEffectors.rightHandEffector;
-	//		fullBodyIK.solver.rightHandEffector.target = effector;
-	//		fullBodyIK.solver.rightHandEffector.positionWeight = 1f;
-	//		fullBodyIK.solver.rightHandEffector.rotationWeight = 1f;
-	//		//fullBodyIK.solver.leftShoulderEffector.positionWeight = 1f;
-	//		//fullBodyIK.solver.leftShoulderEffector.rotationWeight = 1f;
-	//		fullBodyIK.solver.leftShoulderEffector.target = firstPersonLeftShoulderAimingEffector;
-	//		leftHandPoser.poseRoot = effector;
-	//		leftHandPoser.localPositionWeight = 1f;
-	//		leftHandPoser.localRotationWeight = 1f;
-	//	}
-	//	else
-	//	{
-	//		fullBodyIK.solver.rightHandEffector.target = null;
- //           fullBodyIK.solver.rightHandEffector.positionWeight = 0f;
-	//		fullBodyIK.solver.rightHandEffector.rotationWeight = 0f;
-	//		//fullBodyIK.solver.leftShoulderEffector.positionWeight = 0f;
-	//		//fullBodyIK.solver.leftShoulderEffector.rotationWeight = 0f;
-	//		fullBodyIK.solver.leftShoulderEffector.target = firstPersonLeftShoulderEffector;
-	//		leftHandPoser.poseRoot = null;
-	//		leftHandPoser.localPositionWeight = 0f;
-	//		leftHandPoser.localRotationWeight = 0f;
-	//	}
- //   }
-	//[ClientRpc]
-	//public void Rpc_SetIKLeftHandEffector(HandIKEffectors handIKEffectors)
-	//{
-	//	if (handIKEffectors != null)
-	//	{
-	//		Transform effector = handIKEffectors.leftHandEffector;
-	//		fullBodyIK.solver.leftHandEffector.target = effector;
-	//		fullBodyIK.solver.leftHandEffector.positionWeight = 1f;
-	//		fullBodyIK.solver.leftHandEffector.rotationWeight = 1f;
-	//		//fullBodyIK.solver.leftShoulderEffector.positionWeight = 1f;
-	//		//fullBodyIK.solver.leftShoulderEffector.rotationWeight = 1f;
-	//		fullBodyIK.solver.leftShoulderEffector.target = firstPersonLeftShoulderAimingEffector;
-	//		leftHandPoser.poseRoot = effector;
-	//		leftHandPoser.localPositionWeight = 1f;
-	//		leftHandPoser.localRotationWeight = 1f;
-	//	}
-	//	else
-	//	{
-	//		fullBodyIK.solver.leftHandEffector.target = null;
- //           fullBodyIK.solver.leftHandEffector.positionWeight = 0f;
-	//		fullBodyIK.solver.leftHandEffector.rotationWeight = 0f;
-	//		//fullBodyIK.solver.leftShoulderEffector.positionWeight = 0f;
-	//		//fullBodyIK.solver.leftShoulderEffector.rotationWeight = 0f;
-	//		fullBodyIK.solver.leftShoulderEffector.target = firstPersonLeftShoulderEffector;
-	//		leftHandPoser.poseRoot = null;
-	//		leftHandPoser.localPositionWeight = 0f;
-	//		leftHandPoser.localRotationWeight = 0f;
-	//	}
- //   }
+    private void ResetLeftEffectors()
+    {
+        fullBodyIK.solver.leftHandEffector.target = null;
+        fullBodyIK.solver.leftHandEffector.positionWeight = 0f;
+        fullBodyIK.solver.leftHandEffector.rotationWeight = 0f;
+        if (hasAuthority)
+		{
+			fullBodyIK.solver.leftShoulderEffector.positionWeight = 1f;
+            fullBodyIK.solver.leftShoulderEffector.rotationWeight = 1f;
+        }
+        else
+		{
+			fullBodyIK.solver.leftShoulderEffector.positionWeight = 0f;
+            fullBodyIK.solver.leftShoulderEffector.rotationWeight = 0f;
+        }
+        fullBodyIK.solver.leftShoulderEffector.target = firstPersonLeftShoulderEffector;
+        leftHandPoser.poseRoot = null;
+        leftHandPoser.localPositionWeight = 0f;
+        leftHandPoser.localRotationWeight = 0f;
+    }
+
+    private void ResetRightEffectors()
+    {
+        fullBodyIK.solver.rightHandEffector.target = null;
+        fullBodyIK.solver.rightHandEffector.positionWeight = 0f;
+        fullBodyIK.solver.rightHandEffector.rotationWeight = 0f;
+        if (hasAuthority)
+		{
+			fullBodyIK.solver.rightShoulderEffector.positionWeight = 1f;
+            fullBodyIK.solver.rightShoulderEffector.rotationWeight = 1f;
+        }
+        else
+		{
+			fullBodyIK.solver.rightShoulderEffector.positionWeight = 0f;
+            fullBodyIK.solver.rightShoulderEffector.rotationWeight = 0f;
+        }
+        fullBodyIK.solver.rightShoulderEffector.target = firstPersonRightShoulderEffector;
+        rightHandPoser.poseRoot = null;
+        rightHandPoser.localPositionWeight = 0f;
+        rightHandPoser.localRotationWeight = 0f;
+    }
+
+    //[ClientRpc]
+    //public void Rpc_SetIKRightHandEffector(HandIKEffectors handIKEffectors)
+    //{
+    //	if (handIKEffectors != null)
+    //	{
+    //		Transform effector = handIKEffectors.rightHandEffector;
+    //		fullBodyIK.solver.rightHandEffector.target = effector;
+    //		fullBodyIK.solver.rightHandEffector.positionWeight = 1f;
+    //		fullBodyIK.solver.rightHandEffector.rotationWeight = 1f;
+    //		//fullBodyIK.solver.leftShoulderEffector.positionWeight = 1f;
+    //		//fullBodyIK.solver.leftShoulderEffector.rotationWeight = 1f;
+    //		fullBodyIK.solver.leftShoulderEffector.target = firstPersonLeftShoulderAimingEffector;
+    //		leftHandPoser.poseRoot = effector;
+    //		leftHandPoser.localPositionWeight = 1f;
+    //		leftHandPoser.localRotationWeight = 1f;
+    //	}
+    //	else
+    //	{
+    //		fullBodyIK.solver.rightHandEffector.target = null;
+    //           fullBodyIK.solver.rightHandEffector.positionWeight = 0f;
+    //		fullBodyIK.solver.rightHandEffector.rotationWeight = 0f;
+    //		//fullBodyIK.solver.leftShoulderEffector.positionWeight = 0f;
+    //		//fullBodyIK.solver.leftShoulderEffector.rotationWeight = 0f;
+    //		fullBodyIK.solver.leftShoulderEffector.target = firstPersonLeftShoulderEffector;
+    //		leftHandPoser.poseRoot = null;
+    //		leftHandPoser.localPositionWeight = 0f;
+    //		leftHandPoser.localRotationWeight = 0f;
+    //	}
+    //   }
+    //[ClientRpc]
+    //public void Rpc_SetIKLeftHandEffector(HandIKEffectors handIKEffectors)
+    //{
+    //	if (handIKEffectors != null)
+    //	{
+    //		Transform effector = handIKEffectors.leftHandEffector;
+    //		fullBodyIK.solver.leftHandEffector.target = effector;
+    //		fullBodyIK.solver.leftHandEffector.positionWeight = 1f;
+    //		fullBodyIK.solver.leftHandEffector.rotationWeight = 1f;
+    //		//fullBodyIK.solver.leftShoulderEffector.positionWeight = 1f;
+    //		//fullBodyIK.solver.leftShoulderEffector.rotationWeight = 1f;
+    //		fullBodyIK.solver.leftShoulderEffector.target = firstPersonLeftShoulderAimingEffector;
+    //		leftHandPoser.poseRoot = effector;
+    //		leftHandPoser.localPositionWeight = 1f;
+    //		leftHandPoser.localRotationWeight = 1f;
+    //	}
+    //	else
+    //	{
+    //		fullBodyIK.solver.leftHandEffector.target = null;
+    //           fullBodyIK.solver.leftHandEffector.positionWeight = 0f;
+    //		fullBodyIK.solver.leftHandEffector.rotationWeight = 0f;
+    //		//fullBodyIK.solver.leftShoulderEffector.positionWeight = 0f;
+    //		//fullBodyIK.solver.leftShoulderEffector.rotationWeight = 0f;
+    //		fullBodyIK.solver.leftShoulderEffector.target = firstPersonLeftShoulderEffector;
+    //		leftHandPoser.poseRoot = null;
+    //		leftHandPoser.localPositionWeight = 0f;
+    //		leftHandPoser.localRotationWeight = 0f;
+    //	}
+    //   }
 }

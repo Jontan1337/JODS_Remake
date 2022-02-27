@@ -45,6 +45,13 @@ public class SyncGameObjectVisuals : NetworkBehaviour
         }
     }
 
+    //public override void OnStartClient()
+    //{
+    //    base.OnStartClient();
+    //    transform.SetParent(parentData);
+    //    transform.SetPositionAndRotation(localPositionData, rotationData);
+    //}
+
     [Server]
     private void Svr_UpdateVars(NetworkConnection conn)
     {

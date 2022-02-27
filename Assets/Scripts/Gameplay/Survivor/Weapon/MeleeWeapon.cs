@@ -18,7 +18,6 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     [SerializeField] private int normalPunchthrough = 2;
     [SerializeField] private DamageTypes damageType = DamageTypes.Slash;
     [SerializeField] private float attackInterval = 0.1f;
-    [SerializeField] private bool chargeable = false;
 
     [Header("Game details")]
     [SerializeField] private float splatterAmount = 0f;
@@ -180,7 +179,8 @@ public class MeleeWeapon : EquipmentItem, IImpacter
                         if (amountSlashed == currentPunchthrough)
                         {
                             weaponAnimator.speed = 0f;
-                            ImpactShake(impactDuration, impactAmount).OnComplete(delegate() { 
+                            print("Impact");
+                            Svr_ImpactShake(impactDuration, impactAmount).OnComplete(delegate() { 
                                 Svr_ResetAnimatorSpeed();
                                 Svr_EndOfAttack();
                             });
@@ -191,7 +191,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
                 case DamageTypes.Blunt:
                     weaponAnimator.speed = 0f;
                     weaponAnimator.CrossFadeInFixedTime("Idle", impactDuration);
-                    ImpactShake(impactDuration, impactAmount).OnComplete(delegate () {
+                    Svr_ImpactShake(impactDuration, impactAmount).OnComplete(delegate () {
                         Svr_ResetAnimatorSpeed();
                         Svr_EndOfAttack();
                     });
@@ -359,15 +359,17 @@ public class MeleeWeapon : EquipmentItem, IImpacter
 
     }
 
-    private Tweener ImpactShake(float duration, float amount)
+    [Server]
+    private Tweener Svr_ImpactShake(float duration, float amount)
     {
         transform.parent.DOComplete();
         return transform.parent.DOPunchRotation(new Vector3(0f, 0f, 0f), duration, 0, 0f);
     }
+
     [TargetRpc]
     private void Rpc_ImpactShake(NetworkConnection target, float duration, float amount)
     {
-        transform.parent.DOComplete();
+        //transform.parent.DOComplete();
         transform.parent.DOPunchPosition(new Vector3(0f, 0.1f, -0.1f), duration, 10, 0.1f);
         transform.parent.DOPunchRotation(new Vector3(2f, 1f, UnityEngine.Random.Range(-1f, 1f)), duration, 10, 0.1f);
     }
