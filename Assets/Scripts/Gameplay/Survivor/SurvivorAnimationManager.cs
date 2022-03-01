@@ -112,9 +112,8 @@ public class SurvivorAnimationManager : NetworkBehaviour
 				// Other players should see the players shoulder more forward.
 				if (hasAuthority)
 				{
-					//fullBodyIK.solver.rightShoulderEffector.target = firstPersonRightShoulderAimingEffector;
-					fullBodyIK.solver.rightShoulderEffector.target = secondPersonRightShoulderAimingEffector;
-				}
+                    fullBodyIK.solver.rightShoulderEffector.target = firstPersonRightShoulderAimingEffector;
+                }
 				else
 				{
 					fullBodyIK.solver.rightShoulderEffector.target = secondPersonRightShoulderAimingEffector;
@@ -141,7 +140,7 @@ public class SurvivorAnimationManager : NetworkBehaviour
 				if (hasAuthority)
 				{
                     fullBodyIK.solver.leftShoulderEffector.target = firstPersonLeftShoulderAimingEffector;
-                    fullBodyIK.solver.leftShoulderEffector.positionWeight = 1f;
+                    fullBodyIK.solver.leftShoulderEffector.positionWeight = 0f;
 				}
 				else
 				{

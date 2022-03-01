@@ -56,19 +56,6 @@ public class RaycastWeapon : RangedWeapon
         Rpc_Shoot(recoil);
     }
 
-    // Consider changing to TargetRpc and change only the effects
-    // (BulletTrail and BulletHole) to ClientRpc.
-    //[ClientRpc]
-    //private void Rpc_BulletEffect(Vector3 aimHitPoint, Vector3 shootHitPoint, Vector3 shootHitNormal, string matName)
-    //{
-    //    BulletTrail(aimHitPoint);
-    //    if (shootHitPoint != Vector3.zero && shootHitNormal != Vector3.zero)
-    //    {
-    //        Bullethole(shootHitPoint, shootHitNormal, matName);
-    //    }
-    //    ShootFX();
-    //    //BulletTrail(playerHead.forward * range);
-    //}
     [ClientRpc]
     protected override void Rpc_Shoot(Vector2 recoil)
     {
@@ -87,7 +74,19 @@ public class RaycastWeapon : RangedWeapon
         }
         else
         {
-            BulletTrail(playerHead.forward * range);
+            Vector2 randomCircle = Random.insideUnitCircle;
+            //Rpc_BulletEffect((playerHead.forward + new Vector3(
+            //    randomCircle.x,
+            //    randomCircle.y) / 200f * (currentCurveAccuracy)) * range,
+            //    Vector3.zero, Vector3.zero, "");
+            BulletTrail(
+                (playerHead.forward + 
+                new Vector3(
+                    randomCircle.x,
+                    randomCircle.y
+                ) / 300f * (currentCurveAccuracy)) * range
+            );
+            //BulletTrail(playerHead.forward * range);
         }
     }
 

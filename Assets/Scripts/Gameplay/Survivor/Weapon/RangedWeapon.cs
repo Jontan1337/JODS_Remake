@@ -36,7 +36,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
     [Header("References")]
     [SerializeField] protected Transform shootOrigin = null;
-    [SerializeField, SyncVar] protected Transform playerHead;
+    [SerializeField, SyncVar(hook = nameof(SetPlayerCamera))] protected Transform playerHead;
     [SerializeField] protected Camera playerCamera;
     [SerializeField] private GameObject muzzleFlash = null;
     [SerializeField] private ParticleSystem muzzleParticle;
@@ -182,21 +182,21 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         //magazine = Magazine;
         //extraAmmunition = ExtraAmmunition;
         //fireMode = FireMode;
-        Rpc_GetPlayerHead(connectionToClient, playerHead);
+        //Rpc_GetPlayerHead(connectionToClient, playerHead);
     }
 
     [TargetRpc]
     public override void Rpc_Interact(NetworkConnection target, GameObject interacter)
     {
         base.Rpc_Interact(target, interacter);
+        playerHead = interacter.GetComponent<LookController>().RotateVertical;
+        playerCamera = playerHead.GetChild(0).GetComponent<Camera>();
         GetUIElements(interacter.transform);
     }
 
-    [TargetRpc]
-    private void Rpc_GetPlayerHead(NetworkConnection target, Transform head)
+    private void SetPlayerCamera(Transform oldValue, Transform newValue)
     {
-        playerHead = head;
-        playerCamera = playerHead.GetChild(0).GetComponent<Camera>();
+        playerCamera = newValue.GetChild(0).GetComponent<Camera>();
     }
 
     public override void Bind()

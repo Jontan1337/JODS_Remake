@@ -13,10 +13,6 @@ public class HandSway : NetworkBehaviour, IInitializable<SurvivorSetup>
     private Quaternion newRotation;
     private Vector3 originalPos;
 
-    private void Start()
-    {
-        originalPos = transform.localPosition;
-    }
 
     Vector3 firstRotationValue = Vector3.zero;
     Vector3 secondRotationValue = Vector3.zero;
@@ -24,20 +20,32 @@ public class HandSway : NetworkBehaviour, IInitializable<SurvivorSetup>
 
     public bool IsInitialized { get; private set; }
 
-    // Update is called once per frame
     void Update()
     {
         if (!hasAuthority) return;
         if (virtualHead == null) return;
 
+        //print(rotationDifference);
+        //if (rotationDifference.x > 100f || rotationDifference.y > 100f || rotationDifference.z > 100f)
+        //{
+        //    Debug.LogWarning(rotationDifference);
+        //}
+
+        //newRotation = new Quaternion(
+        //    virtualHead.localRotation.x + rotationDifference.x * swayVelocityX,
+        //    0,
+        //    virtualHead.localRotation.y + rotationDifference.y * swayVelocityY,
+        //    1f
+        //);
         newRotation = new Quaternion(
-            virtualHead.localRotation.x + rotationDifference.x * swayVelocityX,
+            virtualHead.localRotation.x + Input.GetAxisRaw("Mouse Y") * swayVelocityX,
             0,
-            virtualHead.localRotation.y + rotationDifference.y * swayVelocityY,
+            virtualHead.localRotation.y + Input.GetAxisRaw("Mouse X") * swayVelocityY,
             1f
         );
+
         transform.localRotation = Quaternion.Slerp(transform.localRotation, newRotation, Time.deltaTime * swaySmoothing);
-        transform.localPosition = Vector3.Lerp(transform.localPosition, originalPos, Time.deltaTime * swaySmoothing);
+        //transform.localPosition = Vector3.Lerp(transform.localPosition, originalPos, Time.deltaTime * swaySmoothing);
     }
 
     private IEnumerator IENextFrame()
