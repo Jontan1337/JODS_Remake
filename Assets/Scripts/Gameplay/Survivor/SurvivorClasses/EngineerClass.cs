@@ -72,14 +72,24 @@ public class EngineerClass : SurvivorClass
         }
     }
 
-    IEnumerator StartRechargeCo;
+	[SerializeField] private float range = 30;
+	[SerializeField] private LayerMask survivorLayer = 0;
+	Collider[] survivorsInRange;
+	IEnumerator StartRechargeCo;
 	private IEnumerator StartRecharge()
     {
+		survivorsInRange = Physics.OverlapSphere(transform.position, range, survivorLayer);
 		sController.enabled = false;
 		recharging = true;
 		yield return new WaitForSeconds(2f);
-		modifierManager.Cooldown = 2;
-        while (!sClass.AbilityIsReady)
+        foreach (var item in survivorsInRange)
+        {
+			item.GetComponentInParent<ModifierManager>().Cooldown = 2;
+			print(item.gameObject.name);
+        }
+		//modifierManager.Cooldown = 2;
+
+		while (!sClass.AbilityIsReady)
         {
 			yield return null;
 		}
@@ -89,8 +99,12 @@ public class EngineerClass : SurvivorClass
 	IEnumerator StopRechargeCo;
 	private IEnumerator StopRecharge()
 	{
+		foreach (var item in survivorsInRange)
+		{
+			item.GetComponentInParent<ModifierManager>().Cooldown = 1;
+		}
+		survivorsInRange = null;
 		yield return new WaitForSeconds(2f);
-		GetComponentInParent<ModifierManager>().Cooldown = 1;
 		sController.enabled = true;
 		recharging = false;
 	}
