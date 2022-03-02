@@ -208,6 +208,7 @@ public class Lobby : NetworkManager
             conn.identity.gameObject.GetComponentInChildren<PlayerEquipment>().Svr_DropAllItems();
         }
         SurvivorSelection.instance.Svr_OnPlayerDisconnect(conn.identity.netId);
+        LobbySync.Instance.Svr_RemovePlayer(Instance.roomPlayers.Count - 1);
         Instance.roomPlayers.Remove(conn.identity.GetComponent<LobbyPlayer>());
         NetworkServer.DestroyPlayerForConnection(conn);
 

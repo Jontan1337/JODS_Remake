@@ -100,6 +100,13 @@ public class LobbySync : NetworkBehaviour
         }
     }
 
+    [Server]
+    public void Svr_RemovePlayer(int playerID)
+    {
+        lobbySeats[playerID].isTaken = false;
+        lobbySeats[playerID].player = null;
+    }
+
     private IEnumerator GetPlayerInfo(LobbyCharacters tempLobbyCharacter)
     {
         // Wait for a small amount of time because the network is delayed or something?
