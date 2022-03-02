@@ -75,6 +75,17 @@ public class PlayerManager : NetworkBehaviour
         }
     }
 
+    [TargetRpc]
+    public void Rpc_EnableMenu(NetworkConnection target)
+    {
+        EnableMenu();
+    }
+    [TargetRpc]
+    public void Rpc_DisableMenu(NetworkConnection target)
+    {
+        DisableMenu();
+    }
+
     public void EnableMenu()
     {
         activeMenuCanvas.gameObject.SetActive(true);
@@ -91,10 +102,12 @@ public class PlayerManager : NetworkBehaviour
     }
     public void DisableMenu()
     {
-        activeMenuCanvas.gameObject.SetActive(false);
+        if (activeMenuCanvas)
+            activeMenuCanvas.gameObject.SetActive(false);
+
         canvasInGame.gameObject.SetActive(true);
         // Reset the target menu canvas back to standard menu.
-        if (!activeMenuCanvas.gameObject.activeSelf)
+        if (!activeMenuCanvas || !activeMenuCanvas.gameObject.activeSelf)
         {
             activeMenuCanvas = canvasMenu;
         }

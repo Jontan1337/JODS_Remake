@@ -58,7 +58,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   itemName: Item name
-  equipmentType: 1
+  equipmentType: 0
   unequippedLayer: 14
   equippedLayer: 15
   isInteractable: 1
@@ -75,11 +75,13 @@ MonoBehaviour:
   fireRate: 600
   fireInterval: 0.1
   bulletsPerShot: 1
-  currentAmmunition: 1
-  maxCurrentAmmunition: 1
+  magazine: 10
+  magazineSize: 10
   extraAmmunition: 0
   highPower: 0
   recoil: 10
+  visualPunchback: 0.2
+  stabilization: 1
   currentAccuracy: 0
   currentCurveAccuracy: 0
   recoilCurve:
@@ -112,8 +114,14 @@ MonoBehaviour:
   muzzleFlash: {fileID: 9102040174698106515}
   muzzleParticle: {fileID: 9102040174712887283}
   sfxPlayer: {fileID: 6441341795825767503}
-  crosshairParent: {fileID: 0}
-  crosshair: {fileID: 0}
+  crosshairUIParent: {fileID: 0}
+  crosshairUI: {fileID: 0}
+  currentAmmunitionUI: {fileID: 0}
+  currentAmmunitionUIText: {fileID: 0}
+  extraAmmunitionUI: {fileID: 0}
+  extraAmmunitionUIText: {fileID: 0}
+  fireModeUI: {fileID: 0}
+  fireModeUIText: {fileID: 0}
   crosshairPrefab: {fileID: 1860549463220532411, guid: ab95d625f4bfbed4186dd3f7ae178b1c,
     type: 3}
   shootSound: {fileID: 8300000, guid: 715c383811c8e0745a345d19e85fd6aa, type: 3}

@@ -96,11 +96,18 @@ public class WeaponShop : NetworkBehaviour, IInteractable
         }
     }
 
-    private void OnDestroy()
+    //private void OnDestroy()
+    //{
+    //    if (playerGameObject != null)
+    //    {
+    //        CloseShop();
+    //    }
+    //}
+    private void OnDisable()
     {
         if (playerGameObject != null)
         {
-            CloseShop();
+            PlayerManager.Instance.DisableMenu();
         }
     }
 
@@ -146,20 +153,19 @@ public class WeaponShop : NetworkBehaviour, IInteractable
 
     public void CloseShop()
     {
-        if (hasAuthority)
-        {
-            Cmd_CloseShop(playerGameObject);
-        }
+        Cmd_CloseShop(playerGameObject);
     }
     [Command(ignoreAuthority = true)]
     private void Cmd_CloseShop(GameObject interacter)
     {
         Svr_HandleUser(interacter);
+        //PlayerManager.Instance.Rpc_DisableMenu(interacter.GetComponent<NetworkIdentity>().connectionToClient);
         Rpc_CloseShop(interacter.GetComponent<NetworkIdentity>().connectionToClient);
     }
     [TargetRpc]
     private void Rpc_CloseShop(NetworkConnection target)
     {
+        print("PlayerManager DisableMenu");
         PlayerManager.Instance.DisableMenu();
     }
 

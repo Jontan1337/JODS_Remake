@@ -91,7 +91,10 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 		JODSInput.Controls.Survivor.RMB.performed -= OnRMBPerformed;
 		JODSInput.Controls.Survivor.RMB.canceled -= OnRMBCanceled;
         JODSInput.Controls.Survivor.Drop.performed -= OnDropPerformed;
-        playerClass.onDied.RemoveListener(delegate () { Unbind(); });
+		if (playerClass)
+        {
+			playerClass.onDied.RemoveListener(delegate () { Unbind(); });
+        }
     }
 	[TargetRpc]
 	protected void Rpc_Bind(NetworkConnection target)

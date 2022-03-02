@@ -99,7 +99,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         private set
         {
             fireMode = value;
-            TeaseFireMode();
+            FadeFireMode(1f, 0.2f).OnComplete(delegate () { FadeFireMode(0f, 0.5f); });
         }
     }
     public FireModes[] AllFireModes { get => fireModes; }
@@ -137,7 +137,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
     private void OnValidate()
     {
-        equipmentType = EquipmentType.Weapon;
         currentCurveAccuracy = recoilCurve.Evaluate(0f);
         fireRate = Mathf.Clamp(fireRate, 0.01f, float.MaxValue);
         fireInterval = 60 / fireRate;
@@ -196,6 +195,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
     private void SetPlayerCamera(Transform oldValue, Transform newValue)
     {
+        if (!newValue) return;
+
         playerCamera = newValue.GetChild(0).GetComponent<Camera>();
     }
 
@@ -212,7 +213,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         UpdateMagazineText(0, magazine);
         UpdateExtraAmmunitionText(0, extraAmmunition);
         UpdateFireModeText(0, fireMode);
-        TeaseFireMode();
+        FadeFireMode(1f, 0.2f).OnComplete(delegate () { FadeFireMode(0f, 0.5f); });
     }
     public override void Unbind()
     {
@@ -227,7 +228,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         currentAmmunitionUIText.enabled = false;
         extraAmmunitionUIText.enabled = false;
         fireModeUIText.enabled = false;
-        FadeFireMode(0f);
+        FadeFireMode(0f, 0.5f);
     }
 
     private void GetUIElements(Transform root)
@@ -240,14 +241,9 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         extraAmmunitionUIText = extraAmmunitionUI.GetComponent<TextMeshProUGUI>();
         fireModeUIText = fireModeUI.GetComponent<TextMeshProUGUI>();
     }
-
-    private void TeaseFireMode()
+    private Tweener FadeFireMode(float value, float duration)
     {
-        fireModeUIText.DOFade(1f, 0.5f).OnComplete(() => { fireModeUIText.DOFade(0f, 0.5f); });
-    }
-    private void FadeFireMode(float value)
-    {
-        fireModeUIText.DOFade(value, 0.5f);
+        return fireModeUIText.DOFade(value, duration);
     }
 
     private void CreateCrosshair()
@@ -304,9 +300,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     private void Cmd_Shoot()
     {
         if (!canShoot) return;
-        //Svr_StartAccuracyStabilizer();
-        //if (!hasAuthority)
-        //    Rpc_StartAccuracyStabilizer(connectionToClient);
 
         switch (FireMode)
         {
