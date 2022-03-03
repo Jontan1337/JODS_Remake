@@ -30,7 +30,8 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
     [SerializeField, Tooltip("The parent transform, where the equipment slots should be instantiated.")]
     private Transform equipmentSlotsParent;
     [SerializeField, Tooltip("The parent transform, where the UI equipment slots should be instantiated.")]
-    private Transform equipmentSlotsUIParent;
+    private Transform weaponEquipmentSlotsUIParent;
+    private Transform extraEquipmentSlotsUIParent;
     [SerializeField, Tooltip("The prefab of the equipment slots.")]
     private GameObject equipmentSlotPrefab = null;
     [SerializeField, Tooltip("The prefab of the UI equipment slots.")]
@@ -40,7 +41,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
     private Coroutine COMoveToHands;
     private SurvivorSetup playerSetup;
 
-    private const string slotsUIParentName = "UI/Canvas - In Game/Hotbar";
+    private const string inGameUIPath = "UI/Canvas - In Game";
 
     #region ServerOnly Fields
 
@@ -167,7 +168,8 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
 
         if (transform.parent.name.Contains("Survivor"))
         {
-            equipmentSlotsUIParent = transform.parent.Find(slotsUIParentName);
+            weaponEquipmentSlotsUIParent = transform.parent.Find($"{inGameUIPath}/Equipment Hotbar/Equipment Hotbar Weapons");
+            extraEquipmentSlotsUIParent = transform.parent.Find($"{inGameUIPath}/Equipment Hotbar/Equipment Hotbar Extra");
         }
     }
 
@@ -678,7 +680,17 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
     private void Rpc_CreateUISlots(NetworkConnection conn, EquipmentSlot tempSlot)
     {
         tempSlot.gameObject.transform.parent = equipmentSlotsParent;
-        GameObject hotbarSlotUI = Instantiate(equipmentSlotUIPrefab, equipmentSlotsUIParent);
+        GameObject hotbarSlotUI = Instantiate(equipmentSlotUIPrefab);
+        switch (tempSlot.EquipmentType)
+        {
+            case EquipmentType.Weapon:
+                hotbarSlotUI.transform.SetParent(weaponEquipmentSlotsUIParent);
+                break;
+            case EquipmentType.Special:
+            case EquipmentType.Meds:
+                hotbarSlotUI.transform.SetParent(extraEquipmentSlotsUIParent);
+                break;
+        }
         tempSlot.UISlot = hotbarSlotUI;
     }
 

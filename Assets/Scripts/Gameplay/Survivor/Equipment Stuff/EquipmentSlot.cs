@@ -21,6 +21,7 @@ public class EquipmentSlot : NetworkBehaviour
     [SerializeField] private GameObject uiSlot;
     [SerializeField] private Color selectedColor = Color.white;
     [SerializeField] private Color deselectedColor = Color.gray;
+    [SerializeField] private HotbarSlot hotbarSlot;
     [SerializeField] private TMP_Text textItemName;
     [SerializeField] private TMP_Text textItemType;
     [SerializeField] private Image slotImage;
@@ -34,8 +35,9 @@ public class EquipmentSlot : NetworkBehaviour
         {
             uiSlot = value;
             slotImage = UISlot.GetComponent<Image>();
-            textItemName = UISlot.GetComponentsInChildren<TMP_Text>()[0];
-            TextItemType = UISlot.GetComponentsInChildren<TMP_Text>()[1];
+            hotbarSlot = uiSlot.GetComponent<HotbarSlot>();
+            hotbarSlot.SetItemName("──");
+            hotbarSlot.SetItemType(EquipmentType.ToString());
         }
     }
 
@@ -191,11 +193,11 @@ public class EquipmentSlot : NetworkBehaviour
     {
         if (value != null)
         {
-            textItemName.SetText(value.name);
+            hotbarSlot.SetItemName(value.name);
         }
         else
         {
-            textItemName.SetText("Empty");
+            hotbarSlot.SetItemName("──");
         }
     }
 }

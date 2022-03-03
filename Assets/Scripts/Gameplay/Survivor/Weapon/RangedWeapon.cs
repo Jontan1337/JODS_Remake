@@ -63,7 +63,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     private Coroutine COStopShootLoop;
     private Coroutine COAccuracyStabilizer;
 
-    private const string playerUIPath = "UI/Canvas - In Game";
+    private const string inGameUIPath = "UI/Canvas - In Game";
 
     private bool canShoot = true;
 
@@ -233,10 +233,10 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
     private void GetUIElements(Transform root)
     {
-        crosshairUIParent = root.Find($"{playerUIPath}/Crosshair");
-        currentAmmunitionUI = root.Find($"{playerUIPath}/Weapon ammunition");
-        extraAmmunitionUI = root.Find($"{playerUIPath}/Weapon extra ammunition");
-        fireModeUI = root.Find($"{playerUIPath}/Weapon fire mode");
+        crosshairUIParent = root.Find($"{inGameUIPath}/Crosshair");
+        currentAmmunitionUI = root.Find($"{inGameUIPath}/Weapon ammunition");
+        extraAmmunitionUI = root.Find($"{inGameUIPath}/Weapon extra ammunition");
+        fireModeUI = root.Find($"{inGameUIPath}/Weapon fire mode");
         currentAmmunitionUIText = currentAmmunitionUI.GetComponent<TextMeshProUGUI>();
         extraAmmunitionUIText = extraAmmunitionUI.GetComponent<TextMeshProUGUI>();
         fireModeUIText = fireModeUI.GetComponent<TextMeshProUGUI>();

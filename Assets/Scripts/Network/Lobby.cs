@@ -588,7 +588,7 @@ public class Lobby : NetworkManager
 
     private IEnumerator InvokeOnServerReady(NetworkConnection conn, string _class, bool isMaster)
     {
-        yield return new WaitForSeconds(0.2f); //Delay cause server slow
+        yield return new WaitForSeconds(0.2f); //Delay because server slow
         OnServerReadied?.Invoke(conn, _class, isMaster);
     }
 

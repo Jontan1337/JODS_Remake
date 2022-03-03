@@ -96,6 +96,8 @@ public class WeaponShop : NetworkBehaviour, IInteractable
         }
     }
 
+    // Destroying objects on the server only disables them on clients.
+    // so this does not work for clients.
     //private void OnDestroy()
     //{
     //    if (playerGameObject != null)
