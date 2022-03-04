@@ -9,6 +9,10 @@ public class LoadingScreenManager : NetworkBehaviour
     public static LoadingScreenManager Instance;
     private void Awake()
     {
+        if (Instance)
+        {
+            Destroy(gameObject);
+        }
         Instance = this;
     }
     #endregion

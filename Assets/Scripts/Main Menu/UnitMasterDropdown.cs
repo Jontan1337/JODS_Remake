@@ -16,7 +16,7 @@ public class UnitMasterDropdown : MonoBehaviour
     {
         masterSelection = MasterSelection.instance;
 
-        masters = PlayableCharactersManager.instance.GetAllMasters();
+        masters = PlayableCharactersManager.Instance.GetAllMasters();
 
         foreach(UnitMasterSO masterSO in masters)
         {

@@ -6,14 +6,14 @@ public class PlayableCharactersManager : MonoBehaviour
 {
     #region Singleton
 
-    public static PlayableCharactersManager instance;
+    public static PlayableCharactersManager Instance;
     private void Awake()
     {
-        if (instance)
+        if (Instance)
         {
             Destroy(gameObject);
         }
-        instance = this;
+        Instance = this;
     }
 
     #endregion

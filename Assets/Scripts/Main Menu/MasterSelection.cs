@@ -16,7 +16,7 @@ public class MasterSelection : MonoBehaviour
     [SerializeField] private int currentMasterIndex = 0;
     [SerializeField] private string currentMasterSOName = null;
 
-    public void SetMasterName(string masterName) => currentMasterSOName = PlayableCharactersManager.instance.GetMasterName(masterName);
+    public void SetMasterName(string masterName) => currentMasterSOName = PlayableCharactersManager.Instance.GetMasterName(masterName);
    
     public void SetMasterIndex(int index) => currentMasterIndex = index;
 

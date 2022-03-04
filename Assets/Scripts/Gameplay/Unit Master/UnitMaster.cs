@@ -365,7 +365,7 @@ public class UnitMaster : NetworkBehaviour
     [ClientRpc]
     public void Rpc_SetMasterClass(string _class)
     {
-        List<UnitMasterSO> masterSOList = PlayableCharactersManager.instance.GetAllMasters();
+        List<UnitMasterSO> masterSOList = PlayableCharactersManager.Instance.GetAllMasters();
 
         foreach (UnitMasterSO master in masterSOList)
         {

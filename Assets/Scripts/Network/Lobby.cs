@@ -135,7 +135,7 @@ public class Lobby : NetworkManager
         MatchListing.AdvertiseServer();
 
         //Apply the masters associasted map settings as the current map settings
-        List<UnitMasterSO> masterSOList = PlayableCharactersManager.instance.GetAllMasters();
+        List<UnitMasterSO> masterSOList = PlayableCharactersManager.Instance.GetAllMasters();
 
         foreach (UnitMasterSO master in masterSOList)
         {

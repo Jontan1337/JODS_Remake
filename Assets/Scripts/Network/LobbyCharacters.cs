@@ -22,7 +22,7 @@ public class LobbyCharacters : NetworkBehaviour
 
     private void Start()
     {
-        survivorSOList = PlayableCharactersManager.instance.GetAllSurvivors();
+        survivorSOList = PlayableCharactersManager.Instance.GetAllSurvivors();
     }
 
     // Register when the lobby character is assigned to a parent player.

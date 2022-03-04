@@ -26,8 +26,8 @@ public class PlayerSpawner : NetworkBehaviour
     public override void OnStartServer()
     {
         //Get both lists of playable characters, which are later used to spawn each player with their chosen class
-        survivorSOList = PlayableCharactersManager.instance.GetAllSurvivors();
-        masterSOList = PlayableCharactersManager.instance.GetAllMasters();
+        survivorSOList = PlayableCharactersManager.Instance.GetAllSurvivors();
+        masterSOList = PlayableCharactersManager.Instance.GetAllMasters();
         spawnPoints = new List<Vector3>(mapSettings.spawnPoints);
 
         //When a player connects to the new scene, then invoke the ReadyPlayer method
