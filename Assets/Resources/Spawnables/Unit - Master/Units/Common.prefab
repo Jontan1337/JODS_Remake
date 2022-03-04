@@ -92,7 +92,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45e735460c148e14ab7bae6ff397fe32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bodyPart: 2
+  bodyPart: 3
   detachable: 1
   onlyDetachOnDeath: 0
   attachedPart: {fileID: 140777679403519111}
@@ -267,7 +267,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45e735460c148e14ab7bae6ff397fe32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bodyPart: 2
+  bodyPart: 3
   detachable: 1
   onlyDetachOnDeath: 0
   attachedPart: {fileID: 140777679403519111}
@@ -607,7 +607,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0.0015, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0.0014872326, y: 0.0028284139, z: 0.00009327434}
+  m_ConnectedAnchor: {x: 0.0014872362, y: 0.0028284139, z: 0.00009327807}
   serializedVersion: 2
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -781,7 +781,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0.0015, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.0011523324, y: -0.0009602793, z: 0.000000001338777}
+  m_ConnectedAnchor: {x: -0.0011523349, y: -0.0009602793, z: 0.000000008498324}
   serializedVersion: 2
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -1381,7 +1381,7 @@ HingeJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -1.3877796e-17, y: 0.0039999955, z: -4.6566156e-10}
+  m_ConnectedAnchor: {x: 6.1303074e-11, y: 0.0039999955, z: 0.000000007916246}
   m_UseSpring: 0
   m_Spring:
     spring: 0
@@ -1621,7 +1621,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0.0015, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.0014616554, y: 0.0027020185, z: -0.00015739547}
+  m_ConnectedAnchor: {x: -0.0014616583, y: 0.0027020185, z: -0.00015738569}
   serializedVersion: 2
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -2413,7 +2413,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0.0015, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0.0011523314, y: -0.0009602794, z: 0.000000001338777}
+  m_ConnectedAnchor: {x: 0.0011523349, y: -0.0009602794, z: 0.000000008498324}
   serializedVersion: 2
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -2572,8 +2572,8 @@ MonoBehaviour:
     movementSpeedUpgradeIncrease: 0.1
     movementSpeedUpgradeMax: 3
   melee:
-    meleeDamageMin: 0
-    meleeDamageMax: 0
+    meleeDamageMin: 2
+    meleeDamageMax: 5
     meleeRange: 1.5
     meleeCooldown: 0.5
     canMelee: 1
@@ -2626,6 +2626,7 @@ MonoBehaviour:
   particleColor: {r: 1, g: 0, b: 0, a: 1}
   currentTarget: {fileID: 0}
   permanentTarget: 1
+  canPathfind: 1
   animator: {fileID: 1207774076651040211}
   bodyRenderer: {fileID: 8587044249616304266}
   headRenderer: {fileID: 2553837196130587543}
@@ -2660,7 +2661,6 @@ MonoBehaviour:
     isSelected: 0
   canRagdoll: 1
   walking: 0
-  canPathfind: 1
   stopMovement: 0
   stopPathfinding: 0
 --- !u!95 &1207774076651040211
@@ -3042,7 +3042,7 @@ HingeJoint:
   m_Anchor: {x: 0, y: 0.001, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.000016055048, y: 0.0039973175, z: 0.0000713468}
+  m_ConnectedAnchor: {x: -0.000016059754, y: 0.0039973175, z: 0.00007134308}
   m_UseSpring: 0
   m_Spring:
     spring: 0
