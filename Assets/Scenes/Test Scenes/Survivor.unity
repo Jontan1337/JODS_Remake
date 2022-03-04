@@ -1018,6 +1018,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8575002341188921016, guid: e7a2044111d0b0844bab04e77b3d9d6c,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8575002341317062958, guid: e7a2044111d0b0844bab04e77b3d9d6c,
         type: 3}
       propertyPath: m_Name
@@ -6535,9 +6540,6 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 0
-  walkSpeedMultiplier: 0
-  sprintSpeedMultiplier: 1.3
-  speedMultiplier: 0
   jumpSpeed: 1
   isSprinting: 0
   isGrounded: 0
