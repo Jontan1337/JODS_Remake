@@ -11,7 +11,7 @@ public class EquipmentSlot : NetworkBehaviour
 
     [Header("Item info")]
     [SerializeField, SyncVar(hook = nameof(OnEquipmentChanged))] private GameObject equipmentItem;
-    [SerializeField, SyncVar] private EquipmentType equipmentType;
+    [SerializeField, SyncVar] private EquipmentType equipmentType = EquipmentType.None;
 
     [Header("Item index")]
     [SerializeField] private KeyCode keyCode;
@@ -115,8 +115,9 @@ public class EquipmentSlot : NetworkBehaviour
     {
         if (!initialState)
         {
-            writer.WriteGameObject(equipmentItem);
-            writer.Write(equipmentType);
+            writer.WriteGameObject(EquipmentItem);
+            print((int)EquipmentType);
+            writer.WriteInt32((int)EquipmentType);
             return true;
         }
         return false;
@@ -126,8 +127,10 @@ public class EquipmentSlot : NetworkBehaviour
     {
         if (!initialState)
         {
-            equipmentItem = reader.ReadGameObject();
-            equipmentType = reader.Read<EquipmentType>();
+            EquipmentItem = reader.ReadGameObject() ?? null;
+            EquipmentType = (EquipmentType)reader.ReadInt32();
+            print(EquipmentType);
+            return;
         }
     }
     #endregion
