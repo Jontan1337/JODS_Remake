@@ -254,6 +254,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
             crosshairUI = Instantiate(crosshairPrefab, crosshairUIParent).GetComponent<Crosshair>();
         }
         // Set the crosshair min and max size to the weapon recoil min and max values.
+        crosshairUI.Init();
         crosshairUI.minSize = recoilCurve.keys[0].value;
         crosshairUI.maxSize = recoilCurve.keys[1].value;
         crosshairUI.SetSize(currentCurveAccuracy);

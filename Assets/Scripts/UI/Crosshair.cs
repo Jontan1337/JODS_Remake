@@ -6,8 +6,7 @@ public class Crosshair : MonoBehaviour
 
     private RectTransform rect = null;
 
-
-    private void Awake()
+    public void Init()
     {
         rect = GetComponent<RectTransform>();
     }
