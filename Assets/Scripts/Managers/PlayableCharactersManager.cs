@@ -9,10 +9,18 @@ public class PlayableCharactersManager : MonoBehaviour
     public static PlayableCharactersManager Instance;
     private void Awake()
     {
+        PlayableCharactersManager[] otherInstance = FindObjectsOfType<PlayableCharactersManager>(true);
+        foreach (var item in otherInstance)
+        {
+            Debug.Log(item, item);
+        }
+        DontDestroyOnLoad(this);
+        //print(Instance);
         if (Instance)
         {
             Destroy(gameObject);
         }
+        Debug.Log("Creating new Instance", this);
         Instance = this;
     }
 
@@ -22,11 +30,6 @@ public class PlayableCharactersManager : MonoBehaviour
     [SerializeField] private List<SurvivorSO> survivorSOList = new List<SurvivorSO>();
     [Space]
     [SerializeField] private List<UnitMasterSO> masterSOList = new List<UnitMasterSO>();
-
-    private void Start()
-    {
-        DontDestroyOnLoad(this);
-    }
 
     public List<SurvivorSO> GetAllSurvivors()
     {

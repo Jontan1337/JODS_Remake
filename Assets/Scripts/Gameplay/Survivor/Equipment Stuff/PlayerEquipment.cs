@@ -666,7 +666,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
             tempSlot.EquipmentType = type;
 
             // Setup the local UI prefab that shows the item slot.
-            Rpc_CreateUISlots(connectionToClient, tempSlot);
+            Rpc_CreateUISlots(connectionToClient, tempSlot, (int)tempSlot.EquipmentType);
             equipmentSlots.Add(tempSlot);
             if (!hasAuthority && isServer)
                 Rpc_UpdateEquipmentSlots(connectionToClient, tempSlot, 1);
@@ -677,18 +677,19 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
 
     // Setup local player UI hotbar.
     [TargetRpc]
-    private void Rpc_CreateUISlots(NetworkConnection conn, EquipmentSlot tempSlot)
+    private void Rpc_CreateUISlots(NetworkConnection conn, EquipmentSlot tempSlot, int equipmentType)
     {
+        print(tempSlot.EquipmentType);
         tempSlot.gameObject.transform.parent = equipmentSlotsParent;
         GameObject hotbarSlotUI = Instantiate(equipmentSlotUIPrefab);
-        switch (tempSlot.EquipmentType)
+        switch ((EquipmentType)equipmentType)
         {
             case EquipmentType.Weapon:
-                hotbarSlotUI.transform.SetParent(weaponEquipmentSlotsUIParent);
+                hotbarSlotUI.transform.SetParent(weaponEquipmentSlotsUIParent, false);
                 break;
             case EquipmentType.Special:
             case EquipmentType.Meds:
-                hotbarSlotUI.transform.SetParent(extraEquipmentSlotsUIParent);
+                hotbarSlotUI.transform.SetParent(extraEquipmentSlotsUIParent, false);
                 break;
         }
         tempSlot.UISlot = hotbarSlotUI;
