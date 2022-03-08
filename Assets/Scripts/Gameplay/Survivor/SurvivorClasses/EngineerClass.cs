@@ -67,6 +67,7 @@ public class EngineerClass : SurvivorClass
         else
         {
             StopCoroutine(StartRechargeCo);
+
             StopRechargeCo = StopRecharge();
             StartCoroutine(StopRechargeCo);
         }
