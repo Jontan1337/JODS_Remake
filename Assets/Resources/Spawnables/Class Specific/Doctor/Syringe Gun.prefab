@@ -29,7 +29,7 @@ Transform:
   m_Children:
   - {fileID: 775901656273306937}
   m_Father: {fileID: 7808350306422601685}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1353034367429859139
 GameObject:
@@ -61,7 +61,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7808350306422601685}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3570403392781653895
 MeshFilter:
@@ -78,6 +78,87 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1353034367429859139}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: f96cadb658ef79f4cb1d04fc10740bb9, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &2425122229224019369
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1946029663419526526}
+  - component: {fileID: 421258827644641764}
+  - component: {fileID: 7650266872358084758}
+  m_Layer: 0
+  m_Name: Syringe0
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1946029663419526526
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2425122229224019369}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.0034370422, y: 0.118, z: 0.01}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 7808350306422601685}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &421258827644641764
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2425122229224019369}
+  m_Mesh: {fileID: 3531381187966287977, guid: 7b0a756b353f73b4db1a1d20158c15d0, type: 3}
+--- !u!23 &7650266872358084758
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2425122229224019369}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -151,6 +232,7 @@ Transform:
   m_LocalPosition: {x: -4.27, y: 0, z: -5.43}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 1946029663419526526}
   - {fileID: 6097553611859059141}
   - {fileID: 4329749250820376978}
   - {fileID: 7304677472618358485}
@@ -1599,7 +1681,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   itemName: Syringe Gun
-  equipmentType: 1
+  equipmentType: 0
   unequippedLayer: 14
   equippedLayer: 15
   isInteractable: 1
@@ -1616,11 +1698,12 @@ MonoBehaviour:
   fireRate: 600
   fireInterval: 0.1
   bulletsPerShot: 1
-  currentAmmunition: 3
-  maxCurrentAmmunition: 3
+  magazine: 3
+  magazineSize: 3
   extraAmmunition: 0
   highPower: 0
   recoil: 1
+  visualPunchback: 0.2
   stabilization: 1
   currentAccuracy: 0
   currentCurveAccuracy: 0
@@ -1673,8 +1756,7 @@ MonoBehaviour:
   syringes:
   - {fileID: 8155684875320609775}
   - {fileID: 1353034367429859139}
-  syringe1: {fileID: 1353034367429859139}
-  syringe2: {fileID: 8155684875320609775}
+  - {fileID: 2425122229224019369}
 --- !u!1 &8155684875320609775
 GameObject:
   m_ObjectHideFlags: 0
@@ -1705,7 +1787,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7808350306422601685}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &5498772410923420199
 MeshFilter:

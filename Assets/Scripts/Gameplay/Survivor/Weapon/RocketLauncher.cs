@@ -10,20 +10,9 @@ public class RocketLauncher : ProjectileWeapon
 	{
 		base.Svr_Shoot(aimPoint);
 
-        /* surely this if isnt necessary? 
-		if (currentAmmunition == 0 && extraAmmunition == 0)
-		{
-		}
-		*/
 
         GetComponentInParent<ActiveSClass>().Rpc_StartAbilityCooldown(transform.root.GetComponent<NetworkIdentity>().connectionToClient, transform.root);
-        //Unbind();
     }
-
-    //   protected override void OnDropPerformed(InputAction.CallbackContext obj)
-    //{
-    //	Unbind();
-    //}
 
     protected override void Svr_PostShoot()
     {

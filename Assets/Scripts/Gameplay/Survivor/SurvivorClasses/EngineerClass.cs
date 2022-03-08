@@ -87,7 +87,6 @@ public class EngineerClass : SurvivorClass
 			item.GetComponentInParent<ModifierManager>().Cooldown = 2;
 			print(item.gameObject.name);
         }
-		//modifierManager.Cooldown = 2;
 
 		while (!sClass.AbilityIsReady)
         {

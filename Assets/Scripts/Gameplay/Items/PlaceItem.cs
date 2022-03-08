@@ -115,10 +115,11 @@ public class PlaceItem : EquipmentItem
     public override void Unbind()
     {
         base.Unbind();
-        if (connectionToClient != null)
-        {
+        // connectionToClient is null for some reason
+        //if (connectionToClient != null)
+        //{
             Drop(false);
-        }
+        //}
     }
 
     public void Drop(bool dropItem)

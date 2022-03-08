@@ -64,10 +64,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  abilityActivatedSuccesfully: 0
-  abilityIsToggled: 0
   abilityObject: {fileID: 7454836186167015561, guid: 0344dc9be255aeb47b8c882205c4c639,
     type: 3}
+  range: 30
+  survivorLayer:
+    serializedVersion: 2
+    m_Bits: 8192
 --- !u!114 &1982977903136718284
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -84,12 +86,11 @@ MonoBehaviour:
   syncInterval: 0.1
   parentData: {fileID: 0}
   positionData: {x: 0, y: 0, z: 0}
+  localPositionData: {x: 0, y: 0, z: 0}
   rotationData: {x: 0, y: 0, z: 0, w: 0}
   syncParent: 1
   syncPosition: 0
   syncRotation: 0
-  syncVisibility: 0
-  objectRenderer: {fileID: 0}
 --- !u!114 &-5603411125010923598
 MonoBehaviour:
   m_ObjectHideFlags: 0
