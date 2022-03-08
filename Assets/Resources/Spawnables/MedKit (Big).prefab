@@ -274,7 +274,7 @@ Transform:
   m_GameObject: {fileID: 376577762905515766}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -12.03, y: 1.705, z: 0.62}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
   - {fileID: 376577761408803049}
   - {fileID: 376577762371298604}
@@ -325,6 +325,8 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   hasPhysics: 1
+  _rigidbody: {fileID: 376577762905515768}
+  _collider: {fileID: 376577762905515775}
 --- !u!54 &376577762905515768
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -417,8 +419,6 @@ MonoBehaviour:
   syncParent: 1
   syncPosition: 1
   syncRotation: 1
-  syncVisibility: 1
-  objectRenderer: {fileID: 0}
 --- !u!114 &376577762905515764
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1581,6 +1581,8 @@ MonoBehaviour:
     - {x: -0.47253016, y: -0.6231821, z: -0.62318486}
     - {x: -0.45478523, y: -0.89060116, z: -0.00000047898624}
     - {x: -0.47110233, y: -0.8820786, z: -0.0000004884486}
+  materialIndex: 0
+  useMaterialIndex: 1
 --- !u!114 &376577762905515767
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1602,6 +1604,7 @@ MonoBehaviour:
   isInteractable: 1
   authController: {fileID: 376577762905515771}
   objectVisuals: {fileID: 376577762905515765}
+  owner: {fileID: 0}
   rb: {fileID: 376577762905515768}
   outline: {fileID: 376577762905515764}
   healAmount: 69
