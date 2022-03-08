@@ -679,7 +679,6 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
     [TargetRpc]
     private void Rpc_CreateUISlots(NetworkConnection conn, EquipmentSlot tempSlot, int equipmentType)
     {
-        print(tempSlot.EquipmentType);
         tempSlot.gameObject.transform.parent = equipmentSlotsParent;
         GameObject hotbarSlotUI = Instantiate(equipmentSlotUIPrefab);
         switch ((EquipmentType)equipmentType)

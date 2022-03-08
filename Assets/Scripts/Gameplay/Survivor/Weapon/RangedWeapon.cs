@@ -331,12 +331,12 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
         int firedRounds = 0;
         // Scatter shot ammo is a single shell with multiple bullets/pellets.
-        PreShoot();
+        Svr_PreShoot();
         Vector2 aimPoint = UnityEngine.Random.insideUnitCircle * currentAccuracy * 10;
         while (Magazine > 0 && firedRounds < bulletsPerShot)
         {
             firedRounds++;
-            Shoot(aimPoint);
+            Svr_Shoot(aimPoint);
             if (firedRounds == bulletsPerShot)
             {
                 Svr_StartCooldown();
@@ -349,9 +349,9 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
                 break;
             }
         }
-        PostShoot();
         if (!isLocalPlayer)
             Rpc_PostShoot(connectionToClient);
+        Svr_PostShoot();
     }
 
     private IEnumerator IEBurstShootLoop()
@@ -364,8 +364,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         {
             if (canShoot)
             {
-                PreShoot();
-                Shoot(Vector2.zero);
+                Svr_PreShoot();
+                Svr_Shoot(Vector2.zero);
                 Svr_StartCooldown();
                 if (!hasAuthority)
                     Rpc_StartCooldown(connectionToClient);
@@ -373,9 +373,9 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
             }
             yield return null;
         }
-        PostShoot();
         if (!isLocalPlayer)
             Rpc_PostShoot(connectionToClient);
+        Svr_PostShoot();
         if (Magazine == 0)
         {
             Rpc_EmptySFX();
@@ -390,14 +390,14 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         {
             if (canShoot)
             {
-                PreShoot();
-                Shoot(Vector2.zero);
-                PostShoot();
+                Svr_PreShoot();
+                Svr_Shoot(Vector2.zero);
                 if (!isLocalPlayer)
                     Rpc_PostShoot(connectionToClient);
                 Svr_StartCooldown();
                 if (!hasAuthority)
                     Rpc_StartCooldown(connectionToClient);
+                Svr_PostShoot();
             }
             yield return null;
         }
@@ -412,14 +412,14 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
             Rpc_EmptySFX();
             return;
         }
-        PreShoot();
-        Shoot(Vector2.zero);
-        PostShoot();
+        Svr_PreShoot();
+        Svr_Shoot(Vector2.zero);
         if (!isLocalPlayer)
             Rpc_PostShoot(connectionToClient);
         Svr_StartCooldown();
         if (!isLocalPlayer)
             Rpc_StartCooldown(connectionToClient);
+        Svr_PostShoot();
     }
 
     [Command]
@@ -449,15 +449,22 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         COAccuracyStabilizer = StartCoroutine(IEAccuracyStabilizer());
     }
 
-    protected virtual void Shoot(Vector2 aimPoint)
+    [Server]
+    protected virtual void Svr_Shoot(Vector2 aimPoint)
     {
         Debug.LogError("You broke this. Rocket launcher didn't work because it never lost ammunition. I temporarily fixed by removing an If statement in rocket launcher script. Fix.");
     }
-
-    private void PreShoot()
+    [Server]
+    protected virtual void Svr_PreShoot()
     {
         Magazine -= 1;
     }
+    [Server]
+    protected virtual void Svr_PostShoot()
+    {
+        PostShoot();
+    }
+
     private void PostShoot()
     {
         CurrentAccuracy += recoil;

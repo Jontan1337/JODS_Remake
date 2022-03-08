@@ -12,9 +12,9 @@ public class ProjectileWeapon : RangedWeapon
 	[SerializeField] private GameObject projectile;
 
 
-	protected override void Shoot(Vector2 aimPoint)
+	protected override void Svr_Shoot(Vector2 aimPoint)
 	{
-		base.Shoot(aimPoint);
+		base.Svr_Shoot(aimPoint);
 		Rpc_Shoot(Vector2.zero);
 		GameObject projectileToSpawn = Instantiate(projectile, shootOrigin.position, shootOrigin.rotation);
 		NetworkServer.Spawn(projectileToSpawn);

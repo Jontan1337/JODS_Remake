@@ -6,26 +6,38 @@ using UnityEngine.InputSystem;
 
 public class RocketLauncher : ProjectileWeapon
 {
-	protected override void Shoot(Vector2 aimPoint)
+	protected override void Svr_Shoot(Vector2 aimPoint)
 	{
-		base.Shoot(aimPoint);
+		base.Svr_Shoot(aimPoint);
 
-		/* surely this if isnt necessary? 
+        /* surely this if isnt necessary? 
 		if (currentAmmunition == 0 && extraAmmunition == 0)
 		{
 		}
 		*/
 
         GetComponentInParent<ActiveSClass>().Rpc_StartAbilityCooldown(transform.root.GetComponent<NetworkIdentity>().connectionToClient, transform.root);
-        Unbind();
-	}
+        //Unbind();
+    }
 
-	protected override void OnDropPerformed(InputAction.CallbackContext obj)
-	{
-		Unbind();
-	}
+    //   protected override void OnDropPerformed(InputAction.CallbackContext obj)
+    //{
+    //	Unbind();
+    //}
 
-	public override void Unbind()
+    protected override void Svr_PostShoot()
+    {
+        base.Svr_PostShoot();
+        StartCoroutine(IEDrop());
+    }
+
+    private IEnumerator IEDrop()
+    {
+        yield return new WaitForSeconds(0.2f);
+        Svr_Drop();
+    }
+
+    public override void Unbind()
 	{
 		base.Unbind();
 

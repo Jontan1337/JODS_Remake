@@ -10,9 +10,9 @@ public class SyringeGun : ProjectileWeapon
 	private List<GameObject> syringes = new List<GameObject>();
 	//[SerializeField] private GameObject syringe1;
 	//[SerializeField] private GameObject syringe2;
-	protected override void Shoot(Vector2 aimPoint)
+	protected override void Svr_Shoot(Vector2 aimPoint)
 	{
-		base.Shoot(aimPoint);
+		base.Svr_Shoot(aimPoint);
 
 		if(syringes.Count == 0)
         {
