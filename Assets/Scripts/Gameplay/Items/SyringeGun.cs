@@ -36,19 +36,13 @@ public class SyringeGun : ProjectileWeapon
 
     public override void Svr_Drop()
     {
-        if (magazine < magazineSize)
+        if (magazine < magazineSize && magazine > 0)
         {
             GetComponentInParent<ActiveSClass>().Rpc_StartAbilityCooldown(transform.root.GetComponent<NetworkIdentity>().connectionToClient, transform.root);
         }
         base.Svr_Drop();
         StartCoroutine(DestroyWait());
     }
-
-    //public override void Unbind()
-    //{
-    //    base.Unbind();
-    //    Cmd_Destroy();
-    //}
 
     [Command]
     public void Cmd_Destroy()

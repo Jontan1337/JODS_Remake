@@ -81,7 +81,7 @@ public class EngineerClass : SurvivorClass
 		survivorsInRange = Physics.OverlapSphere(transform.position, range, survivorLayer);
 		sController.enabled = false;
 		recharging = true;
-		yield return new WaitForSeconds(2f);
+		yield return new WaitForSeconds(1f);
         foreach (var item in survivorsInRange)
         {
 			item.GetComponentInParent<ModifierManager>().Cooldown = 2;
@@ -103,7 +103,7 @@ public class EngineerClass : SurvivorClass
 			item.GetComponentInParent<ModifierManager>().Cooldown = 1;
 		}
 		survivorsInRange = null;
-		yield return new WaitForSeconds(2f);
+		yield return new WaitForSeconds(1f);
 		sController.enabled = true;
 		recharging = false;
 	}
@@ -126,8 +126,6 @@ public class EngineerClass : SurvivorClass
 		playerEquipment = transform.parent.GetComponentInChildren<PlayerEquipment>();
 
         turret.GetComponent<IInteractable>().Svr_Interact(transform.root.gameObject);
-        //turret.GetComponent<EquipmentItem>().Svr_Pickup(playerEquipment.playerHands, connectionToClient);
-        //playerEquipment?.Svr_Equip(turret, EquipmentType.None);
     }
 
 }

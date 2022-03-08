@@ -148,7 +148,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	
 	private void Ability()
 	{
-		if (abilityIsReady)
+		if (AbilityIsReady)
 		{
 			sClass.ActiveAbility();
 		}
