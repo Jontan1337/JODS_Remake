@@ -185,8 +185,11 @@ public class UnitMaster : NetworkBehaviour
         SwitchCamera(true);
 
         //Default starting energy stats
-        stats.currentEnergy = 50;
-        stats.energyRechargeIncrement = 1;
+        stats.currentEnergy = masterSO.startEnergy;
+        stats.maxEnergy = masterSO.startMaxEnergy;
+        stats.energyRechargeIncrement = masterSO.energyRechargeIncrement;
+        stats.maxEnergyIncrement = masterSO.maxEnergyUpgradeIncrement;
+        stats.timeUntillNextUpgrade = masterSO.energyUpgradeInterval;
 
         //Energy UI visuals
         UI.energyFillImage.color = masterSO.energyColor;

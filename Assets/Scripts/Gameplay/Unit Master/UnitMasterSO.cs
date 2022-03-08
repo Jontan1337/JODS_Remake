@@ -10,6 +10,13 @@ public class UnitMasterSO : ScriptableObject
     public Object masterClass;
     public MapSettingsSO associatedMapSettings;
 
+    [Header("Stats")]
+    public int startEnergy = 25;
+    public int startMaxEnergy = 100;
+    public int energyRechargeIncrement = 1;
+    public int maxEnergyUpgradeIncrement = 20;
+    public int energyUpgradeInterval = 100;
+
     [Header("Units (In descending order)")]
     public UnitSO[] units;
     
