@@ -487,7 +487,7 @@ public class UnitMaster : NetworkBehaviour
         }
 
         //Update scoreboard stat
-        GamemodeBase.Instance.Svr_ModifyStat(GetComponent<NetworkIdentity>().netId, 1, PlayerDataStat.TotalUpgrades);
+        Cmd_UpdateScore(1, PlayerDataStat.TotalUpgrades);
     }
 
     #endregion
@@ -970,7 +970,7 @@ public class UnitMaster : NetworkBehaviour
             UpdateEnergyUI();//Update UI
             ModifyXp(chosenUnit.xpGain); //Master gains xp though
 
-            GamemodeBase.Instance.Svr_ModifyStat(GetComponent<NetworkIdentity>().netId, 1, PlayerDataStat.UnitsPlaced);
+            Cmd_UpdateScore(1, PlayerDataStat.UnitsPlaced);
         }
 
         Cmd_Spawn(hit.point, spawnName, spawnLevel);
@@ -1040,7 +1040,7 @@ public class UnitMaster : NetworkBehaviour
         Cmd_PlayGlobalSound(true);
 
         //Update scoreboard stat
-        GamemodeBase.Instance.Svr_ModifyStat(GetComponent<NetworkIdentity>().netId, 1, PlayerDataStat.TotalUnitUpgrades);
+        Cmd_UpdateScore(1, PlayerDataStat.TotalUnitUpgrades);
     }
 
     public void UnlockNewUnit(int which)
@@ -1105,12 +1105,20 @@ public class UnitMaster : NetworkBehaviour
         //Select the unit
         selectedUnit = unit;
         selectedUnit.Select(masterSO.unitSelectColor);
+        Cmd_SetSelectedUnit(unit.gameObject);
     }
     private void DeselectUnit()
     {
         if (!selectedUnit) return;
         selectedUnit.Deselect();
         selectedUnit = null;
+        Cmd_SetSelectedUnit(null);
+    }
+
+    [Command]
+    private void Cmd_SetSelectedUnit(GameObject unit)
+    {
+        selectedUnit = unit != null ? unit.GetComponent<UnitBase>() : null;
     }
     private void TryToCommandUnit()
     {
@@ -1127,7 +1135,7 @@ public class UnitMaster : NetworkBehaviour
             }
 
             //Command my selected unit to move to the location
-            selectedUnit.Svr_MoveToLocation(hit.point);
+            Cmd_MoveToLocation(hit.point);
         }
     }
     #endregion
@@ -1427,6 +1435,17 @@ public class UnitMaster : NetworkBehaviour
     #endregion
 
     #region Network Commands
+
+    [Command]
+    void Cmd_MoveToLocation(Vector3 location)
+    {
+        selectedUnit.Svr_MoveToLocation(location);
+    }
+    [Command]
+    void Cmd_UpdateScore(int amount, PlayerDataStat stat)
+    {
+        GamemodeBase.Instance.Svr_ModifyStat(GetComponent<NetworkIdentity>().netId, amount, stat);
+    }
 
     [Command]
     void Cmd_Spawn(Vector3 pos, string name, int level)

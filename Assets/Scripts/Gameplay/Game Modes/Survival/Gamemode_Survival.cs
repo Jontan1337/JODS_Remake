@@ -63,6 +63,8 @@ public class Gamemode_Survival : GamemodeBase
     {
         if (!mapSettings) return;
 
+        print("SHOP IS OPEN GO GO GO!");
+
         AS.PlayOneShot(shopPeriodSpawnAudio, 1f);
 
         PositionAndRotationPoint spawnpoint = mapSettings.shopSpawnPoints[Random.Range(0, mapSettings.shopSpawnPoints.Length)];
@@ -73,9 +75,9 @@ public class Gamemode_Survival : GamemodeBase
 
         newShop.GetComponent<WeaponShop>().Svr_GenerateNewSelection();
 
-        StartCoroutine(IEShopPeriod(newShop));
+        StartCoroutine(IE_DestroyShop(newShop));
     }
-    private IEnumerator IEShopPeriod(GameObject shop)
+    private IEnumerator IE_DestroyShop(GameObject shop)
     {
         yield return new WaitForSeconds(shopPeriodDuration);
 
