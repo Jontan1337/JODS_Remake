@@ -69,10 +69,9 @@ MonoBehaviour:
   keyCode: 49
   keyNumber: 1
   uiSlot: {fileID: 0}
-  selectedColor: {r: 1, g: 1, b: 1, a: 0.7058824}
-  deselectedColor: {r: 0.62352943, g: 0.62352943, b: 0.62352943, a: 0.7058824}
-  textItemName: {fileID: 0}
-  textItemType: {fileID: 0}
+  selectedColor: {r: 0.21698111, g: 0.21698111, b: 0.21698111, a: 0.74509805}
+  deselectedColor: {r: 0, g: 0, b: 0, a: 0.74509805}
+  hotbarSlot: {fileID: 0}
   slotImage: {fileID: 0}
 --- !u!114 &1741895825134749742
 MonoBehaviour:
@@ -88,9 +87,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  parent: {fileID: 0}
-  syncParent: 1
+  parentData: {fileID: 0}
   positionData: {x: 0, y: 0, z: 0}
-  syncPosition: 1
+  localPositionData: {x: 0, y: 0, z: 0}
   rotationData: {x: 0, y: 0, z: 0, w: 0}
+  syncParent: 1
+  syncPosition: 1
   syncRotation: 1
