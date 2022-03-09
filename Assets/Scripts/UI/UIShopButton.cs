@@ -12,7 +12,7 @@ public class UIShopButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     [Space]
     [SerializeField] private WeaponShop shop = null;
     [SerializeField] private Text priceText = null;
-    [SerializeField] private Text PLACEHOLDERText = null;
+    [SerializeField] private Image itemSprite = null;
 
     private Button button;
 
@@ -27,8 +27,7 @@ public class UIShopButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         { 
             item = value;
             priceText.text = item.shopItemPrice.ToString();
-            PLACEHOLDERText.text = "PLACEHOLDER TEXT: " + item.shopItemName
-                + "\nREPLACE WITH IMAGE";
+            itemSprite.sprite = item.shopItemPrefab.GetComponent<EquipmentItem>().UISilhouette;
         }
     }
 
