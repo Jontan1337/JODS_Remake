@@ -73,8 +73,9 @@ public class MeleeWeapon : EquipmentItem, IImpacter
         }
     }
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         material = GetComponent<MeshRenderer>().material;
         networkAnimator = GetComponent<NetworkAnimator>();
         weaponAnimator.speed = 1f / attackInterval;

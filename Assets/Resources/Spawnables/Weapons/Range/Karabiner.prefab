@@ -1164,16 +1164,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  header1: 
   itemName: Item name
   equipmentType: 1
   unequippedLayer: 14
   equippedLayer: 15
   isInteractable: 1
+  UISilhouette: {fileID: 21300000, guid: 5be801a6d1a4bb84db58eb5aea870211, type: 3}
   authController: {fileID: 1540580403468037453}
   objectVisuals: {fileID: 4865449982244265551}
   owner: {fileID: 0}
   rb: {fileID: 2174177306708926902}
   outline: {fileID: 2174177306708926899}
+  header2: 
   damage: 50
   ammunitionType: 2
   fireMode: 0
@@ -1190,7 +1193,7 @@ MonoBehaviour:
   visualPunchback: 5
   stabilization: 2
   currentAccuracy: 0
-  currentCurveAccuracy: 0
+  currentCurveAccuracy: 1
   recoilCurve:
     serializedVersion: 2
     m_Curve:
@@ -1221,14 +1224,6 @@ MonoBehaviour:
   muzzleFlash: {fileID: 9065516546652601525}
   muzzleParticle: {fileID: 5232200631935781932}
   sfxPlayer: {fileID: 2174177306708926897}
-  crosshairUIParent: {fileID: 0}
-  crosshairUI: {fileID: 0}
-  currentAmmunitionUI: {fileID: 0}
-  currentAmmunitionUIText: {fileID: 0}
-  extraAmmunitionUI: {fileID: 0}
-  extraAmmunitionUIText: {fileID: 0}
-  fireModeUI: {fileID: 0}
-  fireModeUIText: {fileID: 0}
   crosshairPrefab: {fileID: 7567561865917243704, guid: 3ebd556d7ba54f745bfe343e53e58796,
     type: 3}
   shootSound: {fileID: 8300000, guid: 4cec65af975f1ff47991f10f96662acf, type: 3}

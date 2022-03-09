@@ -2,33 +2,35 @@
 using Mirror;
 using UnityEngine.InputSystem;
 using System;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(PhysicsToggler), typeof(Rigidbody), typeof(BoxCollider)),
  RequireComponent(typeof(AuthorityController), typeof(SyncGameObjectVisuals), typeof(Outline)),
  RequireComponent(typeof(MeshCollider))]
 public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippable, IBindable
 {
+	[Header("EQUIPMENT ITEM")]
+	[SerializeField, TextArea(2,2)] private string header1 = "";
 	[Header("Basic info")]
 	[SerializeField] protected string itemName = "Item name";
 	[SerializeField] protected EquipmentType equipmentType = EquipmentType.None;
 
-	[Header("Settings")]
-	//[SerializeField] private bool enablePhysicsOnDrop = true;
-	//[SerializeField] private bool disablePhysicsOnPickup = true;
-
 	[Header("Other info")]
 	[SerializeField] private int unequippedLayer = 14;
 	[SerializeField] private int equippedLayer = 15;
+	[SerializeField] private MeshRenderer[] objectMeshes;
 	[SerializeField, SyncVar] protected bool isInteractable = true;
 
+	[Header("References")]
+	public Sprite UISilhouette = null;
 	[SerializeField] protected AuthorityController authController = null;
 	[SerializeField] protected SyncGameObjectVisuals objectVisuals = null;
-	[SerializeField] protected Transform owner;
-	[SerializeField] private Rigidbody rb;
-	[SerializeField] private Outline outline;
+	[SerializeField] protected Transform owner = null;
+	[SerializeField] private Rigidbody rb = null;
+	[SerializeField] private Outline outline = null;
 
 	public Action<GameObject> onServerDropItem;
-    private ActiveSClass playerClass;
+    private ActiveSClass playerClass = null;
 
     public bool IsInteractable { get => isInteractable; set => isInteractable = value; }
 	public string ObjectName => gameObject.name;
@@ -36,8 +38,10 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	public GameObject Item => gameObject;
 	public EquipmentType EquipmentType => equipmentType;
 
-	private void Awake()
+    protected virtual void Awake()
 	{
+		objectMeshes = transform.GetComponentsInChildren<MeshRenderer>();
+
 		if (authController == null)
 			TryGetComponent(out authController);
 		if (objectVisuals == null)
@@ -317,15 +321,21 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	[TargetRpc]
 	private void Rpc_SetLayer(NetworkConnection target, bool isEquipped)
 	{
-		if (isEquipped)
-		{
-			gameObject.layer = equippedLayer;
-		}
-		else
-		{
-			gameObject.layer = unequippedLayer;
-		}
-	}
+        if (isEquipped)
+        {
+            foreach (MeshRenderer item in objectMeshes)
+            {
+                item.gameObject.layer = equippedLayer;
+            }
+        }
+        else
+        {
+            foreach (MeshRenderer item in objectMeshes)
+            {
+                item.gameObject.layer = unequippedLayer;
+            }
+        }
+    }
 
 	[ClientRpc]
 	private void Rpc_ToggleOutline(bool hasOutline)

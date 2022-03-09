@@ -8,6 +8,9 @@ using DG.Tweening;
 
 public abstract class RangedWeapon : EquipmentItem, IImpacter
 {
+    [Header("RANGED WEAPON")]
+    [SerializeField, TextArea(2,2)] private string header2 = "";
+    [Space]
     [Header("Weapon stats")]
     [SerializeField] protected int damage = 10;
     [SerializeField] private AmmunitionTypes ammunitionType = AmmunitionTypes.Small;
@@ -42,22 +45,21 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [SerializeField] private ParticleSystem muzzleParticle;
     [SerializeField] private SFXPlayer sfxPlayer = null;
 
-    [Header("UI References")]
-    [SerializeField] private Transform crosshairUIParent;
-    [SerializeField] private Crosshair crosshairUI;
-    [SerializeField] private Transform currentAmmunitionUI;
-    [SerializeField] private TextMeshProUGUI currentAmmunitionUIText;
-    [SerializeField] private Transform extraAmmunitionUI;
-    [SerializeField] private TextMeshProUGUI extraAmmunitionUIText;
-    [SerializeField] private Transform fireModeUI;
-    [SerializeField] private TextMeshProUGUI fireModeUIText;
-
     [Header("Prefabs")]
     [SerializeField] private GameObject crosshairPrefab;
 
     [Header("Audio Settings")]
     [SerializeField] private AudioClip shootSound = null;
     [SerializeField] private AudioClip emptySound = null;
+
+    private Transform crosshairUIParent;
+    private Crosshair crosshairUI;
+    private Transform currentAmmunitionUI;
+    private TextMeshProUGUI currentAmmunitionUIText;
+    private Transform extraAmmunitionUI;
+    private TextMeshProUGUI extraAmmunitionUIText;
+    private Transform fireModeUI;
+    private TextMeshProUGUI fireModeUIText;
 
     private Coroutine COShootLoop;
     private Coroutine COStopShootLoop;
