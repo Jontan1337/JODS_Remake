@@ -35,7 +35,6 @@ public class Option_AdvancedBool : MonoBehaviour
         
     public void ChangeSetting(bool enable)
     {
-        print("Change");
         switch (settingType)
         {
             case SettingType.Bloom:
@@ -43,15 +42,12 @@ public class Option_AdvancedBool : MonoBehaviour
                 break;
             case SettingType.DOF:
                 dof.active = enable;
-
                 break;
             case SettingType.Vignette:
                 vignette.active = enable;
-
                 break;
             case SettingType.MotionBlur:
                 motionBlur.active = enable;
-
                 break;
         }
     }
