@@ -50,12 +50,67 @@ public class UnitMaster : NetworkBehaviour
         public int energyRechargeIncrement = 1; //How much energy recharges per second
         public int maxEnergyIncrement = 20; //Amount to increase max energy
         [Space]
-        public int currentXp = 0; //Current amount of master xp
+        public int currentXP = 0; //Current amount of master xp
         [Space]
         public int timeUntillNextUpgrade = 50; //When does the next upgrade decision become available
     }
     [Space]
     public Stats stats;
+    private int CurrentXP
+    {
+        get { return stats.currentXP; }
+        set
+        {
+            stats.currentXP += value;
+
+            //XP UI
+            UI.xpText.text = stats.currentXP.ToString() + "XP";
+
+            //Check if there is an upgrade or unlock available
+            for (int i = 0; i < uiGameplayButtons.Count; i++)
+            {
+                int unitRange = unitList.Count;
+
+                if (i < unitRange)
+                {
+                    UnitList unit = unitList[i];
+                    UnitSO unitSO = unit.unit;
+
+                    //If the unit is unlocked
+                    if (unit.unlocked)
+                    {
+                        int xpToUpgrade = unitSO.xpToUpgrade;
+                        xpToUpgrade = GetXPToUpgrade(xpToUpgrade, unit.level);
+
+                        //If player has enough xp to upgrade it, show the upgrade button
+                        if (xpToUpgrade <= stats.currentXP) uiGameplayButtons[i].ShowUpgradeButton(true);
+                        else uiGameplayButtons[i].ShowUpgradeButton(false);
+                        continue;
+                    }
+                    else
+                    {
+                        //Else, if the player has enough xp to unlock it, show the unlock button
+                        if (unitSO.xpToUnlock <= stats.currentXP) uiGameplayButtons[i].ShowUnlockButton(true);
+                        else uiGameplayButtons[i].ShowUnlockButton(false);
+                        continue;
+                    }
+                }
+                else
+                {
+                    DeployableList deployable = deployableList[i - unitRange];
+
+                    if (!deployable.unlocked)
+                    {
+                        if (deployable.deployable.xpToUnlock <= stats.currentXP) uiGameplayButtons[i].ShowUnlockButton(true);
+                        else uiGameplayButtons[i].ShowUnlockButton(false);
+                    }
+                    continue;
+                }
+            }
+        }
+    }
+    private int GetXPToUpgrade(int baseUpgrade, int level) => baseUpgrade + Mathf.RoundToInt((float)baseUpgrade * (0.2f * (level - 1)));
+
 
     [Header("Units")]
     [SerializeField] private List<UnitList> unitList = new List<UnitList>();
@@ -688,51 +743,6 @@ public class UnitMaster : NetworkBehaviour
 
     #region Other
 
-    private void ModifyXp(int amount)
-    {
-        stats.currentXp += amount;
-
-        //XP UI
-        UI.xpText.text = stats.currentXp.ToString() + "xp";
-
-        //Check if there is an upgrade or unlock available
-        for (int i = 0; i < uiGameplayButtons.Count; i++)
-        {
-            int unitRange = unitList.Count;
-
-            if (i < unitRange)
-            {
-                UnitList unit = unitList[i];
-
-                //If the unit is unlocked
-                if (unit.unlocked)
-                {
-                    //If player has enough xp to upgrade it, show the upgrade button
-                    if (unit.unit.xpToUpgrade <= stats.currentXp) uiGameplayButtons[i].ShowUpgradeButton(true);
-                    else uiGameplayButtons[i].ShowUpgradeButton(false);
-                    continue;
-                }
-                else
-                {
-                    //Else, if the player has enough xp to unlock it, show the unlock button
-                    if (unit.unit.xpToUnlock <= stats.currentXp) uiGameplayButtons[i].ShowUnlockButton(true);
-                    else uiGameplayButtons[i].ShowUnlockButton(false);
-                    continue;
-                }
-            }
-            else
-            {
-                DeployableList deployable = deployableList[i - unitRange];
-                 
-                if (!deployable.unlocked)
-                {
-                    if (deployable.deployable.xpToUnlock <= stats.currentXp) uiGameplayButtons[i].ShowUnlockButton(true);
-                    else uiGameplayButtons[i].ShowUnlockButton(false);
-                }
-                continue;
-            }
-        }
-    }
     private void ModifyEnergy(int amount)
     {
         stats.currentEnergy = Mathf.Clamp(stats.currentEnergy += amount, 0, stats.maxEnergy);
@@ -971,7 +981,7 @@ public class UnitMaster : NetworkBehaviour
             //Master loses energy, because nothing is free in life
             ModifyEnergy(-chosenUnit.energyCost);
             UpdateEnergyUI();//Update UI
-            ModifyXp(chosenUnit.xpGain); //Master gains xp though
+            CurrentXP += chosenUnit.xpGain; //Master gains xp though
 
             Cmd_UpdateScore(1, PlayerDataStat.UnitsPlaced);
         }
@@ -1030,14 +1040,14 @@ public class UnitMaster : NetworkBehaviour
         UnitList unit = unitList[which];
 
         //If player does NOT have enough xp (Which shouldn't be possible), return.
-        if (stats.currentXp < unit.unit.xpToUpgrade) return;
+        if (stats.currentXP < unit.unit.xpToUpgrade) return;
 
         //Increase the unit's level
         unit.level += 1;
         uiGameplayButtons[which].SetUnitLevel(unit.level);
 
         //Decrease xp by amount required to upgrade the unit
-        ModifyXp(-unit.unit.xpToUpgrade);
+        CurrentXP += -unit.unit.xpToUpgrade;
 
         //Play spooky sound
         Cmd_PlayGlobalSound(true);
@@ -1060,7 +1070,7 @@ public class UnitMaster : NetworkBehaviour
 
             deployable.unlocked = true;
 
-            ModifyXp(-deployable.deployable.xpToUnlock);
+            CurrentXP += -deployable.deployable.xpToUnlock;
         }
         else
         {
@@ -1070,7 +1080,7 @@ public class UnitMaster : NetworkBehaviour
             unit.unlocked = true;
 
             //Decrease xp by amount required to unlock the unit
-            ModifyXp(-unit.unit.xpToUnlock);
+            CurrentXP += -unit.unit.xpToUnlock;
         }
 
         //Play spooky sound

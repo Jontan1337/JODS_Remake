@@ -5,14 +5,8 @@ using UnityEngine.UI;
 
 public class Option_Volume : MonoBehaviour
 {
-    private Slider v;
-    void Start()
+    public void SetVolume(float value)
     {
-        v = GetComponent<Slider>();
-        v.value = AudioListener.volume;
-    }
-    private void Update()
-    {
-        AudioListener.volume = v.value;
+        AudioListener.volume = value;
     }
 }

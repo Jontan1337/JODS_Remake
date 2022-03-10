@@ -157,6 +157,7 @@ public class UnitSO : ScriptableObject
     [Range(0, 20)] public int powerStat;
     [Range(0, 20)] public int healthStat;
 
+
     private void OnValidate()
     {
         if (unitPrefab != null)
