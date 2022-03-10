@@ -22,8 +22,6 @@ public class EquipmentSlot : NetworkBehaviour
     [SerializeField] private Color selectedColor = Color.white;
     [SerializeField] private Color deselectedColor = Color.gray;
     [SerializeField] private HotbarSlot hotbarSlot;
-    [SerializeField] private TMP_Text textItemName;
-    [SerializeField] private TMP_Text textItemType;
     [SerializeField] private Image slotImage;
 
     private PlayerEquipment playerEquipment;
@@ -36,7 +34,8 @@ public class EquipmentSlot : NetworkBehaviour
             uiSlot = value;
             slotImage = UISlot.GetComponent<Image>();
             hotbarSlot = uiSlot.GetComponent<HotbarSlot>();
-            hotbarSlot.SetItemName("──");
+            hotbarSlot.ToggleItemImage();
+            hotbarSlot.SetItemName("─");
             hotbarSlot.SetItemType(EquipmentType.ToString());
         }
     }
@@ -55,14 +54,6 @@ public class EquipmentSlot : NetworkBehaviour
         }
     }
     public EquipmentType EquipmentType { get => equipmentType; set => equipmentType = value; }
-    public TMP_Text TextItemType {
-        get => textItemType;
-        private set
-        {
-            textItemType = value;
-            textItemType.text = EquipmentType.ToString();
-        }
-    }
     #endregion
 
     #region Hooks
@@ -197,10 +188,13 @@ public class EquipmentSlot : NetworkBehaviour
         if (value != null)
         {
             hotbarSlot.SetItemName(value.name);
+            hotbarSlot.SetItemImage(value.GetComponent<EquipmentItem>().UISilhouette);
+            hotbarSlot.ToggleItemImage();
         }
         else
         {
-            hotbarSlot.SetItemName("──");
+            hotbarSlot.SetItemName("─");
+            hotbarSlot.ToggleItemImage();
         }
     }
 }
