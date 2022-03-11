@@ -157,14 +157,22 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         public AudioClip[] idleSounds;
         [Range(0, 1)] public float idleVolume = 0.3f;
         [Space]
+        public AudioClip[] alertSounds;
+        [Range(0, 1)] public float alertVolume = 0.3f;
+        [Range(0, 1)] public float alertingSoundChance = 0.9f;
+        [Range(0, 1)] public float alertedSoundChance = 0.15f;
+        [Space]
         public AudioClip[] meleeSounds;
         [Range(0, 1)] public float meleeVolume = 0.4f;
+        [Range(0, 1)] public float meleeSoundChance = 0.6f;
         [Space]
-        public AudioClip rangedSound;
+        public AudioClip[] rangedSounds;
         [Range(0, 1)] public float rangedVolume = 0.4f;
+        [Range(0, 1)] public float rangedSoundChance = 1f;
         [Space]
-        public AudioClip specialSound;
+        public AudioClip[] specialSounds;
         [Range(0, 1)] public float specialVolume = 0.4f;
+        [Range(0, 1)] public float specialSoundChance = 1f;
         [Space]
         public AudioClip[] footstepSounds;
         [Range(0, 1)] public float footstepVolume = 0.1f;
@@ -262,6 +270,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             if (value == attackMelee) return;
             attackMelee = value;
             Rpc_PlayAttackAnimation(AttackAnimation.Melee, attackMelee);
+            if (Random.value < sounds.meleeSoundChance) PlaySound(sounds.meleeSounds, sounds.meleeVolume, true);
             //melee.canMelee = false;
         }
     }
@@ -273,6 +282,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             if (value == attackRange) return;
             attackRange = value;
             Rpc_PlayAttackAnimation(AttackAnimation.Ranged, attackRange);
+            if (Random.value < sounds.rangedSoundChance) PlaySound(sounds.rangedSounds, sounds.rangedVolume, true);
         }
     }
     public bool AttackSpecial
@@ -283,6 +293,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             if (value == attackSpecial) return;
             attackSpecial = value;
             Rpc_PlayAttackAnimation(AttackAnimation.Special, attackSpecial);
+            if (Random.value < sounds.specialSoundChance) PlaySound(sounds.specialSounds, sounds.specialVolume, true);
         }
     }
     public int Health
@@ -426,10 +437,17 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         sounds.headHeight = unitSO.sounds.headHeight;
         sounds.meleeSounds = unitSO.sounds.meleeSounds;
         sounds.meleeVolume = unitSO.sounds.meleeVolume;
-        sounds.rangedSound = unitSO.sounds.rangedSound;
+        sounds.meleeSoundChance = unitSO.sounds.meleeSoundChance;
+        sounds.alertSounds = unitSO.sounds.alertSounds;
+        sounds.alertVolume = unitSO.sounds.alertVolume;
+        sounds.alertingSoundChance = unitSO.sounds.alertingSoundChance;
+        sounds.alertedSoundChance = unitSO.sounds.alertedSoundChance;
+        sounds.rangedSounds = unitSO.sounds.rangedSounds;
         sounds.rangedVolume = unitSO.sounds.rangedVolume;
-        sounds.specialSound = unitSO.sounds.specialSound;
+        sounds.rangedSoundChance = unitSO.sounds.rangedSoundChance;
+        sounds.specialSounds = unitSO.sounds.specialSounds;
         sounds.specialVolume = unitSO.sounds.specialVolume;
+        sounds.specialSoundChance = unitSO.sounds.specialSoundChance;
         sounds.footstepSounds = unitSO.sounds.footstepSounds;
         sounds.footstepVolume = unitSO.sounds.footstepVolume;
         sounds.idleSounds = unitSO.sounds.idleSounds;
@@ -735,10 +753,19 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
         NewTarget();
 
+        bool makeAlertSound;
+
         if (!alerted) //If I got alerted, I won't alert others.
         {
+            makeAlertSound = Random.value < sounds.alertingSoundChance;
             Alert();
         }
+        else
+        {
+            makeAlertSound = Random.value < sounds.alertedSoundChance;
+        }
+
+        if (makeAlertSound) PlaySound(sounds.alertSounds, sounds.alertVolume, true, true);
     }
 
     private void LoseTarget()
@@ -1346,7 +1373,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     #region Sounds
 
-    public void PlaySound(AudioClip[] clips, float volume, bool atHead)
+    public void PlaySound(AudioClip[] clips, float volume, bool atHead, bool randomDelay = false)
     {
         if (clips.Length == 0)
         {
@@ -1360,19 +1387,15 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
         audioSource.pitch = Random.Range(0.9f, 1.1f);
 
-        if (atHead)
-        {
-            Debug.Log("Playing sounds at head position is not implemented yet, playing at feet instead.");
-            Vector3 headPos = new Vector3(transform.position.x, transform.position.y + sounds.headHeight, transform.position.z);
-            audioSource.PlayOneShot(clip);
-        }
-        else
-        {
-            audioSource.PlayOneShot(clip);
-        }
+        Vector3 sourcePos = atHead ? 
+            new Vector3(transform.position.x, transform.position.y + sounds.headHeight, transform.position.z) :
+            transform.position;
+
+
+        AudioSource.PlayClipAtPoint(clip, sourcePos, volume);
     }
 
-    //This function is usually called by animation events.
+    //This function is usually called by animation events. Hence 0 references
     public void Footstep()
     {
         //          The sound clips     |   The sound volume  | play at the head?

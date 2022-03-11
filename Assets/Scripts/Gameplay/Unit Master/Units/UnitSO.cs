@@ -125,14 +125,22 @@ public class UnitSO : ScriptableObject
         public AudioClip[] idleSounds;
         [Range(0, 1)] public float idleVolume = 0.3f;
         [Space]
+        public AudioClip[] alertSounds;
+        [Range(0, 1)] public float alertVolume = 0.3f;
+        [Range(0, 1)] public float alertingSoundChance = 0.9f;
+        [Range(0, 1)] public float alertedSoundChance = 0.15f;
+        [Space]
         public AudioClip[] meleeSounds;
         [Range(0, 1)] public float meleeVolume = 0.4f;
+        [Range(0, 1)] public float meleeSoundChance = 0.6f;
         [Space]
-        public AudioClip rangedSound;
+        public AudioClip[] rangedSounds;
         [Range(0, 1)] public float rangedVolume = 0.4f;
+        [Range(0, 1)] public float rangedSoundChance = 1f;
         [Space]
-        public AudioClip specialSound;
+        public AudioClip[] specialSounds;
         [Range(0, 1)] public float specialVolume = 0.4f;
+        [Range(0, 1)] public float specialSoundChance = 1f;
         [Space]
         public AudioClip[] footstepSounds;
         [Range(0, 1)] public float footstepVolume = 0.1f;
