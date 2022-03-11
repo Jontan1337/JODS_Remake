@@ -38,12 +38,14 @@ public class RaycastWeapon : RangedWeapon
             {
                 if (Physics.Raycast(shootRay, out shootHit, range))
                 {
-                    print(shootHit.collider.transform.root.name);
-                    Debug.DrawRay(shootRay.origin, shootRay.direction*shootHit.distance, Color.HSVToRGB(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f)), 5f);
-
-                    shootRay = new Ray(shootHit.point + shootRay.direction*range, shootOrigin.position - shootHit.point);
-                    //Physics.Raycast(shootRay, out shootHit, range);
-                    //shootRay = new Ray(shootRay.origin, shootRay.direction * (shootHit.distance + 5f));
+                    // This ray shoots it's own collider on the other side to get the "penetration point"
+                    // on the opposite side of the collider where the bullet should leave.
+                    Ray penRay = new Ray(shootHit.point + shootRay.direction * range, -shootRay.direction);
+                    RaycastHit penHit;
+                    if (shootHit.collider.Raycast(penRay, out penHit, range))
+                    {
+                        shootRay = new Ray(penHit.point, -penRay.direction);
+                    }
                     if (shootHit.collider.TryGetComponent(out IDamagable damagable))
                     {
                         damagable.Svr_Damage(damage, owner);
@@ -82,10 +84,19 @@ public class RaycastWeapon : RangedWeapon
             Vector3 targetPoint = aimHit.point;
             Ray shootRay = new Ray(shootOrigin.position, targetPoint - shootOrigin.position);
             BulletTrail(targetPoint);
-            if (Physics.Raycast(shootRay, out RaycastHit shootHit, range, ~ignoreLayer))
+            for (int i = 0; i <= penetrationAmount; i++)
             {
-                PhysicMaterial phyMat = shootHit.collider.sharedMaterial;
-                Bullethole(shootHit.point, shootHit.normal, phyMat ? phyMat.name : "");
+                if (Physics.Raycast(shootRay, out RaycastHit shootHit, range, ~ignoreLayer))
+                {
+                    PhysicMaterial phyMat = shootHit.collider.sharedMaterial;
+                    Bullethole(shootHit.point, shootHit.normal, phyMat ? phyMat.name : "");
+                    Ray penRay = new Ray(shootHit.point + shootRay.direction * range, -shootRay.direction);
+                    RaycastHit penHit;
+                    if (shootHit.collider.Raycast(penRay, out penHit, range))
+                    {
+                        shootRay = new Ray(penHit.point, -penRay.direction);
+                    }
+                }
             }
         }
         else
