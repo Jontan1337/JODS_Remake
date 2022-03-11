@@ -301,7 +301,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     #region Server
 
     [Command]
-    private async void Cmd_Shoot()
+    private void Cmd_Shoot()
     {
         if (!canShoot) return;
 
