@@ -154,6 +154,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     {
         public float headHeight = 2f;
         [Space]
+        public float basePitch = 1f;
+        [Space]
         public AudioClip[] idleSounds;
         [Range(0, 1)] public float idleVolume = 0.3f;
         [Space]
@@ -435,6 +437,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
         //Sounds
         sounds.headHeight = unitSO.sounds.headHeight;
+        sounds.basePitch = unitSO.sounds.basePitch;
         sounds.meleeSounds = unitSO.sounds.meleeSounds;
         sounds.meleeVolume = unitSO.sounds.meleeVolume;
         sounds.meleeSoundChance = unitSO.sounds.meleeSoundChance;
@@ -1376,7 +1379,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     #region Sounds
 
-    public async void PlaySound(AudioClip[] clips, float volume, bool atHead, bool randomDelay = false)
+    public async void PlaySound(AudioClip[] clips, float volume, bool atHead, bool randomDelay = false, bool useBasePitch = true)
     {
         if (randomDelay)
         {
@@ -1393,7 +1396,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
         audioSource.volume = volume;
 
-        audioSource.pitch = Random.Range(0.9f, 1.1f);
+        audioSource.pitch = (useBasePitch ? sounds.basePitch : 1) * Random.Range(0.9f, 1.1f);
 
         Vector3 sourcePos = atHead ? 
             new Vector3(transform.position.x, transform.position.y + sounds.headHeight, transform.position.z) :
@@ -1406,8 +1409,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     //This function is usually called by animation events. Hence 0 references
     public void Footstep()
     {
-        //          The sound clips     |   The sound volume  | play at the head?
-        PlaySound(sounds.footstepSounds, sounds.footstepVolume, false);
+        //          The sound clips         |The sound volume       | play at the head? | use base pitch?
+        PlaySound(sounds.footstepSounds,    sounds.footstepVolume,  false,              false);
     }
 
     #endregion

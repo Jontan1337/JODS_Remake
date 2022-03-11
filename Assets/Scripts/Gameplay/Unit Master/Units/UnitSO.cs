@@ -122,6 +122,8 @@ public class UnitSO : ScriptableObject
     {
         public float headHeight = 2f;
         [Space]
+        [Range(0, 2)] public float basePitch = 1f;
+        [Space]
         public AudioClip[] idleSounds;
         [Range(0, 1)] public float idleVolume = 0.3f;
         [Space]
