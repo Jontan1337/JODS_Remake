@@ -33,7 +33,7 @@ public class EquipmentSlot : NetworkBehaviour
         {
             uiSlot = value;
             slotImage = UISlot.GetComponent<Image>();
-            hotbarSlot = uiSlot.GetComponent<HotbarSlot>();
+            hotbarSlot = UISlot.GetComponent<HotbarSlot>();
             hotbarSlot.ToggleItemImage();
             hotbarSlot.SetItemName("─");
             hotbarSlot.SetItemType(EquipmentType.ToString());
@@ -59,6 +59,7 @@ public class EquipmentSlot : NetworkBehaviour
     #region Hooks
     private void OnEquipmentChanged(GameObject oldVal, GameObject newVal)
     {
+        // This method call is weird since this hook is called by all clients.. wtf??
         Rpc_UpdateUI(connectionToClient, newVal);
     }
     #endregion
@@ -175,12 +176,14 @@ public class EquipmentSlot : NetworkBehaviour
     {
         if (slotImage)
             slotImage.color = selectedColor;
+        UISlot.GetComponent<RectTransform>().sizeDelta += new Vector2(10f, 10f);
     }
     [TargetRpc]
     public void Rpc_Deselect(NetworkConnection conn)
     {
         if (slotImage)
             slotImage.color = deselectedColor;
+        UISlot.GetComponent<RectTransform>().sizeDelta -= new Vector2(10f, 10f);
     }
     [TargetRpc]
     private void Rpc_UpdateUI(NetworkConnection target, GameObject value)

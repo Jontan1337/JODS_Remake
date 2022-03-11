@@ -5,6 +5,9 @@ using Mirror;
 
 public class RaycastWeapon : RangedWeapon
 {
+    [Header("RAYCAST WEAPON")]
+    [SerializeField, TextArea(2, 2)] private string header3 = "";
+
     [Header("Raycast Settings")]
     [SerializeField] private float range = 1000f;
     [Header("Settings")]
@@ -14,44 +17,57 @@ public class RaycastWeapon : RangedWeapon
 
     protected override void Svr_Shoot(Vector2 aimPoint)
     {
-        Vector2 recoil = (Random.insideUnitCircle * currentCurveAccuracy) + aimPoint;
+        Vector2 recoil = Random.insideUnitCircle * currentCurveAccuracy + aimPoint;
         Ray aimRay = playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2 + recoil.x, Screen.height / 2 + recoil.y));
         if (Physics.Raycast(aimRay, out RaycastHit aimHit, range, ~ignoreLayer))
         {
             Vector3 targetPoint = aimHit.point;
-            Ray shootRay = new Ray(shootOrigin.position, targetPoint - shootOrigin.position);
-            if (Physics.Raycast(shootRay, out RaycastHit shootHit, range, ~ignoreLayer))
-            {
-                PhysicMaterial phyMat = shootHit.collider.sharedMaterial;
 
-                //Rpc_BulletEffect(aimHit.point, shootHit.point, shootHit.normal, phyMat ? phyMat.name : "");
-                if (shootHit.collider.TryGetComponent(out IDamagable damagable))
+            //RaycastHit[] shootRayHits = Physics.RaycastAll(shootRay, range, ~ignoreLayer);
+            //for (int i = 0; i <= penetrationAmount; i++)
+            //{
+            //    RaycastHit hit = shootRayHits[shootRayHits.Length];
+            //    print(hit.collider.name);
+            //    if (hit.collider.TryGetComponent(out IDamagable damagable))
+            //    {
+            //    }
+            //}
+            Ray shootRay = new Ray(shootOrigin.position, targetPoint - shootOrigin.position);
+            RaycastHit shootHit = new RaycastHit();
+            for (int i = 0; i <= penetrationAmount; i++)
+            {
+                if (Physics.Raycast(shootRay, out shootHit, range))
                 {
-                    damagable.Svr_Damage(damage, owner);
-                    if (highPower)
+                    print(shootHit.collider.transform.root.name);
+                    Debug.DrawRay(shootRay.origin, shootRay.direction*shootHit.distance, Color.HSVToRGB(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f)), 5f);
+
+                    shootRay = new Ray(shootHit.point + shootRay.direction*range, shootOrigin.position - shootHit.point);
+                    //Physics.Raycast(shootRay, out shootHit, range);
+                    //shootRay = new Ray(shootRay.origin, shootRay.direction * (shootHit.distance + 5f));
+                    if (shootHit.collider.TryGetComponent(out IDamagable damagable))
                     {
-                        if (damagable.IsDead)
+                        damagable.Svr_Damage(damage, owner);
+                        if (highPower)
                         {
-                            if (shootHit.collider.TryGetComponent(out Rigidbody rb))
+                            if (damagable.IsDead)
                             {
-                                rb.AddForce(transform.forward * visualPunchback, ForceMode.Impulse);
+                                if (shootHit.collider.TryGetComponent(out Rigidbody rb))
+                                {
+                                    rb.AddForce(transform.forward * visualPunchback * 10f, ForceMode.Impulse);
+                                }
                             }
-                        }
-                        if (shootHit.collider.TryGetComponent(out IDetachable detachable))
-                        {
-                            detachable.Detach((int)DamageTypes.Pierce);
+                            if (shootHit.collider.TryGetComponent(out IDetachable detachable))
+                            {
+                                detachable.Detach((int)DamageTypes.Pierce);
+                            }
                         }
                     }
                 }
+                else
+                {
+                    break;
+                }
             }
-        }
-        else
-        {
-            //Vector2 randomCircle = Random.insideUnitCircle;
-            //Rpc_BulletEffect((playerHead.forward + new Vector3(
-            //    randomCircle.x,
-            //    randomCircle.y) / 200f * (currentCurveAccuracy)) * range,
-            //    Vector3.zero, Vector3.zero, "");
         }
         Rpc_Shoot(recoil);
     }
@@ -75,10 +91,6 @@ public class RaycastWeapon : RangedWeapon
         else
         {
             Vector2 randomCircle = Random.insideUnitCircle;
-            //Rpc_BulletEffect((playerHead.forward + new Vector3(
-            //    randomCircle.x,
-            //    randomCircle.y) / 200f * (currentCurveAccuracy)) * range,
-            //    Vector3.zero, Vector3.zero, "");
             BulletTrail(
                 (playerHead.forward + 
                 new Vector3(
@@ -86,7 +98,6 @@ public class RaycastWeapon : RangedWeapon
                     randomCircle.y
                 ) / 300f * (currentCurveAccuracy)) * range
             );
-            //BulletTrail(playerHead.forward * range);
         }
     }
 

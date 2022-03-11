@@ -13,6 +13,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [Space]
     [Header("Weapon stats")]
     [SerializeField] protected int damage = 10;
+    [SerializeField, Tooltip("The number of targets the weapon will penetrate.")] protected int penetrationAmount = 0;
     [SerializeField] private AmmunitionTypes ammunitionType = AmmunitionTypes.Small;
     [SerializeField, SyncVar(hook = nameof(UpdateFireModeText))] private FireModes fireMode = FireModes.Single;
     [SerializeField] private FireModes[] fireModes = null;

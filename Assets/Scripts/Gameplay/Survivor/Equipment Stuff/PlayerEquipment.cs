@@ -540,7 +540,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
         // Assign the new item to this player and parent to playerhands.
         newEquipmentItem?.Svr_Pickup(playerHands, connectionToClient);
         // Hide the new item since we're not using it, only equipping it.
-        newEquipmentItem?.Svr_HideItem();
+        newEquipmentItem?.Svr_ShowItem(false);
     }
 
     [Server]

@@ -40,6 +40,7 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 
     protected virtual void Awake()
 	{
+		// GetComponentsInChildren also includes the parent apparently.
 		objectMeshes = transform.GetComponentsInChildren<MeshRenderer>();
 
 		if (authController == null)
@@ -173,7 +174,7 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 			Rpc_SetLayer(connectionToClient, false);
 		}
 		Svr_InvokeOnDrop();
-		Svr_ShowItem();
+		Svr_ShowItem(true);
 		Svr_Release();
 		IsInteractable = true;
 		if (outline != null)
@@ -195,14 +196,14 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 		// Apparently connecionToClient is null even
 		// though authority is given long before this on line 136???
 		Rpc_SetLayer(connectionToClient, true);
-		Svr_ShowItem();
+		Svr_ShowItem(true);
 		Svr_DisablePhysics();
 	}
 	[Server]
 	public virtual void Svr_Unequip()
 	{
 		Rpc_SetLayer(connectionToClient, false);
-		Svr_HideItem();
+		Svr_ShowItem(false);
 	}
 
 	[Server]
@@ -285,36 +286,27 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 
     #region Toggle Show Hide
     [Command]
-	public void Cmd_ShowItem()
+	public void Cmd_ShowItem(bool show)
 	{
-		Svr_ShowItem();
-	}
-	[Command]
-	public void Cmd_HideItem()
-	{
-		Svr_HideItem();
+		Svr_ShowItem(show);
 	}
 	[Server]
-	public void Svr_ShowItem()
+	public void Svr_ShowItem(bool show)
 	{
-		GetComponent<Renderer>().enabled = true;
-		Rpc_ShowItem();
-	}
-	[Server]
-	public void Svr_HideItem()
-	{
-		GetComponent<Renderer>().enabled = false;
-		Rpc_HideItem();
+		ShowItem(show);
+		Rpc_ShowItem(show);
 	}
 	[ClientRpc]
-	public void Rpc_ShowItem()
+	public void Rpc_ShowItem(bool show)
 	{
-		GetComponent<Renderer>().enabled = true;
+		ShowItem(show);
 	}
-	[ClientRpc]
-	public void Rpc_HideItem()
-	{
-		GetComponent<Renderer>().enabled = false;
+	private void ShowItem(bool show)
+    {
+		foreach (MeshRenderer item in objectMeshes)
+		{
+			item.enabled = show;
+		}
 	}
 	#endregion
 
