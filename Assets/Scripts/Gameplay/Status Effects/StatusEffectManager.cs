@@ -151,7 +151,7 @@ public class StatusEffectManager : NetworkBehaviour
             currentEffects.Add(newEffect.effect, newEffect);
 
             //Activate the effect
-            newEffect.Activate(amount);
+            newEffect.Activate(amount);            
 
             //If the coroutine is not currently running, then activate it
             //The coroutine will stop itself when there are no more active effects
@@ -182,7 +182,7 @@ public class StatusEffectManager : NetworkBehaviour
 
                         Rpc_EnableVisual(connectionToClient, i, effectVisual.name, newEffect.effect.uIImageColor);
                         Rpc_ChangeVisualAlpha(connectionToClient, i, newEffect.GetImageAlpha());
-
+                        newEffect.SetImageIndexReference(i);
                         break;
                     }
                 }

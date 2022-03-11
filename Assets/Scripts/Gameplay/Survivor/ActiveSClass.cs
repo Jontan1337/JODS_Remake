@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class ActiveSClass : NetworkBehaviour, IDamagable
 {
+	//what is going on in this script??? - dave
+
 	[SyncVar(hook = nameof(SetSurvivorClassSettings))] public SurvivorClass sClass;
 	private SurvivorController sController;
 
@@ -42,6 +44,9 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 	public UnityEvent onDied = null;
 
 	private bool abilityIsReady = true;
+
+	[Header("Gameplay Details")]
+	[SerializeField] private StatusEffectSO onHitStatusEffect = null;
 
 
     public bool AbilityIsReady
@@ -85,6 +90,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 			}
 			if (isServer)
 			{
+				GetComponent<StatusEffectManager>().Svr_ApplyStatusEffect(onHitStatusEffect.ApplyEffect(gameObject));
 				Rpc_SyncStats(connectionToClient, currentHealth, armor);
 			}
 		}

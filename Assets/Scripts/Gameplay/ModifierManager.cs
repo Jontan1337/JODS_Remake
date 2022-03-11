@@ -15,13 +15,13 @@ public class ModifierManager : NetworkBehaviour
     public float MovementSpeed
     {
         get { return movementSpeed; }
-        set { movementSpeed = value; }
+        set { movementSpeed = Mathf.Clamp(value, 0, 10); }
     }
 
     public float Cooldown
     {
         get { return cooldown; }
-        set { cooldown = value; }
+        set { cooldown = Mathf.Clamp(value, 0, 10); }
     }
 
     public float Healing { get; set; }
@@ -29,13 +29,13 @@ public class ModifierManager : NetworkBehaviour
     public float MeleeDamage
     {
         get { return meleeDamage; }
-        set { meleeDamage = value; }
+        set { meleeDamage = Mathf.Clamp(value, 0, 10); }
     }
 
     public float RangedDamage
     {
         get { return rangedDamage; }
-        set { rangedDamage = value; }
+        set { rangedDamage = Mathf.Clamp(value, 0, 10); }
     }
 }
 
