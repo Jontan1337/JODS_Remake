@@ -85,14 +85,28 @@ MonoBehaviour:
   bloodColor: {r: 1, g: 0, b: 0, a: 1}
   sounds:
     headHeight: 2
-    idleSounds: []
+    idleSounds:
+    - {fileID: 8300000, guid: 10732d0c2b844ae4c9ce62eab3a4c9b3, type: 3}
     idleVolume: 0.3
-    meleeSounds: []
+    alertSounds:
+    - {fileID: 8300000, guid: efc7bb9783bdf8a4797f4caae38bea34, type: 3}
+    - {fileID: 8300000, guid: e66b136e063cc4049b96679b13228187, type: 3}
+    alertVolume: 0.3
+    alertingSoundChance: 0.9
+    alertedSoundChance: 0.15
+    meleeSounds:
+    - {fileID: 8300000, guid: e66b136e063cc4049b96679b13228187, type: 3}
+    - {fileID: 8300000, guid: 1225b0f997026d64fa600c3fd93f1a74, type: 3}
+    - {fileID: 8300000, guid: efc7bb9783bdf8a4797f4caae38bea34, type: 3}
+    - {fileID: 8300000, guid: 8b9826c915109c446be0c38d54721a2d, type: 3}
     meleeVolume: 0.4
-    rangedSound: {fileID: 0}
+    meleeSoundChance: 0.6
+    rangedSounds: []
     rangedVolume: 0.4
-    specialSound: {fileID: 0}
+    rangedSoundChance: 1
+    specialSounds: []
     specialVolume: 0.4
+    specialSoundChance: 1
     footstepSounds:
     - {fileID: 8300000, guid: 5ed1edcdc7500a94b964e4a81775d306, type: 3}
     - {fileID: 8300000, guid: c550417728b224f4b8b9ea0daec14ad4, type: 3}

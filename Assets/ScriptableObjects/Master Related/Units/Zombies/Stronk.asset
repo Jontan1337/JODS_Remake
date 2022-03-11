@@ -83,14 +83,26 @@ MonoBehaviour:
   bloodColor: {r: 1, g: 0, b: 0, a: 1}
   sounds:
     headHeight: 2
-    idleSounds: []
+    basePitch: 0.75
+    idleSounds:
+    - {fileID: 8300000, guid: ceb2474913e8b5e40b17213af473d784, type: 3}
     idleVolume: 0.3
-    meleeSounds: []
+    alertSounds:
+    - {fileID: 8300000, guid: ceb2474913e8b5e40b17213af473d784, type: 3}
+    alertVolume: 1
+    alertingSoundChance: 1
+    alertedSoundChance: 1
+    meleeSounds:
+    - {fileID: 8300000, guid: ceb2474913e8b5e40b17213af473d784, type: 3}
     meleeVolume: 0.4
-    rangedSound: {fileID: 0}
+    meleeSoundChance: 0.6
+    rangedSounds: []
     rangedVolume: 0.4
-    specialSound: {fileID: 0}
+    rangedSoundChance: 1
+    specialSounds:
+    - {fileID: 8300000, guid: ceb2474913e8b5e40b17213af473d784, type: 3}
     specialVolume: 0.4
+    specialSoundChance: 1
     footstepSounds:
     - {fileID: 8300000, guid: 1fcfd8032a37e9843a0fbbe96308a4f3, type: 3}
     - {fileID: 8300000, guid: 9ba17643ba43fdf4785264231dcc63f7, type: 3}

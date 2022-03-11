@@ -122,6 +122,8 @@ public class UnitSO : ScriptableObject
     {
         public float headHeight = 2f;
         [Space]
+        [Range(0, 2)] public float basePitch = 1f;
+        [Space]
         public AudioClip[] idleSounds;
         [Range(0, 1)] public float idleVolume = 0.3f;
         [Space]
@@ -132,7 +134,7 @@ public class UnitSO : ScriptableObject
         [Space]
         public AudioClip[] meleeSounds;
         [Range(0, 1)] public float meleeVolume = 0.4f;
-        [Range(0, 1)] public float meleeSoundChance = 0.6f;
+        [Range(0, 1)] public float meleeSoundChance = 0.15f;
         [Space]
         public AudioClip[] rangedSounds;
         [Range(0, 1)] public float rangedVolume = 0.4f;
