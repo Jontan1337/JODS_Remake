@@ -89,12 +89,28 @@ MonoBehaviour:
     headHeight: 2
     idleSounds: []
     idleVolume: 0.3
-    meleeSounds: []
+    alertSounds:
+    - {fileID: 8300000, guid: 90054576c036ea44096d20cc89ff4da2, type: 3}
+    - {fileID: 8300000, guid: 1fb023a333ca93a40a9c968a37e6f739, type: 3}
+    alertVolume: 0.3
+    alertingSoundChance: 0.9
+    alertedSoundChance: 0.15
+    meleeSounds:
+    - {fileID: 8300000, guid: 24b617db03a924c4ab49c13feb18c10d, type: 3}
+    - {fileID: 8300000, guid: 90054576c036ea44096d20cc89ff4da2, type: 3}
+    - {fileID: 8300000, guid: 1fb023a333ca93a40a9c968a37e6f739, type: 3}
+    - {fileID: 8300000, guid: 9f8a1e6741a342647b9c0055e1e0a7b8, type: 3}
+    - {fileID: 8300000, guid: 83041cb4dc7766b48a4342db7511819d, type: 3}
     meleeVolume: 0.4
-    rangedSound: {fileID: 0}
+    meleeSoundChance: 0.6
+    rangedSounds:
+    - {fileID: 8300000, guid: fc1882cb9cb0d474c95537bbdb4c48bd, type: 3}
+    - {fileID: 8300000, guid: a4366158371c9514cae30cfff454dcb2, type: 3}
     rangedVolume: 0.4
-    specialSound: {fileID: 0}
+    rangedSoundChance: 1
+    specialSounds: []
     specialVolume: 0.4
+    specialSoundChance: 1
     footstepSounds:
     - {fileID: 8300000, guid: 7850d3eab24cc2443a75240ec4d7ad6e, type: 3}
     - {fileID: 8300000, guid: b138c25a985dcbc4eace679b6a32c2ea, type: 3}

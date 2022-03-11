@@ -132,7 +132,7 @@ public class UnitSO : ScriptableObject
         [Space]
         public AudioClip[] meleeSounds;
         [Range(0, 1)] public float meleeVolume = 0.4f;
-        [Range(0, 1)] public float meleeSoundChance = 0.6f;
+        [Range(0, 1)] public float meleeSoundChance = 0.15f;
         [Space]
         public AudioClip[] rangedSounds;
         [Range(0, 1)] public float rangedVolume = 0.4f;

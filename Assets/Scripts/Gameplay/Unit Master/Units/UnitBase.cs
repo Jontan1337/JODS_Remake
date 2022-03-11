@@ -713,7 +713,9 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         while (!isDead)
         {
             yield return new WaitForSeconds(0.5f);
-            
+
+            if (Random.value < 0.05f) PlaySound(sounds.idleSounds, sounds.idleVolume, true);
+
             //Search ----------
 
             //Get a list of all survivor colliders within Sight Distance
@@ -868,7 +870,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         }
     }
 
-    private void Alert()
+    private async void Alert()
     {
         if (!canAlert) return;
 
@@ -879,6 +881,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         foreach (Collider col in adjacentUnits)
         {
             if (col.gameObject == gameObject) continue;
+            await JODSTime.WaitTime(Random.Range(0, 0.1f));
             col.gameObject.GetComponent<UnitBase>().AcquireTarget(currentTarget, true, default);
         }
     }
@@ -1373,11 +1376,16 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     #region Sounds
 
-    public void PlaySound(AudioClip[] clips, float volume, bool atHead, bool randomDelay = false)
+    public async void PlaySound(AudioClip[] clips, float volume, bool atHead, bool randomDelay = false)
     {
+        if (randomDelay)
+        {
+            await JODSTime.WaitTime(Random.value);
+        }
+
         if (clips.Length == 0)
         {
-            Debug.LogWarning($"{name} could not play an audioclip. The clip array is empty.");
+            //Debug.LogWarning($"{name} could not play an audioclip. The clip array is empty.");
             return;
         }
 
