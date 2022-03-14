@@ -43,11 +43,6 @@ MonoBehaviour:
   isMelee: 1
   isRanged: 0
   hasSpecial: 0
-  upgrades:
-    upgradeMultiplier: 0.5
-    upgradeMovementSpeed: 1
-    movementSpeedUpgradeIncrease: 0.1
-    movementSpeedUpgradeMax: 3
   melee:
     meleeDamageMin: 2
     meleeDamageMax: 5
@@ -79,6 +74,19 @@ MonoBehaviour:
     availableFromStart: 1
     statusEffectToApply: {fileID: 0}
     amount: 0
+  upgrades:
+    unitUpgradesHealth:
+      amountOfUpgrades: 0
+      upgradeAmount: 0
+    traitHealth: 
+    unitUpgradesDamage:
+      amountOfUpgrades: 0
+      upgradeAmount: 0
+    traitDamage: 
+    unitUpgradesSpeed:
+      amountOfUpgrades: 0
+      upgradeAmount: 0
+    traitSpeed: 
   movementSpeed: 2
   chaseTime: 10
   sightDistance: 20
@@ -89,6 +97,7 @@ MonoBehaviour:
   bloodColor: {r: 1, g: 0, b: 0, a: 1}
   sounds:
     headHeight: 2
+    basePitch: 1
     idleSounds:
     - {fileID: 8300000, guid: 10732d0c2b844ae4c9ce62eab3a4c9b3, type: 3}
     idleVolume: 0.3

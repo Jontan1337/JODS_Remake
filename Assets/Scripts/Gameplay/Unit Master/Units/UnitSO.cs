@@ -75,7 +75,7 @@ public class UnitSO : ScriptableObject
         public Vector3 projectileSpawnLocation;
         public bool standStill = true;
         [Space]
-        public bool directRangedAttack = false; //Non-projectile attack. Not implemented yet
+        public bool directRangedAttack = false; //Non-projectile attack. Not implemented yet because no unit uses it
         [Space]
         public StatusEffectSO statusEffectToApply = null;
         public int amount = 0;
@@ -103,13 +103,13 @@ public class UnitSO : ScriptableObject
     {
         [Header("Health")]
         public UnitUpgradePath unitUpgradesHealth;
-        [TextArea(2, 2)] public string traitHealth;
+        public string traitHealth;
         [Header("Damage")]
         public UnitUpgradePath unitUpgradesDamage;
-        [TextArea(2, 2)] public string traitDamage;
+        public string traitDamage;
         [Header("Speed")]
         public UnitUpgradePath unitUpgradesSpeed;
-        [TextArea(2, 2)] public string traitSpeed;
+        public string traitSpeed;
     }
     [Space]
     public Upgrades upgrades;

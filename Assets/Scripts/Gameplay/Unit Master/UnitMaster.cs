@@ -56,6 +56,15 @@ public class UnitMaster : NetworkBehaviour
     }
     [Space]
     public Stats stats;
+    private int Energy
+    {
+        get { return stats.currentEnergy; }
+        set
+        {
+            stats.currentEnergy = Mathf.Clamp(stats.currentEnergy += value, 0, stats.maxEnergy);
+            UpdateEnergyUI();
+        }
+    }
     private int CurrentXP
     {
         get { return stats.currentXP; }
@@ -133,6 +142,7 @@ public class UnitMaster : NetworkBehaviour
     [System.Serializable]
     public class UserInterface
     {
+        [Header("General UI")]
         public Text energyText = null;
         public Slider energySlider = null;
         public Image energyFillImage;
@@ -154,6 +164,9 @@ public class UnitMaster : NetworkBehaviour
         public Image screenTint;
         [Space]
         public Image fadeImage;
+
+        [Header("Upgrade System UI")]
+        public GameObject upgradeMenu;
     }
     [Space]
     public UserInterface UI;
@@ -257,6 +270,8 @@ public class UnitMaster : NetworkBehaviour
         UpdateEnergyUI();
         UpdateEnergyUseUI(0);
 
+        UI.upgradeMenu.SetActive(false);
+
         //Other master visuals
 
         //Change the Flying controller's marker visuals (Mesh and colour)
@@ -330,7 +345,7 @@ public class UnitMaster : NetworkBehaviour
         JODSInput.Controls.Master.Alt.started += ctx => AltButton(true);
         JODSInput.Controls.Master.Alt.canceled += ctx => AltButton(false);
 
-        // Unit Select Input
+        //Unit Select Input
         JODSInput.Controls.Master.UnitSelecting.performed += ctx => ChooseUnit(Mathf.FloorToInt(ctx.ReadValue<float>() - 1));
 
         //Camera Change Input
@@ -338,6 +353,9 @@ public class UnitMaster : NetworkBehaviour
 
         //Take Control of unit Input
         JODSInput.Controls.Master.TakeControl.performed += ctx => TryToTakeControl();
+
+        //Upgrade menu Input
+        JODSInput.Controls.Master.OpenUpgradeMenu.performed += ctx => OpenUpgradeMenu();
     }
 
     private void RemoveBinds()
@@ -370,6 +388,9 @@ public class UnitMaster : NetworkBehaviour
 
         //Take Control of unit Input
         JODSInput.Controls.Master.TakeControl.performed -= ctx => TryToTakeControl();
+
+        //Upgrade menu Input
+        JODSInput.Controls.Master.OpenUpgradeMenu.performed -= ctx => OpenUpgradeMenu();
     }
     #endregion
 
@@ -560,7 +581,7 @@ public class UnitMaster : NetworkBehaviour
             yield return new WaitForSeconds(1);
 
             //Increment the energy by energyRechargeIncrement, clamping it at the max amount of energy
-            ModifyEnergy(stats.energyRechargeIncrement);
+            Energy += stats.energyRechargeIncrement;
         }
     }
 
@@ -719,6 +740,11 @@ public class UnitMaster : NetworkBehaviour
         spawnTextBool = false;
     }
 
+    public void OpenUpgradeMenu()
+    {
+        UI.upgradeMenu.SetActive(!UI.upgradeMenu.activeSelf);
+    }
+
     #endregion
 
     #region Particles and Effects Functions
@@ -742,12 +768,6 @@ public class UnitMaster : NetworkBehaviour
     #endregion
 
     #region Other
-
-    private void ModifyEnergy(int amount)
-    {
-        stats.currentEnergy = Mathf.Clamp(stats.currentEnergy += amount, 0, stats.maxEnergy);
-        UpdateEnergyUI();
-    }
     private bool IsUnitCloseToDestination()
     {
         if (selectedUnit)
@@ -979,8 +999,8 @@ public class UnitMaster : NetworkBehaviour
             spawnName = chosenUnit.unitPrefab.name;
 
             //Master loses energy, because nothing is free in life
-            ModifyEnergy(-chosenUnit.energyCost);
-            UpdateEnergyUI();//Update UI
+            Energy += -chosenUnit.energyCost;
+
             CurrentXP += chosenUnit.xpGain; //Master gains xp though
 
             Cmd_UpdateScore(1, PlayerDataStat.UnitsPlaced);
@@ -1028,8 +1048,7 @@ public class UnitMaster : NetworkBehaviour
         //Spawn a smoke effect to hide the removal of the unit.
         SpawnEffect(unitToRefund.transform.position);
 
-        ModifyEnergy(refundAmount);
-        UpdateEnergyUI();//Update UI
+        Energy += refundAmount;
     }
     #endregion
 
