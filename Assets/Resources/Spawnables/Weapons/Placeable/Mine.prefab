@@ -78,11 +78,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  header1: 
   itemName: Mine
   equipmentType: 2
   unequippedLayer: 14
   equippedLayer: 15
+  objectMeshes: []
   isInteractable: 1
+  UISilhouette: {fileID: 21300000, guid: e8ccff1a98a7f494cb0150c1c9a4b0b8, type: 3}
   authController: {fileID: 2379858702118158628}
   objectVisuals: {fileID: 4452634966029477872}
   owner: {fileID: 0}
@@ -127,7 +130,6 @@ MonoBehaviour:
   maxHealth: 100
   entityType: 0
   explosionTag: 1
-  explosionEffect: {fileID: 0}
   criticalEffect: {fileID: 0}
   criticalHealth: 20
   explosionRadius: 4.5
@@ -136,6 +138,7 @@ MonoBehaviour:
   upwardExplosionForce: 1
   criticalEffectDamage: 3
   criticalDamageInterval: 0.8
+  damageLossOverDistance: 2
   pieces: []
   singleDestructable: 0
   removeDebris: 0
