@@ -182,7 +182,6 @@ public class StatusEffectManager : NetworkBehaviour
 
                         Rpc_EnableVisual(connectionToClient, i, effectVisual.name, newEffect.effect.uIImageColor);
                         Rpc_ChangeVisualAlpha(connectionToClient, i, newEffect.GetImageAlpha());
-                        newEffect.SetImageIndexReference(i);
                         break;
                     }
                 }
@@ -221,7 +220,7 @@ public class StatusEffectManager : NetworkBehaviour
     }
 
     [TargetRpc]
-    private void Rpc_ChangeVisualAlpha(NetworkConnection conn, int imageIndex, float alpha)
+    public void Rpc_ChangeVisualAlpha(NetworkConnection conn, int imageIndex, float alpha)
     {
         Image img = imageReferenceList[imageIndex];
 

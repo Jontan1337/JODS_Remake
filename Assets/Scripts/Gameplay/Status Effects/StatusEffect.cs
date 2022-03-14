@@ -1,11 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
 public abstract class StatusEffect
 {
-    StatusEffectManager manager;
-
     public bool activeUntilRemoved;
     public float duration;
     protected int effectStacks;
@@ -15,11 +14,9 @@ public abstract class StatusEffect
     private bool isApplied = false;
     [Header("Visual")]
     public int currentImageIndex = 0;
-    private int imageIndexReference = 0;
 
     public StatusEffect(StatusEffectSO effect, GameObject obj)
     {
-        manager = obj.GetComponent<StatusEffectManager>();
         this.activeUntilRemoved = effect.activeUntilRemoved;
         this.effect = effect;
         this.obj = obj;
@@ -86,6 +83,4 @@ public abstract class StatusEffect
         else return 100;
     }
     public virtual Sprite GetImage() => effect.uIImage[currentImageIndex];
-    public virtual void SetImageIndexReference(int img) => imageIndexReference = img;
-    private virtual void SetImageAlpha
 }
