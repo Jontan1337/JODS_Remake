@@ -100,6 +100,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Open Upgrade Menu",
+                    "type": "Button",
+                    "id": "700fbe75-3c74-4aa8-8efb-0485e8be586e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -366,6 +374,17 @@
                     "action": "Movement",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "6ccb71b4-b635-4017-a2bb-c66b128851e5",
+                    "path": "<Keyboard>/i",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Open Upgrade Menu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },

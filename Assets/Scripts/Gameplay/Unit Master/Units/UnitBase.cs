@@ -374,10 +374,12 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         maxHealth = unitSO.health;
 
         //Upgrade
+        /*
         upgrades.upgradeMovementSpeed = unitSO.upgrades.upgradeMovementSpeed;
         upgrades.upgradeMultiplier = unitSO.upgrades.upgradeMultiplier;
         upgrades.movementSpeedUpgradeIncrease = unitSO.upgrades.movementSpeedUpgradeIncrease;
         upgrades.movementSpeedUpgradeMax = unitSO.upgrades.movementSpeedUpgradeMax;
+        */
 
         //Attack bools
         isMelee = unitSO.isMelee;

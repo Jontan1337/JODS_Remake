@@ -113,6 +113,14 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Open Upgrade Menu"",
+                    ""type"": ""Button"",
+                    ""id"": ""700fbe75-3c74-4aa8-8efb-0485e8be586e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -379,6 +387,17 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6ccb71b4-b635-4017-a2bb-c66b128851e5"",
+                    ""path"": ""<Keyboard>/i"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Open Upgrade Menu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -947,6 +966,7 @@ public class @Controls : IInputActionCollection, IDisposable
         m_Master_Camera = m_Master.FindAction("Camera", throwIfNotFound: true);
         m_Master_Alt = m_Master.FindAction("Alt", throwIfNotFound: true);
         m_Master_TakeControl = m_Master.FindAction("Take Control", throwIfNotFound: true);
+        m_Master_OpenUpgradeMenu = m_Master.FindAction("Open Upgrade Menu", throwIfNotFound: true);
         // Survivor
         m_Survivor = asset.FindActionMap("Survivor", throwIfNotFound: true);
         m_Survivor_LMB = m_Survivor.FindAction("LMB", throwIfNotFound: true);
@@ -1032,6 +1052,7 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_Master_Camera;
     private readonly InputAction m_Master_Alt;
     private readonly InputAction m_Master_TakeControl;
+    private readonly InputAction m_Master_OpenUpgradeMenu;
     public struct MasterActions
     {
         private @Controls m_Wrapper;
@@ -1048,6 +1069,7 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @Camera => m_Wrapper.m_Master_Camera;
         public InputAction @Alt => m_Wrapper.m_Master_Alt;
         public InputAction @TakeControl => m_Wrapper.m_Master_TakeControl;
+        public InputAction @OpenUpgradeMenu => m_Wrapper.m_Master_OpenUpgradeMenu;
         public InputActionMap Get() { return m_Wrapper.m_Master; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1093,6 +1115,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @TakeControl.started -= m_Wrapper.m_MasterActionsCallbackInterface.OnTakeControl;
                 @TakeControl.performed -= m_Wrapper.m_MasterActionsCallbackInterface.OnTakeControl;
                 @TakeControl.canceled -= m_Wrapper.m_MasterActionsCallbackInterface.OnTakeControl;
+                @OpenUpgradeMenu.started -= m_Wrapper.m_MasterActionsCallbackInterface.OnOpenUpgradeMenu;
+                @OpenUpgradeMenu.performed -= m_Wrapper.m_MasterActionsCallbackInterface.OnOpenUpgradeMenu;
+                @OpenUpgradeMenu.canceled -= m_Wrapper.m_MasterActionsCallbackInterface.OnOpenUpgradeMenu;
             }
             m_Wrapper.m_MasterActionsCallbackInterface = instance;
             if (instance != null)
@@ -1133,6 +1158,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @TakeControl.started += instance.OnTakeControl;
                 @TakeControl.performed += instance.OnTakeControl;
                 @TakeControl.canceled += instance.OnTakeControl;
+                @OpenUpgradeMenu.started += instance.OnOpenUpgradeMenu;
+                @OpenUpgradeMenu.performed += instance.OnOpenUpgradeMenu;
+                @OpenUpgradeMenu.canceled += instance.OnOpenUpgradeMenu;
             }
         }
     }
@@ -1379,6 +1407,7 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnCamera(InputAction.CallbackContext context);
         void OnAlt(InputAction.CallbackContext context);
         void OnTakeControl(InputAction.CallbackContext context);
+        void OnOpenUpgradeMenu(InputAction.CallbackContext context);
     }
     public interface ISurvivorActions
     {

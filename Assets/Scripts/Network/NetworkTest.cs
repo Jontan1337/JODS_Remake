@@ -7,7 +7,9 @@ using System;
 
 public class NetworkTest : NetworkManager
 {
-    [Space]
+    [HideInInspector] public bool showNetworkSettings;
+    [HideInInspector] public bool playingAsMaster;
+
     [SerializeField]
     private bool hostOnly = false;
     [SerializeField]

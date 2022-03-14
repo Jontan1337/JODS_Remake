@@ -10,6 +10,12 @@ public struct UnitMeshGroup
     public Mesh[] leftArmVariations;
     public Mesh[] rightArmVariations;
 }
+[System.Serializable]
+public struct UnitUpgradePath
+{
+    public int amountOfUpgrades;
+    public float upgradeAmount;
+}
 
 [CreateAssetMenu(fileName = "Unit", menuName = "Unit Master/New Unit", order = 1)]
 public class UnitSO : ScriptableObject
@@ -37,20 +43,10 @@ public class UnitSO : ScriptableObject
     [Header("Stats")]
     public int health = 100;
     [Space]
-
     public bool isMelee = true;
     public bool isRanged = false;
     public bool hasSpecial = false;
 
-    [System.Serializable]
-    public class Upgrades
-    {
-        public float upgradeMultiplier = 0.1f;
-        public bool upgradeMovementSpeed = true;
-        public float movementSpeedUpgradeIncrease = 0.1f;
-        public float movementSpeedUpgradeMax = 3f;
-    }
-    public Upgrades upgrades;
     [System.Serializable]
     public class Melee
     {
@@ -102,6 +98,21 @@ public class UnitSO : ScriptableObject
         public int amount = 0;
     }
     public Special special;
+    [System.Serializable]
+    public class Upgrades
+    {
+        [Header("Health")]
+        public UnitUpgradePath unitUpgradesHealth;
+        [TextArea(2, 2)] public string traitHealth;
+        [Header("Damage")]
+        public UnitUpgradePath unitUpgradesDamage;
+        [TextArea(2, 2)] public string traitDamage;
+        [Header("Speed")]
+        public UnitUpgradePath unitUpgradesSpeed;
+        [TextArea(2, 2)] public string traitSpeed;
+    }
+    [Space]
+    public Upgrades upgrades;
 
     [Header("Movement")]
     public float movementSpeed = 1.5f;
