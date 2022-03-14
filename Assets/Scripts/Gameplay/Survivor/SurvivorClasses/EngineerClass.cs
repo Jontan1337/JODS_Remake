@@ -5,126 +5,127 @@ using System.Collections;
 public class EngineerClass : SurvivorClass
 {
 
-	private PlayerEquipment playerEquipment;
-	private GameObject turret;
-	private SurvivorController sController;
-	private ActiveSClass sClass;
-	private ModifierManager modifierManager;
+    private PlayerEquipment playerEquipment;
+    private GameObject turret;
+    private SurvivorController sController;
+    private ActiveSClass sClass;
+    private ModifierManager modifierManager;
 
-	private bool recharging = false;
+    private bool recharging = false;
 
 
-	#region Serialization
+    #region Serialization
 
-	public override bool OnSerialize(NetworkWriter writer, bool initialState)
-	{
-		if (!initialState)
-		{
-			return true;
-		}
-		else
-		{
-			return true;
-		}
-	}
-	public override void OnDeserialize(NetworkReader reader, bool initialState)
-	{
-		if (!initialState)
-		{
-
-		}
-		else
-		{
-
-		}
-	}
-	#endregion
-
-	private void OnTransformParentChanged()
-	{
-		if (hasAuthority || isServer)
-		{
-			sController = GetComponentInParent<SurvivorController>();
-			sClass = GetComponentInParent<ActiveSClass>();
-			modifierManager = GetComponentInParent<ModifierManager>();
-		}
-	}
-	public override void ActiveAbility()
-	{
-		if (!turret)
-		{
-			Cmd_EquipTurret();
-		}
-	}
-
-    public override void ActiveAbilitySecondary()
+    public override bool OnSerialize(NetworkWriter writer, bool initialState)
     {
-        if (!recharging)
+        if (!initialState)
         {
-            StartRechargeCo = StartRecharge();
-            StartCoroutine(StartRechargeCo);
+            return true;
         }
         else
         {
-            StopCoroutine(StartRechargeCo);
+            return true;
+        }
+    }
+    public override void OnDeserialize(NetworkReader reader, bool initialState)
+    {
+        if (!initialState)
+        {
 
-            StopRechargeCo = StopRecharge();
-            StartCoroutine(StopRechargeCo);
+        }
+        else
+        {
+
+        }
+    }
+    #endregion
+
+    private void OnTransformParentChanged()
+    {
+        if (hasAuthority || isServer)
+        {
+            sController = GetComponentInParent<SurvivorController>();
+            sClass = GetComponentInParent<ActiveSClass>();
+            modifierManager = GetComponentInParent<ModifierManager>();
+            RechargeCo = Recharge();
+            StartCoroutine(RechargeCo);
+        }
+    }
+    public override void ActiveAbility()
+    {
+        if (!turret)
+        {
+            Cmd_EquipTurret();
         }
     }
 
-	[SerializeField] private float range = 30;
-	[SerializeField] private LayerMask survivorLayer = 0;
-	Collider[] survivorsInRange;
-	IEnumerator StartRechargeCo;
-	private IEnumerator StartRecharge()
+    IEnumerator RechargeCo;
+
+    [SerializeField] private float range = 30;
+    [SerializeField] private float idling = 0;
+    [SerializeField] private LayerMask survivorLayer = 0;
+    [SerializeField] private bool rechargeActive = false;
+    [SerializeField] private Collider[] survivorsInRange;
+
+    private IEnumerator Recharge()
     {
-		survivorsInRange = Physics.OverlapSphere(transform.position, range, survivorLayer);
-		sController.enabled = false;
-		recharging = true;
-		yield return new WaitForSeconds(1f);
-        foreach (var item in survivorsInRange)
+        while (true)
         {
-			item.GetComponentInParent<ModifierManager>().Cooldown = 2;
-			print(item.gameObject.name);
+            if (!sController.IsMoving())
+            {
+                StartRecharge();
+            }
+            else
+            {
+                StopRecharge();
+            }
+            yield return null;
         }
+    }
 
-		while (!sClass.AbilityIsReady)
-        {
-			yield return null;
-		}
-		StartCoroutine(StopRecharge());
-	}
-
-	IEnumerator StopRechargeCo;
-	private IEnumerator StopRecharge()
-	{
-		foreach (var item in survivorsInRange)
-		{
-			item.GetComponentInParent<ModifierManager>().Cooldown = 1;
-		}
-		survivorsInRange = null;
-		yield return new WaitForSeconds(1f);
-		sController.enabled = true;
-		recharging = false;
-	}
-
-
-	[Command]
-	private void Cmd_EquipTurret()
+    private void StartRecharge()
     {
-		if (!turret)
-		{
-			EquipTurret();
-		}
-	}
+        idling += Time.deltaTime;
+        if (idling >= 2 && !rechargeActive)
+        {
+            survivorsInRange = Physics.OverlapSphere(transform.position, range, survivorLayer);
+            foreach (var item in survivorsInRange)
+            {
+                item.GetComponentInParent<ModifierManager>().Cooldown += 1;
+            }
+            rechargeActive = true;
+        }
+    }
+    private void StopRecharge()
+    {
+        idling = 0;
+        if (rechargeActive)
+        {
+            foreach (var item in survivorsInRange)
+            {
+                item.GetComponentInParent<ModifierManager>().Cooldown -= 1;
+            }
+            survivorsInRange = null;
+            rechargeActive = false;
+        }
+    }
 
-	[Server]
-	private void EquipTurret()
-	{
-		turret = Instantiate(abilityObject, transform.position, transform.rotation);
-		NetworkServer.Spawn(turret);
-		playerEquipment = transform.parent.GetComponentInChildren<PlayerEquipment>();
+
+    [Command]
+    private void Cmd_EquipTurret()
+    {
+        if (!turret)
+        {
+            EquipTurret();
+        }
+    }
+
+    [Server]
+    private void EquipTurret()
+    {
+        turret = Instantiate(abilityObject, transform.position, transform.rotation);
+        NetworkServer.Spawn(turret);
+        playerEquipment = transform.parent.GetComponentInChildren<PlayerEquipment>();
 
         turret.GetComponent<IInteractable>().Svr_Interact(transform.root.gameObject);
     }

@@ -89,8 +89,8 @@ public class PlaceItem : EquipmentItem
             transform.rotation = placeholderRot;
             transform.parent = null;
             Svr_EnablePhysics();
-            authController.Svr_RemoveAuthority();
             Svr_InvokeOnDrop();
+            authController.Svr_RemoveAuthority();
         }
     }
 
@@ -114,12 +114,12 @@ public class PlaceItem : EquipmentItem
 
     public override void Unbind()
     {
-        base.Unbind();
+        print(connectionToClient);
         // connectionToClient is null for some reason
-        //if (connectionToClient != null)
-        //{
-            Drop(false);
-        //}
+
+        Drop(false);
+
+        base.Unbind();
     }
 
     public void Drop(bool dropItem)
