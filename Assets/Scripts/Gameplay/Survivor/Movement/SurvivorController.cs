@@ -1,4 +1,5 @@
 ﻿using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,6 +21,9 @@ public class SurvivorController : NetworkBehaviour
 
 	[SerializeField] private Transform groundCheck = null;
 	[SerializeField] private LayerMask groundMask = 0;
+
+	public static Action OnMovementStopped;
+
 
 	CharacterController cController;
 	SurvivorAnimationManager anim;
@@ -51,6 +55,7 @@ public class SurvivorController : NetworkBehaviour
 	public override void OnStartAuthority()
 	{
 		JODSInput.Controls.Survivor.Movement.performed += Move;
+		JODSInput.Controls.Survivor.Movement.canceled += StoppedMoving;
 		JODSInput.Controls.Survivor.Jump.performed += Jump;
 		JODSInput.Controls.Survivor.Sprint.performed += OnSprintPerformed;
 		JODSInput.Controls.Survivor.Sprint.canceled += OnSprintCanceled;
@@ -58,6 +63,7 @@ public class SurvivorController : NetworkBehaviour
 	public override void OnStopAuthority()
 	{
 		JODSInput.Controls.Survivor.Movement.performed -= Move;
+		JODSInput.Controls.Survivor.Movement.canceled -= StoppedMoving;
 		JODSInput.Controls.Survivor.Jump.performed -= Jump;
 		JODSInput.Controls.Survivor.Sprint.performed -= OnSprintPerformed;
 		JODSInput.Controls.Survivor.Sprint.canceled -= OnSprintCanceled;
@@ -117,4 +123,9 @@ public class SurvivorController : NetworkBehaviour
 	}
 
 	public bool IsMoving() => (moveDirection.z != 0 || moveDirection.x != 0);
+
+	public void StoppedMoving(InputAction.CallbackContext context)
+    {
+		OnMovementStopped.Invoke();
+	}
 }

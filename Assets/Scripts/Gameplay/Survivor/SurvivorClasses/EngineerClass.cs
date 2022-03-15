@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Mirror;
 using System.Collections;
+using System;
 
 public class EngineerClass : SurvivorClass
 {
@@ -11,7 +12,6 @@ public class EngineerClass : SurvivorClass
     private ActiveSClass sClass;
     private ModifierManager modifierManager;
 
-    private bool recharging = false;
 
 
     #region Serialization
@@ -47,8 +47,9 @@ public class EngineerClass : SurvivorClass
             sController = GetComponentInParent<SurvivorController>();
             sClass = GetComponentInParent<ActiveSClass>();
             modifierManager = GetComponentInParent<ModifierManager>();
-            RechargeCo = Recharge();
-            StartCoroutine(RechargeCo);
+            //RechargeCo = Recharge();
+            //StartCoroutine(RechargeCo);
+            SurvivorController.OnMovementStopped += StartRecharge;
         }
     }
     public override void ActiveAbility()
@@ -69,35 +70,21 @@ public class EngineerClass : SurvivorClass
 
     private IEnumerator Recharge()
     {
-        while (true)
+        print("go");
+        while (!sController.IsMoving())
         {
-            if (!sController.IsMoving())
+            idling += Time.deltaTime;
+            if (idling >= 2 && !rechargeActive)
             {
-                StartRecharge();
-            }
-            else
-            {
-                StopRecharge();
+                survivorsInRange = Physics.OverlapSphere(transform.position, range, survivorLayer);
+                foreach (var item in survivorsInRange)
+                {
+                    item.GetComponentInParent<ModifierManager>().Cooldown += 1;
+                }
+                rechargeActive = true;
             }
             yield return null;
         }
-    }
-
-    private void StartRecharge()
-    {
-        idling += Time.deltaTime;
-        if (idling >= 2 && !rechargeActive)
-        {
-            survivorsInRange = Physics.OverlapSphere(transform.position, range, survivorLayer);
-            foreach (var item in survivorsInRange)
-            {
-                item.GetComponentInParent<ModifierManager>().Cooldown += 1;
-            }
-            rechargeActive = true;
-        }
-    }
-    private void StopRecharge()
-    {
         idling = 0;
         if (rechargeActive)
         {
@@ -109,6 +96,14 @@ public class EngineerClass : SurvivorClass
             rechargeActive = false;
         }
     }
+    private void StartRecharge()
+    {
+        RechargeCo = Recharge();
+        StartCoroutine(RechargeCo);
+    }
+
+
+
 
 
     [Command]
