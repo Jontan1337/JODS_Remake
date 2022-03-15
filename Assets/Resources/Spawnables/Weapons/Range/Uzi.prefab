@@ -1215,20 +1215,21 @@ MonoBehaviour:
   rb: {fileID: 2548197298498927853}
   outline: {fileID: 2548197298498927848}
   header2: 
-  damage: 9
+  damage: 19
+  penetrationAmount: 1
   ammunitionType: 0
   fireMode: 4
   fireModes: 04000000
   burstBulletAmount: 3
-  fireRate: 600
-  fireInterval: 0.1
+  fireRate: 950
+  fireInterval: 0.06315789
   bulletsPerShot: 1
-  magazine: 32
+  magazine: 99999
   magazineSize: 32
   extraAmmunition: 64
   highPower: 0
   recoil: 0.4
-  visualPunchback: 0.2
+  visualPunchback: 0.8
   stabilization: 1.5
   currentAccuracy: 0
   currentCurveAccuracy: 2
@@ -1266,6 +1267,7 @@ MonoBehaviour:
     type: 3}
   shootSound: {fileID: 8300000, guid: 59033cce093954c4e968552b47b09c6a, type: 3}
   emptySound: {fileID: 8300000, guid: 6e8772b49f34d402a90016ed445d8a2f, type: 3}
+  header3: 
   range: 1000
   ignoreLayer:
     serializedVersion: 2

@@ -53,6 +53,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [SerializeField] private AudioClip shootSound = null;
     [SerializeField] private AudioClip emptySound = null;
 
+    protected float damageFallOff = 0;
+
     private Transform crosshairUIParent;
     private Crosshair crosshairUI;
     private Transform currentAmmunitionUI;
@@ -144,6 +146,18 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         fireRate = Mathf.Clamp(fireRate, 0.01f, float.MaxValue);
         fireInterval = 60 / fireRate;
         fireModeIndex = 0;
+        switch (ammunitionType)
+        {
+            case AmmunitionTypes.Small:
+                damageFallOff = 0.5f;
+                break;
+            case AmmunitionTypes.Medium:
+                damageFallOff = 0.3f;
+                break;
+            case AmmunitionTypes.Large:
+                damageFallOff = 0.15f;
+                break;
+        }
         foreach (int modeIndex in fireModes)
         {
             if ((int)FireMode == modeIndex) break;
