@@ -885,6 +885,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         //Iterate through each and tell them who my target is
         foreach (Collider col in adjacentUnits)
         {
+            if (!col) continue;
             if (col.gameObject == gameObject) continue;
             await JODSTime.WaitTime(Random.Range(0, 0.1f));
             col.gameObject.GetComponent<UnitBase>().AcquireTarget(currentTarget, true, default);

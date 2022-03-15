@@ -7,6 +7,7 @@ public class UnitUpgradePanel : MonoBehaviour
 {
     [Header("General References")]
     [SerializeField] private Image unitImage = null;
+    [SerializeField] private Text unitName = null;
 
     [Header("Health References")]
     [SerializeField] private Text upgradeHealthText= null;
@@ -30,6 +31,7 @@ public class UnitUpgradePanel : MonoBehaviour
         this.unitMaster = unitMaster;
 
         unitImage.sprite = unitSO.unitSprite;
+        unitName.text = unitSO.name;
 
         upgradeHealthText.text = unitSO.upgrades.unitUpgradesHealth.upgradeAmount.ToString();
         unlockHealthTraitText.text = unitSO.upgrades.traitHealth;

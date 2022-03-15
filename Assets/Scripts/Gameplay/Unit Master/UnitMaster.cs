@@ -18,6 +18,8 @@ public class UnitList
     [Space]
     public int unitIndex = 0;
     public int buttonIndex = 0;
+    [Space]
+    public UnitUpgradePanel upgradePanel;
 }
 
 [System.Serializable]
@@ -167,6 +169,8 @@ public class UnitMaster : NetworkBehaviour
 
         [Header("Upgrade System UI")]
         public GameObject upgradeMenu;
+        public Transform upgradeMenuContainer;
+        public GameObject unitUpgradePanel;
     }
     [Space]
     public UserInterface UI;
@@ -614,6 +618,12 @@ public class UnitMaster : NetworkBehaviour
             //Instantiate unit button prefab
             GameObject button = Instantiate(UI.unitButtonPrefab, UI.unitButtonContainer);
             MasterUIGameplayButton b = button.GetComponent<MasterUIGameplayButton>();
+
+            GameObject upgradePanelGO = Instantiate(UI.unitUpgradePanel, UI.upgradeMenuContainer);
+            UnitUpgradePanel upgradePanel = upgradePanelGO.GetComponent<UnitUpgradePanel>();
+
+            u.upgradePanel = upgradePanel;
+            upgradePanel.InitializeUnitUpgradePanel(this, u.unit);
 
             //Add this button to the list
             uiGameplayButtons.Add(b);
