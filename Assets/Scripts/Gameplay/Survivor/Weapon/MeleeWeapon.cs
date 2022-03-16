@@ -57,6 +57,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
 
     public Action<float> OnImpact { get; set; }
 
+    private const string IdleAnim = "Idle";
     private const string AttackTrigger = "Attack";
     private const string AttackingBool = "Attacking";
     private const string BloodAmount = "_BloodAmount";
@@ -190,8 +191,12 @@ public class MeleeWeapon : EquipmentItem, IImpacter
                     break;
                 case DamageTypes.Blunt:
                     weaponAnimator.speed = 0f;
-                    Svr_ImpactShake(impactDuration, impactAmount).OnComplete(delegate () {
-                        weaponAnimator.CrossFade("Idle", impactDuration);
+                    //Svr_ImpactShake(impactDuration, impactAmount).OnComplete(delegate ()
+                    //{
+                    //});
+                    JODSTime.WaitTimeEvent(impactDuration, delegate ()
+                    {
+                        weaponAnimator.CrossFade(IdleAnim, impactDuration);
                         Svr_ResetAnimatorSpeed();
                         Svr_EndOfAttack();
                     });
