@@ -34,21 +34,14 @@ public class RaycastWeapon : RangedWeapon
             //}
             Ray shootRay = new Ray(shootOrigin.position, targetPoint - shootOrigin.position);
             RaycastHit shootHit = new RaycastHit();
+            float currentDamage = damage;
             for (int i = 0; i <= penetrationAmount; i++)
             {
                 if (Physics.Raycast(shootRay, out shootHit, range))
                 {
-                    // This ray shoots it's own collider on the other side to get the "penetration point"
-                    // on the opposite side of the collider where the bullet should leave.
-                    Ray penRay = new Ray(shootHit.point + shootRay.direction * range, -shootRay.direction);
-                    RaycastHit penHit;
-                    if (shootHit.collider.Raycast(penRay, out penHit, range))
-                    {
-                        shootRay = new Ray(penHit.point, -penRay.direction);
-                    }
                     if (shootHit.collider.TryGetComponent(out IDamagable damagable))
                     {
-                        damagable.Svr_Damage(damage, owner);
+                        damagable.Svr_Damage((int)currentDamage, owner);
                         if (highPower)
                         {
                             if (damagable.IsDead)
@@ -63,6 +56,16 @@ public class RaycastWeapon : RangedWeapon
                                 detachable.Detach((int)DamageTypes.Pierce);
                             }
                         }
+                    }
+                    // This ray shoots it's own collider on the other side to get the "penetration point"
+                    // on the opposite side of the collider where the bullet should leave.
+                    Ray penRay = new Ray(shootHit.point + shootRay.direction * range, -shootRay.direction);
+                    RaycastHit penHit;
+                    if (shootHit.collider.Raycast(penRay, out penHit, range))
+                    {
+                        shootRay = new Ray(penHit.point, -penRay.direction);
+                        print(Mathf.RoundToInt(currentDamage * damageFallOff));
+                        currentDamage = Mathf.RoundToInt(currentDamage *= damageFallOff);
                     }
                 }
                 else
