@@ -11,15 +11,40 @@ public class UnitList
 {
     public string name;
     public UnitSO unit;
-    public int level = 1;
+    [Header("Upgrades")]
+    [SyncVar] public int level = 0;
+    [SyncVar] public int upgradeMilestone = 50;
+    public AnimationCurve upgradeCurve;
+    [Space]
+    [Space]
+    [SyncVar] public float healthModifier = 1;
+    [SyncVar] public int upgradesTillHealthTrait = 5;
+    [SyncVar] public bool hasHealthTrait = false;
+    public int GetHealthStat() { return Mathf.RoundToInt((float)unit.health * healthModifier); }
+    [Space]
+    [SyncVar] public float damageModifier = 1;
+    [SyncVar] public int upgradesTillDamageTrait = 5;
+    [SyncVar] public bool hasDamageTrait = false;
+    public int GetDamageStat()
+    {
+        return Mathf.RoundToInt(((unit.melee.meleeDamageMin + unit.melee.meleeDamageMax) / 2) * damageModifier); 
+    }
+    [Space]
+    [SyncVar] public float speedModifier = 1;
+    [SyncVar] public int upgradesTillSpeedTrait = 5;
+    [SyncVar] public bool hasSpeedTrait = false;
+    public int GetSpeedStat() { return Mathf.RoundToInt((float)unit.movementSpeed * speedModifier); }
+    [Space]
+    [Space]
+    public UnitUpgradePanel upgradePanel;
+    [Header("Other")]
+    [Space]
     public int maxAmount;
     public bool unlocked;
     public bool chosen;
     [Space]
     public int unitIndex = 0;
     public int buttonIndex = 0;
-    [Space]
-    public UnitUpgradePanel upgradePanel;
 }
 
 [System.Serializable]
@@ -91,7 +116,7 @@ public class UnitMaster : NetworkBehaviour
                     if (unit.unlocked)
                     {
                         int xpToUpgrade = unitSO.xpToUpgrade;
-                        xpToUpgrade = GetXPToUpgrade(xpToUpgrade, unit.level);
+                        //xpToUpgrade = GetXPToUpgrade(xpToUpgrade, unit.level);
 
                         //If player has enough xp to upgrade it, show the upgrade button
                         if (xpToUpgrade <= stats.currentXP) uiGameplayButtons[i].ShowUpgradeButton(true);
@@ -125,6 +150,7 @@ public class UnitMaster : NetworkBehaviour
 
     [Header("Units")]
     [SerializeField] private List<UnitList> unitList = new List<UnitList>();
+    public UnitList GetUnitList(int index) => unitList[index];
     [Space]
     [SerializeField, SyncVar] private int chosenSpawnableIndex = 0;
     [SerializeField] private bool hasChosenASpawnable = false;
@@ -145,6 +171,8 @@ public class UnitMaster : NetworkBehaviour
     public class UserInterface
     {
         [Header("General UI")]
+        public GameObject inGameUI;
+        [Space]
         public Text energyText = null;
         public Slider energySlider = null;
         public Image energyFillImage;
@@ -244,7 +272,7 @@ public class UnitMaster : NetworkBehaviour
 
         if (!hasAuthority) return;
 
-        AddBinds();
+        //AddBinds();
 
         InitializeUnitButtons();
         InitializeDeployableButtons();
@@ -308,23 +336,17 @@ public class UnitMaster : NetworkBehaviour
     {
         if (hasAuthority)
         {
-            PlayerManager.Instance.onMenuOpened += OnMenuEnabled;
-            PlayerManager.Instance.onMenuClosed += OnMenuDisabled;
+            AddBinds();
         }
     }
     public override void OnStopClient()
     {
         if (hasAuthority)
         {
-            PlayerManager.Instance.onMenuOpened -= OnMenuEnabled;
-            PlayerManager.Instance.onMenuClosed -= OnMenuDisabled;
+            RemoveBinds();
         }
     }
 
-    public override void OnStopAuthority()
-    {
-        RemoveBinds();
-    }
     #region Binds
 
     private void AddBinds()
@@ -360,6 +382,10 @@ public class UnitMaster : NetworkBehaviour
 
         //Upgrade menu Input
         JODSInput.Controls.Master.OpenUpgradeMenu.performed += ctx => OpenUpgradeMenu();
+
+        //Menu Input
+        PlayerManager.Instance.onMenuOpened += OnMenuEnabled;
+        PlayerManager.Instance.onMenuClosed += OnMenuDisabled;
     }
 
     private void RemoveBinds()
@@ -395,6 +421,11 @@ public class UnitMaster : NetworkBehaviour
 
         //Upgrade menu Input
         JODSInput.Controls.Master.OpenUpgradeMenu.performed -= ctx => OpenUpgradeMenu();
+
+
+        //Menu Input
+        PlayerManager.Instance.onMenuOpened -= OnMenuEnabled;
+        PlayerManager.Instance.onMenuClosed -= OnMenuDisabled;
     }
     #endregion
 
@@ -623,7 +654,7 @@ public class UnitMaster : NetworkBehaviour
             UnitUpgradePanel upgradePanel = upgradePanelGO.GetComponent<UnitUpgradePanel>();
 
             u.upgradePanel = upgradePanel;
-            upgradePanel.InitializeUnitUpgradePanel(this, u.unit);
+            upgradePanel.InitializeUnitUpgradePanel(this, u.unit, i);
 
             //Add this button to the list
             uiGameplayButtons.Add(b);
@@ -634,8 +665,10 @@ public class UnitMaster : NetworkBehaviour
             if (u.unit.unitSprite) b.SetImage(u.unit.unitSprite);
             else Debug.LogWarning($"{u.unit.name} has no unit sprite assigned!");
 
+            
+
             //Level
-            b.SetUnitLevel(u.level);
+            //b.SetUnitLevel(u.level);
             
             //Details
             b.SetDetails(u.unit.name, u.unit.description, u.unit.powerStat, u.unit.healthStat);
@@ -648,7 +681,7 @@ public class UnitMaster : NetworkBehaviour
             button.GetComponent<Button>().onClick.AddListener(delegate { ChooseUnit(b.ButtonIndex); });
 
             //Add events to call the functions whenever the buttons are pressed
-            b.upgradeButton.GetComponent<Button>().onClick.AddListener(delegate { UpgradeUnit(b.ButtonIndex); });
+            //b.upgradeButton.GetComponent<Button>().onClick.AddListener(delegate { UpgradeUnit(b.ButtonIndex); });
             b.unlockButton.GetComponent<Button>().onClick.AddListener(delegate { UnlockNewUnit(b.ButtonIndex); });
 
             //Start the unit button as Unlocked or Locked
@@ -752,7 +785,10 @@ public class UnitMaster : NetworkBehaviour
 
     public void OpenUpgradeMenu()
     {
-        UI.upgradeMenu.SetActive(!UI.upgradeMenu.activeSelf);
+        bool active = !UI.upgradeMenu.activeSelf;
+        UI.upgradeMenu.SetActive(active);
+        UI.inGameUI.SetActive(!active);
+
     }
 
     #endregion
@@ -1005,7 +1041,7 @@ public class UnitMaster : NetworkBehaviour
 
             //A random unit from the chosen unit's prefab list gets picked, and the name gets sent to the server, which then spawns the unit.
             //This is because there can be multiple variations of one unit.
-            spawnLevel = unitList[chosenSpawnableIndex].level;
+            //spawnLevel = unitList[chosenSpawnableIndex].level;
             spawnName = chosenUnit.unitPrefab.name;
 
             //Master loses energy, because nothing is free in life
@@ -1063,10 +1099,48 @@ public class UnitMaster : NetworkBehaviour
     #endregion
 
     #region Upgrade & Unlock
-    public void UpgradeUnit(int which)
+    public int UpgradeUnit(int unitIndex, int upgradePath, float upgradeAmount)
     {
+        //MAKE THIS SERVER!"!!!!!!"!""!"!"!
+
         //Reference
-        UnitList unit = unitList[which];
+        UnitList unit = unitList[unitIndex];
+
+        int upgradeToReturn = 0;
+
+        switch (upgradePath)
+        {
+            //Health upgrade
+            case 0:
+                unit.upgradesTillHealthTrait--;
+                upgradeToReturn = unit.upgradesTillHealthTrait;
+                unit.healthModifier += upgradeAmount;
+                break;
+            //Damage upgrade
+            case 1:
+                unit.upgradesTillDamageTrait--;
+                upgradeToReturn = unit.upgradesTillDamageTrait;
+                unit.damageModifier += upgradeAmount;
+                break;
+            //Speed upgrade
+            case 2:
+                unit.upgradesTillSpeedTrait--;
+                upgradeToReturn = unit.upgradesTillSpeedTrait;
+                unit.speedModifier += upgradeAmount;
+                break;
+        }
+
+        unit.level++;
+
+        //Play spooky sound
+        Cmd_PlayGlobalSound(true);
+
+        //Update scoreboard stat
+        Cmd_UpdateScore(1, PlayerDataStat.TotalUnitUpgrades);
+
+        return upgradeToReturn;
+
+        /*
 
         //If player does NOT have enough xp (Which shouldn't be possible), return.
         if (stats.currentXP < unit.unit.xpToUpgrade) return;
@@ -1078,11 +1152,8 @@ public class UnitMaster : NetworkBehaviour
         //Decrease xp by amount required to upgrade the unit
         CurrentXP += -unit.unit.xpToUpgrade;
 
-        //Play spooky sound
-        Cmd_PlayGlobalSound(true);
+        */
 
-        //Update scoreboard stat
-        Cmd_UpdateScore(1, PlayerDataStat.TotalUnitUpgrades);
     }
 
     public void UnlockNewUnit(int which)
@@ -1398,7 +1469,7 @@ public class UnitMaster : NetworkBehaviour
 
     private void SetMasterUnitValues()
     {
-        //Set the names and indexes of each unit
+        //Set the names and indexes of each unit, and set other values
         for (int i = 0; i < unitList.Count; i++)
         {
             UnitList u = unitList[i];
@@ -1410,6 +1481,14 @@ public class UnitMaster : NetworkBehaviour
 
             //Set this unit to be unlocked, if it is a starter unit
             u.unlocked = u.unit.starterUnit;
+
+            u.maxAmount = u.unit.maxAmountAlive;
+
+            u.upgradesTillHealthTrait = u.unit.upgrades.unitUpgradesHealth.amountOfUpgrades;
+            u.upgradesTillDamageTrait = u.unit.upgrades.unitUpgradesDamage.amountOfUpgrades;
+            u.upgradesTillSpeedTrait = u.unit.upgrades.unitUpgradesSpeed.amountOfUpgrades;
+            u.upgradeMilestone = u.unit.upgrades.unitsToPlace;
+            u.upgradeCurve = u.unit.upgrades.upgradeCurve;
         }
     }
 
