@@ -39,6 +39,8 @@ public class UnitSO : ScriptableObject
     public int xpToUpgrade = 100;
     [Space]
     public bool starterUnit;
+    [Space]
+    public int maxAmountAlive = 50;
 
     [Header("Stats")]
     public int health = 100;
@@ -101,6 +103,10 @@ public class UnitSO : ScriptableObject
     [System.Serializable]
     public class Upgrades
     {
+        [Header("Upgrade milestone")]
+        public int unitsToPlace = 50;
+        public AnimationCurve upgradeCurve;
+
         [Header("Health")]
         public UnitUpgradePath unitUpgradesHealth;
         public string traitHealth;
