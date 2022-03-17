@@ -71,12 +71,14 @@ public class HandSway : NetworkBehaviour, IInitializable<SurvivorSetup>
 
     private void GetVirtualHead(GameObject item)
     {
-        item.TryGetComponent(out ItemName itemName);
-        if (itemName.itemName == ItemNames.VirtualHead)
+        if (item.TryGetComponent(out ItemName itemName))
         {
-            virtualHead = item.transform;
-            if (hasAuthority)
-                StartCoroutine(IENextFrame());
+            if (itemName.itemName == ItemNames.VirtualHead)
+            {
+                virtualHead = item.transform;
+                //if (hasAuthority)
+                //    StartCoroutine(IENextFrame());
+            }
         }
     }
 }

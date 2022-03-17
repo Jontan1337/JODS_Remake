@@ -43,6 +43,9 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [SerializeField, SyncVar(hook = nameof(SetPlayerCamera))] protected Transform playerHead;
     [SerializeField] protected Camera playerCamera;
     [SerializeField] private GameObject muzzleFlash = null;
+    [SerializeField] protected Transform aimSight = null;
+    [SerializeField] protected Transform aimSightTarget = null;
+    [SerializeField] protected Vector3 initialPosition;
     [SerializeField] private ParticleSystem muzzleParticle;
     [SerializeField] private SFXPlayer sfxPlayer = null;
 
@@ -208,6 +211,11 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         playerHead = interacter.GetComponent<LookController>().RotateVertical;
         playerCamera = playerHead.GetChild(0).GetComponent<Camera>();
         GetUIElements(interacter.transform);
+        JODSTime.WaitTimeEvent(0.5f, delegate ()
+        {
+            aimSightTarget = interacter.transform.Find("Virtual Head(Clone)/WeaponAimTarget(Clone)");
+            initialPosition = transform.position;
+        });
     }
 
     private void SetPlayerCamera(Transform oldValue, Transform newValue)
@@ -307,6 +315,20 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         {
             Cmd_StopShoot();
         }
+    }
+
+    protected override void OnRMBPerformed(InputAction.CallbackContext obj)
+    {
+        Aim(true);
+    }
+    protected override void OnRMBCanceled(InputAction.CallbackContext obj)
+    {
+        Aim(false);
+    }
+
+    private void Aim(bool aim)
+    {
+        transform.DOLocalMove(aim ? aimSightTarget.position : initialPosition, 0.5f, true);
     }
 
     private void OnReload(InputAction.CallbackContext context) => Cmd_Reload();
@@ -459,7 +481,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         StartCoroutine(IEShootCooldown());
     }
 
-    //[Server]
     private void StartAccuracyStabilizer()
     {
         if (COAccuracyStabilizer != null) return;

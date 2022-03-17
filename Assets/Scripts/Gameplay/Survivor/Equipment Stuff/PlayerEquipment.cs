@@ -241,9 +241,6 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
             writer.WriteGameObject(itemInHands);
             writer.WriteEquipmentItem(equipmentItem);
             writer.WriteEquipmentSlot(selectedEquipmentSlot);
-            //if (selectedEquipmentSlot)
-            //{
-            //}
             return true;
         }
         else
@@ -251,14 +248,6 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
             writer.WriteList(equipmentSlotsTypes);
             writer.WriteTransform(playerHands);
             writer.WriteGameObject(itemInHands);
-            // Equipment item
-            //writer.WriteEquipmentSlot(selectedEquipmentSlot);
-            //writer.WriteList(equipmentSlots);
-            //writer.WriteInt32((int)itemPickupBehaviour);
-            //writer.WriteTransform(equipmentSlotsParent);
-            //writer.WriteTransform(equipmentSlotsUIParent);
-            //writer.WriteGameObject(equipmentSlotPrefab);
-            //writer.WriteGameObject(equipmentSlotUIPrefab);
             return true;
         }
     }
@@ -276,14 +265,6 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
             equipmentSlotsTypes = reader.ReadList<EquipmentType>();
             playerHands = reader.ReadTransform();
             itemInHands = reader.ReadGameObject();
-            //equipmentItem = itemInHands.GetComponent<EquipmentItem>();
-            //selectedEquipmentSlot = reader.ReadEquipmentSlot();
-            //equipmentSlots = reader.ReadList<EquipmentSlot>();
-            //itemPickupBehaviour = (ItemPickupBehaviour)reader.ReadInt32();
-            //equipmentSlotsParent = reader.ReadTransform();
-            //equipmentSlotsUIParent = reader.ReadTransform();
-            //equipmentSlotPrefab = reader.ReadGameObject();
-            //equipmentSlotUIPrefab = reader.ReadGameObject();
         }
     }
     #endregion

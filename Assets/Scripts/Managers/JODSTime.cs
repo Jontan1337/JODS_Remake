@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using System.Threading.Tasks;
 using System;
-using System.Runtime.CompilerServices;
 
 public class JODSTime : MonoBehaviour
 {

@@ -181,7 +181,11 @@ public class MeleeWeapon : EquipmentItem, IImpacter
                         if (amountSlashed == currentPunchthrough)
                         {
                             weaponAnimator.speed = 0f;
-                            Svr_ImpactShake(impactDuration, impactAmount).OnComplete(delegate() { 
+                            JODSTime.WaitTimeEvent(impactDuration, delegate ()
+                            {
+
+                            });
+                                Svr_ImpactShake(impactDuration, impactAmount).OnComplete(delegate() { 
                                 Svr_ResetAnimatorSpeed();
                                 Svr_EndOfAttack();
                             });
