@@ -17,27 +17,32 @@ public struct UnitUpgradePath
     public float upgradeAmount;
 }
 
+public enum UnitDamageType
+{
+    Melee, Ranged, Special
+}
+
 [CreateAssetMenu(fileName = "Unit", menuName = "Unit Master/New Unit", order = 1)]
 public class UnitSO : ScriptableObject
 {
-    [Header("Necessities")]
+    [Header("General")]
     public new string name;
     public GameObject unitPrefab;
-    [Space]
+    [Header("Visual")]
     public UnitMeshGroup unitAppearanceVariations;
     [Space]
     public Material[] unitMaterialVariations;
     [Space]
     [Space]
     public Sprite unitSprite;
-    [Space]
+    [Header("Energy")]
     public int energyCost = 10;
     public int refundAmount = 5;
-    [Space]
+    [Header("Experience")]
     public int xpGain = 10;
     public int xpToUnlock = 100;
     public int xpToUpgrade = 100;
-    [Space]
+    [Header("Other Gameplay")]
     public bool starterUnit;
     [Space]
     public int maxAmountAlive = 50;
@@ -45,8 +50,10 @@ public class UnitSO : ScriptableObject
     [Header("Stats")]
     public int health = 100;
     [Space]
-    public bool isMelee = true;
-    public bool isRanged = false;
+    public UnitDamageType unitDamageType = UnitDamageType.Melee;
+    [Space]
+    public bool hasMelee = true;
+    public bool hasRanged = false;
     public bool hasSpecial = false;
 
     [System.Serializable]

@@ -12,18 +12,23 @@ public class UnitUpgradePanel : MonoBehaviour
     [SerializeField] private Image unitImage = null;
     [SerializeField] private Text unitName = null;
     [SerializeField] private Text upgradeText = null;
+    [SerializeField] private Text unitTypeText = null;
+    [SerializeField] private GameObject unlockPanel = null;
 
     [Header("Health References")]
+    [SerializeField] private Button upgradeHealthButton= null;
     [SerializeField] private Text upgradeHealthText= null;
     [SerializeField] private Text unlockHealthTraitText = null;
     [SerializeField] private Slider healthProgressSlider = null;
     [SerializeField] private Text healthValueText = null;
     [Header("Damage References")]
+    [SerializeField] private Button upgradeDamageButton = null;
     [SerializeField] private Text upgradeDamageText = null;
     [SerializeField] private Text unlockDamageTraitText = null;
     [SerializeField] private Slider damageProgressSlider = null;
     [SerializeField] private Text damageValueText = null;
     [Header("Speed References")]
+    [SerializeField] private Button upgradeSpeedButton = null;
     [SerializeField] private Text upgradeSpeedText = null;
     [SerializeField] private Text unlockSpeedTraitText = null;
     [SerializeField] private Slider speedProgressSlider = null;
@@ -31,12 +36,18 @@ public class UnitUpgradePanel : MonoBehaviour
 
     private UnitSO unitSO;
     private UnitMaster unitMaster;
+    private UnitList unitListRef;
 
     public void InitializeUnitUpgradePanel(UnitMaster unitMaster, UnitSO unitSO, int index)
     {
         this.unitSO = unitSO;
         this.unitMaster = unitMaster;
         unitIndex = index;
+        unitListRef = unitMaster.GetUnitList(unitIndex);
+        unitTypeText.text = $"Unit Type: \n{unitSO.unitDamageType}";
+        unlockPanel.SetActive(!unitSO.starterUnit);
+
+        EnableUpgrades(false);
 
         unitImage.sprite = unitSO.unitSprite;
         unitName.text = unitSO.name;
@@ -52,7 +63,7 @@ public class UnitUpgradePanel : MonoBehaviour
         unlockDamageTraitText.text = unitSO.upgrades.traitDamage;
         damageProgressSlider.maxValue = unitSO.upgrades.unitUpgradesDamage.amountOfUpgrades;
         damageProgressSlider.value = 0;
-        damageValueText.text = $"{(unitSO.melee.meleeDamageMin + unitSO.melee.meleeDamageMax) / 2}";
+        damageValueText.text = $"{unitListRef.GetDamageStat()}";
 
         upgradeSpeedText.text = $"+ {unitSO.upgrades.unitUpgradesSpeed.upgradeAmount}x";
         unlockSpeedTraitText.text = unitSO.upgrades.traitSpeed;
@@ -61,49 +72,59 @@ public class UnitUpgradePanel : MonoBehaviour
         speedValueText.text = $"{unitSO.movementSpeed}";
     }
 
-    private void SetUpgradeText(int amount)
+    public void EnableUpgrades(bool enable)
+    {
+        upgradeHealthButton.interactable = enable;
+        upgradeDamageButton.interactable = enable;
+        upgradeSpeedButton.interactable = enable;
+    }
+
+    public void SetUpgradeText(int amount)
     {
         upgradeText.text = $"Upgrade: Spawn {amount} {unitSO.name}s";
     }
 
+
+    #region Button Functions
     public void UpgradeUnitHealth()
     {
         int upgradesLeft = unitMaster.UpgradeUnit(unitIndex, 0, unitSO.upgrades.unitUpgradesHealth.upgradeAmount);
 
-        UnitList unitList = unitMaster.GetUnitList(unitIndex);
-        SetUpgradeText(unitList.upgradeMilestone);
+        SetUpgradeText(unitListRef.UpgradeMilestone);
 
-        int newHealth = unitList.GetHealthStat();
+        int newHealth = unitListRef.GetHealthStat();
         healthValueText.text = $"{newHealth}";
 
         if (healthProgressSlider.value == healthProgressSlider.maxValue) return;
 
         int max = (int)healthProgressSlider.maxValue;
         healthProgressSlider.value = max - upgradesLeft;
+
+        EnableUpgrades(false);
     }
     public void UpgradeUnitDamage()
     {
         int upgradesLeft = unitMaster.UpgradeUnit(unitIndex, 1, unitSO.upgrades.unitUpgradesDamage.upgradeAmount);
 
-        UnitList unitList = unitMaster.GetUnitList(unitIndex);
-        SetUpgradeText(unitList.upgradeMilestone);
+        SetUpgradeText(unitListRef.UpgradeMilestone);
 
-        int newDamage = unitList.GetDamageStat();
+        int newDamage = unitListRef.GetDamageStat();
         damageValueText.text = $"{newDamage}";
 
         if (damageProgressSlider.value == damageProgressSlider.maxValue) return;
 
         int max = (int)damageProgressSlider.maxValue;
         damageProgressSlider.value = max - upgradesLeft;
+
+        EnableUpgrades(false);
     }
     public void UpgradeUnitSpeed()
     {
         int upgradesLeft = unitMaster.UpgradeUnit(unitIndex, 2, unitSO.upgrades.unitUpgradesSpeed.upgradeAmount);
 
-        UnitList unitList = unitMaster.GetUnitList(unitIndex);
-        SetUpgradeText(unitList.upgradeMilestone);
+        SetUpgradeText(unitListRef.UpgradeMilestone);
 
-        int newSpeed = unitList.GetSpeedStat();
+        int newSpeed = unitListRef.GetSpeedStat();
         speedValueText.text = $"{newSpeed}";
 
         if (speedProgressSlider.value == speedProgressSlider.maxValue) return;
@@ -111,5 +132,7 @@ public class UnitUpgradePanel : MonoBehaviour
         int max = (int)speedProgressSlider.maxValue;
         speedProgressSlider.value = max - upgradesLeft;
 
+        EnableUpgrades(false);
     }
+    #endregion
 }
