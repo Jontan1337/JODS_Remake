@@ -64,8 +64,7 @@ public class RaycastWeapon : RangedWeapon
                     if (shootHit.collider.Raycast(penRay, out penHit, range))
                     {
                         shootRay = new Ray(penHit.point, -penRay.direction);
-                        print(Mathf.RoundToInt(currentDamage * damageFallOff));
-                        currentDamage = Mathf.RoundToInt(currentDamage *= damageFallOff);
+                        currentDamage = Mathf.Clamp(Mathf.RoundToInt(currentDamage *= damageFallOff), 1f, int.MaxValue);
                     }
                 }
                 else
