@@ -382,8 +382,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         */
 
         //Attack bools
-        isMelee = unitSO.isMelee;
-        isRanged = unitSO.isRanged;
+        isMelee = unitSO.hasMelee;
+        isRanged = unitSO.hasRanged;
         hasSpecial = unitSO.hasSpecial;
 
         //Melee

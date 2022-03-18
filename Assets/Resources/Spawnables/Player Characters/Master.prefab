@@ -2158,12 +2158,12 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 0
+  m_ChildAlignment: 3
   m_Spacing: 50
   m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 1
+  m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
-  m_ChildControlHeight: 0
+  m_ChildControlHeight: 1
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
@@ -2179,8 +2179,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_HorizontalFit: 2
-  m_VerticalFit: 2
+  m_HorizontalFit: 1
+  m_VerticalFit: 1
 --- !u!1 &6371858766969811656
 GameObject:
   m_ObjectHideFlags: 0
@@ -2821,6 +2821,7 @@ MonoBehaviour:
     upgradesTillSpeedTrait: 5
     hasSpeedTrait: 0
     upgradePanel: {fileID: 0}
+    unitButton: {fileID: 0}
     maxAmount: 50
     unlocked: 1
     chosen: 0
@@ -2846,6 +2847,7 @@ MonoBehaviour:
     upgradesTillSpeedTrait: 0
     hasSpeedTrait: 0
     upgradePanel: {fileID: 0}
+    unitButton: {fileID: 0}
     maxAmount: 50
     unlocked: 0
     chosen: 0
@@ -2871,6 +2873,7 @@ MonoBehaviour:
     upgradesTillSpeedTrait: 0
     hasSpeedTrait: 0
     upgradePanel: {fileID: 0}
+    unitButton: {fileID: 0}
     maxAmount: 50
     unlocked: 0
     chosen: 0
@@ -2896,6 +2899,7 @@ MonoBehaviour:
     upgradesTillSpeedTrait: 0
     hasSpeedTrait: 0
     upgradePanel: {fileID: 0}
+    unitButton: {fileID: 0}
     maxAmount: 50
     unlocked: 0
     chosen: 0
@@ -2921,6 +2925,7 @@ MonoBehaviour:
     upgradesTillSpeedTrait: 0
     hasSpeedTrait: 0
     upgradePanel: {fileID: 0}
+    unitButton: {fileID: 0}
     maxAmount: 50
     unlocked: 0
     chosen: 0
@@ -2936,7 +2941,6 @@ MonoBehaviour:
     chosen: 0
     onCooldown: 0
     deployableCooldown: 60
-    deployableIndex: 0
     buttonIndex: 0
   - name: Disgusting Blob
     deployable: {fileID: 11400000, guid: 14503705cd7f4ab48a87beb1300dd580, type: 2}
@@ -2944,7 +2948,6 @@ MonoBehaviour:
     chosen: 0
     onCooldown: 0
     deployableCooldown: 60
-    deployableIndex: 1
     buttonIndex: 0
   playerLayer:
     serializedVersion: 2

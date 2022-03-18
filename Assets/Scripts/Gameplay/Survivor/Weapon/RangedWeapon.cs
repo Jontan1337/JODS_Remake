@@ -32,7 +32,9 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [Header("Game details")]
     //[SerializeField, SyncVar] private string player = "Player name";
     [SerializeField, Range(0f, 1f), Tooltip("Affects weapon accuracy")] protected float recoil = 0.1f;
+    [SerializeField, Range(0f, 1f), Tooltip("Affects weapon accuracy")] protected float aimingRecoil = 0.05f;
     [SerializeField, Tooltip("Affects weapon and camera shake")] protected float visualPunchback = 0.2f;
+    [SerializeField, Tooltip("Affects weapon and camera shake")] protected float aimingVisualPunchback = 0.1f;
     [SerializeField] protected float stabilization = 1f;
     [SerializeField] protected float currentAccuracy = 0f;
     [SerializeField] protected float currentCurveAccuracy = 0f;
@@ -45,7 +47,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [SerializeField] private GameObject muzzleFlash = null;
     [SerializeField] protected Transform aimSight = null;
     [SerializeField] protected Transform aimSightTarget = null;
-    [SerializeField] protected Vector3 initialPosition;
+    [SerializeField] protected Vector3 hipAimPosition;
     [SerializeField] private ParticleSystem muzzleParticle;
     [SerializeField] private SFXPlayer sfxPlayer = null;
 
@@ -72,8 +74,10 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     private Coroutine COAccuracyStabilizer;
 
     private const string inGameUIPath = "UI/Canvas - In Game";
-
+    private bool isAiming = false;
     private bool canShoot = true;
+    private float currentRecoil = 0f;
+    private float currentVisualPunchback = 0f;
 
     private int fireModeIndex = 0;
 
@@ -119,6 +123,11 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
             currentAccuracy = Mathf.Clamp01(value);
         }
     }
+    public bool IsAiming
+    {
+        get => isAiming;
+        private set => isAiming = value;
+    }
 
     #region Update UI
 
@@ -145,7 +154,16 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
     private void OnValidate()
     {
+        // Initialize variables.
+        currentRecoil = recoil;
+        currentVisualPunchback = visualPunchback;
         currentCurveAccuracy = recoilCurve.Evaluate(0f);
+        foreach (int modeIndex in fireModes)
+        {
+            if ((int)FireMode == modeIndex) break;
+            fireModeIndex++;
+        }
+        // Calculate weapon stats.
         fireRate = Mathf.Clamp(fireRate, 0.01f, float.MaxValue);
         fireInterval = 60 / fireRate;
         fireModeIndex = 0;
@@ -160,11 +178,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
             case AmmunitionTypes.Large:
                 damageFallOff = 0.15f;
                 break;
-        }
-        foreach (int modeIndex in fireModes)
-        {
-            if ((int)FireMode == modeIndex) break;
-            fireModeIndex++;
         }
         if (muzzleFlash != null)
         {
@@ -198,10 +211,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         base.Svr_Interact(interacter);
         playerHead = interacter.GetComponent<LookController>().RotateVertical;
         playerCamera = playerHead.GetChild(0).GetComponent<Camera>();
-        //magazine = Magazine;
-        //extraAmmunition = ExtraAmmunition;
-        //fireMode = FireMode;
-        //Rpc_GetPlayerHead(connectionToClient, playerHead);
     }
 
     [TargetRpc]
@@ -211,10 +220,10 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         playerHead = interacter.GetComponent<LookController>().RotateVertical;
         playerCamera = playerHead.GetChild(0).GetComponent<Camera>();
         GetUIElements(interacter.transform);
-        JODSTime.WaitTimeEvent(0.5f, delegate ()
+        aimSightTarget = interacter.transform.Find("Virtual Head(Clone)/WeaponAimTarget(Clone)");
+        JODSTime.WaitTimeEvent(0.8f, delegate ()
         {
-            aimSightTarget = interacter.transform.Find("Virtual Head(Clone)/WeaponAimTarget(Clone)");
-            initialPosition = transform.position;
+            hipAimPosition = transform.localPosition;
         });
     }
 
@@ -326,9 +335,25 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         Aim(false);
     }
 
-    private void Aim(bool aim)
+    private async void Aim(bool aim)
     {
-        transform.DOLocalMove(aim ? aimSightTarget.position : initialPosition, 0.5f, true);
+        IsAiming = aim;
+        currentRecoil = aim ? aimingRecoil : recoil;
+        currentVisualPunchback = aim ? aimingVisualPunchback : visualPunchback;
+        Vector3 target = aim ? aimSightTarget.localPosition : hipAimPosition;
+        while (true)
+        {
+            transform.localPosition = Vector3.Slerp(transform.localPosition, target, Time.deltaTime * 20f);
+            if (Vector3.Distance(transform.localPosition, target) < 0.01f)
+            {
+                transform.localPosition = target;
+                await JODSTime.WaitFrame();
+                break;
+            }
+            await JODSTime.WaitFrame();
+        }
+        //transform.DOLocalMove(aim ? aimSightTarget.localPosition : initialPosition, 0.1f);
+        //transform.DOLocalJump(aim ? aimSightTarget.localPosition : hipAimPosition, -0.03f, 1, 0.1f);
     }
 
     private void OnReload(InputAction.CallbackContext context) => Cmd_Reload();
@@ -506,7 +531,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
     private void PostShoot()
     {
-        CurrentAccuracy += recoil;
+        CurrentAccuracy += currentRecoil;
         StartAccuracyStabilizer();
     }
 
@@ -603,7 +628,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     {
         sfxPlayer.PlaySFX(shootSound);
         muzzleParticle.Emit(10);
-        OnImpact?.Invoke(visualPunchback);
+        OnImpact?.Invoke(currentVisualPunchback);
     }
     protected void ImpactShake(float amount)
     {

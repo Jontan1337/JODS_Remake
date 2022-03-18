@@ -34,15 +34,12 @@ MonoBehaviour:
   xpToUnlock: 750
   xpToUpgrade: 150
   starterUnit: 0
+  maxAmountAlive: 50
   health: 150
-  isMelee: 1
-  isRanged: 0
+  unitDamageType: 2
+  hasMelee: 1
+  hasRanged: 0
   hasSpecial: 1
-  upgrades:
-    upgradeMultiplier: 0.1
-    upgradeMovementSpeed: 1
-    movementSpeedUpgradeIncrease: 0.1
-    movementSpeedUpgradeMax: 3
   melee:
     meleeDamageMin: 2
     meleeDamageMax: 5
@@ -75,6 +72,26 @@ MonoBehaviour:
     statusEffectToApply: {fileID: 11400000, guid: 7fbfc15321455b749ad2b9ef5ee7b3c4,
       type: 2}
     amount: 0
+  upgrades:
+    unitsToPlace: 50
+    upgradeCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    unitUpgradesHealth:
+      amountOfUpgrades: 0
+      upgradeAmount: 0
+    traitHealth: 
+    unitUpgradesDamage:
+      amountOfUpgrades: 0
+      upgradeAmount: 0
+    traitDamage: 
+    unitUpgradesSpeed:
+      amountOfUpgrades: 0
+      upgradeAmount: 0
+    traitSpeed: 
   movementSpeed: 1.5
   chaseTime: 10
   sightDistance: 20
@@ -85,6 +102,7 @@ MonoBehaviour:
   bloodColor: {r: 1, g: 0, b: 0, a: 1}
   sounds:
     headHeight: 2
+    basePitch: 1
     idleSounds:
     - {fileID: 8300000, guid: ff8240148ee026c4babb53949381e1cd, type: 3}
     - {fileID: 8300000, guid: 821b6440d8e269c40b5a0eb8a44a079d, type: 3}
