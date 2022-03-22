@@ -75,31 +75,31 @@ public class EngineerClass : SurvivorClass
 
     private IEnumerator Recharge()
     {
-        print("1");
-        //while (!sController.IsMoving())
-        //{
-        //    idling += Time.deltaTime;
-        //    if (idling >= 2 && !rechargeActive)
-        //    {
-        //        survivorsInRange = Physics.OverlapSphere(transform.position, range, survivorLayer);
-        //        foreach (var item in survivorsInRange)
-        //        {
-        //            item.GetComponentInParent<ModifierManager>().Cooldown += 1;
-        //        }
-        //        rechargeActive = true;
-        //    }
-        yield return null;
-        //}
-        //idling = 0;
-        //if (rechargeActive)
-        //{
-        //    foreach (var item in survivorsInRange)
-        //    {
-        //        item.GetComponentInParent<ModifierManager>().Cooldown -= 1;
-        //    }
-        //    survivorsInRange = null;
-        //    rechargeActive = false;
-        //}
+        //print("1");
+        while (!sController.IsMoving())
+        {
+            idling += Time.deltaTime;
+            if (idling >= 2 && !rechargeActive)
+            {
+                survivorsInRange = Physics.OverlapSphere(transform.position, range, survivorLayer);
+                foreach (var item in survivorsInRange)
+                {
+                    item.GetComponentInParent<ModifierManager>().Cooldown += 1;
+                }
+                rechargeActive = true;
+            }
+            yield return null;
+        }
+        idling = 0;
+        if (rechargeActive)
+        {
+            foreach (var item in survivorsInRange)
+            {
+                item.GetComponentInParent<ModifierManager>().Cooldown -= 1;
+            }
+            survivorsInRange = null;
+            rechargeActive = false;
+        }
     }
 
 

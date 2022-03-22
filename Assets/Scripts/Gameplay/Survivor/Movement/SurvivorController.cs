@@ -114,10 +114,11 @@ public class SurvivorController : NetworkBehaviour
         Vector2 moveValues = context.ReadValue<Vector2>();
         horizontal = moveValues.x;
         vertical = moveValues.y;
-        if (IsMoving())
-        {
-            StoppedMoving();
-        }
+        StartCoroutine(Wait());
+        //if (IsMoving2())
+        //{
+        //    StoppedMoving();
+        //}
     }
 
     private void Jump(InputAction.CallbackContext context)
@@ -144,6 +145,19 @@ public class SurvivorController : NetworkBehaviour
     }
 
     public bool IsMoving() => moveDirection.z != 0 || moveDirection.x != 0;
+    public bool IsMoving2()
+    {
+        print(moveDirection.z + "__" + moveDirection.x);
+        return moveDirection.z != 0 || moveDirection.x != 0;
+    }   
+    IEnumerator Wait()
+    {
+        yield return null;
+        if (!IsMoving())
+        {
+            StoppedMoving();
+        }
+    }
 
     public void StoppedMoving()
     {
