@@ -361,7 +361,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1503187357618671214}
   m_LocalRotation: {x: -0, y: -0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 3.593, y: 1.222, z: -2.084}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8290677149126178946}
@@ -370,6 +370,7 @@ Transform:
   - {fileID: 2142883216586210847}
   - {fileID: 6505379249596513331}
   - {fileID: 4952594010196631464}
+  - {fileID: 6775138344138655200}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
@@ -392,6 +393,7 @@ MonoBehaviour:
   equipmentType: 1
   unequippedLayer: 14
   equippedLayer: 15
+  objectMeshes: []
   isInteractable: 1
   UISilhouette: {fileID: 21300000, guid: 5ea35eda677c3e8409ee827c7f2eb9cb, type: 3}
   authController: {fileID: 7831916901126986725}
@@ -401,6 +403,7 @@ MonoBehaviour:
   outline: {fileID: 7493296977824143131}
   header2: 
   damage: 8
+  penetrationAmount: 0
   ammunitionType: 1
   fireMode: 4
   fireModes: 0100000004000000
@@ -413,7 +416,9 @@ MonoBehaviour:
   extraAmmunition: 60
   highPower: 0
   recoil: 0.4
-  visualPunchback: 0.2
+  aimingRecoil: 0.05
+  visualPunchback: 0.5
+  aimingVisualPunchback: 0.1
   stabilization: 2
   currentAccuracy: 0
   currentCurveAccuracy: 2
@@ -445,12 +450,16 @@ MonoBehaviour:
   playerHead: {fileID: 0}
   playerCamera: {fileID: 0}
   muzzleFlash: {fileID: 296846283720215069}
+  aimSight: {fileID: 6775138344138655200}
+  aimSightTarget: {fileID: 0}
+  hipAimPosition: {x: 0, y: 0, z: 0}
   muzzleParticle: {fileID: 3552550223101688452}
   sfxPlayer: {fileID: 7493296977824143129}
   crosshairPrefab: {fileID: 7567561865917243704, guid: 3ebd556d7ba54f745bfe343e53e58796,
     type: 3}
   shootSound: {fileID: 8300000, guid: 209b5b9f5033ab3448abedb2a7ccbeff, type: 3}
   emptySound: {fileID: 8300000, guid: 6e8772b49f34d402a90016ed445d8a2f, type: 3}
+  header3: 
   range: 1000
   ignoreLayer:
     serializedVersion: 2
@@ -2112,6 +2121,36 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6569584963255531788}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3551543448318522066
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6775138344138655200}
+  m_Layer: 14
+  m_Name: AimSightPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6775138344138655200
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3551543448318522066}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0, y: 0.125, z: -0.104}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2488024565149531261}
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3819950095944904128
 GameObject:

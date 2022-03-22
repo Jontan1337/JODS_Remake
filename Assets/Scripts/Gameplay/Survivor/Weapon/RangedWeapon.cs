@@ -221,9 +221,10 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         playerCamera = playerHead.GetChild(0).GetComponent<Camera>();
         GetUIElements(interacter.transform);
         aimSightTarget = interacter.transform.Find("Virtual Head(Clone)/WeaponAimTarget(Clone)");
-        JODSTime.WaitTimeEvent(0.8f, delegate ()
+        JODSTime.WaitTimeEvent(0.6f, delegate ()
         {
-            hipAimPosition = transform.localPosition;
+            hipAimPosition = transform.parent.localPosition;
+            transform.DOComplete();
         });
     }
 
@@ -338,22 +339,23 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     private async void Aim(bool aim)
     {
         IsAiming = aim;
-        currentRecoil = aim ? aimingRecoil : recoil;
-        currentVisualPunchback = aim ? aimingVisualPunchback : visualPunchback;
-        Vector3 target = aim ? aimSightTarget.localPosition : hipAimPosition;
-        while (true)
-        {
-            transform.localPosition = Vector3.Slerp(transform.localPosition, target, Time.deltaTime * 20f);
-            if (Vector3.Distance(transform.localPosition, target) < 0.01f)
-            {
-                transform.localPosition = target;
-                await JODSTime.WaitFrame();
-                break;
-            }
-            await JODSTime.WaitFrame();
-        }
+        currentRecoil = IsAiming ? aimingRecoil : recoil;
+        currentVisualPunchback = IsAiming ? aimingVisualPunchback : visualPunchback;
+        //while (true)
+        //{
+        //    Vector3 target = IsAiming ? aimSightTarget.localPosition : hipAimPosition;
+        //    target.z = hipAimPosition.z;
+        //    transform.parent.localPosition = Vector3.Slerp(transform.parent.localPosition, target, Time.deltaTime * 20f);
+        //    if (Vector3.Distance(transform.parent.localPosition, target) < 0.02f)
+        //    {
+        //        transform.parent.localPosition = target;
+        //        //await JODSTime.WaitFrame();
+        //        break;
+        //    }
+        //    await JODSTime.WaitFrame();
+        //}
         //transform.DOLocalMove(aim ? aimSightTarget.localPosition : initialPosition, 0.1f);
-        //transform.DOLocalJump(aim ? aimSightTarget.localPosition : hipAimPosition, -0.03f, 1, 0.1f);
+        transform.parent.DOLocalJump(IsAiming ? aimSightTarget.localPosition : hipAimPosition, -0.03f, 1, 0.1f);
     }
 
     private void OnReload(InputAction.CallbackContext context) => Cmd_Reload();
@@ -633,8 +635,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     protected void ImpactShake(float amount)
     {
         transform.DOComplete();
-        transform.DOPunchPosition(new Vector3(0f, 0f, -0.1f), 0.15f, 12, 1f);
-        transform.DOPunchRotation(new Vector3(-2f, 0f, UnityEngine.Random.Range(-5f, 5f)), 0.28f, 12, 1f);
+        transform.DOPunchPosition(new Vector3(0f, 0f, -0.1f) * currentVisualPunchback, 0.15f, 12, 1f);
+        transform.DOPunchRotation(new Vector3(-2f, 0f, UnityEngine.Random.Range(-5f, 5f)) * currentVisualPunchback, 0.28f, 12, 1f);
     }
 
     [ClientRpc]
