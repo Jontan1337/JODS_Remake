@@ -221,11 +221,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         playerCamera = playerHead.GetChild(0).GetComponent<Camera>();
         GetUIElements(interacter.transform);
         aimSightTarget = interacter.transform.Find("Virtual Head(Clone)/WeaponAimTarget(Clone)");
-        JODSTime.WaitTimeEvent(0.6f, delegate ()
-        {
-            hipAimPosition = transform.parent.localPosition;
-            transform.DOComplete();
-        });
+        hipAimPosition = transform.parent.localPosition;
+        transform.DOComplete();
     }
 
     private void SetPlayerCamera(Transform oldValue, Transform newValue)
@@ -354,8 +351,9 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         //    }
         //    await JODSTime.WaitFrame();
         //}
-        //transform.DOLocalMove(aim ? aimSightTarget.localPosition : initialPosition, 0.1f);
-        transform.parent.DOLocalJump(IsAiming ? aimSightTarget.localPosition : hipAimPosition, -0.03f, 1, 0.1f);
+        Vector3 targetAimPosition = new Vector3(aimSight.localPosition.x, /*0.085f - */aimSight.localPosition.y, 0);
+        transform.parent.DOComplete();
+        transform.parent.DOLocalJump(IsAiming ? targetAimPosition : hipAimPosition, -0.05f, 1, 0.1f);
     }
 
     private void OnReload(InputAction.CallbackContext context) => Cmd_Reload();
@@ -518,7 +516,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [Server]
     protected virtual void Svr_Shoot(Vector2 aimPoint)
     {
-        Debug.LogError("You broke this. Rocket launcher didn't work because it never lost ammunition. I temporarily fixed by removing an If statement in rocket launcher script. Fix.");
     }
     [Server]
     protected virtual void Svr_PreShoot()
