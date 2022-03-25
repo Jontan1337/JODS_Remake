@@ -333,25 +333,17 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         Aim(false);
     }
 
-    private async void Aim(bool aim)
+    private void Aim(bool aim)
     {
         IsAiming = aim;
         currentRecoil = IsAiming ? aimingRecoil : recoil;
         currentVisualPunchback = IsAiming ? aimingVisualPunchback : visualPunchback;
-        //while (true)
-        //{
-        //    Vector3 target = IsAiming ? aimSightTarget.localPosition : hipAimPosition;
-        //    target.z = hipAimPosition.z;
-        //    transform.parent.localPosition = Vector3.Slerp(transform.parent.localPosition, target, Time.deltaTime * 20f);
-        //    if (Vector3.Distance(transform.parent.localPosition, target) < 0.02f)
-        //    {
-        //        transform.parent.localPosition = target;
-        //        //await JODSTime.WaitFrame();
-        //        break;
-        //    }
-        //    await JODSTime.WaitFrame();
-        //}
-        Vector3 targetAimPosition = new Vector3(aimSight.localPosition.x, /*0.085f - */aimSight.localPosition.y, 0);
+
+        //Vector3 aimSightTP = transform.parent.InverseTransformPoint(aimSight.position);
+        print(transform.localPosition.y);
+        print(aimSight.localPosition.y);
+        Vector3 targetAimPosition = new Vector3(aimSight.localPosition.x, 0, 0.2f);
+
         transform.parent.DOComplete();
         transform.parent.DOLocalJump(IsAiming ? targetAimPosition : hipAimPosition, -0.05f, 1, 0.1f);
     }
