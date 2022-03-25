@@ -30,7 +30,6 @@ public class RocketLauncher : ProjectileWeapon
 	{
 		base.Unbind();
 
-        //epik fix
         if (hasAuthority) Cmd_Destroy();
 		else Svr_Destroy();
 	}
@@ -38,13 +37,11 @@ public class RocketLauncher : ProjectileWeapon
 	public void Cmd_Destroy()
 	{
 		StartCoroutine(DestroyWait());
-		//NetworkServer.Destroy(gameObject);
 	}
     [Server]
     public void Svr_Destroy()
     {
         StartCoroutine(DestroyWait());
-        //NetworkServer.Destroy(gameObject);
     }
     IEnumerator DestroyWait()
 	{
