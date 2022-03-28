@@ -339,10 +339,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         currentRecoil = IsAiming ? aimingRecoil : recoil;
         currentVisualPunchback = IsAiming ? aimingVisualPunchback : visualPunchback;
 
-        //Vector3 aimSightTP = transform.parent.InverseTransformPoint(aimSight.position);
         print(transform.localPosition.y);
-        print(aimSight.localPosition.y);
-        Vector3 targetAimPosition = new Vector3(aimSight.localPosition.x, 0, 0.2f);
+        Vector3 targetAimPosition = new Vector3(aimSight.localPosition.x, aimSight.localPosition.y, 0.2f);
 
         transform.parent.DOComplete();
         transform.parent.DOLocalJump(IsAiming ? targetAimPosition : hipAimPosition, -0.05f, 1, 0.1f);

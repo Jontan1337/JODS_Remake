@@ -141,6 +141,8 @@ public class MeleeWeapon : EquipmentItem, IImpacter
 
     private void OnTriggerEnter(Collider other)
     {
+        print("isAttacking" + isAttacking);
+        print("canAttack" + canAttack);
         if (!isAttacking) return;
 
         // Wack camera shake animation played on local client.
@@ -178,14 +180,16 @@ public class MeleeWeapon : EquipmentItem, IImpacter
                         {
                             detachable.Detach((int)damageType);
                         }
+                        if (amountSlashed == 1)
+                        {
+                            Rpc_HitSFX();
+                        }
                         if (amountSlashed == currentPunchthrough)
                         {
                             weaponAnimator.speed = 0f;
+                            Svr_ImpactShake(impactDuration, impactAmount);
                             JODSTime.WaitTimeEvent(impactDuration, delegate ()
                             {
-
-                            });
-                                Svr_ImpactShake(impactDuration, impactAmount).OnComplete(delegate() { 
                                 Svr_ResetAnimatorSpeed();
                                 Svr_EndOfAttack();
                             });
@@ -195,9 +199,6 @@ public class MeleeWeapon : EquipmentItem, IImpacter
                     break;
                 case DamageTypes.Blunt:
                     weaponAnimator.speed = 0f;
-                    //Svr_ImpactShake(impactDuration, impactAmount).OnComplete(delegate ()
-                    //{
-                    //});
                     JODSTime.WaitTimeEvent(impactDuration, delegate ()
                     {
                         weaponAnimator.CrossFade(IdleAnim, impactDuration);
