@@ -26,21 +26,10 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     [SyncVar] public bool isDead = false;
     private int maxHealth = 0;
     private int refundAmount = 0;
-    [SyncVar, SerializeField] protected int unitLevel = 1;
     [Space]
     [SerializeField] private bool isMelee;
     [SerializeField] private bool isRanged;
     [SerializeField] private bool hasSpecial;
-    [System.Serializable]
-    public class Upgrades
-    {
-        public float upgradeMultiplier = 0f;
-        public bool upgradeMovementSpeed = true;
-        public float movementSpeedUpgradeIncrease = 0.1f;
-        public float movementSpeedUpgradeMax = 3f;
-    }
-    [Space]
-    public Upgrades upgrades;
     [System.Serializable]
     public class Melee
     {
@@ -489,8 +478,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
         //Stats
         SetStats();
-        //If the unit's level is higher than 1 (base level), then increase stats.
-        if (unitLevel > 1) IncreaseStats(); //Increase the stats based on what level the unit is.
 
         //Pathfinding
         seeker = GetComponent<Seeker>();
@@ -591,31 +578,25 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         }
     }
 
-    //This is called by the Master, who sets the unit's level, which increases it's stats.
-    public void SetLevel(int level) => unitLevel = Mathf.Clamp(level,1,100);
-
-    protected virtual void IncreaseStats()
+    [Server]                    //Health, Damage, Speed
+    public void Svr_IncreaseStats((float, float, float) modifiers)
     {
-        float multiplier = upgrades.upgradeMultiplier * (unitLevel - 1);
 
-        Health = Mathf.RoundToInt(Health + (unitSO.health * multiplier));
+        //Health = Mathf.RoundToInt(Health + (unitSO.health * multiplier));
 
         if (isMelee)
         {
-            melee.meleeDamageMax = Mathf.RoundToInt(melee.meleeDamageMax + (unitSO.melee.meleeDamageMax * multiplier));
-            melee.meleeDamageMin = Mathf.RoundToInt(melee.meleeDamageMin + (unitSO.melee.meleeDamageMin * multiplier));
+            //melee.meleeDamageMax = Mathf.RoundToInt(melee.meleeDamageMax + (unitSO.melee.meleeDamageMax * multiplier));
+            //melee.meleeDamageMin = Mathf.RoundToInt(melee.meleeDamageMin + (unitSO.melee.meleeDamageMin * multiplier));
         }
         if (isRanged)
         {
-            ranged.rangedDamage = Mathf.RoundToInt(ranged.rangedDamage + (unitSO.ranged.rangedDamage * multiplier));
+            //ranged.rangedDamage = Mathf.RoundToInt(ranged.rangedDamage + (unitSO.ranged.rangedDamage * multiplier));
         }
         if (hasSpecial)
         {
-            if (special.specialDamage != 0) special.specialDamage = Mathf.RoundToInt(special.specialDamage + (unitSO.special.specialDamage * multiplier));
+            //if (special.specialDamage != 0) special.specialDamage = Mathf.RoundToInt(special.specialDamage + (unitSO.special.specialDamage * multiplier));
         }
-
-
-        if (upgrades.upgradeMovementSpeed) movementSpeed = Mathf.Clamp(movementSpeed + (upgrades.movementSpeedUpgradeIncrease * (unitLevel - 1)), 0, upgrades.movementSpeedUpgradeMax);
     }
 
     #endregion

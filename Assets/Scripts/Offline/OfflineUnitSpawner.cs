@@ -110,7 +110,6 @@ public class OfflineUnitSpawner : NetworkBehaviour
                     UnitBase unit = newUnit.GetComponent<UnitBase>();
 
                     unit.SetUnitSO(enemyUnit.unit);
-                    unit.SetLevel(Mathf.RoundToInt(round / 5));
 
                     unitsLeftToSpawn -= 1;
                     Debug.Log("Units left to spawn : " + unitsLeftToSpawn);
