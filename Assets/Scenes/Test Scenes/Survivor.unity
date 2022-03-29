@@ -13702,36 +13702,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ad3f536d03b60c4196e66d49f5882ef, type: 3}
---- !u!1 &2009024682
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2009024683}
-  m_Layer: 0
-  m_Name: Frag Grenade
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2009024683
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2009024682}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 17.922285, y: -0.7938859, z: -12.149946}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 12
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2037464834
 GameObject:
   m_ObjectHideFlags: 0
@@ -14827,6 +14797,85 @@ MonoBehaviour:
     type: 2}
   amount: 0
   objectsInCollider: []
+--- !u!1001 &5282732989892681941
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4628547425430843657, guid: e9115eb680b63d54bacad7bb4b7ce36f,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 6.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4628547425430843657, guid: e9115eb680b63d54bacad7bb4b7ce36f,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.19
+      objectReference: {fileID: 0}
+    - target: {fileID: 4628547425430843657, guid: e9115eb680b63d54bacad7bb4b7ce36f,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 4628547425430843657, guid: e9115eb680b63d54bacad7bb4b7ce36f,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.000000081460335
+      objectReference: {fileID: 0}
+    - target: {fileID: 4628547425430843657, guid: e9115eb680b63d54bacad7bb4b7ce36f,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4628547425430843657, guid: e9115eb680b63d54bacad7bb4b7ce36f,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4628547425430843657, guid: e9115eb680b63d54bacad7bb4b7ce36f,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4628547425430843657, guid: e9115eb680b63d54bacad7bb4b7ce36f,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 4628547425430843657, guid: e9115eb680b63d54bacad7bb4b7ce36f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4628547425430843657, guid: e9115eb680b63d54bacad7bb4b7ce36f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4628547425430843657, guid: e9115eb680b63d54bacad7bb4b7ce36f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8100499280434642074, guid: e9115eb680b63d54bacad7bb4b7ce36f,
+        type: 3}
+      propertyPath: sceneId
+      value: 2286693297
+      objectReference: {fileID: 0}
+    - target: {fileID: 8100499280434642074, guid: e9115eb680b63d54bacad7bb4b7ce36f,
+        type: 3}
+      propertyPath: m_AssetId
+      value: e9115eb680b63d54bacad7bb4b7ce36f
+      objectReference: {fileID: 0}
+    - target: {fileID: 8530027171896115994, guid: e9115eb680b63d54bacad7bb4b7ce36f,
+        type: 3}
+      propertyPath: m_Name
+      value: Frag Grenade
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e9115eb680b63d54bacad7bb4b7ce36f, type: 3}
 --- !u!1 &6557909745178197964
 GameObject:
   m_ObjectHideFlags: 0

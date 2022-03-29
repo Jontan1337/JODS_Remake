@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4628547425430843657}
-  - component: {fileID: 1323621994883770289}
+  - component: {fileID: 4220837053389686996}
   - component: {fileID: 4422783199824153407}
   - component: {fileID: 7952345977046595526}
   - component: {fileID: 4576262768916516931}
@@ -52,6 +52,7 @@ GameObject:
   - component: {fileID: 6539748431266621819}
   - component: {fileID: 8431596515971650195}
   - component: {fileID: 8100499280434642074}
+  - component: {fileID: 6160738439581235534}
   m_Layer: 0
   m_Name: Frag Grenade
   m_TagString: Untagged
@@ -74,7 +75,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1323621994883770289
+--- !u!114 &4220837053389686996
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -83,39 +84,39 @@ MonoBehaviour:
   m_GameObject: {fileID: 8530027171896115994}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c6322c1bd888c664192abf45035393ec, type: 3}
+  m_Script: {fileID: 11500000, guid: 41fbe0dcd21a2de4b8365df341a39105, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
   header1: 
   itemName: Item name
-  equipmentType: 0
+  equipmentType: 2
   unequippedLayer: 14
   equippedLayer: 15
   objectMeshes: []
   isInteractable: 1
   UISilhouette: {fileID: 0}
   authController: {fileID: 4576262768916516931}
-  objectVisuals: {fileID: 5387573473675013222}
+  objectVisuals: {fileID: 0}
   owner: {fileID: 0}
   rb: {fileID: 783579326545623342}
-  outline: {fileID: 0}
+  outline: {fileID: 1645482387569777890}
   header2: 
-  damage: 0
+  damage: 10
   penetrationAmount: 0
   ammunitionType: 0
   fireMode: 0
   fireModes: 
-  burstBulletAmount: 3
+  burstBulletAmount: 1
   fireRate: 600
   fireInterval: 0.1
   bulletsPerShot: 1
-  magazine: 10
-  magazineSize: 10
+  magazine: 1
+  magazineSize: 1
   extraAmmunition: 0
   highPower: 0
-  recoil: 10
+  recoil: 0.1
   aimingRecoil: 0.05
   visualPunchback: 0.2
   aimingVisualPunchback: 0.1
@@ -149,17 +150,17 @@ MonoBehaviour:
   shootOrigin: {fileID: 8128879229658872825}
   playerHead: {fileID: 0}
   playerCamera: {fileID: 0}
-  muzzleFlash: {fileID: 5924418479960361039}
+  muzzleFlash: {fileID: 8530027171896115994}
   aimSight: {fileID: 0}
   aimSightTarget: {fileID: 0}
   hipAimPosition: {x: 0, y: 0, z: 0}
   muzzleParticle: {fileID: 5924418479978680623}
   sfxPlayer: {fileID: 8431596515971650195}
-  crosshairPrefab: {fileID: 1860549463220532411, guid: ab95d625f4bfbed4186dd3f7ae178b1c,
+  crosshairPrefab: {fileID: 5974645982962048393, guid: b319fa02b6118d54ba57865866c9198b,
     type: 3}
-  shootSound: {fileID: 8300000, guid: 715c383811c8e0745a345d19e85fd6aa, type: 3}
-  emptySound: {fileID: 8300000, guid: 6e8772b49f34d402a90016ed445d8a2f, type: 3}
-  projectileSpeed: 45
+  shootSound: {fileID: 8300000, guid: 2dccfa9e64a74c640a3536edcc55ed42, type: 3}
+  emptySound: {fileID: 8300000, guid: 715c383811c8e0745a345d19e85fd6aa, type: 3}
+  projectileSpeed: 10
   timeToLive: 5
   projectile: {fileID: 620851829577473496, guid: 654afef88c28a2c4ab0e62c385cc34ec,
     type: 3}
@@ -1590,6 +1591,20 @@ MonoBehaviour:
   serverOnly: 0
   m_AssetId: 
   hasSpawned: 0
+--- !u!64 &6160738439581235534
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8530027171896115994}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4711208715938537054, guid: 40b3d08bf40ddcf438c04908eb1b5bfc, type: 3}
 --- !u!1001 &6967802817869687973
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1659,12 +1674,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0490c19079e9fd04a99cbf66b85c1a31, type: 3}
---- !u!1 &5924418479960361039 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3640413219347670250, guid: 0490c19079e9fd04a99cbf66b85c1a31,
-    type: 3}
-  m_PrefabInstance: {fileID: 6967802817869687973}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5924418479960331375 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3640413219347839178, guid: 0490c19079e9fd04a99cbf66b85c1a31,
