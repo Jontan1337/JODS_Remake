@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class UnitUpgradePanel : MonoBehaviour
 {
+    bool unlocked = false;
+
     [Header("Master References")]
     [SerializeField] private int unitIndex = 0;
 
@@ -14,6 +16,8 @@ public class UnitUpgradePanel : MonoBehaviour
     [SerializeField] private Text upgradeText = null;
     [SerializeField] private Text unitTypeText = null;
     [SerializeField] private GameObject unlockPanel = null;
+    [SerializeField] private Button unlockButton = null;
+    [SerializeField] private Text unlockButtonText = null;
 
     [Header("Health References")]
     [SerializeField] private Button upgradeHealthButton= null;
@@ -45,7 +49,11 @@ public class UnitUpgradePanel : MonoBehaviour
         unitIndex = index;
         unitListRef = unitMaster.GetUnitList(unitIndex);
         unitTypeText.text = $"Unit Type: \n{unitSO.unitDamageType}";
+        unlocked = unitSO.starterUnit;
+
         unlockPanel.SetActive(!unitSO.starterUnit);
+        unlockButton.interactable = false;
+        unlockButtonText.text = $"Unlock {unitSO.name} \nRequired XP: {unitSO.xpToUnlock}";
 
         EnableUpgrades(false);
 
@@ -78,10 +86,23 @@ public class UnitUpgradePanel : MonoBehaviour
         upgradeDamageButton.interactable = enable;
         upgradeSpeedButton.interactable = enable;
     }
+    
+    public void UnlockCheck(int xp)
+    {
+        if (unlocked) return;
+        unlockButton.interactable = xp >= unitSO.xpToUnlock;
+    }
+
+    public void UnlockUnit()
+    {
+        unlocked = true;
+        unlockPanel.SetActive(false);
+        unitMaster.UnlockNew(unitListRef);
+    }
 
     public void SetUpgradeText(int amount)
     {
-        upgradeText.text = $"Upgrade: Spawn {amount} {unitSO.name}s";
+        upgradeText.text = $"Next Upgrade: Spawn {amount} {unitSO.name}s";
     }
 
 

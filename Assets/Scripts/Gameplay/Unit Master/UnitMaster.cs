@@ -37,7 +37,6 @@ public class UnitList
     public int GetDamageStat()
     {
         int damageStat = 0;
-        Debug.Log(unit.name + " " + unit.unitDamageType);
         switch (unit.unitDamageType)
         {
             case UnitDamageType.Melee:
@@ -66,6 +65,10 @@ public class UnitList
     public int maxAmount;
     public bool unlocked;
     public bool chosen;
+    public void Unlock(bool unlock)
+    {
+        unitButton.Unlock(unlock);
+    }
     [Space]
     public int unitIndex;
     public int buttonIndex;
@@ -81,6 +84,12 @@ public class DeployableList
     [Space]
     public bool onCooldown = false;
     public int deployableCooldown = 0;
+    [Space]
+    public MasterUIGameplayButton deployableButton;
+    public void Unlock(bool unlock)
+    {
+        deployableButton.Unlock(unlock);
+    }
     [Space]
     public int buttonIndex;
 }
@@ -112,7 +121,7 @@ public class UnitMaster : NetworkBehaviour
         get { return stats.currentEnergy; }
         set
         {
-            stats.currentEnergy = Mathf.Clamp(stats.currentEnergy += value, 0, stats.maxEnergy);
+            stats.currentEnergy = Mathf.Clamp(value, 0, stats.maxEnergy);
             UpdateEnergyUI();
         }
     }
@@ -121,11 +130,18 @@ public class UnitMaster : NetworkBehaviour
         get { return stats.currentXP; }
         set
         {
-            stats.currentXP += value;
+            stats.currentXP = value;
 
             //XP UI
-            UI.xpText.text = stats.currentXP.ToString() + "XP";
+            UI.xpText.text = CurrentXP.ToString() + "XP";
+            UI.upgradeMenuXpText.text = "Current XP: " + CurrentXP.ToString();
 
+            foreach (UnitList unitListItem in unitList)
+            {
+                unitListItem.upgradePanel.UnlockCheck(CurrentXP);
+            }
+
+            /*
             //Check if there is an upgrade or unlock available
             for (int i = 0; i < uiGameplayButtons.Count; i++)
             {
@@ -135,6 +151,7 @@ public class UnitMaster : NetworkBehaviour
                 {
                     UnitList unit = unitList[i];
                     UnitSO unitSO = unit.unit;
+                    unit.
                 }
                 else
                 {
@@ -147,6 +164,7 @@ public class UnitMaster : NetworkBehaviour
                     continue;
                 }
             }
+            */
         }
     }
     private int GetXPToUpgrade(int baseUpgrade, int level) => baseUpgrade + Mathf.RoundToInt((float)baseUpgrade * (0.2f * (level - 1)));
@@ -184,6 +202,7 @@ public class UnitMaster : NetworkBehaviour
         public Image energyUseFillImage;
         [Space]
         public Text xpText = null;
+        public Text upgradeMenuXpText = null;
         public Text spawnText = null;
         [Space]
         public GameObject RechargeRateButton = null;
@@ -692,6 +711,8 @@ public class UnitMaster : NetworkBehaviour
             GameObject button = Instantiate(UI.deployableButtonPrefab, UI.deployableButtonContainer);
             MasterUIGameplayButton b = button.GetComponent<MasterUIGameplayButton>();
 
+            d.deployableButton = b;
+
             //Add this button to the list
             uiGameplayButtons.Add(b);
 
@@ -709,8 +730,8 @@ public class UnitMaster : NetworkBehaviour
     private void UpdateEnergyUI()
     {
         //Energy UI
-        UI.energyText.text = stats.currentEnergy.ToString() + "/" + stats.maxEnergy;
-        UI.energySlider.value = stats.currentEnergy;
+        UI.energyText.text = Energy.ToString() + "/" + stats.maxEnergy;
+        UI.energySlider.value = Energy;
     }
 
     private void UpdateEnergyUseUI(int use)
@@ -958,6 +979,7 @@ public class UnitMaster : NetworkBehaviour
         if (!ViewCheck(hit.point, true)) return;
 
         string spawnName;
+        (float, float, float) spawnModifiers = (0,0,0);
 
         //When spawning a deployable
         if (spawningADeployable)
@@ -1015,10 +1037,12 @@ public class UnitMaster : NetworkBehaviour
                 chosenUnitList.upgradePanel.EnableUpgrades(true);
             }
 
+            spawnModifiers = (chosenUnitList.healthModifier, chosenUnitList.damageModifier, chosenUnitList.speedModifier);
+
             Cmd_UpdateScore(1, PlayerDataStat.UnitsPlaced);
         }
 
-        Cmd_Spawn(hit.point, spawnName, spawningADeployable);
+        Cmd_Spawn(hit.point, spawnName, spawningADeployable, spawnModifiers);
     }
 
     IEnumerator DeployableCooldown(DeployableList deployable)
@@ -1107,22 +1131,19 @@ public class UnitMaster : NetworkBehaviour
         return upgradeToReturn;
     }
 
-    public void UnlockNewUnit(int which)
+    public void UnlockNew(UnitList unit = null, DeployableList deployable = null)
     {
-        //Reference
-        MasterUIGameplayButton button = uiGameplayButtons[which];
-
-        if (which >= unitList.Count)
+        if (deployable != null)
         {
-            DeployableList deployable = deployableList[which - unitList.Count];
+            deployable.Unlock(true);
 
             deployable.unlocked = true;
 
             CurrentXP += -deployable.deployable.xpToUnlock;
         }
-        else
+        else if (unit != null)
         {
-            UnitList unit = unitList[which];
+            unit.Unlock(true);
 
             //Unlock the unit
             unit.unlocked = true;
@@ -1515,7 +1536,7 @@ public class UnitMaster : NetworkBehaviour
     }
 
     [Command]
-    void Cmd_Spawn(Vector3 pos, string name, bool deployable)
+    void Cmd_Spawn(Vector3 pos, string name, bool deployable, (float, float, float) modifiers)
     {
         //Set the positions y value to be a bit higher, so that the spawnable doesn't spawn inside the floor
         pos = new Vector3(pos.x, pos.y + 0.1f, pos.z);
@@ -1548,26 +1569,19 @@ public class UnitMaster : NetworkBehaviour
             UnitBase unit = newSpawnable.GetComponent<UnitBase>();
 
             unit.SetUnitSO(unitList[chosenSpawnableIndex].unit);
-            //unit.SetLevel(level);
+            unit.Svr_IncreaseStats(modifiers);
         }
         else
         {
-            print("TF");
             //If the dictionary does not contain this deployable
             if (!deployableDict.ContainsKey(name))
             {
-                print("spwanable: " + newSpawnable);
                 //Then add it 
                 deployableDict.Add(name, newSpawnable);
                 //The client has its own version of this dictionary, just without the gameobject.
                 //This dictionary is used to move the deployable, instead of spawning a new one.
                 //(Only 1 instance of a deployable is permitted in the world at a time. So when a deployable is instantiated into the world, it will stay there until the match ends.)
             }
-        }
-        foreach (KeyValuePair<string, GameObject> d in deployableDict)
-        {
-            print(d.Key);
-            print(d.Value);
         }
 
         //Spawn the spawnable on the server
