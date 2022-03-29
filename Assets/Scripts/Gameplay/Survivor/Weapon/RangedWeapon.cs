@@ -221,10 +221,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         playerCamera = playerHead.GetChild(0).GetComponent<Camera>();
         GetUIElements(interacter.transform);
         aimSightTarget = interacter.transform.Find("Virtual Head(Clone)/WeaponAimTarget(Clone)");
-        JODSTime.WaitTimeEvent(0.8f, delegate ()
-        {
-            hipAimPosition = transform.localPosition;
-        });
+        hipAimPosition = transform.parent.localPosition;
+        transform.DOComplete();
     }
 
     private void SetPlayerCamera(Transform oldValue, Transform newValue)
@@ -335,25 +333,17 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         Aim(false);
     }
 
-    private async void Aim(bool aim)
+    private void Aim(bool aim)
     {
         IsAiming = aim;
-        currentRecoil = aim ? aimingRecoil : recoil;
-        currentVisualPunchback = aim ? aimingVisualPunchback : visualPunchback;
-        Vector3 target = aim ? aimSightTarget.localPosition : hipAimPosition;
-        while (true)
-        {
-            transform.localPosition = Vector3.Slerp(transform.localPosition, target, Time.deltaTime * 20f);
-            if (Vector3.Distance(transform.localPosition, target) < 0.01f)
-            {
-                transform.localPosition = target;
-                await JODSTime.WaitFrame();
-                break;
-            }
-            await JODSTime.WaitFrame();
-        }
-        //transform.DOLocalMove(aim ? aimSightTarget.localPosition : initialPosition, 0.1f);
-        //transform.DOLocalJump(aim ? aimSightTarget.localPosition : hipAimPosition, -0.03f, 1, 0.1f);
+        currentRecoil = IsAiming ? aimingRecoil : recoil;
+        currentVisualPunchback = IsAiming ? aimingVisualPunchback : visualPunchback;
+
+        print(transform.localPosition.y);
+        Vector3 targetAimPosition = new Vector3(aimSight.localPosition.x, aimSight.localPosition.y, 0.2f);
+
+        transform.parent.DOComplete();
+        transform.parent.DOLocalJump(IsAiming ? targetAimPosition : hipAimPosition, -0.05f, 1, 0.1f);
     }
 
     private void OnReload(InputAction.CallbackContext context) => Cmd_Reload();
@@ -516,7 +506,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [Server]
     protected virtual void Svr_Shoot(Vector2 aimPoint)
     {
-        Debug.LogError("You broke this. Rocket launcher didn't work because it never lost ammunition. I temporarily fixed by removing an If statement in rocket launcher script. Fix.");
     }
     [Server]
     protected virtual void Svr_PreShoot()
@@ -633,8 +622,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     protected void ImpactShake(float amount)
     {
         transform.DOComplete();
-        transform.DOPunchPosition(new Vector3(0f, 0f, -0.1f), 0.15f, 12, 1f);
-        transform.DOPunchRotation(new Vector3(-2f, 0f, UnityEngine.Random.Range(-5f, 5f)), 0.28f, 12, 1f);
+        transform.DOPunchPosition(new Vector3(0f, 0f, -0.1f) * currentVisualPunchback, 0.15f, 12, 1f);
+        transform.DOPunchRotation(new Vector3(-2f, 0f, UnityEngine.Random.Range(-5f, 5f)) * currentVisualPunchback, 0.28f, 12, 1f);
     }
 
     [ClientRpc]

@@ -49,7 +49,7 @@ public class EngineerClass : SurvivorClass
             modifierManager = GetComponentInParent<ModifierManager>();
             //RechargeCo = Recharge();
             //StartCoroutine(RechargeCo);
-            SurvivorController.OnMovementStopped += StartRecharge;
+            sController.OnMovementStopped += StartRecharge;
         }
     }
     public override void ActiveAbility()
@@ -60,6 +60,11 @@ public class EngineerClass : SurvivorClass
         }
     }
 
+    private void StartRecharge()
+    {
+        RechargeCo = Recharge();
+        StartCoroutine(RechargeCo);
+    }
     IEnumerator RechargeCo;
 
     [SerializeField] private float range = 30;
@@ -70,7 +75,7 @@ public class EngineerClass : SurvivorClass
 
     private IEnumerator Recharge()
     {
-        print("go");
+        //print("1");
         while (!sController.IsMoving())
         {
             idling += Time.deltaTime;
@@ -96,11 +101,7 @@ public class EngineerClass : SurvivorClass
             rechargeActive = false;
         }
     }
-    private void StartRecharge()
-    {
-        RechargeCo = Recharge();
-        StartCoroutine(RechargeCo);
-    }
+
 
 
 

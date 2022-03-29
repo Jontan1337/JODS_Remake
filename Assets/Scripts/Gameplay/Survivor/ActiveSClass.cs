@@ -45,10 +45,6 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 
 	private bool abilityIsReady = true;
 
-	[Header("Gameplay Details")]
-	[SerializeField] private StatusEffectSO onHitStatusEffect = null;
-
-
     public bool AbilityIsReady
 	{
         get { return abilityIsReady; }
@@ -90,7 +86,6 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 			}
 			if (isServer)
 			{
-				GetComponent<StatusEffectManager>().Svr_ApplyStatusEffect(onHitStatusEffect.ApplyEffect(gameObject));
 				Rpc_SyncStats(connectionToClient, currentHealth, armor);
 			}
 		}

@@ -10565,6 +10565,11 @@ PrefabInstance:
       propertyPath: parentData
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 6775138344138655200, guid: fa9eaf2be7bd51f4e875e6e1813527cf,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.015
+      objectReference: {fileID: 0}
     - target: {fileID: 7493296977824143120, guid: fa9eaf2be7bd51f4e875e6e1813527cf,
         type: 3}
       propertyPath: sceneId
@@ -20455,7 +20460,9 @@ MonoBehaviour:
   extraAmmunition: 20
   highPower: 0
   recoil: 1
+  aimingRecoil: 0.05
   visualPunchback: 0.2
+  aimingVisualPunchback: 0.1
   stabilization: 0.5
   currentAccuracy: 1
   currentCurveAccuracy: 0
@@ -20471,7 +20478,7 @@ MonoBehaviour:
   muzzleFlash: {fileID: 0}
   aimSight: {fileID: 0}
   aimSightTarget: {fileID: 0}
-  initialPosition: {x: 0, y: 0, z: 0}
+  hipAimPosition: {x: 0, y: 0, z: 0}
   muzzleParticle: {fileID: 0}
   sfxPlayer: {fileID: 0}
   crosshairPrefab: {fileID: 0}
