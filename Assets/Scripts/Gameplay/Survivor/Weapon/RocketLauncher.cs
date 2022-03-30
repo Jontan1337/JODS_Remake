@@ -12,9 +12,15 @@ public class RocketLauncher : ProjectileWeapon
 
 
         GetComponentInParent<ActiveSClass>().Rpc_StartAbilityCooldown(transform.root.GetComponent<NetworkIdentity>().connectionToClient, transform.root);
+        //Unbind();
     }
 
-    protected override void Svr_PostShoot()
+    //protected override void OnDropPerformed(InputAction.CallbackContext obj)    // TEMP - This is the old solution, which still works, but shouldnt be necessary
+    //{
+    //    Unbind();
+    //}
+
+    protected override void Svr_PostShoot()       // This is supposed to call unbind and destroy the Rocket Launcher, but it doesnt...
     {
         base.Svr_PostShoot();
         StartCoroutine(IEDrop());
@@ -26,12 +32,15 @@ public class RocketLauncher : ProjectileWeapon
         Svr_Drop();
     }
 
+
+
     public override void Unbind()
 	{
 		base.Unbind();
 
         if (hasAuthority) Cmd_Destroy();
-		else Svr_Destroy();
+        else
+            Svr_Destroy();
 	}
 	[Command]
 	public void Cmd_Destroy()

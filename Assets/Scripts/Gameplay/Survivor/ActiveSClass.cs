@@ -51,9 +51,21 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
         private set { abilityIsReady = value; }
     }
 
+    private bool isDown;
+	public bool IsDown
+	{
+		get { return isDown; }
+		set
+		{
+			//Update scoreboard stat
+			//GamemodeBase.Instance.Svr_ModifyStat(GetComponent<NetworkIdentity>().netId, 0, PlayerDataStat.Alive);
 
+			isDown = value;
+			onDied?.Invoke();
+		}
+	}
     private bool isDead;
-    public bool IsDead
+	public bool IsDead
     {
         get { return isDead; }
         set 
