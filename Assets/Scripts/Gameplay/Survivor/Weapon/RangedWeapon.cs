@@ -57,6 +57,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [SerializeField] private AudioClip shootSound = null;
     [SerializeField] private AudioClip emptySound = null;
 
+    [SerializeField] private bool debugWeapon = false;
+
     protected float damageFallOff = 0;
 
     private Transform crosshairUIParent;
@@ -194,7 +196,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         base.Awake();
         modelTopVertexPositionY = GetComponent<MeshFilter>().sharedMesh.bounds.max.y;
         aimTargetPosition = modelTopVertexPositionY - aimSight.localPosition.y;
-        print(aimTargetPosition);
+        Debug.Log(aimTargetPosition, this);
     }
 
     public override void OnStartClient()
@@ -654,4 +656,12 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     }
 
     #endregion
+
+    private void OnDrawGizmos()
+    {
+        if (!debugWeapon) return;
+        modelTopVertexPositionY = GetComponent<MeshFilter>().sharedMesh.bounds.max.y;
+        aimTargetPosition = modelTopVertexPositionY - aimSight.localPosition.y;
+        Debug.DrawRay(new Vector3(transform.position.x, transform.position.y + aimTargetPosition, transform.position.z), transform.forward*2f, Color.red);
+    }
 }
