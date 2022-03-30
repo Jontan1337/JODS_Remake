@@ -90,6 +90,7 @@ public class DeployableList
     public bool onCooldown = false;
     public int deployableCooldown = 0;
     [Space]
+    public DeployableUpgradePanel upgradePanel;
     public MasterUIGameplayButton deployableButton;
     public void Unlock(bool unlock)
     {
@@ -143,7 +144,12 @@ public class UnitMaster : NetworkBehaviour
 
             foreach (UnitList unitListItem in unitList)
             {
-                unitListItem.upgradePanel.UnlockCheck(CurrentXP);
+                unitListItem.upgradePanel.UnlockCheck(value);
+            }
+
+            foreach(DeployableList deployableListItem in deployableList)
+            {
+                deployableListItem.upgradePanel.UnlockCheck(value);
             }
         }
     }
@@ -160,6 +166,7 @@ public class UnitMaster : NetworkBehaviour
     [Header("Deployables")]
     [SerializeField] private List<DeployableList> deployableList = new List<DeployableList>();
     private Dictionary<string, GameObject> deployableDict = new Dictionary<string, GameObject>();
+    public DeployableList GetDeployableList(int index) => deployableList[index];
 
     [Header("Spawning")]
     [SerializeField] private LayerMask playerLayer = 1 << 13;
@@ -200,7 +207,11 @@ public class UnitMaster : NetworkBehaviour
         [Header("Upgrade System UI")]
         public GameObject upgradeMenu;
         public Transform upgradeMenuContainer;
+        [Space]
         public GameObject unitUpgradePanel;
+        [Space]
+        public GameObject deployableUpgradePanel;
+        public Transform deployableUgradeMenuContainer;
     }
     [Space]
     public UserInterface UI;
@@ -692,6 +703,12 @@ public class UnitMaster : NetworkBehaviour
 
             d.deployableButton = b;
 
+            GameObject upgradePanelGO = Instantiate(UI.deployableUpgradePanel, UI.deployableUgradeMenuContainer);
+            DeployableUpgradePanel upgradePanel = upgradePanelGO.GetComponent<DeployableUpgradePanel>();
+
+            d.upgradePanel = upgradePanel;
+            upgradePanel.InitializeUnitUpgradePanel(this, d.deployable, i);
+
             //Add this button to the list
             uiGameplayButtons.Add(b);
 
@@ -866,6 +883,7 @@ public class UnitMaster : NetworkBehaviour
 
     private void ChooseDeployable(DeployableList deployable)
     {
+        print("deployable wont be chosennnnnn");
         Unchoose(true);
 
         //If the deployable is not unlocked, return;
