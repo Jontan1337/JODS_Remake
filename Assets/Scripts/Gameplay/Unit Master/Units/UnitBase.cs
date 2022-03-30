@@ -96,6 +96,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         Special
     }
 
+    [HideInInspector] public float[] statModifiers;
+
     [Header("Movement")]
     [SerializeField] private float movementSpeed = 1.5f;
     [Space]
@@ -356,19 +358,12 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             Debug.LogError($"{name} had no Unit Scriptable Object assigned when it tried to set it's stats!" +
                 $" - Did it get initialized by the Master?");
             return;
-        }
+        }                    
 
         //Health
-        health = unitSO.health;
-        maxHealth = unitSO.health;
-
-        //Upgrade
-        /*
-        upgrades.upgradeMovementSpeed = unitSO.upgrades.upgradeMovementSpeed;
-        upgrades.upgradeMultiplier = unitSO.upgrades.upgradeMultiplier;
-        upgrades.movementSpeedUpgradeIncrease = unitSO.upgrades.movementSpeedUpgradeIncrease;
-        upgrades.movementSpeedUpgradeMax = unitSO.upgrades.movementSpeedUpgradeMax;
-        */
+        int newMaxHealth = Mathf.RoundToInt(unitSO.health * statModifiers[0]);
+        Health = newMaxHealth;
+        maxHealth = newMaxHealth;
 
         //Attack bools
         isMelee = unitSO.hasMelee;
@@ -376,40 +371,49 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         hasSpecial = unitSO.hasSpecial;
 
         //Melee
-        melee.meleeDamageMin = unitSO.melee.meleeDamageMin;
-        melee.meleeDamageMax = unitSO.melee.meleeDamageMax;
-        melee.meleeRange = unitSO.melee.meleeRange;
-        melee.meleeCooldown = unitSO.melee.meleeCooldown;
-        melee.statusEffectToApply = unitSO.melee.statusEffectToApply;
-        melee.amount = unitSO.melee.amount;
+        if (isMelee)
+        {
+            melee.meleeDamageMax = Mathf.RoundToInt(melee.meleeDamageMax + (unitSO.melee.meleeDamageMax * statModifiers[1]));
+            melee.meleeDamageMin = Mathf.RoundToInt(melee.meleeDamageMin + (unitSO.melee.meleeDamageMin * statModifiers[1]));
+            melee.meleeRange = unitSO.melee.meleeRange;
+            melee.meleeCooldown = unitSO.melee.meleeCooldown;
+            melee.statusEffectToApply = unitSO.melee.statusEffectToApply;
+            melee.amount = unitSO.melee.amount;
+        }
 
         //Ranged
-        ranged.rangedDamage = unitSO.ranged.rangedDamage;
-        ranged.minRange = unitSO.ranged.minRange;
-        ranged.maxRange = unitSO.ranged.maxRange;
-        ranged.rangedCooldown = unitSO.ranged.rangedCooldown;
-        ranged.projectileTag = unitSO.ranged.projectileTag;
-        ranged.projectileSpawnLocation = unitSO.ranged.projectileSpawnLocation;
-        ranged.projectileSpeed = unitSO.ranged.projectileSpeed;
-        ranged.standStill = unitSO.ranged.standStill;
-        ranged.directRangedAttack = unitSO.ranged.directRangedAttack;
-        ranged.preferredRange = unitSO.ranged.preferredRange;
-        ranged.statusEffectToApply = unitSO.ranged.statusEffectToApply;
-        ranged.amount = unitSO.ranged.amount;
+        if (isRanged)
+        {
+            ranged.rangedDamage = Mathf.RoundToInt(ranged.rangedDamage + (unitSO.ranged.rangedDamage * statModifiers[1]));
+            ranged.minRange = unitSO.ranged.minRange;
+            ranged.maxRange = unitSO.ranged.maxRange;
+            ranged.rangedCooldown = unitSO.ranged.rangedCooldown;
+            ranged.projectileTag = unitSO.ranged.projectileTag;
+            ranged.projectileSpawnLocation = unitSO.ranged.projectileSpawnLocation;
+            ranged.projectileSpeed = unitSO.ranged.projectileSpeed;
+            ranged.standStill = unitSO.ranged.standStill;
+            ranged.directRangedAttack = unitSO.ranged.directRangedAttack;
+            ranged.preferredRange = unitSO.ranged.preferredRange;
+            ranged.statusEffectToApply = unitSO.ranged.statusEffectToApply;
+            ranged.amount = unitSO.ranged.amount;
+        }
 
         //Special
-        special.specialCooldown = unitSO.special.specialCooldown;
-        special.specialDamage = unitSO.special.specialDamage;
-        special.specialTriggerRange = unitSO.special.specialTriggerRange;
-        special.specialRange = unitSO.special.specialRange;
-        special.standStill = unitSO.special.standStill;
-        special.lookAtTarget = unitSO.special.lookAtTarget;
-        special.availableFromStart = unitSO.special.availableFromStart;
-        special.statusEffectToApply = unitSO.special.statusEffectToApply;
-        special.amount = unitSO.special.amount;
+        if (hasSpecial)
+        {
+            if (special.specialDamage != 0) special.specialDamage = Mathf.RoundToInt(special.specialDamage + (unitSO.special.specialDamage * statModifiers[1]));
+            special.specialCooldown = unitSO.special.specialCooldown;
+            special.specialTriggerRange = unitSO.special.specialTriggerRange;
+            special.specialRange = unitSO.special.specialRange;
+            special.standStill = unitSO.special.standStill;
+            special.lookAtTarget = unitSO.special.lookAtTarget;
+            special.availableFromStart = unitSO.special.availableFromStart;
+            special.statusEffectToApply = unitSO.special.statusEffectToApply;
+            special.amount = unitSO.special.amount;
+        }
 
         //Movement
-        movementSpeed = unitSO.movementSpeed;
+        movementSpeed = unitSO.movementSpeed * statModifiers[2];
 
         //Refunding
         refundAmount = unitSO.refundAmount;
@@ -575,30 +579,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
                 );
 
             select.unitMats[i] = unitRenderer.sharedMaterial;
-        }
-    }
-
-    [Server]                    //Health, Damage, Speed
-    public void Svr_IncreaseStats(float[] modifiers)
-    {
-        print(modifiers[0]);
-        print(modifiers[1]);
-        print(modifiers[2]);
-
-        //Health = Mathf.RoundToInt(Health + (unitSO.health * multiplier));
-
-        if (isMelee)
-        {
-            //melee.meleeDamageMax = Mathf.RoundToInt(melee.meleeDamageMax + (unitSO.melee.meleeDamageMax * multiplier));
-            //melee.meleeDamageMin = Mathf.RoundToInt(melee.meleeDamageMin + (unitSO.melee.meleeDamageMin * multiplier));
-        }
-        if (isRanged)
-        {
-            //ranged.rangedDamage = Mathf.RoundToInt(ranged.rangedDamage + (unitSO.ranged.rangedDamage * multiplier));
-        }
-        if (hasSpecial)
-        {
-            //if (special.specialDamage != 0) special.specialDamage = Mathf.RoundToInt(special.specialDamage + (unitSO.special.specialDamage * multiplier));
         }
     }
 

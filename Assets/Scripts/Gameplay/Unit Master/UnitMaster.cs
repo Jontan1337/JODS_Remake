@@ -958,7 +958,6 @@ public class UnitMaster : NetworkBehaviour
         if (!ViewCheck(hit.point, true)) return;
 
         string spawnName;
-        (float, float, float) spawnModifiers = (0,0,0);
 
         //When spawning a deployable
         if (spawningADeployable)
@@ -1569,8 +1568,8 @@ public class UnitMaster : NetworkBehaviour
 
             UnitList chosenUnitList = unitList[chosenSpawnableIndex];
 
+            unit.statModifiers = chosenUnitList.GetAllModifiers();
             unit.SetUnitSO(chosenUnitList.unit);
-            unit.Svr_IncreaseStats(chosenUnitList.GetAllModifiers());
         }
         else
         {
