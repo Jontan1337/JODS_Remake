@@ -46,7 +46,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [SerializeField] protected Camera playerCamera;
     [SerializeField] private GameObject muzzleFlash = null;
     [SerializeField] protected Transform aimSight = null;
-    [SerializeField] protected Transform aimSightTarget = null;
     [SerializeField] protected Vector3 hipAimPosition;
     [SerializeField] private ParticleSystem muzzleParticle;
     [SerializeField] private SFXPlayer sfxPlayer = null;
@@ -78,6 +77,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     private bool canShoot = true;
     private float currentRecoil = 0f;
     private float currentVisualPunchback = 0f;
+    private float aimTargetPosition = 0f;
+    private float modelTopVertexPositionY = 0f;
 
     private int fireModeIndex = 0;
 
@@ -188,6 +189,14 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         }
     }
 
+    protected override void Awake()
+    {
+        base.Awake();
+        modelTopVertexPositionY = GetComponent<MeshFilter>().sharedMesh.bounds.max.y;
+        aimTargetPosition = modelTopVertexPositionY - aimSight.localPosition.y;
+        print(aimTargetPosition);
+    }
+
     public override void OnStartClient()
     {
         base.OnStartClient();
@@ -220,7 +229,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         playerHead = interacter.GetComponent<LookController>().RotateVertical;
         playerCamera = playerHead.GetChild(0).GetComponent<Camera>();
         GetUIElements(interacter.transform);
-        aimSightTarget = interacter.transform.Find("Virtual Head(Clone)/WeaponAimTarget(Clone)");
         hipAimPosition = transform.parent.localPosition;
         transform.DOComplete();
     }
@@ -339,8 +347,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         currentRecoil = IsAiming ? aimingRecoil : recoil;
         currentVisualPunchback = IsAiming ? aimingVisualPunchback : visualPunchback;
 
-        print(transform.localPosition.y);
-        Vector3 targetAimPosition = new Vector3(aimSight.localPosition.x, aimSight.localPosition.y, 0.2f);
+        Vector3 targetAimPosition = new Vector3(aimSight.localPosition.x, aimTargetPosition, 0.2f);
 
         transform.parent.DOComplete();
         transform.parent.DOLocalJump(IsAiming ? targetAimPosition : hipAimPosition, -0.05f, 1, 0.1f);
