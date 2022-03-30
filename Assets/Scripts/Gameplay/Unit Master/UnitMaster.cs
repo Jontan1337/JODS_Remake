@@ -12,7 +12,7 @@ public class UnitList
     public string name;
     public UnitSO unit;
     [Header("Upgrades")]
-    public int level = 0;
+    [SyncVar] public int level = 0;
     [SerializeField] private int upgradeMilestone = 50;
     public int UpgradeMilestone
     {
@@ -26,12 +26,12 @@ public class UnitList
     public AnimationCurve upgradeCurve;
     [Space]
     [Space]
-    public float healthModifier = 1;
+    [SyncVar] public float healthModifier = 1;
     public int upgradesTillHealthTrait = 5;
     public bool hasHealthTrait = false;
     public int GetHealthStat() { return Mathf.RoundToInt((float)unit.health * healthModifier); }
     [Space]
-    public float damageModifier = 1;
+    [SyncVar] public float damageModifier = 1;
     public int upgradesTillDamageTrait = 5;
     public bool hasDamageTrait = false;
     public int GetDamageStat()
@@ -52,10 +52,15 @@ public class UnitList
         return damageStat;
     }
     [Space]
-    public float speedModifier = 1;
+    [SyncVar] public float speedModifier = 1;
     public int upgradesTillSpeedTrait = 5;
     public bool hasSpeedTrait = false;
-    public int GetSpeedStat() { return Mathf.RoundToInt((float)unit.movementSpeed * speedModifier); }
+    public float GetSpeedStat() { return unit.movementSpeed * speedModifier; }
+
+    public float[] GetAllModifiers()
+    {
+        return new float[] { healthModifier, damageModifier, speedModifier };
+    }
     [Space]
     [Space]
     public UnitUpgradePanel upgradePanel;
@@ -140,34 +145,8 @@ public class UnitMaster : NetworkBehaviour
             {
                 unitListItem.upgradePanel.UnlockCheck(CurrentXP);
             }
-
-            /*
-            //Check if there is an upgrade or unlock available
-            for (int i = 0; i < uiGameplayButtons.Count; i++)
-            {
-                int unitRange = unitList.Count;
-
-                if (i < unitRange)
-                {
-                    UnitList unit = unitList[i];
-                    UnitSO unitSO = unit.unit;
-                    unit.
-                }
-                else
-                {
-                    DeployableList deployable = deployableList[i - unitRange];
-
-                    if (!deployable.unlocked)
-                    {
-
-                    }
-                    continue;
-                }
-            }
-            */
         }
     }
-    private int GetXPToUpgrade(int baseUpgrade, int level) => baseUpgrade + Mathf.RoundToInt((float)baseUpgrade * (0.2f * (level - 1)));
 
 
     [Header("Units")]
@@ -1037,12 +1016,10 @@ public class UnitMaster : NetworkBehaviour
                 chosenUnitList.upgradePanel.EnableUpgrades(true);
             }
 
-            spawnModifiers = (chosenUnitList.healthModifier, chosenUnitList.damageModifier, chosenUnitList.speedModifier);
-
             Cmd_UpdateScore(1, PlayerDataStat.UnitsPlaced);
         }
 
-        Cmd_Spawn(hit.point, spawnName, spawningADeployable, spawnModifiers);
+        Cmd_Spawn(hit.point, spawnName, spawningADeployable);
     }
 
     IEnumerator DeployableCooldown(DeployableList deployable)
@@ -1102,25 +1079,20 @@ public class UnitMaster : NetworkBehaviour
             case 0:
                 unit.upgradesTillHealthTrait--;
                 upgradeToReturn = unit.upgradesTillHealthTrait;
-                unit.healthModifier += upgradeAmount;
                 break;
             //Damage upgrade
             case 1:
                 unit.upgradesTillDamageTrait--;
                 upgradeToReturn = unit.upgradesTillDamageTrait;
-                unit.damageModifier += upgradeAmount;
                 break;
             //Speed upgrade
             case 2:
                 unit.upgradesTillSpeedTrait--;
                 upgradeToReturn = unit.upgradesTillSpeedTrait;
-                unit.speedModifier += upgradeAmount;
                 break;
         }
 
-        unit.level++;
-
-        unit.UpgradeMilestone = 50; // FIX THIS
+        Cmd_UpgradeUnit(unitIndex, upgradePath, upgradeAmount);
 
         //Play spooky sound
         Cmd_PlayGlobalSound(true);
@@ -1129,6 +1101,33 @@ public class UnitMaster : NetworkBehaviour
         Cmd_UpdateScore(1, PlayerDataStat.TotalUnitUpgrades);
 
         return upgradeToReturn;
+    }
+
+    [Command]
+    private void Cmd_UpgradeUnit(int unitIndex, int upgradePath, float upgradeAmount)
+    {
+        //Reference
+        UnitList unit = unitList[unitIndex];
+
+        switch (upgradePath)
+        {
+            //Health upgrade
+            case 0:
+                unit.healthModifier += upgradeAmount;
+                break;
+            //Damage upgrade
+            case 1:
+                unit.damageModifier += upgradeAmount;
+                break;
+            //Speed upgrade
+            case 2:
+                unit.speedModifier += upgradeAmount;
+                break;
+        }
+
+        unit.level++;
+
+        unit.UpgradeMilestone = 50; // FIX THIS
     }
 
     public void UnlockNew(UnitList unit = null, DeployableList deployable = null)
@@ -1536,7 +1535,7 @@ public class UnitMaster : NetworkBehaviour
     }
 
     [Command]
-    void Cmd_Spawn(Vector3 pos, string name, bool deployable, (float, float, float) modifiers)
+    void Cmd_Spawn(Vector3 pos, string name, bool deployable)
     {
         //Set the positions y value to be a bit higher, so that the spawnable doesn't spawn inside the floor
         pos = new Vector3(pos.x, pos.y + 0.1f, pos.z);
@@ -1568,8 +1567,10 @@ public class UnitMaster : NetworkBehaviour
             //Then set the unit level and unit SO of that unit on spawn
             UnitBase unit = newSpawnable.GetComponent<UnitBase>();
 
-            unit.SetUnitSO(unitList[chosenSpawnableIndex].unit);
-            unit.Svr_IncreaseStats(modifiers);
+            UnitList chosenUnitList = unitList[chosenSpawnableIndex];
+
+            unit.SetUnitSO(chosenUnitList.unit);
+            unit.Svr_IncreaseStats(chosenUnitList.GetAllModifiers());
         }
         else
         {
@@ -1622,6 +1623,11 @@ public class UnitMaster : NetworkBehaviour
     }
     [Command]
     void Cmd_PlayGlobalSound(bool randomPitch)
+    {
+        Rpc_PlayGlobalSound(randomPitch);
+    }
+    [ClientRpc]
+    void Rpc_PlayGlobalSound(bool randomPitch)
     {
         //Assign a random pitch to the audio source
         globalAudio.pitch = randomPitch ? Random.Range(0.95f, 1.05f) : 1;

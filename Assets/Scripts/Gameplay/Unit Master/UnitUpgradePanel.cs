@@ -145,7 +145,7 @@ public class UnitUpgradePanel : MonoBehaviour
 
         SetUpgradeText(unitListRef.UpgradeMilestone);
 
-        int newSpeed = unitListRef.GetSpeedStat();
+        float newSpeed = unitListRef.GetSpeedStat();
         speedValueText.text = $"{newSpeed}";
 
         if (speedProgressSlider.value == speedProgressSlider.maxValue) return;

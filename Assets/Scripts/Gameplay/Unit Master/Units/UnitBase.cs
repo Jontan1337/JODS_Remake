@@ -579,8 +579,11 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     }
 
     [Server]                    //Health, Damage, Speed
-    public void Svr_IncreaseStats((float, float, float) modifiers)
+    public void Svr_IncreaseStats(float[] modifiers)
     {
+        print(modifiers[0]);
+        print(modifiers[1]);
+        print(modifiers[2]);
 
         //Health = Mathf.RoundToInt(Health + (unitSO.health * multiplier));
 
