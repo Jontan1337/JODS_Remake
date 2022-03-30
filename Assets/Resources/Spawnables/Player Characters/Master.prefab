@@ -1,5 +1,67 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &270593071498415589
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 41559131434784295}
+  - component: {fileID: 3877276100288408993}
+  m_Layer: 0
+  m_Name: Deployables Layout
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &41559131434784295
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 270593071498415589}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 3978254923243190683}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 200, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &3877276100288408993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 270593071498415589}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_Spacing: 5
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1 &323153839442751795
 GameObject:
   m_ObjectHideFlags: 0
@@ -2227,7 +2289,8 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 41559131434784295}
   m_Father: {fileID: 8903724030038968016}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2882,7 +2945,7 @@ MonoBehaviour:
   - name: Common
     unit: {fileID: 11400000, guid: 254796e5ec2c1ff49a903f70e84b5945, type: 2}
     level: 0
-    upgradeMilestone: 50
+    upgradeMilestone: 10
     upgradeCurve:
       serializedVersion: 2
       m_Curve:
@@ -3037,6 +3100,8 @@ MonoBehaviour:
     chosen: 0
     onCooldown: 0
     deployableCooldown: 60
+    upgradePanel: {fileID: 0}
+    deployableButton: {fileID: 0}
     buttonIndex: 0
   - name: Disgusting Blob
     deployable: {fileID: 11400000, guid: 14503705cd7f4ab48a87beb1300dd580, type: 2}
@@ -3044,6 +3109,8 @@ MonoBehaviour:
     chosen: 0
     onCooldown: 0
     deployableCooldown: 60
+    upgradePanel: {fileID: 0}
+    deployableButton: {fileID: 0}
     buttonIndex: 0
   playerLayer:
     serializedVersion: 2
@@ -3074,6 +3141,9 @@ MonoBehaviour:
     upgradeMenuContainer: {fileID: 3978254923243190683}
     unitUpgradePanel: {fileID: 9005714863889672023, guid: af4031bbfa6098d4290c056d1131e89f,
       type: 3}
+    deployableUpgradePanel: {fileID: 1361830921687060003, guid: d4ddfa1a249c3ce4389dfec162e8ceb3,
+      type: 3}
+    deployableUgradeMenuContainer: {fileID: 41559131434784295}
   topdown:
     camera: {fileID: 5789487352027957895}
   flying:

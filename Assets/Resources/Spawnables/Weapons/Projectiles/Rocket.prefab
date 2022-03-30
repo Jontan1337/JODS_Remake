@@ -4929,6 +4929,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  objectPooled: 0
   damage: 0
   lifetime: 5
   destroyAfterLifetime: 0
@@ -4987,7 +4988,6 @@ MonoBehaviour:
   maxHealth: 50
   entityType: 0
   explosionTag: 1
-  explosionEffect: {fileID: 0}
   criticalEffect: {fileID: 0}
   criticalHealth: 20
   explosionRadius: 5
@@ -4996,17 +4996,15 @@ MonoBehaviour:
   upwardExplosionForce: 1
   criticalEffectDamage: 3
   criticalDamageInterval: 0.8
+  damageLossOverDistance: 2
   pieces: []
   singleDestructable: 0
   removeDebris: 0
   singleBrokenObject: {fileID: 0}
   wallDestruction: {fileID: 0}
   destroySelf: 0
-  damageLayer:
-    serializedVersion: 2
-    m_Bits: 512
   owner: {fileID: 0}
   objectPoolTag: 0
-  objectPooled: 1
+  objectPooled: 0
   isBurning: 0
   destroyed: 0

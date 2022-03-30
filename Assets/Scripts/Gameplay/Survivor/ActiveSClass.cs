@@ -51,9 +51,20 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
         private set { abilityIsReady = value; }
     }
 
+    private bool isDown;
+	public bool IsDown
+	{
+		get { return isDown; }
+		set
+		{
 
+			isDown = value;
+			DownCo = Down();
+			StartCoroutine(DownCo);
+		}
+	}
     private bool isDead;
-    public bool IsDead
+	public bool IsDead
     {
         get { return isDead; }
         set 
@@ -82,7 +93,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 			}
 			if (currentHealth <= 0)
 			{
-				IsDead = true;
+				IsDown = true;
 			}
 			if (isServer)
 			{
@@ -293,6 +304,15 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 		}
 		healthLossBool = false;
 	}
+
+	IEnumerator DownCo;
+	private IEnumerator Down()
+    {
+		sController.enabled = false;
+		yield return new WaitForSeconds(3f);
+		print("dead");
+        IsDead = true;
+    }
 
 
 	public Teams Team => Teams.Player;
