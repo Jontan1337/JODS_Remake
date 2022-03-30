@@ -96,7 +96,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         Special
     }
 
-    [HideInInspector] public float[] statModifiers;
+    public float[] statModifiers;
 
     [Header("Movement")]
     [SerializeField] private float movementSpeed = 1.5f;
@@ -312,11 +312,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     #region Start / Initial
 
-    private void OnValidate()
-    {
-        if (unitSO) SetStats();
-    }
-
     private void OnDisable()
     {
         if (seeker == null) return;
@@ -358,10 +353,10 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             Debug.LogError($"{name} had no Unit Scriptable Object assigned when it tried to set it's stats!" +
                 $" - Did it get initialized by the Master?");
             return;
-        }                    
+        }
 
         //Health
-        int newMaxHealth = Mathf.RoundToInt(unitSO.health * statModifiers[0]);
+        int newMaxHealth = statModifiers.Length > 0 ? Mathf.RoundToInt(unitSO.health * statModifiers[0]) : unitSO.health;
         Health = newMaxHealth;
         maxHealth = newMaxHealth;
 
@@ -373,8 +368,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         //Melee
         if (isMelee)
         {
-            melee.meleeDamageMax = Mathf.RoundToInt(melee.meleeDamageMax + (unitSO.melee.meleeDamageMax * statModifiers[1]));
-            melee.meleeDamageMin = Mathf.RoundToInt(melee.meleeDamageMin + (unitSO.melee.meleeDamageMin * statModifiers[1]));
+            melee.meleeDamageMax = statModifiers.Length > 0 ? Mathf.RoundToInt(unitSO.melee.meleeDamageMax * statModifiers[1]) : unitSO.melee.meleeDamageMax;
+            melee.meleeDamageMin = statModifiers.Length > 0 ? Mathf.RoundToInt(unitSO.melee.meleeDamageMin * statModifiers[1]) : unitSO.melee.meleeDamageMin;
             melee.meleeRange = unitSO.melee.meleeRange;
             melee.meleeCooldown = unitSO.melee.meleeCooldown;
             melee.statusEffectToApply = unitSO.melee.statusEffectToApply;
@@ -384,7 +379,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         //Ranged
         if (isRanged)
         {
-            ranged.rangedDamage = Mathf.RoundToInt(ranged.rangedDamage + (unitSO.ranged.rangedDamage * statModifiers[1]));
+            ranged.rangedDamage = statModifiers.Length > 0 ? Mathf.RoundToInt(unitSO.ranged.rangedDamage * statModifiers[1]) : unitSO.ranged.rangedDamage;
             ranged.minRange = unitSO.ranged.minRange;
             ranged.maxRange = unitSO.ranged.maxRange;
             ranged.rangedCooldown = unitSO.ranged.rangedCooldown;
@@ -401,7 +396,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         //Special
         if (hasSpecial)
         {
-            if (special.specialDamage != 0) special.specialDamage = Mathf.RoundToInt(special.specialDamage + (unitSO.special.specialDamage * statModifiers[1]));
+            if (special.specialDamage != 0) special.specialDamage = statModifiers.Length > 0 ? Mathf.RoundToInt(unitSO.special.specialDamage * statModifiers[1]) : unitSO.special.specialDamage;
             special.specialCooldown = unitSO.special.specialCooldown;
             special.specialTriggerRange = unitSO.special.specialTriggerRange;
             special.specialRange = unitSO.special.specialRange;
@@ -413,7 +408,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         }
 
         //Movement
-        movementSpeed = unitSO.movementSpeed * statModifiers[2];
+        movementSpeed = unitSO.movementSpeed * statModifiers.Length > 0 ? statModifiers[2] : 1;
 
         //Refunding
         refundAmount = unitSO.refundAmount;
