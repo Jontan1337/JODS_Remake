@@ -57,11 +57,10 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 		get { return isDown; }
 		set
 		{
-			//Update scoreboard stat
-			//GamemodeBase.Instance.Svr_ModifyStat(GetComponent<NetworkIdentity>().netId, 0, PlayerDataStat.Alive);
 
 			isDown = value;
-			onDied?.Invoke();
+			DownCo = Down();
+			StartCoroutine(DownCo);
 		}
 	}
     private bool isDead;
@@ -94,7 +93,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 			}
 			if (currentHealth <= 0)
 			{
-				IsDead = true;
+				IsDown = true;
 			}
 			if (isServer)
 			{
@@ -305,6 +304,15 @@ public class ActiveSClass : NetworkBehaviour, IDamagable
 		}
 		healthLossBool = false;
 	}
+
+	IEnumerator DownCo;
+	private IEnumerator Down()
+    {
+		sController.enabled = false;
+		yield return new WaitForSeconds(3f);
+		print("dead");
+        IsDead = true;
+    }
 
 
 	public Teams Team => Teams.Player;
