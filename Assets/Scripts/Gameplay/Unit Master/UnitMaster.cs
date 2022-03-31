@@ -687,7 +687,7 @@ public class UnitMaster : NetworkBehaviour
 
         for (int i = 0; i < deployableList.Count; i++)
         {
-            //Check if the index has a unit assigned, if not continue to next index.
+            //Check if the index has a deployable assigned, if not continue to next index.
             if (!deployableList[i].deployable)
             {
                 Debug.LogError($"Deployable with index {i} has no deployable assigned!");
@@ -696,6 +696,8 @@ public class UnitMaster : NetworkBehaviour
 
             //Reference
             DeployableList d = deployableList[i];
+
+            d.buttonIndex = referenceIndex + i;
 
             //Instantiate unit button prefab
             GameObject button = Instantiate(UI.deployableButtonPrefab, UI.deployableButtonContainer);
@@ -776,7 +778,6 @@ public class UnitMaster : NetworkBehaviour
         bool active = !UI.upgradeMenu.activeSelf;
         UI.upgradeMenu.SetActive(active);
         UI.inGameUI.SetActive(!active);
-
     }
 
     #endregion
