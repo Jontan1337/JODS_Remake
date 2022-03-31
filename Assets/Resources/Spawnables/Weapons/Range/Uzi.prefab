@@ -185,6 +185,36 @@ Transform:
   m_Father: {fileID: 3566745999078893349}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -1.404, y: 8.809, z: 36.461}
+--- !u!1 &1684607307859619150
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 179830349699947198}
+  m_Layer: 0
+  m_Name: AimSight
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &179830349699947198
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1684607307859619150}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.0096, z: 0}
+  m_LocalScale: {x: 0.99999976, y: 0.99999976, z: 1}
+  m_Children: []
+  m_Father: {fileID: 7361053600043947918}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1689711695741081557
 GameObject:
   m_ObjectHideFlags: 0
@@ -1173,8 +1203,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5799773097203344797}
-  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 3.593, y: 1.365, z: -0.169}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 6853754792732142271}
@@ -1184,9 +1214,10 @@ Transform:
   - {fileID: 6421437051242042860}
   - {fileID: 2226807788228679616}
   - {fileID: 7789027938497627}
+  - {fileID: 179830349699947198}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2548197298498927855
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1229,7 +1260,9 @@ MonoBehaviour:
   extraAmmunition: 64
   highPower: 0
   recoil: 0.4
+  aimingRecoil: 0.05
   visualPunchback: 0.8
+  aimingVisualPunchback: 0.1
   stabilization: 1.5
   currentAccuracy: 0
   currentCurveAccuracy: 2
@@ -1261,12 +1294,15 @@ MonoBehaviour:
   playerHead: {fileID: 0}
   playerCamera: {fileID: 0}
   muzzleFlash: {fileID: 4665190487804469742}
+  aimSight: {fileID: 179830349699947198}
+  hipAimPosition: {x: 0, y: 0, z: 0}
   muzzleParticle: {fileID: 8497654283156705655}
   sfxPlayer: {fileID: 2548197298498927850}
   crosshairPrefab: {fileID: 7567561865917243704, guid: 3ebd556d7ba54f745bfe343e53e58796,
     type: 3}
   shootSound: {fileID: 8300000, guid: 59033cce093954c4e968552b47b09c6a, type: 3}
   emptySound: {fileID: 8300000, guid: 6e8772b49f34d402a90016ed445d8a2f, type: 3}
+  debugWeapon: 0
   header3: 
   range: 1000
   ignoreLayer:
@@ -3189,6 +3225,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8d15c98a7ed32a3449f4464fbf71ebf8, type: 3}
+--- !u!198 &8497654283156705655 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 7766757078216870200, guid: 8d15c98a7ed32a3449f4464fbf71ebf8,
+    type: 3}
+  m_PrefabInstance: {fileID: 2172049923900430415}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4665190487804470221 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6816969815331322754, guid: 8d15c98a7ed32a3449f4464fbf71ebf8,
@@ -3198,12 +3240,6 @@ Transform:
 --- !u!1 &4665190487804469742 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6816969815331322273, guid: 8d15c98a7ed32a3449f4464fbf71ebf8,
-    type: 3}
-  m_PrefabInstance: {fileID: 2172049923900430415}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &8497654283156705655 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 7766757078216870200, guid: 8d15c98a7ed32a3449f4464fbf71ebf8,
     type: 3}
   m_PrefabInstance: {fileID: 2172049923900430415}
   m_PrefabAsset: {fileID: 0}

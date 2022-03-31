@@ -364,6 +364,36 @@ MonoBehaviour:
   swingWeight: 0
   threeDOFWeight: 1
   rotateOnce: 1
+--- !u!1 &1129556256834024798
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5362741991102681338}
+  m_Layer: 0
+  m_Name: AimSight
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5362741991102681338
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1129556256834024798}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.010654211, y: 0.025, z: 0.2625481}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4872477987560357057}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1440497458374431798
 GameObject:
   m_ObjectHideFlags: 0
@@ -1369,7 +1399,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8486432283558350546}
-  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 3.593, y: 1.222, z: -1.0840001}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -1379,9 +1409,10 @@ Transform:
   - {fileID: 8981502759372816035}
   - {fileID: 4277863529395698831}
   - {fileID: 2711905580131311380}
+  - {fileID: 5362741991102681338}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &496574792408258464
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1424,7 +1455,9 @@ MonoBehaviour:
   extraAmmunition: 10
   highPower: 1
   recoil: 0.4
+  aimingRecoil: 0.05
   visualPunchback: 0.2
+  aimingVisualPunchback: 0.1
   stabilization: 2
   currentAccuracy: 0
   currentCurveAccuracy: 2
@@ -1456,12 +1489,15 @@ MonoBehaviour:
   playerHead: {fileID: 0}
   playerCamera: {fileID: 0}
   muzzleFlash: {fileID: 7279828956609956513}
+  aimSight: {fileID: 5362741991102681338}
+  hipAimPosition: {x: 0, y: 0, z: 0}
   muzzleParticle: {fileID: 5788401340819110456}
   sfxPlayer: {fileID: 496574792408258469}
   crosshairPrefab: {fileID: 7567561865917243704, guid: 3ebd556d7ba54f745bfe343e53e58796,
     type: 3}
   shootSound: {fileID: 8300000, guid: 4cec65af975f1ff47991f10f96662acf, type: 3}
   emptySound: {fileID: 8300000, guid: 6e8772b49f34d402a90016ed445d8a2f, type: 3}
+  debugWeapon: 0
   header3: 
   range: 1000
   ignoreLayer:
@@ -3113,15 +3149,15 @@ ParticleSystem:
     type: 3}
   m_PrefabInstance: {fileID: 4295756953507132160}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &7279828956609956513 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6816969815331322273, guid: 8d15c98a7ed32a3449f4464fbf71ebf8,
-    type: 3}
-  m_PrefabInstance: {fileID: 4295756953507132160}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7279828956609955970 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6816969815331322754, guid: 8d15c98a7ed32a3449f4464fbf71ebf8,
+    type: 3}
+  m_PrefabInstance: {fileID: 4295756953507132160}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7279828956609956513 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6816969815331322273, guid: 8d15c98a7ed32a3449f4464fbf71ebf8,
     type: 3}
   m_PrefabInstance: {fileID: 4295756953507132160}
   m_PrefabAsset: {fileID: 0}
@@ -3194,15 +3230,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4c822443f4a4107458334b35c4ffdde4, type: 3}
---- !u!4 &9160051246931770785 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2323617313076615928, guid: 4c822443f4a4107458334b35c4ffdde4,
-    type: 3}
-  m_PrefabInstance: {fileID: 6854531070690125657}
-  m_PrefabAsset: {fileID: 0}
 --- !u!198 &804564897765936440 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 6055736427126893153, guid: 4c822443f4a4107458334b35c4ffdde4,
+    type: 3}
+  m_PrefabInstance: {fileID: 6854531070690125657}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &9160051246931770785 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2323617313076615928, guid: 4c822443f4a4107458334b35c4ffdde4,
     type: 3}
   m_PrefabInstance: {fileID: 6854531070690125657}
   m_PrefabAsset: {fileID: 0}

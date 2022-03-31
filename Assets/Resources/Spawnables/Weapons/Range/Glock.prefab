@@ -182,6 +182,36 @@ Transform:
   m_Father: {fileID: 3900095382144401879}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 88.504, y: -79.746, z: 18.478}
+--- !u!1 &768541206992035881
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5869719826467002846}
+  m_Layer: 0
+  m_Name: AimSight
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5869719826467002846
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 768541206992035881}
+  m_LocalRotation: {x: -0, y: -0, z: -0.7071068, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: -0.0085, z: 0}
+  m_LocalScale: {x: 0.99999976, y: 0.99999976, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2855640006797119931}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &906602309940756385
 GameObject:
   m_ObjectHideFlags: 0
@@ -391,7 +421,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1295379368891098024}
-  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 3.2870917, y: 1.022737, z: -1.0659572}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -402,9 +432,10 @@ Transform:
   - {fileID: 1773139189012091865}
   - {fileID: 6872994038644085237}
   - {fileID: 4728038946390995566}
+  - {fileID: 5869719826467002846}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7123553018159626970
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -434,6 +465,7 @@ MonoBehaviour:
   outline: {fileID: 7123553018159626973}
   header2: 
   damage: 8
+  penetrationAmount: 0
   ammunitionType: 0
   fireMode: 1
   fireModes: 0100000004000000
@@ -446,7 +478,9 @@ MonoBehaviour:
   extraAmmunition: 34
   highPower: 0
   recoil: 0.5
+  aimingRecoil: 0.05
   visualPunchback: 0.5
+  aimingVisualPunchback: 0.1
   stabilization: 2
   currentAccuracy: 0
   currentCurveAccuracy: 2
@@ -478,12 +512,16 @@ MonoBehaviour:
   playerHead: {fileID: 0}
   playerCamera: {fileID: 0}
   muzzleFlash: {fileID: 88071171088476123}
+  aimSight: {fileID: 5869719826467002846}
+  hipAimPosition: {x: 0, y: 0, z: 0}
   muzzleParticle: {fileID: 3777193832384452418}
   sfxPlayer: {fileID: 7123553018159626975}
   crosshairPrefab: {fileID: 7567561865917243704, guid: 3ebd556d7ba54f745bfe343e53e58796,
     type: 3}
   shootSound: {fileID: 8300000, guid: 59033cce093954c4e968552b47b09c6a, type: 3}
   emptySound: {fileID: 8300000, guid: 6e8772b49f34d402a90016ed445d8a2f, type: 3}
+  debugWeapon: 1
+  header3: 
   range: 1000
   ignoreLayer:
     serializedVersion: 2
