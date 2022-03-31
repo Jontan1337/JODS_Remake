@@ -81,6 +81,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     private float currentVisualPunchback = 0f;
     private float aimTargetPosition = 0f;
     private float modelTopVertexPositionY = 0f;
+    private float modelBottomVertexPositionY = 0f;
 
     private int fireModeIndex = 0;
 
@@ -195,7 +196,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     {
         base.Awake();
         modelTopVertexPositionY = GetComponent<MeshFilter>().sharedMesh.bounds.max.y;
-        aimTargetPosition = modelTopVertexPositionY - aimSight.localPosition.y;
+        modelBottomVertexPositionY = GetComponent<MeshFilter>().sharedMesh.bounds.min.y;
+        aimTargetPosition = modelTopVertexPositionY / 2 - aimSight.localPosition.y;
         Debug.Log(aimTargetPosition, this);
     }
 
@@ -661,7 +663,14 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     {
         if (!debugWeapon) return;
         modelTopVertexPositionY = GetComponent<MeshFilter>().sharedMesh.bounds.max.y;
-        aimTargetPosition = modelTopVertexPositionY - aimSight.localPosition.y;
-        Debug.DrawRay(new Vector3(transform.position.x, transform.position.y + aimTargetPosition, transform.position.z), transform.forward*2f, Color.red);
+        modelBottomVertexPositionY = GetComponent<MeshFilter>().sharedMesh.bounds.min.y;
+        //aimTargetPosition = modelTopVertexPositionY - aimSight.localPosition.y;
+        aimTargetPosition = modelTopVertexPositionY - modelBottomVertexPositionY - aimSight.localPosition.y;
+
+        Debug.DrawRay(new Vector3(transform.position.x, transform.position.y + aimTargetPosition, transform.position.z), transform.forward, Color.red);
+        // Top
+        Debug.DrawRay(new Vector3(transform.position.x, transform.position.y + modelTopVertexPositionY, transform.position.z), transform.forward, Color.green);
+        // Bottom
+        Debug.DrawRay(new Vector3(transform.position.x, transform.position.y + modelBottomVertexPositionY, transform.position.z), transform.forward, Color.green);
     }
 }
