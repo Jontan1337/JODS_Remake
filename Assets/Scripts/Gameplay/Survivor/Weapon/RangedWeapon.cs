@@ -35,6 +35,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [SerializeField, Range(0f, 1f), Tooltip("Affects weapon accuracy")] protected float aimingRecoil = 0.05f;
     [SerializeField, Tooltip("Affects weapon and camera shake")] protected float visualPunchback = 0.2f;
     [SerializeField, Tooltip("Affects weapon and camera shake")] protected float aimingVisualPunchback = 0.1f;
+    [SerializeField] protected float hipFOV = 1f;
+    [SerializeField] protected float ADSFOV = 1f;
     [SerializeField] protected float stabilization = 1f;
     [SerializeField] protected float currentAccuracy = 0f;
     [SerializeField] protected float currentCurveAccuracy = 0f;
@@ -75,7 +77,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     private Coroutine COAccuracyStabilizer;
 
     private const string inGameUIPath = "UI/Canvas - In Game";
-    private bool isAiming = false;
+    [SyncVar] private bool isAiming = false;
     private bool canShoot = true;
     private float currentRecoil = 0f;
     private float currentVisualPunchback = 0f;
@@ -199,7 +201,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         modelTopVertexPositionY = GetComponent<MeshFilter>().sharedMesh.bounds.center.y;
         modelBottomVertexPositionY = GetComponent<MeshFilter>().sharedMesh.bounds.min.y;
         aimTargetPosition = modelTopVertexPositionY / 2 - aimSight.localPosition.y;
-        Debug.Log(aimTargetPosition, this);
     }
 
     public override void OnStartClient()
@@ -233,6 +234,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         base.Rpc_Interact(target, interacter);
         playerHead = interacter.GetComponent<LookController>().RotateVertical;
         playerCamera = playerHead.GetChild(0).GetComponent<Camera>();
+        hipFOV = playerCamera.fieldOfView;
+        ADSFOV = hipFOV - 8f;
         GetUIElements(interacter.transform);
         hipAimPosition = transform.parent.localPosition;
         transform.DOComplete();
@@ -289,6 +292,14 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     private Tweener FadeFireMode(float value, float duration)
     {
         return fireModeUIText.DOFade(value, duration);
+    }
+    private Tweener ScaleCrosshair(float value, float duration)
+    {
+        return crosshairUIParent.DOScale(value, duration);
+    }
+    private Tweener SetFOV(float value, float duration)
+    {
+        return playerCamera.DOFieldOfView(value, duration);
     }
 
     private void CreateCrosshair()
@@ -349,9 +360,9 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     private void Aim(bool aim)
     {
         IsAiming = aim;
-        currentRecoil = IsAiming ? aimingRecoil : recoil;
-        currentVisualPunchback = IsAiming ? aimingVisualPunchback : visualPunchback;
-
+        Cmd_Aim(aim);
+        ScaleCrosshair(IsAiming ? 0 : 1, 0.1f);
+        //SetFOV(IsAiming ? ADSFOV : hipFOV, 0.1f); // TODO: Find fix for DOTween complete messing this up.
         Vector3 targetAimPosition = new Vector3(0f, 0.1f - aimSight.localPosition.y, -aimSight.localPosition.z);
 
         transform.parent.DOComplete();
@@ -362,6 +373,14 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     private void OnChangeFireMode(InputAction.CallbackContext context) => Cmd_ChangeFireMode();
 
     #region Server
+
+    [Command]
+    private void Cmd_Aim(bool aim)
+    {
+        IsAiming = aim;
+        currentRecoil = IsAiming ? aimingRecoil : recoil;
+        currentVisualPunchback = IsAiming ? aimingVisualPunchback : visualPunchback;
+    }
 
     [Command]
     private void Cmd_Shoot()
