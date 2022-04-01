@@ -33,7 +33,6 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
     private ActiveSClass playerClass = null;
 
     public bool IsInteractable { get => isInteractable; set => isInteractable = value; }
-	public string ObjectName => gameObject.name;
 	public string Name => itemName;
 	public GameObject Item => gameObject;
 	public EquipmentType EquipmentType => equipmentType;

@@ -66,8 +66,6 @@ public class WeaponShop : NetworkBehaviour, IInteractable
 
     public bool IsInteractable { get => isInteractable; set => isInteractable = value; }
 
-    public string ObjectName => transform.name;
-
     private void Awake()
     {
         weaponStats.SetActive(false);
