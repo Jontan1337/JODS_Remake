@@ -81,10 +81,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     private bool canShoot = true;
     private float currentRecoil = 0f;
     private float currentVisualPunchback = 0f;
-    private float aimTargetPosition = 0f;
-    private float modelTopVertexPositionY = 0f;
-    private float modelBottomVertexPositionY = 0f;
-
     private int fireModeIndex = 0;
 
     public Action<float> OnImpact { get; set; }
@@ -192,15 +188,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
                 muzzleParticle = particle;
             }
         }
-    }
-
-    protected override void Awake()
-    {
-        base.Awake();
-        modelTopVertexPositionY = GetComponent<MeshFilter>().sharedMesh.bounds.max.y;
-        modelTopVertexPositionY = GetComponent<MeshFilter>().sharedMesh.bounds.center.y;
-        modelBottomVertexPositionY = GetComponent<MeshFilter>().sharedMesh.bounds.min.y;
-        aimTargetPosition = modelTopVertexPositionY / 2 - aimSight.localPosition.y;
     }
 
     public override void OnStartClient()
@@ -678,25 +665,4 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     }
 
     #endregion
-
-    private void OnDrawGizmos()
-    {
-        if (!debugWeapon) return;
-        modelTopVertexPositionY = GetComponent<MeshFilter>().sharedMesh.bounds.max.y;
-        modelBottomVertexPositionY = GetComponent<MeshFilter>().sharedMesh.bounds.min.y;
-        //aimTargetPosition = modelTopVertexPositionY - aimSight.localPosition.y;
-        //aimTargetPosition = modelTopVertexPositionY - modelBottomVertexPositionY - aimSight.localPosition.y;
-        Vector3 boundsCenter = GetComponent<MeshFilter>().sharedMesh.bounds.center;
-
-        //Debug.DrawRay(new Vector3(transform.position.x, transform.position.y + aimTargetPosition, transform.position.z), transform.forward, Color.red);
-        // Top
-        //Debug.DrawRay(new Vector3(transform.position.x, transform.position.y + modelTopVertexPositionY, transform.position.z), transform.forward, Color.green);
-        // Bottom
-        //Debug.DrawRay(new Vector3(transform.position.x, transform.position.y + modelBottomVertexPositionY, transform.position.z), transform.forward, Color.green);
-
-        // Aim dut
-        Debug.DrawRay(new Vector3(transform.position.x, transform.position.y + aimSight.localPosition.y, transform.position.z), transform.forward, Color.red);
-        // Bounds center
-        Debug.DrawRay(new Vector3(transform.position.x, transform.position.y, transform.position.z), transform.forward, Color.green);
-    }
 }
