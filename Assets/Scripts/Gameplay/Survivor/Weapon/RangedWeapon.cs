@@ -196,6 +196,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     {
         base.Awake();
         modelTopVertexPositionY = GetComponent<MeshFilter>().sharedMesh.bounds.max.y;
+        modelTopVertexPositionY = GetComponent<MeshFilter>().sharedMesh.bounds.center.y;
         modelBottomVertexPositionY = GetComponent<MeshFilter>().sharedMesh.bounds.min.y;
         aimTargetPosition = modelTopVertexPositionY / 2 - aimSight.localPosition.y;
         Debug.Log(aimTargetPosition, this);
@@ -351,7 +352,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         currentRecoil = IsAiming ? aimingRecoil : recoil;
         currentVisualPunchback = IsAiming ? aimingVisualPunchback : visualPunchback;
 
-        Vector3 targetAimPosition = new Vector3(aimSight.localPosition.x, aimTargetPosition, 0.2f);
+        Vector3 targetAimPosition = new Vector3(0f, 0.1f - aimSight.localPosition.y, -aimSight.localPosition.z);
 
         transform.parent.DOComplete();
         transform.parent.DOLocalJump(IsAiming ? targetAimPosition : hipAimPosition, -0.05f, 1, 0.1f);
@@ -665,12 +666,18 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         modelTopVertexPositionY = GetComponent<MeshFilter>().sharedMesh.bounds.max.y;
         modelBottomVertexPositionY = GetComponent<MeshFilter>().sharedMesh.bounds.min.y;
         //aimTargetPosition = modelTopVertexPositionY - aimSight.localPosition.y;
-        aimTargetPosition = modelTopVertexPositionY - modelBottomVertexPositionY - aimSight.localPosition.y;
+        //aimTargetPosition = modelTopVertexPositionY - modelBottomVertexPositionY - aimSight.localPosition.y;
+        Vector3 boundsCenter = GetComponent<MeshFilter>().sharedMesh.bounds.center;
 
-        Debug.DrawRay(new Vector3(transform.position.x, transform.position.y + aimTargetPosition, transform.position.z), transform.forward, Color.red);
+        //Debug.DrawRay(new Vector3(transform.position.x, transform.position.y + aimTargetPosition, transform.position.z), transform.forward, Color.red);
         // Top
-        Debug.DrawRay(new Vector3(transform.position.x, transform.position.y + modelTopVertexPositionY, transform.position.z), transform.forward, Color.green);
+        //Debug.DrawRay(new Vector3(transform.position.x, transform.position.y + modelTopVertexPositionY, transform.position.z), transform.forward, Color.green);
         // Bottom
-        Debug.DrawRay(new Vector3(transform.position.x, transform.position.y + modelBottomVertexPositionY, transform.position.z), transform.forward, Color.green);
+        //Debug.DrawRay(new Vector3(transform.position.x, transform.position.y + modelBottomVertexPositionY, transform.position.z), transform.forward, Color.green);
+
+        // Aim dut
+        Debug.DrawRay(new Vector3(transform.position.x, transform.position.y + aimSight.localPosition.y, transform.position.z), transform.forward, Color.red);
+        // Bounds center
+        Debug.DrawRay(new Vector3(transform.position.x, transform.position.y, transform.position.z), transform.forward, Color.green);
     }
 }
