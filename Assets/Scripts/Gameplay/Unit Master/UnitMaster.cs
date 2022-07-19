@@ -1588,6 +1588,11 @@ public class UnitMaster : NetworkBehaviour
             UnitList chosenUnitList = unitList[chosenSpawnableIndex];
 
             unit.statModifiers = chosenUnitList.GetAllModifiers();
+
+            if (chosenUnitList.hasDamageTrait) unit.ApplyDamageTrait();
+            if (chosenUnitList.hasHealthTrait) unit.ApplyHealthTrait();
+            if (chosenUnitList.hasDamageTrait) unit.ApplySpeedTrait();
+            
             unit.SetUnitSO(chosenUnitList.unit);
         }
         else
