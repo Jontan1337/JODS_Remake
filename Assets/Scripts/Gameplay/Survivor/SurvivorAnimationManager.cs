@@ -66,12 +66,10 @@ public class SurvivorAnimationManager : NetworkBehaviour
 			if (newItem.TryGetComponent(out HandIKEffectors handIKEffectors))
 			{
                 Rpc_SetIKEffectors(handIKEffectors);
-                //Rpc_SetIKLeftHandEffector(handIKEffectors);
 				return;
 			}
 		}
         Rpc_SetIKEffectors(null);
-        //Rpc_SetIKLeftHandEffector(null);
     }
 
     public void HasWeaponAnimation(bool enable)
@@ -211,63 +209,4 @@ public class SurvivorAnimationManager : NetworkBehaviour
         rightHandPoser.localPositionWeight = 0f;
         rightHandPoser.localRotationWeight = 0f;
     }
-
-    //[ClientRpc]
-    //public void Rpc_SetIKRightHandEffector(HandIKEffectors handIKEffectors)
-    //{
-    //	if (handIKEffectors != null)
-    //	{
-    //		Transform effector = handIKEffectors.rightHandEffector;
-    //		fullBodyIK.solver.rightHandEffector.target = effector;
-    //		fullBodyIK.solver.rightHandEffector.positionWeight = 1f;
-    //		fullBodyIK.solver.rightHandEffector.rotationWeight = 1f;
-    //		//fullBodyIK.solver.leftShoulderEffector.positionWeight = 1f;
-    //		//fullBodyIK.solver.leftShoulderEffector.rotationWeight = 1f;
-    //		fullBodyIK.solver.leftShoulderEffector.target = firstPersonLeftShoulderAimingEffector;
-    //		leftHandPoser.poseRoot = effector;
-    //		leftHandPoser.localPositionWeight = 1f;
-    //		leftHandPoser.localRotationWeight = 1f;
-    //	}
-    //	else
-    //	{
-    //		fullBodyIK.solver.rightHandEffector.target = null;
-    //           fullBodyIK.solver.rightHandEffector.positionWeight = 0f;
-    //		fullBodyIK.solver.rightHandEffector.rotationWeight = 0f;
-    //		//fullBodyIK.solver.leftShoulderEffector.positionWeight = 0f;
-    //		//fullBodyIK.solver.leftShoulderEffector.rotationWeight = 0f;
-    //		fullBodyIK.solver.leftShoulderEffector.target = firstPersonLeftShoulderEffector;
-    //		leftHandPoser.poseRoot = null;
-    //		leftHandPoser.localPositionWeight = 0f;
-    //		leftHandPoser.localRotationWeight = 0f;
-    //	}
-    //   }
-    //[ClientRpc]
-    //public void Rpc_SetIKLeftHandEffector(HandIKEffectors handIKEffectors)
-    //{
-    //	if (handIKEffectors != null)
-    //	{
-    //		Transform effector = handIKEffectors.leftHandEffector;
-    //		fullBodyIK.solver.leftHandEffector.target = effector;
-    //		fullBodyIK.solver.leftHandEffector.positionWeight = 1f;
-    //		fullBodyIK.solver.leftHandEffector.rotationWeight = 1f;
-    //		//fullBodyIK.solver.leftShoulderEffector.positionWeight = 1f;
-    //		//fullBodyIK.solver.leftShoulderEffector.rotationWeight = 1f;
-    //		fullBodyIK.solver.leftShoulderEffector.target = firstPersonLeftShoulderAimingEffector;
-    //		leftHandPoser.poseRoot = effector;
-    //		leftHandPoser.localPositionWeight = 1f;
-    //		leftHandPoser.localRotationWeight = 1f;
-    //	}
-    //	else
-    //	{
-    //		fullBodyIK.solver.leftHandEffector.target = null;
-    //           fullBodyIK.solver.leftHandEffector.positionWeight = 0f;
-    //		fullBodyIK.solver.leftHandEffector.rotationWeight = 0f;
-    //		//fullBodyIK.solver.leftShoulderEffector.positionWeight = 0f;
-    //		//fullBodyIK.solver.leftShoulderEffector.rotationWeight = 0f;
-    //		fullBodyIK.solver.leftShoulderEffector.target = firstPersonLeftShoulderEffector;
-    //		leftHandPoser.poseRoot = null;
-    //		leftHandPoser.localPositionWeight = 0f;
-    //		leftHandPoser.localRotationWeight = 0f;
-    //	}
-    //   }
 }
