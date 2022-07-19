@@ -19,6 +19,21 @@ public class ZombieSpitter : UnitBase, IZombie, IControllable
         }
     }
 
+    public override void ApplyHealthTrait()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void ApplyDamageTrait()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void ApplySpeedTrait()
+    {
+        throw new System.NotImplementedException();
+    }
+
     public override void OnSelect()
     {
         //throw new System.NotImplementedException();

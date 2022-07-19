@@ -1545,6 +1545,16 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     #endregion
 
+    #region Unit Upgrades
+
+    public abstract void ApplyHealthTrait();
+
+    public abstract void ApplyDamageTrait();
+
+    public abstract void ApplySpeedTrait();
+
+    #endregion
+
     #region Gizmos
 
     private void OnDrawGizmosSelected()

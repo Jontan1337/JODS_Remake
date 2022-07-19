@@ -63,6 +63,21 @@ public class ZombieStronk : UnitBase, IZombie, IControllable
         base.AcquireTarget(newTarget, alerted, closerThanCurrent, liveEntity);
     }
 
+    public override void ApplyHealthTrait()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void ApplyDamageTrait()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void ApplySpeedTrait()
+    {
+        throw new System.NotImplementedException();
+    }
+
     public override void OnSelect()
     {
         SearchForDestructibleCo = SearchForDestructible();
