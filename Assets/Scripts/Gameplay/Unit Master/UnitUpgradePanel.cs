@@ -116,7 +116,9 @@ public class UnitUpgradePanel : MonoBehaviour
     #region Button Functions
     public void UpgradeUnitHealth()
     {
-        int upgradesLeft = unitMaster.UpgradeUnit(unitIndex, 0, unitSO.upgrades.unitUpgradesHealth.upgradeAmount);
+        unitMaster.UpgradeUnit(unitIndex, 0, unitSO.upgrades.unitUpgradesHealth.upgradeAmount);
+
+        int upgradesLeft = unitMaster.GetUnitList(unitIndex).upgradesTillHealthTrait;
 
         SetUpgradeText(unitListRef.UpgradeMilestone);
 
@@ -132,7 +134,9 @@ public class UnitUpgradePanel : MonoBehaviour
     }
     public void UpgradeUnitDamage()
     {
-        int upgradesLeft = unitMaster.UpgradeUnit(unitIndex, 1, unitSO.upgrades.unitUpgradesDamage.upgradeAmount);
+        unitMaster.UpgradeUnit(unitIndex, 1, unitSO.upgrades.unitUpgradesDamage.upgradeAmount);
+
+        int upgradesLeft = unitMaster.GetUnitList(unitIndex).upgradesTillDamageTrait;
 
         SetUpgradeText(unitListRef.UpgradeMilestone);
 
@@ -148,7 +152,9 @@ public class UnitUpgradePanel : MonoBehaviour
     }
     public void UpgradeUnitSpeed()
     {
-        int upgradesLeft = unitMaster.UpgradeUnit(unitIndex, 2, unitSO.upgrades.unitUpgradesSpeed.upgradeAmount);
+        unitMaster.UpgradeUnit(unitIndex, 2, unitSO.upgrades.unitUpgradesSpeed.upgradeAmount);
+
+        int upgradesLeft = unitMaster.GetUnitList(unitIndex).upgradesTillSpeedTrait;
 
         SetUpgradeText(unitListRef.UpgradeMilestone);
 
@@ -165,17 +171,17 @@ public class UnitUpgradePanel : MonoBehaviour
 
     public void UnlockHealthTrait()
     {
-        unitMaster.UnlockHealthTrait(unitIndex);
+        unitMaster.UnlockTrait(unitIndex,0);
         unlockHealthTraitButton.enabled = false;
     }
     public void UnlockDamageTrait()
     {
-        unitMaster.UnlockDamageTrait(unitIndex);
+        unitMaster.UnlockTrait(unitIndex, 1);
         unlockDamageTraitButton.enabled = false;
     }
     public void UnlockSpeedTrait()
     {
-        unitMaster.UnlockSpeedTrait(unitIndex);
+        unitMaster.UnlockTrait(unitIndex, 2);
         unlockSpeedTraitButton.enabled = false;
     }
     #endregion

@@ -1084,29 +1084,8 @@ public class UnitMaster : NetworkBehaviour
     #endregion
 
     #region Upgrade & Unlock
-    public int UpgradeUnit(int unitIndex, int upgradePath, float upgradeAmount)
+    public void UpgradeUnit(int unitIndex, int upgradePath, float upgradeAmount)
     {
-        //Reference
-        UnitList unit = unitList[unitIndex];
-
-        int upgradeToReturn = 0;
-
-        switch (upgradePath)
-        {
-            //Health upgrade
-            case 0:
-                upgradeToReturn = unit.upgradesTillHealthTrait;
-                break;
-            //Damage upgrade
-            case 1:
-                upgradeToReturn = unit.upgradesTillDamageTrait;
-                break;
-            //Speed upgrade
-            case 2:
-                upgradeToReturn = unit.upgradesTillSpeedTrait;
-                break;
-        }
-
         Cmd_UpgradeUnit(unitIndex, upgradePath, upgradeAmount);
 
         //Play spooky sound
@@ -1114,8 +1093,6 @@ public class UnitMaster : NetworkBehaviour
 
         //Update scoreboard stat
         Cmd_UpdateScore(1, PlayerDataStat.TotalUnitUpgrades);
-
-        return upgradeToReturn;
     }
 
     [Command]
@@ -1145,37 +1122,41 @@ public class UnitMaster : NetworkBehaviour
         UnitLevelUp(unit);
     }
 
-    public void UnlockHealthTrait(int unitIndex)
+    public void UnlockTrait(int unitIndex, int upgradePath)
     {
-        //Reference
-        UnitList unit = unitList[unitIndex];
-
-        unit.hasHealthTrait = true;
-
-        UnitLevelUp(unit);
+        Cmd_UnlockTrait(unitIndex, upgradePath);
     }
-    public void UnlockDamageTrait(int unitIndex)
+
+    [Command]
+    public void Cmd_UnlockTrait(int unitIndex, int upgradePath)
     {
         //Reference
         UnitList unit = unitList[unitIndex];
 
-        unit.hasDamageTrait = true;
-
-        UnitLevelUp(unit);
-    }
-    public void UnlockSpeedTrait(int unitIndex)
-    {
-        //Reference
-        UnitList unit = unitList[unitIndex];
-
-        unit.hasSpeedTrait = true;
+        switch (upgradePath)
+        {
+            //Health upgrade
+            case 0:
+                unit.upgradesTillHealthTrait--;
+                unit.hasHealthTrait = true;
+                break;
+            //Damage upgrade
+            case 1:
+                unit.upgradesTillDamageTrait--;
+                unit.hasDamageTrait = true;
+                break;
+            //Speed upgrade
+            case 2:
+                unit.upgradesTillSpeedTrait--;
+                unit.hasSpeedTrait = true; ;
+                break;
+        }
 
         UnitLevelUp(unit);
     }
 
     private void UnitLevelUp(UnitList unit)
     {
-
         unit.level++;
 
         unit.UpgradeMilestone = 10; // FIX THIS
