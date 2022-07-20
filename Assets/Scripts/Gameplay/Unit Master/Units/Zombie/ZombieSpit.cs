@@ -25,9 +25,10 @@ public class ZombieSpit : Projectile
 
             Damage(objectHit.collider.gameObject); //Damage the object hit
 
-            foreach (StatusEffectSO statusEffectToApply in statusEffectsToApply)
+            foreach (StatusEffectToApply statusEffectToApply in statusEffectsToApply)
             {
-                objectHit.collider.GetComponent<StatusEffectManager>()?.Svr_ApplyStatusEffect(statusEffectToApply.ApplyEffect(objectHit.collider.gameObject), amount); //apply effect
+                objectHit.collider.GetComponent<StatusEffectManager>()?
+                    .Svr_ApplyStatusEffect(statusEffectToApply.statusEffect.ApplyEffect(objectHit.collider.gameObject), statusEffectToApply.amount); //apply effect
             }
 
             Rpc_SpitEffects(); //Apply visual effects

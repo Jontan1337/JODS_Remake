@@ -33,23 +33,20 @@ MonoBehaviour:
   xpToUnlock: 1000
   xpToUpgrade: 1000
   starterUnit: 0
+  maxAmountAlive: 50
   health: 1500
-  isMelee: 1
-  isRanged: 0
+  unitDamageType: 0
+  hasMelee: 1
+  hasRanged: 0
   hasSpecial: 1
-  upgrades:
-    upgradeMultiplier: 0.1
-    upgradeMovementSpeed: 1
-    movementSpeedUpgradeIncrease: 0.1
-    movementSpeedUpgradeMax: 3
   melee:
     meleeDamageMin: 30
     meleeDamageMax: 50
     meleeRange: 4
     meleeCooldown: 2
-    statusEffectToApply: {fileID: 11400000, guid: 6499d90d213f8aa4db7fae68321bec63,
-      type: 2}
-    amount: 15
+    statusEffectsToApply:
+    - statusEffect: {fileID: 11400000, guid: 6499d90d213f8aa4db7fae68321bec63, type: 2}
+      amount: 15
   ranged:
     rangedDamage: 20
     minRange: 2
@@ -61,8 +58,7 @@ MonoBehaviour:
     projectileSpawnLocation: {x: 0, y: 0, z: 0}
     standStill: 1
     directRangedAttack: 0
-    statusEffectToApply: {fileID: 0}
-    amount: 0
+    statusEffectsToApply: []
   special:
     specialCooldown: 5
     specialDamage: 0
@@ -71,8 +67,27 @@ MonoBehaviour:
     standStill: 1
     lookAtTarget: 1
     availableFromStart: 1
-    statusEffectToApply: {fileID: 0}
-    amount: 0
+    statusEffectsToApply: []
+  upgrades:
+    unitsToPlace: 50
+    upgradeCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    unitUpgradesHealth:
+      amountOfUpgrades: 0
+      upgradeAmount: 0
+    traitHealth: 
+    unitUpgradesDamage:
+      amountOfUpgrades: 0
+      upgradeAmount: 0
+    traitDamage: 
+    unitUpgradesSpeed:
+      amountOfUpgrades: 0
+      upgradeAmount: 0
+    traitSpeed: 
   movementSpeed: 4
   chaseTime: 10
   sightDistance: 25

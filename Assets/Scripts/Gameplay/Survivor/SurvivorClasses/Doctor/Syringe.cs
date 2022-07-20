@@ -20,17 +20,19 @@ public class Syringe : Projectile
         IDamagable idmg = hit.collider.GetComponent<IDamagable>();
         if (idmg?.Team == Teams.Player)
         {
-            foreach (StatusEffectSO statusEffectToApply in statusEffectsToApply)
+            if (statusEffectsToApply.Count > 0)
             {
-                hit.collider.transform.root.gameObject.GetComponent<StatusEffectManager>()?.Svr_ApplyStatusEffect(statusEffectToApply.ApplyEffect(hit.collider.transform.root.gameObject));
+                foreach (StatusEffectToApply statusEffectToApply in statusEffectsToApply)
+                {
+                    hit.collider.transform.root.gameObject.GetComponent<StatusEffectManager>()?
+                        .Svr_ApplyStatusEffect(statusEffectToApply.statusEffect.ApplyEffect(hit.collider.transform.root.gameObject));
+                }
             }
+
         }
         else
         {
             idmg?.Svr_Damage(damage, owner);
-        }
-        if (statusEffectToRemove.name == "Infection")
-        {
         }
         hit.collider.transform.root.gameObject.GetComponent<StatusEffectManager>()?.Svr_RemoveStatusEffect(statusEffectToRemove);
     }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class ZombieStronk : UnitBase, IZombie, IControllable
+public class ZombieStronk : UnitBase, IControllable
 {
     [Header("Stronk")]
     [SerializeField] private float destructibleSearchRange = 20f;
@@ -13,11 +13,6 @@ public class ZombieStronk : UnitBase, IZombie, IControllable
     
     public override void Attack()
     {
-        if (!Infect())
-        {
-            return;
-        }
-
         if (CanMeleeAttack)
         {
             TryMeleeAttack();
@@ -94,21 +89,5 @@ public class ZombieStronk : UnitBase, IZombie, IControllable
     {
         throw new System.NotImplementedException();
     }
-
-    public bool Infect()
-    {
-        if (melee.statusEffectToApply == null)
-        {
-            Debug.LogError(name + " has no infection debuff! Assign the 'Infection' as the 'Status Effect To Apply' on the UnitSO");
-            return false;
-        }
-        if (melee.amount == 0)
-        {
-            Debug.LogError(name + " has no infection amount!");
-            return false;
-        }
-        return true;
-    }
-
     #endregion
 }

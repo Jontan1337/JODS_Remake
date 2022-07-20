@@ -2,6 +2,7 @@
 using UnityEngine;
 using Pathfinding;
 using Mirror;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(BoxCollider))]
@@ -41,8 +42,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         public bool canMelee = true;
         //public bool standStill = true;
         [Space]
-        public StatusEffectSO statusEffectToApply = null;
-        public int amount = 0;
+        public List<StatusEffectToApply> statusEffectsToApply;
     }
     [Space]
     public Melee melee;
@@ -66,8 +66,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         [Space]
         public bool canRanged = false;
         [Space]
-        public StatusEffectSO statusEffectToApply = null;
-        public int amount = 0;
+        public List<StatusEffectToApply> statusEffectsToApply;
     }
     public Ranged ranged;
 
@@ -85,8 +84,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         [Space]
         public bool canSpecial = false;
         [Space]
-        public StatusEffectSO statusEffectToApply = null;
-        public int amount = 0;
+        public List<StatusEffectToApply> statusEffectsToApply;
     }
     public Special special;
 
@@ -372,8 +370,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             melee.meleeDamageMin = statModifiers.Length > 0 ? Mathf.RoundToInt(unitSO.melee.meleeDamageMin * statModifiers[1]) : unitSO.melee.meleeDamageMin;
             melee.meleeRange = unitSO.melee.meleeRange;
             melee.meleeCooldown = unitSO.melee.meleeCooldown;
-            melee.statusEffectToApply = unitSO.melee.statusEffectToApply;
-            melee.amount = unitSO.melee.amount;
+            melee.statusEffectsToApply = unitSO.melee.statusEffectsToApply;
         }
 
         //Ranged
@@ -389,8 +386,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             ranged.standStill = unitSO.ranged.standStill;
             ranged.directRangedAttack = unitSO.ranged.directRangedAttack;
             ranged.preferredRange = unitSO.ranged.preferredRange;
-            ranged.statusEffectToApply = unitSO.ranged.statusEffectToApply;
-            ranged.amount = unitSO.ranged.amount;
+            ranged.statusEffectsToApply = unitSO.ranged.statusEffectsToApply;
         }
 
         //Special
@@ -403,8 +399,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             special.standStill = unitSO.special.standStill;
             special.lookAtTarget = unitSO.special.lookAtTarget;
             special.availableFromStart = unitSO.special.availableFromStart;
-            special.statusEffectToApply = unitSO.special.statusEffectToApply;
-            special.amount = unitSO.special.amount;
+            special.statusEffectsToApply = unitSO.special.statusEffectsToApply;
         }
 
         //Movement
@@ -1034,7 +1029,14 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         //Apply the proper damage number
         int damage = Random.Range(melee.meleeDamageMin, melee.meleeDamageMax + 1); //why the fok is max exclusive??? stoopid unity 
 
-        if (melee.statusEffectToApply) ApplyStatusEffect(melee.statusEffectToApply, currentTarget, melee.amount);
+        if (melee.statusEffectsToApply.Count > 0)
+        {
+            foreach(StatusEffectToApply statusEffectToApply in melee.statusEffectsToApply)
+            {
+                ApplyStatusEffect(statusEffectToApply.statusEffect, currentTarget, statusEffectToApply.amount);
+            }
+        }
+
         StartCoroutine(MeleeCooldownCoroutine());
         Damage(damage);
     }
@@ -1066,7 +1068,13 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
         if (ranged.standStill) ResumeMovement();
 
-        if (ranged.statusEffectToApply) ApplyStatusEffect(ranged.statusEffectToApply, currentTarget, ranged.amount);
+        if (ranged.statusEffectsToApply.Count > 0)
+        {
+            foreach (StatusEffectToApply statusEffectToApply in ranged.statusEffectsToApply)
+            {
+                ApplyStatusEffect(statusEffectToApply.statusEffect, currentTarget, statusEffectToApply.amount);
+            }
+        }
 
         //Apply the proper damage number
         Damage(ranged.rangedDamage);
@@ -1107,8 +1115,14 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
         Projectile uProjectile = projectile.GetComponent<Projectile>();
         uProjectile.damage = ranged.rangedDamage;
-        uProjectile.statusEffectsToApply.Add(ranged.statusEffectToApply);
-        uProjectile.amount = ranged.amount;
+
+        if (ranged.statusEffectsToApply.Count > 0)
+        {
+            foreach (StatusEffectToApply statusEffectToApply in ranged.statusEffectsToApply)
+            {
+                uProjectile.statusEffectsToApply.Add(statusEffectToApply);
+            }
+        }
 
         //TEMPORARY
         NetworkServer.Spawn(projectile);
@@ -1156,7 +1170,13 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         if (!isServer) return;
         ResumeMovement();
 
-        if (special.statusEffectToApply) ApplyStatusEffect(special.statusEffectToApply, currentTarget, special.amount);
+        if (special.statusEffectsToApply.Count > 0)
+        {
+            foreach (StatusEffectToApply statusEffectToApply in special.statusEffectsToApply)
+            {
+                ApplyStatusEffect(statusEffectToApply.statusEffect, currentTarget, statusEffectToApply.amount);
+            }
+        }
 
         AttackSpecial = false;
         StartCoroutine(SpecialCooldownCoroutine()); 

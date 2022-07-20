@@ -1145,7 +1145,29 @@ public class UnitMaster : NetworkBehaviour
 
         unit.level++;
 
-        unit.UpgradeMilestone = 50; // FIX THIS
+        unit.UpgradeMilestone = 10; // FIX THIS
+    }
+
+    public void UnlockHealthTrait(int unitIndex)
+    {
+        //Reference
+        UnitList unit = unitList[unitIndex];
+
+        unit.hasHealthTrait = true;
+    }
+    public void UnlockDamageTrait(int unitIndex)
+    {
+        //Reference
+        UnitList unit = unitList[unitIndex];
+
+        unit.hasDamageTrait = true;
+    }
+    public void UnlockSpeedTrait(int unitIndex)
+    {
+        //Reference
+        UnitList unit = unitList[unitIndex];
+
+        unit.hasSpeedTrait = true;
     }
 
     public void UnlockNew(UnitList unit = null, DeployableList deployable = null)

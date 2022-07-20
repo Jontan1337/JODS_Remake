@@ -22,8 +22,7 @@ public abstract class Projectile : NetworkBehaviour
 
 
 	[Header("Status Effect")]
-	public List<StatusEffectSO> statusEffectsToApply = new List<StatusEffectSO>();
-	public int amount;
+	public List<StatusEffectToApply> statusEffectsToApply = new List<StatusEffectToApply>();
 
 	protected bool hasHit = false;
 

@@ -3,18 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class ZombieTentacle : UnitBase, IZombie, IControllable
+public class ZombieTentacle : UnitBase, IControllable
 {
     [Header("Tentacle")]
     [SerializeField] private bool CaughtSurvivor = false;
 
     public override void Attack()
     {
-        if (!Infect())
-        {
-            return;
-        }
-
         //Tentacle Zombie will always try and do the special attack if it is available.
         //If the special failed, it will go on cooldown and it will begin using melee attacks for a bit
         if (special.canSpecial)
@@ -43,12 +38,18 @@ public class ZombieTentacle : UnitBase, IZombie, IControllable
         }
         //If successful ------
 
-        if (special.statusEffectToApply == null)
+        if (special.statusEffectsToApply == null)
         {
             Debug.LogError(name + " had no grapple debuff assigned and could not grapple the target");
             return;
         }
-        currentTarget.GetComponent<StatusEffectManager>()?.Svr_ApplyStatusEffect(special.statusEffectToApply.ApplyEffect(currentTarget.gameObject));
+        if (special.statusEffectsToApply.Count > 0)
+        {
+            foreach (StatusEffectToApply statusEffectToApply in special.statusEffectsToApply)
+            {
+                ApplyStatusEffect(statusEffectToApply.statusEffect, currentTarget, statusEffectToApply.amount);
+            }
+        }
 
         CaughtSurvivor = true;
         animator.SetBool("Grapple", true);
@@ -83,7 +84,14 @@ public class ZombieTentacle : UnitBase, IZombie, IControllable
         {
             if (currentTarget)
             {
-                currentTarget.GetComponent<StatusEffectManager>().Svr_RemoveStatusEffect(special.statusEffectToApply);
+                if (special.statusEffectsToApply.Count > 0)
+                {
+                    foreach (StatusEffectToApply statusEffectToApply in special.statusEffectsToApply)
+                    {
+                        currentTarget.GetComponent<StatusEffectManager>().Svr_RemoveStatusEffect(statusEffectToApply.statusEffect);
+                    }
+                }
+                
             }
         }
     }
@@ -117,21 +125,6 @@ public class ZombieTentacle : UnitBase, IZombie, IControllable
     public void TakeControl()
     {
         throw new System.NotImplementedException();
-    }
-
-    public bool Infect()
-    {
-        if (melee.statusEffectToApply == null)
-        {
-            Debug.LogError(name + " has no infection debuff! Assign the 'Infection' as the 'Status Effect To Apply' on the UnitSO");
-            return false;
-        }
-        if (melee.amount == 0)
-        {
-            Debug.LogError(name + " has no infection amount!");
-            return false;
-        }
-        return true;
     }
     #endregion
 }

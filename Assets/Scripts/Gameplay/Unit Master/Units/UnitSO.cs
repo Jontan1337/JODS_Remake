@@ -22,6 +22,13 @@ public enum UnitDamageType
     Melee, Ranged, Special
 }
 
+[System.Serializable]
+public struct StatusEffectToApply
+{
+    public StatusEffectSO statusEffect;
+    public int amount;
+}
+
 [CreateAssetMenu(fileName = "Unit", menuName = "Unit Master/New Unit", order = 1)]
 public class UnitSO : ScriptableObject
 {
@@ -64,8 +71,7 @@ public class UnitSO : ScriptableObject
         public float meleeRange = 2.5f;
         public float meleeCooldown = 0.5f;
         [Space]
-        public StatusEffectSO statusEffectToApply = null;
-        public int amount = 0;
+        public List<StatusEffectToApply> statusEffectsToApply;
     }
     [Space]
     public Melee melee;
@@ -86,8 +92,7 @@ public class UnitSO : ScriptableObject
         [Space]
         public bool directRangedAttack = false; //Non-projectile attack. Not implemented yet because no unit uses it
         [Space]
-        public StatusEffectSO statusEffectToApply = null;
-        public int amount = 0;
+        public List<StatusEffectToApply> statusEffectsToApply;
     }
     public Ranged ranged;
 
@@ -103,8 +108,7 @@ public class UnitSO : ScriptableObject
         public bool lookAtTarget = true;
         public bool availableFromStart = true;
         [Space]
-        public StatusEffectSO statusEffectToApply = null;
-        public int amount = 0;
+        public List<StatusEffectToApply> statusEffectsToApply;
     }
     public Special special;
     [System.Serializable]

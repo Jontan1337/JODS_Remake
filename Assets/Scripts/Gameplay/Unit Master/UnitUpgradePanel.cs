@@ -20,20 +20,23 @@ public class UnitUpgradePanel : MonoBehaviour
     [SerializeField] private Text unlockButtonText = null;
 
     [Header("Health References")]
-    [SerializeField] private Button upgradeHealthButton= null;
+    [SerializeField] private Button upgradeHealthButton = null;
     [SerializeField] private Text upgradeHealthText= null;
+    [SerializeField] private Button unlockHealthTraitButton = null;
     [SerializeField] private Text unlockHealthTraitText = null;
     [SerializeField] private Slider healthProgressSlider = null;
     [SerializeField] private Text healthValueText = null;
     [Header("Damage References")]
     [SerializeField] private Button upgradeDamageButton = null;
     [SerializeField] private Text upgradeDamageText = null;
+    [SerializeField] private Button unlockDamageTraitButton = null;
     [SerializeField] private Text unlockDamageTraitText = null;
     [SerializeField] private Slider damageProgressSlider = null;
     [SerializeField] private Text damageValueText = null;
     [Header("Speed References")]
     [SerializeField] private Button upgradeSpeedButton = null;
     [SerializeField] private Text upgradeSpeedText = null;
+    [SerializeField] private Button unlockSpeedTraitButton = null;
     [SerializeField] private Text unlockSpeedTraitText = null;
     [SerializeField] private Slider speedProgressSlider = null;
     [SerializeField] private Text speedValueText = null;
@@ -85,6 +88,10 @@ public class UnitUpgradePanel : MonoBehaviour
         upgradeHealthButton.interactable = enable;
         upgradeDamageButton.interactable = enable;
         upgradeSpeedButton.interactable = enable;
+
+        unlockHealthTraitButton.interactable = healthProgressSlider.value == unitSO.upgrades.unitUpgradesHealth.amountOfUpgrades ? enable : false;
+        unlockDamageTraitButton.interactable = damageProgressSlider.value == unitSO.upgrades.unitUpgradesDamage.amountOfUpgrades ? enable : false;
+        unlockSpeedTraitButton.interactable = speedProgressSlider.value == unitSO.upgrades.unitUpgradesSpeed.amountOfUpgrades ? enable : false;
     }
     
     public void UnlockCheck(int xp)
@@ -154,6 +161,22 @@ public class UnitUpgradePanel : MonoBehaviour
         speedProgressSlider.value = max - upgradesLeft;
 
         EnableUpgrades(false);
+    }
+
+    public void UnlockHealthTrait()
+    {
+        unitMaster.UnlockHealthTrait(unitIndex);
+        unlockHealthTraitButton.enabled = false;
+    }
+    public void UnlockDamageTrait()
+    {
+        unitMaster.UnlockDamageTrait(unitIndex);
+        unlockDamageTraitButton.enabled = false;
+    }
+    public void UnlockSpeedTrait()
+    {
+        unitMaster.UnlockSpeedTrait(unitIndex);
+        unlockSpeedTraitButton.enabled = false;
     }
     #endregion
 }

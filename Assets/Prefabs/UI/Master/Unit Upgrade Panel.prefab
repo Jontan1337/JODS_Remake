@@ -326,8 +326,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 40}
-  m_SizeDelta: {x: -24, y: -140}
+  m_AnchoredPosition: {x: 0, y: 15.000032}
+  m_SizeDelta: {x: -24, y: -89.99994}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5251282054555812967
 MonoBehaviour:
@@ -542,7 +542,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -60}
-  m_SizeDelta: {x: 0, y: 280}
+  m_SizeDelta: {x: 0, y: 220}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &1671378108301215842
 GameObject:
@@ -1326,7 +1326,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -60}
-  m_SizeDelta: {x: 0, y: 280}
+  m_SizeDelta: {x: 0, y: 220}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &2962832879061362676
 GameObject:
@@ -1440,7 +1440,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 50}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 70, y: 60}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &5437699105861237147
@@ -1523,7 +1523,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2418988591279905402}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1946042650867517931}
+        m_TargetAssemblyTypeName: UnitUpgradePanel, Assembly-CSharp
+        m_MethodName: UnlockHealthTrait
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &4069157849498871102
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2453,7 +2465,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: -130}
-  m_SizeDelta: {x: 250, y: 350}
+  m_SizeDelta: {x: 250, y: 280}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &4006185397708582001
 MonoBehaviour:
@@ -2935,7 +2947,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 50}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 70, y: 60}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &1193877441192828315
@@ -3018,7 +3030,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7344451763170122488}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1946042650867517931}
+        m_TargetAssemblyTypeName: UnitUpgradePanel, Assembly-CSharp
+        m_MethodName: UnlockDamageTrait
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &8936224391134251580
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3277,7 +3301,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 50}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 70, y: 60}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &1013854871582640003
@@ -3360,7 +3384,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4070440063078117510}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1946042650867517931}
+        m_TargetAssemblyTypeName: UnitUpgradePanel, Assembly-CSharp
+        m_MethodName: UnlockSpeedTrait
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &621095560225901706
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3503,8 +3539,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 40}
-  m_SizeDelta: {x: -24, y: -140}
+  m_AnchoredPosition: {x: 0, y: 15}
+  m_SizeDelta: {x: -24, y: -90}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4112786299499471799
 MonoBehaviour:
@@ -4020,7 +4056,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -60}
-  m_SizeDelta: {x: 0, y: 280}
+  m_SizeDelta: {x: 0, y: 220}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &8669086794679530895
 GameObject:
@@ -4133,8 +4169,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 40}
-  m_SizeDelta: {x: -24, y: -140}
+  m_AnchoredPosition: {x: 0, y: 15}
+  m_SizeDelta: {x: -24, y: -90}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5306628084985817088
 MonoBehaviour:
@@ -4346,16 +4382,19 @@ MonoBehaviour:
   unlockButtonText: {fileID: 9014320847649784671}
   upgradeHealthButton: {fileID: 8247298967592742039}
   upgradeHealthText: {fileID: 6423788978784075129}
+  unlockHealthTraitButton: {fileID: 5605688527951846791}
   unlockHealthTraitText: {fileID: 7816600044361914216}
   healthProgressSlider: {fileID: 5251282054555812967}
   healthValueText: {fileID: 2843835645348860136}
   upgradeDamageButton: {fileID: 6915257485125223949}
   upgradeDamageText: {fileID: 2330014249406710774}
+  unlockDamageTraitButton: {fileID: 5853450620049467306}
   unlockDamageTraitText: {fileID: 3757017066682390857}
   damageProgressSlider: {fileID: 5306628084985817088}
   damageValueText: {fileID: 1426943885113511624}
   upgradeSpeedButton: {fileID: 2585087912703679604}
   upgradeSpeedText: {fileID: 599256984950588006}
+  unlockSpeedTraitButton: {fileID: 6244163036403100666}
   unlockSpeedTraitText: {fileID: 6643303645296089476}
   speedProgressSlider: {fileID: 4112786299499471799}
   speedValueText: {fileID: 4808233105530781991}
