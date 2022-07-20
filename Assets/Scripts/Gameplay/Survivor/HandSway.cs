@@ -38,11 +38,13 @@ public class HandSway : NetworkBehaviour, IInitializable<SurvivorSetup>
         //    1f
         //);
         newRotation = new Quaternion(
-            virtualHead.localRotation.x + Input.GetAxisRaw("Mouse Y") * swayVelocityX,
+            Input.GetAxisRaw("Mouse Y") * swayVelocityX,
             0,
-            virtualHead.localRotation.y + Input.GetAxisRaw("Mouse X") * swayVelocityY,
+            -Input.GetAxisRaw("Mouse X") * swayVelocityY,
             1f
         );
+        newRotation.x = rotationDifference.x != 0 ? newRotation.x : 0;
+        newRotation.z = rotationDifference.z != 0 ? newRotation.z : 0;
 
         transform.localRotation = Quaternion.Slerp(transform.localRotation, newRotation, Time.deltaTime * swaySmoothing);
         //transform.localPosition = Vector3.Lerp(transform.localPosition, originalPos, Time.deltaTime * swaySmoothing);
@@ -76,8 +78,8 @@ public class HandSway : NetworkBehaviour, IInitializable<SurvivorSetup>
             if (itemName.itemName == ItemNames.VirtualHead)
             {
                 virtualHead = item.transform;
-                //if (hasAuthority)
-                //    StartCoroutine(IENextFrame());
+                if (hasAuthority)
+                    StartCoroutine(IENextFrame());
             }
         }
     }

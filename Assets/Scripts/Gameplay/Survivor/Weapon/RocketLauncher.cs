@@ -28,6 +28,7 @@ public class RocketLauncher : ProjectileWeapon
 
     private IEnumerator IEDrop()
     {
+        
         yield return new WaitForSeconds(0.2f);
         Svr_Drop();
     }
@@ -37,21 +38,13 @@ public class RocketLauncher : ProjectileWeapon
     public override void Unbind()
 	{
 		base.Unbind();
-
-        if (hasAuthority) Cmd_Destroy();
-        else
-            Svr_Destroy();
-	}
-	[Command]
+        Cmd_Destroy();
+    }
+	[Command(ignoreAuthority = true)] //Auth is lost before method is called, so this is the only sollution we know of right now. Not optimal.
 	public void Cmd_Destroy()
 	{
-		StartCoroutine(DestroyWait());
-	}
-    [Server]
-    public void Svr_Destroy()
-    {
         StartCoroutine(DestroyWait());
-    }
+	}
     IEnumerator DestroyWait()
 	{
 		yield return new WaitForSeconds(0.1f);
