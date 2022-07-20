@@ -25,17 +25,17 @@ public class ZombieCommon : UnitBase, IControllable
 
     public override void ApplyHealthTrait()
     {
-        throw new System.NotImplementedException();
+        //throw new System.NotImplementedException();
     }
 
     public override void ApplyDamageTrait()
     {
-        throw new System.NotImplementedException();
+        //throw new System.NotImplementedException();
     }
 
     public override void ApplySpeedTrait()
     {
-        throw new System.NotImplementedException();
+        //throw new System.NotImplementedException();
     }
 
     #region Interface Functions

@@ -27,13 +27,13 @@ public class UnitList
     [Space]
     [Space]
     [SyncVar] public float healthModifier = 1;
-    public int upgradesTillHealthTrait = 5;
-    public bool hasHealthTrait = false;
+    [SyncVar] public int upgradesTillHealthTrait = 5;
+    [SyncVar] public bool hasHealthTrait = false;
     public int GetHealthStat() { return Mathf.RoundToInt((float)unit.health * healthModifier); }
     [Space]
     [SyncVar] public float damageModifier = 1;
-    public int upgradesTillDamageTrait = 5;
-    public bool hasDamageTrait = false;
+    [SyncVar] public int upgradesTillDamageTrait = 5;
+    [SyncVar] public bool hasDamageTrait = false;
     public int GetDamageStat()
     {
         int damageStat = 0;
@@ -53,8 +53,8 @@ public class UnitList
     }
     [Space]
     [SyncVar] public float speedModifier = 1;
-    public int upgradesTillSpeedTrait = 5;
-    public bool hasSpeedTrait = false;
+    [SyncVar] public int upgradesTillSpeedTrait = 5;
+    [SyncVar] public bool hasSpeedTrait = false;
     public float GetSpeedStat() { return unit.movementSpeed * speedModifier; }
 
     public float[] GetAllModifiers()
@@ -1095,17 +1095,14 @@ public class UnitMaster : NetworkBehaviour
         {
             //Health upgrade
             case 0:
-                unit.upgradesTillHealthTrait--;
                 upgradeToReturn = unit.upgradesTillHealthTrait;
                 break;
             //Damage upgrade
             case 1:
-                unit.upgradesTillDamageTrait--;
                 upgradeToReturn = unit.upgradesTillDamageTrait;
                 break;
             //Speed upgrade
             case 2:
-                unit.upgradesTillSpeedTrait--;
                 upgradeToReturn = unit.upgradesTillSpeedTrait;
                 break;
         }
@@ -1131,21 +1128,21 @@ public class UnitMaster : NetworkBehaviour
         {
             //Health upgrade
             case 0:
+                unit.upgradesTillHealthTrait--;
                 unit.healthModifier += upgradeAmount;
                 break;
             //Damage upgrade
             case 1:
+                unit.upgradesTillDamageTrait--;
                 unit.damageModifier += upgradeAmount;
                 break;
             //Speed upgrade
             case 2:
+                unit.upgradesTillSpeedTrait--;
                 unit.speedModifier += upgradeAmount;
                 break;
         }
-
-        unit.level++;
-
-        unit.UpgradeMilestone = 10; // FIX THIS
+        UnitLevelUp(unit);
     }
 
     public void UnlockHealthTrait(int unitIndex)
@@ -1154,6 +1151,8 @@ public class UnitMaster : NetworkBehaviour
         UnitList unit = unitList[unitIndex];
 
         unit.hasHealthTrait = true;
+
+        UnitLevelUp(unit);
     }
     public void UnlockDamageTrait(int unitIndex)
     {
@@ -1161,6 +1160,8 @@ public class UnitMaster : NetworkBehaviour
         UnitList unit = unitList[unitIndex];
 
         unit.hasDamageTrait = true;
+
+        UnitLevelUp(unit);
     }
     public void UnlockSpeedTrait(int unitIndex)
     {
@@ -1168,6 +1169,16 @@ public class UnitMaster : NetworkBehaviour
         UnitList unit = unitList[unitIndex];
 
         unit.hasSpeedTrait = true;
+
+        UnitLevelUp(unit);
+    }
+
+    private void UnitLevelUp(UnitList unit)
+    {
+
+        unit.level++;
+
+        unit.UpgradeMilestone = 10; // FIX THIS
     }
 
     public void UnlockNew(UnitList unit = null, DeployableList deployable = null)
