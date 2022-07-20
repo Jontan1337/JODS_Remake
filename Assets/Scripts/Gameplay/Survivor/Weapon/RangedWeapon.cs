@@ -220,7 +220,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     {
         base.Rpc_Interact(target, interacter);
         playerHead = interacter.GetComponent<LookController>().RotateVertical;
-        playerCamera = playerHead.GetChild(0).GetComponent<Camera>();
+        playerCamera = playerHead.Find("PlayerCamera(Clone)").GetComponent<Camera>();
         hipFOV = playerCamera.fieldOfView;
         ADSFOV = hipFOV - 8f;
         GetUIElements(interacter.transform);
