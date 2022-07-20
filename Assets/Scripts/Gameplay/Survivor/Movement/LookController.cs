@@ -57,7 +57,8 @@ public class LookController : NetworkBehaviour
         playerCamera.DOComplete();
         playerItemCamera.DOComplete();
         playerCamera.DOShakeRotation(0.14f, new Vector3(0.1f, 0.2f, 0.2f) * amount, 20, 90f, true);
-		playerCamera.DOFieldOfView(playerCamera.fieldOfView + 0.5f * amount, 0.05f).SetEase(Ease.Linear)
+        rotateVertical.DOBlendableLocalRotateBy(new Vector3(-20f * amount, Random.Range(-1, 1) * 4 * amount, 0), 0.5f, RotateMode.LocalAxisAdd);
+        playerCamera.DOFieldOfView(playerCamera.fieldOfView + 0.5f * amount, 0.05f).SetEase(Ease.Linear)
 			.OnComplete(() => playerItemCamera.DOFieldOfView(playerItemCamera.fieldOfView - 0.5f * amount, 0.05f));
 		playerItemCamera.DOFieldOfView(playerItemCamera.fieldOfView + 0.5f * amount, 0.05f).SetEase(Ease.Linear)
 			.OnComplete(() => playerItemCamera.DOFieldOfView(playerItemCamera.fieldOfView - 0.5f * amount, 0.05f));
