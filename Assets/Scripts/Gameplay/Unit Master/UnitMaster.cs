@@ -12,7 +12,7 @@ public class UnitList
     public string name;
     public UnitSO unit;
     [Header("Upgrades")]
-    [SyncVar] public int level = 0;
+    public int level = 0;
     [SerializeField] private int upgradeMilestone = 50;
     public int UpgradeMilestone
     {
@@ -26,18 +26,14 @@ public class UnitList
     public AnimationCurve upgradeCurve;
     [Space]
     [Space]
-    [SyncVar (hook = "UpdateHealthModifier")] public float healthModifier = 1;
-    [SyncVar] public int upgradesTillHealthTrait = 5;
-    [SyncVar] public bool hasHealthTrait = false;
-    private void UpdateHealthModifier(float old, float newVal)
-    {
-        Debug.Log(newVal);
-    }
+    public float healthModifier = 1;
+    public int upgradesTillHealthTrait = 5;
+    public bool hasHealthTrait = false;
     public int GetHealthStat() { return Mathf.RoundToInt((float)unit.health * healthModifier); }
     [Space]
-    [SyncVar] public float damageModifier = 1;
-    [SyncVar] public int upgradesTillDamageTrait = 5;
-    [SyncVar] public bool hasDamageTrait = false;
+    public float damageModifier = 1;
+    public int upgradesTillDamageTrait = 5;
+    public bool hasDamageTrait = false;
     public int GetDamageStat()
     {
         int damageStat = 0;
@@ -56,9 +52,9 @@ public class UnitList
         return damageStat;
     }
     [Space]
-    [SyncVar] public float speedModifier = 1;
-    [SyncVar] public int upgradesTillSpeedTrait = 5;
-    [SyncVar] public bool hasSpeedTrait = false;
+    public float speedModifier = 1;
+    public int upgradesTillSpeedTrait = 5;
+    public bool hasSpeedTrait = false;
     public float GetSpeedStat() { return unit.movementSpeed * speedModifier; }
 
     public float[] GetAllModifiers()
@@ -1102,6 +1098,11 @@ public class UnitMaster : NetworkBehaviour
     [Command]
     private void Cmd_UpgradeUnit(int unitIndex, int upgradePath, float upgradeAmount)
     {
+        Rpc_UpgradeUnit(unitIndex, upgradePath, upgradeAmount); ;
+    }
+    [ClientRpc]
+    private void Rpc_UpgradeUnit(int unitIndex, int upgradePath, float upgradeAmount)
+    {
         //Reference
         UnitList unit = unitList[unitIndex];
 
@@ -1133,6 +1134,11 @@ public class UnitMaster : NetworkBehaviour
 
     [Command]
     public void Cmd_UnlockTrait(int unitIndex, int upgradePath)
+    {
+        Rpc_UnlockTrait(unitIndex, upgradePath);
+    }
+    [ClientRpc]
+    public void Rpc_UnlockTrait(int unitIndex, int upgradePath)
     {
         //Reference
         UnitList unit = unitList[unitIndex];

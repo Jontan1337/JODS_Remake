@@ -471,7 +471,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         }
 
         //Stats
-        SetStats();
+        if (isServer) SetStats();
 
         //Pathfinding
         seeker = GetComponent<Seeker>();
