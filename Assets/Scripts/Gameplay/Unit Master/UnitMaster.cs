@@ -26,9 +26,13 @@ public class UnitList
     public AnimationCurve upgradeCurve;
     [Space]
     [Space]
-    [SyncVar] public float healthModifier = 1;
+    [SyncVar (hook = "UpdateHealthModifier")] public float healthModifier = 1;
     [SyncVar] public int upgradesTillHealthTrait = 5;
     [SyncVar] public bool hasHealthTrait = false;
+    private void UpdateHealthModifier(float old, float newVal)
+    {
+        Debug.Log(newVal);
+    }
     public int GetHealthStat() { return Mathf.RoundToInt((float)unit.health * healthModifier); }
     [Space]
     [SyncVar] public float damageModifier = 1;

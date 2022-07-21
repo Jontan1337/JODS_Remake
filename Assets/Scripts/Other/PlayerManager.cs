@@ -11,7 +11,8 @@ public class PlayerManager : NetworkBehaviour
 {
     [SerializeField] private Transform canvasMenu;
     [SerializeField] private Transform canvasInGame;
-    [SerializeField] private FirstPersonLookController firstPersonLookController;
+    [Space]
+    [SerializeField] private bool hideCursorOnDisable = true;
     [Space]
     [SerializeField] private bool hasEquipment;
     [SerializeField] private Dropdown equipmentBehaviourDropDown;
@@ -97,7 +98,7 @@ public class PlayerManager : NetworkBehaviour
         JODSInput.DisableDrop();
         JODSInput.DisableReload();
         JODSInput.DisableInteract();
-        firstPersonLookController.ShowCursor();
+        ShowCursor();
         onMenuOpened?.Invoke();
     }
     public void DisableMenu()
@@ -118,10 +119,17 @@ public class PlayerManager : NetworkBehaviour
         JODSInput.EnableDrop();
         JODSInput.EnableReload();
         JODSInput.EnableInteract();
-        firstPersonLookController.HideCursor();
+        if (hideCursorOnDisable) HideCursor();
         onMenuClosed?.Invoke();
     }
-
+    public void HideCursor()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+    public void ShowCursor()
+    {
+        Cursor.lockState = CursorLockMode.None;
+    }
     public void QuitToMenu(string sceneName)
     {
         if (netIdentity.isActiveAndEnabled)
