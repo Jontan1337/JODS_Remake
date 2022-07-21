@@ -7,12 +7,12 @@ using UnityEngine.EventSystems;
 using Pathfinding;
 
 [System.Serializable]
-public class UnitList
+public class UnitList : NetworkBehaviour
 {
     public string name;
     public UnitSO unit;
     [Header("Upgrades")]
-    public int level = 0;
+    [SyncVar]public int level = 0;
     [SerializeField] private int upgradeMilestone = 50;
     public int UpgradeMilestone
     {

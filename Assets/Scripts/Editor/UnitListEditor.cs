@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(UnitList), true)]
+[CustomEditor(typeof(UnitList))]
 public class UnitListEditor : Editor
 {
     public override void OnInspectorGUI()
