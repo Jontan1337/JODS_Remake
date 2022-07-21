@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 using Pathfinding;
 
 [System.Serializable]
-public class UnitList : NetworkBehaviour
+public class UnitList
 {
     public string name;
     public UnitSO unit;
@@ -1098,11 +1098,6 @@ public class UnitMaster : NetworkBehaviour
     [Command]
     private void Cmd_UpgradeUnit(int unitIndex, int upgradePath, float upgradeAmount)
     {
-        Rpc_UpgradeUnit(unitIndex, upgradePath, upgradeAmount); ;
-    }
-    [ClientRpc]
-    private void Rpc_UpgradeUnit(int unitIndex, int upgradePath, float upgradeAmount)
-    {
         //Reference
         UnitList unit = unitList[unitIndex];
 
@@ -1135,11 +1130,6 @@ public class UnitMaster : NetworkBehaviour
     [Command]
     public void Cmd_UnlockTrait(int unitIndex, int upgradePath)
     {
-        Rpc_UnlockTrait(unitIndex, upgradePath);
-    }
-    [ClientRpc]
-    public void Rpc_UnlockTrait(int unitIndex, int upgradePath)
-    {
         //Reference
         UnitList unit = unitList[unitIndex];
 
@@ -1164,6 +1154,7 @@ public class UnitMaster : NetworkBehaviour
 
         UnitLevelUp(unit);
     }
+
 
     private void UnitLevelUp(UnitList unit)
     {

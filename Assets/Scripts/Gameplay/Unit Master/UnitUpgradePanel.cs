@@ -154,19 +154,22 @@ public class UnitUpgradePanel : MonoBehaviour
     {
         unitMaster.UpgradeUnit(unitIndex, 2, unitSO.upgrades.unitUpgradesSpeed.upgradeAmount);
 
-        int upgradesLeft = unitMaster.GetUnitList(unitIndex).upgradesTillSpeedTrait;
+        EnableUpgrades(false);
+    }
+
+    public void UpdateSpeedText(float newSpeed ,int upgradesLeft)
+    {
+        //int upgradesLeft = unitMaster.GetUnitList(unitIndex).upgradesTillSpeedTrait;
 
         SetUpgradeText(unitListRef.UpgradeMilestone);
 
-        float newSpeed = unitListRef.GetSpeedStat();
+        // float newSpeed = unitListRef.GetSpeedStat();
         speedValueText.text = $"{newSpeed}";
 
         if (speedProgressSlider.value == speedProgressSlider.maxValue) return;
 
         int max = (int)speedProgressSlider.maxValue;
         speedProgressSlider.value = max - upgradesLeft;
-
-        EnableUpgrades(false);
     }
 
     public void UnlockHealthTrait()
