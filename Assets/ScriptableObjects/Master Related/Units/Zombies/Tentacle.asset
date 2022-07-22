@@ -72,23 +72,41 @@ MonoBehaviour:
     - statusEffect: {fileID: 11400000, guid: 7fbfc15321455b749ad2b9ef5ee7b3c4, type: 2}
       amount: 0
   upgrades:
-    unitsToPlace: 50
+    unitsToPlace: 10
     upgradeCurve:
       serializedVersion: 2
-      m_Curve: []
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 10
+        inSlope: 2
+        outSlope: 2
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
     unitUpgradesHealth:
-      amountOfUpgrades: 0
+      amountOfUpgrades: 4
       upgradeAmount: 0
     traitHealth: 
     unitUpgradesDamage:
-      amountOfUpgrades: 0
+      amountOfUpgrades: 4
       upgradeAmount: 0
     traitDamage: 
     unitUpgradesSpeed:
-      amountOfUpgrades: 0
+      amountOfUpgrades: 4
       upgradeAmount: 0
     traitSpeed: 
   movementSpeed: 1.5

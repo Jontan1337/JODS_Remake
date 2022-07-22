@@ -13,17 +13,9 @@ public class UnitList
     public UnitSO unit;
     [Header("Upgrades")]
     [SyncVar]public int level = 0;
-    [SerializeField] private int upgradeMilestone = 50;
-    public int UpgradeMilestone
-    {
-        get { return upgradeMilestone; }
-        set
-        {
-            upgradeMilestone = value;
-            if (upgradePanel) upgradePanel.SetUpgradeText(value);
-        }
-    }
+    public int upgradeMilestone = 50;
     public AnimationCurve upgradeCurve;
+    public int totalUpgrades = 0;
     [Space]
     [Space]
     public float healthModifier = 1;
@@ -1027,13 +1019,6 @@ public class UnitMaster : NetworkBehaviour
 
             CurrentXP += chosenUnit.xpGain; //Master gains xp though
 
-            chosenUnitList.UpgradeMilestone = (int)Mathf.Clamp(chosenUnitList.UpgradeMilestone -= 1, 0, Mathf.Infinity);
-
-            if (chosenUnitList.UpgradeMilestone <= 0)
-            {
-                chosenUnitList.upgradePanel.EnableUpgrades(true);
-            }
-
             Cmd_UpdateScore(1, PlayerDataStat.UnitsPlaced);
         }
 
@@ -1084,6 +1069,7 @@ public class UnitMaster : NetworkBehaviour
     #endregion
 
     #region Upgrade & Unlock
+    #region Upgrading Stats
     public void UpgradeUnit(int unitIndex, int upgradePath, float upgradeAmount)
     {
         Cmd_UpgradeUnit(unitIndex, upgradePath, upgradeAmount);
@@ -1101,30 +1087,69 @@ public class UnitMaster : NetworkBehaviour
         //Reference
         UnitList unit = unitList[unitIndex];
 
+        float newValue = 0;
+        int upgradesLeft = 0;
+
         switch (upgradePath)
         {
             //Health upgrade
             case 0:
-                unit.upgradesTillHealthTrait--;
+                upgradesLeft = --unit.upgradesTillHealthTrait;
                 unit.healthModifier += upgradeAmount;
+                newValue = unit.GetHealthStat();
                 break;
             //Damage upgrade
             case 1:
-                unit.upgradesTillDamageTrait--;
+                upgradesLeft = --unit.upgradesTillDamageTrait;
                 unit.damageModifier += upgradeAmount;
+                newValue = unit.GetDamageStat();
                 break;
             //Speed upgrade
             case 2:
-                unit.upgradesTillSpeedTrait--;
+                upgradesLeft = --unit.upgradesTillSpeedTrait;
                 unit.speedModifier += upgradeAmount;
+                newValue = unit.GetSpeedStat();
                 break;
         }
+
         UnitLevelUp(unit);
+
+        Rpc_UpdateStats(netIdentity.connectionToClient, unitIndex, newValue, upgradesLeft, upgradePath);
     }
 
+    [TargetRpc]
+    private void Rpc_UpdateStats(NetworkConnection target, int unitIndex, float newValue, int upgradesLeft, int upgradePath)
+    {
+        //Reference
+        UnitList unit = unitList[unitIndex];
+
+        switch (upgradePath)
+        {
+            //Health upgrade
+            case 0:
+                unit.upgradePanel.UpdateHealthText(newValue,upgradesLeft);
+                break;
+            //Damage upgrade
+            case 1:
+                unit.upgradePanel.UpdateDamageText(newValue, upgradesLeft);
+                break;
+            //Speed upgrade
+            case 2:
+                unit.upgradePanel.UpdateSpeedText(newValue, upgradesLeft);
+                break;
+        }
+    }
+    #endregion
+    #region Unlocking Traits
     public void UnlockTrait(int unitIndex, int upgradePath)
     {
         Cmd_UnlockTrait(unitIndex, upgradePath);
+
+        //Play spooky sound
+        Cmd_PlayGlobalSound(true);
+
+        //Update scoreboard stat
+        Cmd_UpdateScore(1, PlayerDataStat.TotalUnitUpgrades);
     }
 
     [Command]
@@ -1137,30 +1162,32 @@ public class UnitMaster : NetworkBehaviour
         {
             //Health upgrade
             case 0:
-                unit.upgradesTillHealthTrait--;
                 unit.hasHealthTrait = true;
                 break;
             //Damage upgrade
             case 1:
-                unit.upgradesTillDamageTrait--;
                 unit.hasDamageTrait = true;
                 break;
             //Speed upgrade
             case 2:
-                unit.upgradesTillSpeedTrait--;
                 unit.hasSpeedTrait = true; ;
                 break;
         }
 
         UnitLevelUp(unit);
     }
-
+    #endregion
 
     private void UnitLevelUp(UnitList unit)
     {
         unit.level++;
 
-        unit.UpgradeMilestone = 10; // FIX THIS
+        int newMilestone = Mathf.RoundToInt(unit.unit.upgrades.unitsToPlace *
+            (1 + unit.upgradeCurve.Evaluate((unit.upgradeCurve.keys[unit.upgradeCurve.keys.Length - 1].time / unit.totalUpgrades) * unit.level)));
+
+        unit.upgradeMilestone = newMilestone;
+
+        Rpc_UpdateMilestoneForClient(netIdentity.connectionToClient, unit.unitIndex, unit.upgradeMilestone);
     }
 
     public void UnlockNew(UnitList unit = null, DeployableList deployable = null)
@@ -1488,7 +1515,10 @@ public class UnitMaster : NetworkBehaviour
             u.upgradesTillHealthTrait = u.unit.upgrades.unitUpgradesHealth.amountOfUpgrades;
             u.upgradesTillDamageTrait = u.unit.upgrades.unitUpgradesDamage.amountOfUpgrades;
             u.upgradesTillSpeedTrait = u.unit.upgrades.unitUpgradesSpeed.amountOfUpgrades;
-            u.UpgradeMilestone = u.unit.upgrades.unitsToPlace;
+
+            u.totalUpgrades = u.upgradesTillHealthTrait + u.upgradesTillDamageTrait + u.upgradesTillSpeedTrait;
+
+            u.upgradeMilestone = u.unit.upgrades.unitsToPlace;
             u.upgradeCurve = u.unit.upgrades.upgradeCurve;
         }
     }
@@ -1607,7 +1637,15 @@ public class UnitMaster : NetworkBehaviour
             if (chosenUnitList.hasDamageTrait) unit.ApplyDamageTrait();
             if (chosenUnitList.hasHealthTrait) unit.ApplyHealthTrait();
             if (chosenUnitList.hasDamageTrait) unit.ApplySpeedTrait();
-            
+
+            chosenUnitList.upgradeMilestone = (int)Mathf.Clamp(chosenUnitList.upgradeMilestone -= 1, 0, Mathf.Infinity);
+            Rpc_UpdateMilestoneForClient(netIdentity.connectionToClient, chosenSpawnableIndex, chosenUnitList.upgradeMilestone);
+
+            if (chosenUnitList.upgradeMilestone <= 0)
+            {
+                Rpc_EnableUpgradesForUnit(netIdentity.connectionToClient, chosenSpawnableIndex);
+            }
+
             unit.SetUnitSO(chosenUnitList.unit);
         }
         else
@@ -1625,6 +1663,22 @@ public class UnitMaster : NetworkBehaviour
 
         //Spawn the spawnable on the server
         NetworkServer.Spawn(newSpawnable);
+    }
+
+    [TargetRpc]
+    private void Rpc_EnableUpgradesForUnit(NetworkConnection target, int unitIndex)
+    {
+        UnitList chosenUnitList = unitList[unitIndex];
+
+        chosenUnitList.upgradePanel.EnableUpgrades(true);
+    }
+
+    [TargetRpc]
+    private void Rpc_UpdateMilestoneForClient(NetworkConnection target, int unitIndex, int upgradeMilestone)
+    {
+        UnitList unit = unitList[unitIndex];
+
+        unit.upgradePanel.SetUpgradeText(upgradeMilestone);
     }
 
     [Command] 
