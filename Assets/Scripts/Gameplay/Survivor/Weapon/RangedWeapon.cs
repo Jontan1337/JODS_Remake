@@ -83,8 +83,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     private float currentVisualPunchback = 0f;
     private int fireModeIndex = 0;
 
+    ImpactData impactData;
     public Action<ImpactData> OnImpact { get; set; }
-    ImpactData impactData = new ImpactData(currentVisualPunchback, ImpactSourceType.Ranged);
 
     public int Magazine { 
         get => magazine;
@@ -195,6 +195,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     {
         base.OnStartClient();
         OnImpact += ImpactShake;
+        impactData = new ImpactData(currentVisualPunchback, ImpactSourceType.Ranged);
     }
 
     public override void OnStartAuthority()
