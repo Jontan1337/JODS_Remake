@@ -110,7 +110,10 @@ public class UnitMaster : NetworkBehaviour
         [Space]
         public int currentXP = 0; //Current amount of master xp
         [Space]
-        public int timeUntillNextUpgrade = 50; //When does the next upgrade decision become available
+        public int energyUntilNextUpgrade = 50; //When does the next upgrade decision become available
+        public int energyUntilNextUpgradeBase = 50; //When does the next upgrade decision become available 
+        public int energyLevel = 0;
+        public AnimationCurve energyRequirementCurve;
     }
     [Space]
     public Stats stats;
@@ -119,7 +122,18 @@ public class UnitMaster : NetworkBehaviour
         get { return stats.currentEnergy; }
         set
         {
+            bool less = value < stats.currentEnergy;
+            int diff = 0;
+            if (less) diff = stats.currentEnergy - value;
             stats.currentEnergy = Mathf.Clamp(value, 0, stats.maxEnergy);
+            if (less)
+            {
+                stats.energyUntilNextUpgrade -= diff;
+                if (stats.energyUntilNextUpgrade <= 0)
+                {
+                    ActivateUpgradeDecisions(true);
+                }
+            }
             UpdateEnergyUI();
         }
     }
@@ -294,7 +308,9 @@ public class UnitMaster : NetworkBehaviour
         stats.maxEnergy = masterSO.startMaxEnergy;
         stats.energyRechargeIncrement = masterSO.energyRechargeIncrement;
         stats.maxEnergyIncrement = masterSO.maxEnergyUpgradeIncrement;
-        stats.timeUntillNextUpgrade = masterSO.energyUpgradeInterval;
+        stats.energyUntilNextUpgrade = masterSO.energyUntilNextUpgrade;
+        stats.energyUntilNextUpgradeBase = masterSO.energyUntilNextUpgrade;
+        stats.energyRequirementCurve = masterSO.energyRequirementCurve;
 
         //Energy UI visuals
         UI.energyFillImage.color = masterSO.energyColor;
@@ -322,8 +338,6 @@ public class UnitMaster : NetworkBehaviour
         //Coroutines
 
         StartCoroutine(EnergyCoroutine());
-
-        StartCoroutine(UpgradeCoroutine(stats.timeUntillNextUpgrade));
 
         //Misc
         spawnSmokeAudio = spawnSmokeEffect.GetComponent<AudioSource>();
@@ -581,9 +595,6 @@ public class UnitMaster : NetworkBehaviour
         //Play a sound
         Cmd_PlayGlobalSound(true);
 
-        //Start the coroutine again
-        StartCoroutine(UpgradeCoroutine(stats.timeUntillNextUpgrade));
-
         //If player chose to upgrade the recharge rate
         if (rate)
         {
@@ -605,6 +616,13 @@ public class UnitMaster : NetworkBehaviour
             UpdateEnergyUI();
         }
 
+        stats.energyLevel++;
+        int newMilestone = Mathf.RoundToInt(stats.energyUntilNextUpgradeBase *
+            (1 + stats.energyRequirementCurve.Evaluate(
+                (stats.energyRequirementCurve.keys[stats.energyRequirementCurve.keys.Length - 1].time / 10) * stats.energyLevel)));
+        stats.energyUntilNextUpgrade = newMilestone;
+
+
         //Update scoreboard stat
         Cmd_UpdateScore(1, PlayerDataStat.TotalUpgrades);
     }
@@ -623,14 +641,6 @@ public class UnitMaster : NetworkBehaviour
             //Increment the energy by energyRechargeIncrement, clamping it at the max amount of energy
             Energy += stats.energyRechargeIncrement;
         }
-    }
-
-    private IEnumerator UpgradeCoroutine(float time)
-    {
-        yield return new WaitForSeconds(time);
-
-        //Activate the upgrade decisions
-        ActivateUpgradeDecisions(true);
     }
 
     #endregion
