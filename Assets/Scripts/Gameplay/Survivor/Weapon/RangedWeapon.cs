@@ -83,7 +83,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     private float currentVisualPunchback = 0f;
     private int fireModeIndex = 0;
 
-    public Action<float> OnImpact { get; set; }
+    ImpactData impactData;
+    public Action<ImpactData> OnImpact { get; set; }
 
     public int Magazine { 
         get => magazine;
@@ -194,6 +195,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     {
         base.OnStartClient();
         OnImpact += ImpactShake;
+        impactData = new ImpactData(currentVisualPunchback, ImpactSourceType.Ranged);
     }
 
     public override void OnStartAuthority()
@@ -248,6 +250,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         UpdateMagazineText(0, magazine);
         UpdateExtraAmmunitionText(0, extraAmmunition);
         UpdateFireModeText(0, fireMode);
+        fireModeUIText.DOComplete();
         FadeFireMode(1f, 0.2f).OnComplete(delegate () { FadeFireMode(0f, 0.5f); });
     }
     public override void Unbind()
@@ -635,13 +638,13 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     {
         sfxPlayer.PlaySFX(shootSound);
         muzzleParticle.Emit(10);
-        OnImpact?.Invoke(currentVisualPunchback);
+        OnImpact?.Invoke(impactData);
     }
-    protected void ImpactShake(float amount)
+    protected void ImpactShake(ImpactData impactData)
     {
         transform.DOComplete();
-        transform.DOPunchPosition(new Vector3(0f, 0f, -0.1f) * currentVisualPunchback, 0.15f, 12, 1f);
-        transform.DOPunchRotation(new Vector3(-2f, 0f, UnityEngine.Random.Range(-5f, 5f)) * currentVisualPunchback, 0.28f, 12, 1f);
+        transform.DOPunchPosition(new Vector3(0f, 0f, -0.1f) * impactData.Amount, 0.15f, 12, 1f);
+        transform.DOPunchRotation(new Vector3(-2f, 0f, UnityEngine.Random.Range(-5f, 5f)) * impactData.Amount, 0.28f, 12, 1f);
     }
 
     [ClientRpc]

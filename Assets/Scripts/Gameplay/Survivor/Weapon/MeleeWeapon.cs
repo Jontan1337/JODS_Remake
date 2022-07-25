@@ -55,7 +55,8 @@ public class MeleeWeapon : EquipmentItem, IImpacter
 
     private NetworkAnimator networkAnimator;
 
-    public Action<float> OnImpact { get; set; }
+    ImpactData impactData;
+    public Action<ImpactData> OnImpact { get; set; }
 
     private const string IdleAnim = "Idle";
     private const string AttackTrigger = "Attack";
@@ -88,6 +89,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
         base.OnStartServer();
         triggerCollider.enabled = false;
         colliderEnabled = false;
+        impactData = new ImpactData(impactAmount, ImpactSourceType.Melee);
     }
 
     protected override void OnLMBPerformed(InputAction.CallbackContext context) => Cmd_StartAttack();
@@ -148,7 +150,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
         // Wack camera shake animation played on local client.
         if (hasAuthority)
         {
-            OnImpact?.Invoke(10);
+            OnImpact?.Invoke(impactData);
         }
 
         if (isServer)
