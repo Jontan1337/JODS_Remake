@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using DG.Tweening;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
@@ -14,15 +15,15 @@ public class CameraSettings : MonoBehaviour
 
     private void OnValidate()
     {
-        SetFOV(fieldOfView);
+        SetFOV(fieldOfView, 0f);
     }
 
-    public void SetFOV(float value)
+    public void SetFOV(float value, float duration)
     {
         //playerCamFOV = value;
         foreach (Camera camera in playerCameras)
         {
-            camera.fieldOfView = value;
+            camera.DOFieldOfView(value, duration);
         }
     }
 }

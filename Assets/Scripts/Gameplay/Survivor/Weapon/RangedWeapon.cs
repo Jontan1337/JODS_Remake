@@ -82,6 +82,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     private float currentRecoil = 0f;
     private float currentVisualPunchback = 0f;
     private int fireModeIndex = 0;
+    private CameraSettings cameraSettings = null;
 
     ImpactData impactData;
     public Action<ImpactData> OnImpact { get; set; }
@@ -214,7 +215,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     {
         base.Svr_Interact(interacter);
         playerHead = interacter.GetComponent<LookController>().RotateVertical;
-        playerCamera = playerHead.GetChild(0).GetComponent<Camera>();
+        playerCamera = playerHead.Find("PlayerCamera(Clone)").GetComponent<Camera>();
+        cameraSettings = playerHead.Find("PlayerCamera(Clone)").GetComponent<CameraSettings>();
     }
 
     [TargetRpc]
@@ -352,7 +354,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         IsAiming = aim;
         Cmd_Aim(aim);
         ScaleCrosshair(IsAiming ? 0 : 1, 0.1f);
-        SetFOV(IsAiming ? ADSFOV : hipFOV, 0.1f); // TODO: Find fix for DOTween complete messing this up.
+        cameraSettings.SetFOV(IsAiming ? ADSFOV : hipFOV, 0.1f);
+        //SetFOV(IsAiming ? ADSFOV : hipFOV, 0.1f); // TODO: Find fix for DOTween complete messing this up.
         Vector3 targetAimPosition = new Vector3(0f, 0.1f - aimSight.localPosition.y, -aimSight.localPosition.z);
 
         transform.parent.DOComplete();
