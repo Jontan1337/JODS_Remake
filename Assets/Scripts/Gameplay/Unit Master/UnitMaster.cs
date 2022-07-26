@@ -1644,10 +1644,6 @@ public class UnitMaster : NetworkBehaviour
 
             unit.statModifiers = chosenUnitList.GetAllModifiers();
 
-            if (chosenUnitList.hasDamageTrait) unit.ApplyDamageTrait();
-            if (chosenUnitList.hasHealthTrait) unit.ApplyHealthTrait();
-            if (chosenUnitList.hasDamageTrait) unit.ApplySpeedTrait();
-
             chosenUnitList.upgradeMilestone = (int)Mathf.Clamp(chosenUnitList.upgradeMilestone -= 1, 0, Mathf.Infinity);
             Rpc_UpdateMilestoneForClient(netIdentity.connectionToClient, chosenSpawnableIndex, chosenUnitList.upgradeMilestone);
 
@@ -1657,6 +1653,10 @@ public class UnitMaster : NetworkBehaviour
             }
 
             unit.SetUnitSO(chosenUnitList.unit);
+
+            if (chosenUnitList.hasDamageTrait) unit.ApplyDamageTrait();
+            if (chosenUnitList.hasHealthTrait) unit.ApplyHealthTrait();
+            if (chosenUnitList.hasDamageTrait) unit.ApplySpeedTrait();
         }
         else
         {

@@ -22,7 +22,8 @@ public class ZombieCommon : UnitBase, IControllable
     {
         //throw new System.NotImplementedException();
     }
-
+    [Header("Traits")]
+    [SerializeField] private StatusEffectToApply damageStatusEffect;
     public override void ApplyHealthTrait()
     {
         //throw new System.NotImplementedException();
@@ -30,7 +31,8 @@ public class ZombieCommon : UnitBase, IControllable
 
     public override void ApplyDamageTrait()
     {
-        //throw new System.NotImplementedException();
+        Debug.Log("Hallo" + melee.statusEffectsToApply.Count);
+        melee.statusEffectsToApply.Add(damageStatusEffect);
     }
 
     public override void ApplySpeedTrait()
