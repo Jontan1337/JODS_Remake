@@ -370,7 +370,10 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             melee.meleeDamageMin = statModifiers.Length > 0 ? Mathf.RoundToInt(unitSO.melee.meleeDamageMin * statModifiers[1]) : unitSO.melee.meleeDamageMin;
             melee.meleeRange = unitSO.melee.meleeRange;
             melee.meleeCooldown = unitSO.melee.meleeCooldown;
-            melee.statusEffectsToApply = unitSO.melee.statusEffectsToApply;
+            foreach (StatusEffectToApply statusEffectToApply in unitSO.melee.statusEffectsToApply)
+            {
+                melee.statusEffectsToApply.Add(statusEffectToApply);
+            }
         }
 
         //Ranged
@@ -386,7 +389,10 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             ranged.standStill = unitSO.ranged.standStill;
             ranged.directRangedAttack = unitSO.ranged.directRangedAttack;
             ranged.preferredRange = unitSO.ranged.preferredRange;
-            ranged.statusEffectsToApply = unitSO.ranged.statusEffectsToApply;
+            foreach (StatusEffectToApply statusEffectToApply in unitSO.ranged.statusEffectsToApply)
+            {
+                ranged.statusEffectsToApply.Add(statusEffectToApply);
+            }
         }
 
         //Special
@@ -399,7 +405,10 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             special.standStill = unitSO.special.standStill;
             special.lookAtTarget = unitSO.special.lookAtTarget;
             special.availableFromStart = unitSO.special.availableFromStart;
-            special.statusEffectsToApply = unitSO.special.statusEffectsToApply;
+            foreach (StatusEffectToApply statusEffectToApply in unitSO.special.statusEffectsToApply)
+            {
+                special.statusEffectsToApply.Add(statusEffectToApply);
+            }
         }
 
         //Movement

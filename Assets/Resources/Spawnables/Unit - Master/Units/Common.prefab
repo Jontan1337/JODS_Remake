@@ -2562,24 +2562,16 @@ MonoBehaviour:
   unitSO: {fileID: 11400000, guid: 254796e5ec2c1ff49a903f70e84b5945, type: 2}
   health: 50
   isDead: 0
-  unitLevel: 1
   isMelee: 1
   isRanged: 0
   hasSpecial: 0
-  upgrades:
-    upgradeMultiplier: 0.5
-    upgradeMovementSpeed: 1
-    movementSpeedUpgradeIncrease: 0.1
-    movementSpeedUpgradeMax: 3
   melee:
     meleeDamageMin: 2
     meleeDamageMax: 5
     meleeRange: 1.5
     meleeCooldown: 0.5
     canMelee: 1
-    statusEffectToApply: {fileID: 11400000, guid: 6499d90d213f8aa4db7fae68321bec63,
-      type: 2}
-    amount: 5
+    statusEffectsToApply: []
   ranged:
     rangedDamage: 0
     minRange: 0
@@ -2593,8 +2585,7 @@ MonoBehaviour:
     standStill: 0
     directRangedAttack: 0
     canRanged: 0
-    statusEffectToApply: {fileID: 0}
-    amount: 0
+    statusEffectsToApply: []
   special:
     specialCooldown: 0
     specialDamage: 0
@@ -2604,8 +2595,8 @@ MonoBehaviour:
     lookAtTarget: 1
     availableFromStart: 1
     canSpecial: 0
-    statusEffectToApply: {fileID: 0}
-    amount: 0
+    statusEffectsToApply: []
+  statModifiers: []
   movementSpeed: 2
   chaseTime: 10
   stoppedMoving: 0
@@ -2637,14 +2628,22 @@ MonoBehaviour:
   head: {fileID: 6678697177595095796}
   sounds:
     headHeight: 2
+    basePitch: 1
     idleSounds: []
     idleVolume: 0.3
+    alertSounds: []
+    alertVolume: 0.3
+    alertingSoundChance: 0.9
+    alertedSoundChance: 0.15
     meleeSounds: []
     meleeVolume: 0.4
-    rangedSound: {fileID: 0}
+    meleeSoundChance: 0.6
+    rangedSounds: []
     rangedVolume: 0.4
-    specialSound: {fileID: 0}
+    rangedSoundChance: 1
+    specialSounds: []
     specialVolume: 0.4
+    specialSoundChance: 1
     footstepSounds:
     - {fileID: 8300000, guid: b32b06d7745aff84aa136d5c8745cc1f, type: 3}
     - {fileID: 8300000, guid: 8f2a23f711bfab54da2c389814512b66, type: 3}
@@ -2663,6 +2662,9 @@ MonoBehaviour:
   walking: 0
   stopMovement: 0
   stopPathfinding: 0
+  damageStatusEffect:
+    statusEffect: {fileID: 11400000, guid: 4e4e7de589f30bf40907ea1d117607fe, type: 2}
+    amount: 0
 --- !u!95 &1207774076651040211
 Animator:
   serializedVersion: 3
