@@ -377,7 +377,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 40013992}
   m_LocalRotation: {x: -0, y: 0.49999925, z: -0, w: 0.8660259}
-  m_LocalPosition: {x: -3.476, y: -0.516, z: -4.157}
+  m_LocalPosition: {x: -3.5370002, y: -0.516, z: -4.968}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1371212359}
@@ -1953,7 +1953,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 348687984}
   m_LocalRotation: {x: -0, y: 0.7933523, z: -0, w: 0.60876286}
-  m_LocalPosition: {x: -3.539, y: -0.53, z: -1.747}
+  m_LocalPosition: {x: -3.6000001, y: -0.53, z: -2.558}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1371212359}
@@ -2446,7 +2446,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 453066154}
   m_LocalRotation: {x: -0, y: 0.70710576, z: -0, w: 0.70710784}
-  m_LocalPosition: {x: -3.45, y: -0.52099997, z: -3.107}
+  m_LocalPosition: {x: -3.5110002, y: -0.52099997, z: -3.9180002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1371212359}
@@ -3130,6 +3130,70 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 527863759}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &529564681
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 529564684}
+  - component: {fileID: 529564682}
+  - component: {fileID: 529564683}
+  m_Layer: 0
+  m_Name: Player5
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &529564682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 529564681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96c651e13c903e448adc32339c2f74c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  isTaken: 0
+  player: {fileID: 0}
+--- !u!114 &529564683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 529564681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 2689599067
+  serverOnly: 0
+  m_AssetId: 
+  hasSpawned: 0
+--- !u!4 &529564684
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 529564681}
+  m_LocalRotation: {x: -0, y: 0.96592534, z: -0, w: 0.2588209}
+  m_LocalPosition: {x: -3.46, y: -0.52, z: -1.12}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1371212359}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 150, z: 0}
 --- !u!1 &531243858
 GameObject:
   m_ObjectHideFlags: 0
@@ -5284,7 +5348,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 884348905}
   m_LocalRotation: {x: -0, y: 0.96592534, z: -0, w: 0.2588209}
-  m_LocalPosition: {x: -3.399, y: -0.52, z: -0.309}
+  m_LocalPosition: {x: -3.53, y: -0.52, z: 0.19}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1371212359}
@@ -13327,6 +13391,7 @@ Transform:
   - {fileID: 453066155}
   - {fileID: 348687985}
   - {fileID: 884348906}
+  - {fileID: 529564684}
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -26079,6 +26144,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5775978665081959301, guid: 04a3e6ef89d73c94fb0ab04c649d5457,
         type: 3}
+      propertyPath: lobbySeats.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5775978665081959301, guid: 04a3e6ef89d73c94fb0ab04c649d5457,
+        type: 3}
       propertyPath: lobbySeats.Array.data[0]
       value: 
       objectReference: {fileID: 40013994}
@@ -26120,6 +26190,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 6e02f3f114526574798927bb6afebdfd,
         type: 2}
+    - target: {fileID: 5775978665081959301, guid: 04a3e6ef89d73c94fb0ab04c649d5457,
+        type: 3}
+      propertyPath: lobbySeats.Array.data[4]
+      value: 
+      objectReference: {fileID: 529564682}
     - target: {fileID: 5775978665081959303, guid: 04a3e6ef89d73c94fb0ab04c649d5457,
         type: 3}
       propertyPath: m_LocalPosition.x
