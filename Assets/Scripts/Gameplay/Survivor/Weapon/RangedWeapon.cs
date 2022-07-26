@@ -35,8 +35,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [SerializeField, Range(0f, 1f), Tooltip("Affects weapon accuracy")] protected float aimingRecoil = 0.05f;
     [SerializeField, Tooltip("Affects weapon and camera shake")] protected float visualPunchback = 0.2f;
     [SerializeField, Tooltip("Affects weapon and camera shake")] protected float aimingVisualPunchback = 0.1f;
-    [SerializeField] protected float hipFOV = 1f;
-    [SerializeField] protected float ADSFOV = 1f;
+    [SerializeField] protected float hipFOV = 80f;
+    [SerializeField] protected float ADSFOV = 50f;
     [SerializeField] protected float stabilization = 1f;
     [SerializeField] protected float currentAccuracy = 0f;
     [SerializeField] protected float currentCurveAccuracy = 0f;
@@ -48,7 +48,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [SerializeField] protected Camera playerCamera;
     [SerializeField] private GameObject muzzleFlash = null;
     [SerializeField] protected Transform aimSight = null;
-    [SerializeField] protected Vector3 hipAimPosition;
+    protected Vector3 hipAimPosition;
     [SerializeField] private ParticleSystem muzzleParticle;
     [SerializeField] private SFXPlayer sfxPlayer = null;
 
@@ -224,7 +224,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         playerHead = interacter.GetComponent<LookController>().RotateVertical;
         playerCamera = playerHead.Find("PlayerCamera(Clone)").GetComponent<Camera>();
         hipFOV = playerCamera.fieldOfView;
-        ADSFOV = hipFOV - 8f;
+        ADSFOV = hipFOV - 10f;
         GetUIElements(interacter.transform);
         hipAimPosition = transform.parent.localPosition;
         transform.DOComplete();
@@ -352,7 +352,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         IsAiming = aim;
         Cmd_Aim(aim);
         ScaleCrosshair(IsAiming ? 0 : 1, 0.1f);
-        //SetFOV(IsAiming ? ADSFOV : hipFOV, 0.1f); // TODO: Find fix for DOTween complete messing this up.
+        SetFOV(IsAiming ? ADSFOV : hipFOV, 0.1f); // TODO: Find fix for DOTween complete messing this up.
         Vector3 targetAimPosition = new Vector3(0f, 0.1f - aimSight.localPosition.y, -aimSight.localPosition.z);
 
         transform.parent.DOComplete();
