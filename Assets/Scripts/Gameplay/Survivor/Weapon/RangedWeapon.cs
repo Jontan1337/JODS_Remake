@@ -156,7 +156,13 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
     #endregion
 
+    // This is not called when object is instantiated. (This is only for editor purposes)
     private void OnValidate()
+    {
+        InitVariables();
+    }
+
+    private void InitVariables()
     {
         // Initialize variables.
         currentRecoil = recoil;
@@ -194,6 +200,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
     public override void OnStartClient()
     {
+        InitVariables();
         base.OnStartClient();
         OnImpact += ImpactShake;
         impactData = new ImpactData(currentVisualPunchback, ImpactSourceType.Ranged);
@@ -649,6 +656,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         sfxPlayer.PlaySFX(shootSound);
         muzzleParticle.Emit(10);
         OnImpact?.Invoke(impactData);
+        print("ShootFX");
     }
     protected void ImpactShake(ImpactData impactData)
     {

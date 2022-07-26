@@ -85,11 +85,17 @@ public class MeleeWeapon : EquipmentItem, IImpacter
 
     public override void OnStartClient()
     {
-        if (!isServer) return;
-        base.OnStartServer();
-        triggerCollider.enabled = false;
-        colliderEnabled = false;
         impactData = new ImpactData(impactAmount, ImpactSourceType.Melee);
+        if (!isServer) return;
+        // This should be false by default until it is equipped.
+        print("OnStartClient");
+        //triggerCollider.enabled = false;
+        //colliderEnabled = false;
+    }
+
+    public override void OnStartAuthority()
+    {
+
     }
 
     protected override void OnLMBPerformed(InputAction.CallbackContext context) => Cmd_StartAttack();
@@ -103,6 +109,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
         animatorEnabled = true;
         colliderEnabled = true;
         triggerCollider.enabled = true;
+        print("Svr_Pickup");
     }
 
     [Server]
@@ -143,8 +150,6 @@ public class MeleeWeapon : EquipmentItem, IImpacter
 
     private void OnTriggerEnter(Collider other)
     {
-        print("isAttacking" + isAttacking);
-        print("canAttack" + canAttack);
         if (!isAttacking) return;
 
         // Wack camera shake animation played on local client.
@@ -155,6 +160,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
 
         if (isServer)
         {
+            print("Damage!");
             IDamagable damagable = null;
             // Damage the target root unless it's the same as previous root
             // (prevent multiple attacks on child colliders of same parent).
