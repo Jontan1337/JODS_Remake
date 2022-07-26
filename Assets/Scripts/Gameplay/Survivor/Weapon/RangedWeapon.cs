@@ -44,7 +44,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
     [Header("References")]
     [SerializeField] protected Transform shootOrigin = null;
-    [SerializeField, SyncVar] protected Transform playerHead;
+    [SerializeField, SyncVar(hook = nameof(SetPlayerCamera))] protected Transform playerHead;
     [SerializeField] protected Camera playerCamera;
     [SerializeField] private GameObject muzzleFlash = null;
     [SerializeField] protected Transform aimSight = null;
@@ -215,7 +215,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     {
         base.Svr_Interact(interacter);
         playerHead = interacter.GetComponent<LookController>().RotateVertical;
-        playerCamera = playerHead.Find("WeaponAimTarget").GetComponent<Camera>();
+        playerCamera = playerHead.Find("PlayerCamera(Clone)").GetComponent<Camera>();
         cameraSettings = playerHead.Find("PlayerCamera(Clone)").GetComponent<CameraSettings>();
     }
 
@@ -229,16 +229,26 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         hipFOV = playerCamera.fieldOfView;
         ADSFOV = hipFOV - 10f;
         GetUIElements(interacter.transform);
-        hipAimPosition = transform.parent.localPosition;
         transform.DOComplete();
     }
 
-    //private void SetPlayerCamera(Transform oldValue, Transform newValue)
-    //{
-    //    if (!newValue) return;
+    [Server]
+    public override void Svr_ParentChanged()
+    {
+        hipAimPosition = transform.parent.localPosition;
+    }
+    [Client]
+    public override void ParentChanged()
+    {
+        hipAimPosition = transform.parent.localPosition;
+    }
 
-    //    playerCamera = newValue.GetChild(0).GetComponent<Camera>();
-    //}
+    private void SetPlayerCamera(Transform oldValue, Transform newValue)
+    {
+        if (!newValue) return;
+
+        playerCamera = newValue.Find("PlayerCamera(Clone)").GetComponent<Camera>();
+    }
 
     public override void Bind()
     {

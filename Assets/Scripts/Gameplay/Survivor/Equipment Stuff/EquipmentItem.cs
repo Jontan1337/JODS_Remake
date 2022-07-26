@@ -52,12 +52,26 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 			TryGetComponent(out outline);
 	}
 
-	[Server]
+    private void OnTransformParentChanged()
+    {
+		if (transform.parent == null) return;
+
+        if (isServer)
+        {
+			Svr_ParentChanged();
+        }
+		if (!isServer && hasAuthority)
+        {
+			ParentChanged();
+        }
+    }
+
+    [Server]
 	public virtual void Svr_Interact(GameObject interacter)
 	{
 		if (!IsInteractable) return;
-		// Equipment should be on a child object of the player.
 		Rpc_Interact(interacter.GetComponent<NetworkIdentity>().connectionToClient, interacter);
+		// Equipment should be on a child object of the player.
 		PlayerEquipment equipment = interacter.GetComponentInChildren<PlayerEquipment>();
 		owner = interacter.transform;
 		if (equipment != null)
@@ -75,6 +89,15 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	public virtual void Rpc_Interact(NetworkConnection target, GameObject interacter)
 	{
 		playerClass = interacter.GetComponent<ActiveSClass>();
+	}
+
+	[Server]
+	public virtual void Svr_ParentChanged()
+	{
+	}
+	[Client]
+	public virtual void ParentChanged()
+	{
 	}
 
 	public virtual void Bind()
@@ -152,10 +175,10 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 		{
 			Rpc_ToggleOutline(false);
 		}
-		Rpc_Pickup();
+		Rpc_Pickup(connectionToClient);
 	}
-	[ClientRpc]
-	public virtual void Rpc_Pickup()
+	[TargetRpc]
+	public virtual void Rpc_Pickup(NetworkConnection target)
 	{
 
 	}
@@ -180,11 +203,11 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 		{
 			Rpc_ToggleOutline(true);
 		}
+		Rpc_Drop(connectionToClient);
 		authController.Svr_RemoveAuthority();
-		Rpc_Drop();
 	}
-	[ClientRpc]
-	public virtual void Rpc_Drop()
+	[TargetRpc]
+	public virtual void Rpc_Drop(NetworkConnection target)
 	{
 
 	}
