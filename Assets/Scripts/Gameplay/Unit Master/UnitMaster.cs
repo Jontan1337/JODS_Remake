@@ -867,7 +867,7 @@ public class UnitMaster : NetworkBehaviour
         if (hasChosenASpawnable) UnitButtonChooseUI(false);
 
         //Then choose the new unit
-        chosenSpawnableIndex = unit.buttonIndex;
+        Cmd_ChooseSpawnable(unit.buttonIndex);
 
         hasChosenASpawnable = true;
         unit.chosen = true;
@@ -886,13 +886,12 @@ public class UnitMaster : NetworkBehaviour
 
     private void ChooseDeployable(DeployableList deployable)
     {
-        print("deployable wont be chosennnnnn");
         Unchoose(true);
 
         //If the deployable is not unlocked, return;
         if (!deployable.unlocked) return;
 
-        chosenSpawnableIndex = deployable.buttonIndex;
+        Cmd_ChooseSpawnable(deployable.buttonIndex);
         hasChosenASpawnable = true;
 
         UnitButtonChooseUI(true);
@@ -902,6 +901,12 @@ public class UnitMaster : NetworkBehaviour
             //This will enable the marker for the flying camera, which is mostly a visual aid
             EnableFlyingMarker(true);
         }
+    }
+
+    [Command]
+    private void Cmd_ChooseSpawnable(int number)
+    {
+        chosenSpawnableIndex = number;
     }
 
     private void Unchoose(bool keepMarker = false)
@@ -1652,6 +1657,7 @@ public class UnitMaster : NetworkBehaviour
                 Rpc_EnableUpgradesForUnit(netIdentity.connectionToClient, chosenSpawnableIndex);
             }
 
+            print(chosenUnitList.name);
             unit.SetUnitSO(chosenUnitList.unit);
 
             if (chosenUnitList.hasDamageTrait) unit.ApplyDamageTrait();
