@@ -412,7 +412,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         }
 
         //Movement
-        movementSpeed = unitSO.movementSpeed * statModifiers.Length > 0 ? statModifiers[2] : 1;
+        movementSpeed = unitSO.movementSpeed * (statModifiers.Length > 0 ? statModifiers[2] : 1);
 
         //Refunding
         refundAmount = unitSO.refundAmount;

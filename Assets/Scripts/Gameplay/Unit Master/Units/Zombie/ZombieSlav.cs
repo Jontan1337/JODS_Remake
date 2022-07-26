@@ -15,17 +15,19 @@ public class ZombieSlav : UnitBase, IControllable
 
     public override void ApplyHealthTrait()
     {
-        throw new System.NotImplementedException();
+        print("htlh");
+
     }
 
     public override void ApplyDamageTrait()
     {
-        throw new System.NotImplementedException();
+        print("dmg");
     }
 
     public override void ApplySpeedTrait()
     {
-        throw new System.NotImplementedException();
+        print("speed");
+
     }
 
     public override void OnSelect()
