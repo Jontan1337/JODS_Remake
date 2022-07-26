@@ -44,7 +44,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
     [Header("References")]
     [SerializeField] protected Transform shootOrigin = null;
-    [SerializeField, SyncVar(hook = nameof(SetPlayerCamera))] protected Transform playerHead;
+    [SerializeField, SyncVar] protected Transform playerHead;
     [SerializeField] protected Camera playerCamera;
     [SerializeField] private GameObject muzzleFlash = null;
     [SerializeField] protected Transform aimSight = null;
@@ -215,7 +215,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     {
         base.Svr_Interact(interacter);
         playerHead = interacter.GetComponent<LookController>().RotateVertical;
-        playerCamera = playerHead.Find("PlayerCamera(Clone)").GetComponent<Camera>();
+        playerCamera = playerHead.Find("WeaponAimTarget").GetComponent<Camera>();
         cameraSettings = playerHead.Find("PlayerCamera(Clone)").GetComponent<CameraSettings>();
     }
 
@@ -225,6 +225,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         base.Rpc_Interact(target, interacter);
         playerHead = interacter.GetComponent<LookController>().RotateVertical;
         playerCamera = playerHead.Find("PlayerCamera(Clone)").GetComponent<Camera>();
+        cameraSettings = playerHead.Find("PlayerCamera(Clone)").GetComponent<CameraSettings>();
         hipFOV = playerCamera.fieldOfView;
         ADSFOV = hipFOV - 10f;
         GetUIElements(interacter.transform);
@@ -232,12 +233,12 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         transform.DOComplete();
     }
 
-    private void SetPlayerCamera(Transform oldValue, Transform newValue)
-    {
-        if (!newValue) return;
+    //private void SetPlayerCamera(Transform oldValue, Transform newValue)
+    //{
+    //    if (!newValue) return;
 
-        playerCamera = newValue.GetChild(0).GetComponent<Camera>();
-    }
+    //    playerCamera = newValue.GetChild(0).GetComponent<Camera>();
+    //}
 
     public override void Bind()
     {
@@ -288,10 +289,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     private Tweener ScaleCrosshair(float value, float duration)
     {
         return crosshairUIParent.DOScale(value, duration);
-    }
-    private Tweener SetFOV(float value, float duration)
-    {
-        return playerCamera.DOFieldOfView(value, duration);
     }
 
     private void CreateCrosshair()
