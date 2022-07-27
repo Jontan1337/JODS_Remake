@@ -37,7 +37,7 @@ public class RaycastWeapon : RangedWeapon
             float currentDamage = damage;
             for (int i = 0; i <= penetrationAmount; i++)
             {
-                if (Physics.Raycast(shootRay, out shootHit, range))
+                if (Physics.Raycast(shootRay, out shootHit, range, ~ignoreLayer))
                 {
                     if (shootHit.collider.TryGetComponent(out IDamagable damagable))
                     {

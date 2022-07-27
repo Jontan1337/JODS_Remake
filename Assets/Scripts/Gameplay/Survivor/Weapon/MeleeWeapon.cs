@@ -26,7 +26,8 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     [SerializeField, Range(0f, 300f)] private float splatterRemoveAmount = 300f;
     [SerializeField, Range(-0.35f, 0f)] private float splatterRemoveAmountOnSwing = -0.01f;
     [SerializeField] private float impactDuration = 0.2f;
-    [SerializeField] private float impactAmount = 1f;
+    [SerializeField] private float hitImpactShakeAmount = 1f;
+    [SerializeField] private float missImpactShakeAmount = 1f;
 
     [Header("References")]
     [SerializeField] private Animator weaponAnimator = null;
@@ -55,7 +56,8 @@ public class MeleeWeapon : EquipmentItem, IImpacter
 
     private NetworkAnimator networkAnimator;
 
-    ImpactData impactData;
+    ImpactData hitImpactData;
+    ImpactData missImpactData;
     public Action<ImpactData> OnImpact { get; set; }
 
     private const string IdleAnim = "Idle";
@@ -81,11 +83,13 @@ public class MeleeWeapon : EquipmentItem, IImpacter
         material = GetComponent<MeshRenderer>().material;
         networkAnimator = GetComponent<NetworkAnimator>();
         weaponAnimator.speed = 1f / attackInterval;
+        ignoreLayer = LayerMask.GetMask("Survivor", "StatusEffectApplierOnlySurvivor");
     }
 
     public override void OnStartClient()
     {
-        impactData = new ImpactData(impactAmount, ImpactSourceType.Melee);
+        hitImpactData = new ImpactData(hitImpactShakeAmount, ImpactSourceType.Melee);
+        missImpactData = new ImpactData(missImpactShakeAmount, ImpactSourceType.Melee);
         if (!isServer) return;
         // This should be false by default until it is equipped.
         print("OnStartClient");
@@ -155,11 +159,12 @@ public class MeleeWeapon : EquipmentItem, IImpacter
         // Wack camera shake animation played on local client.
         if (hasAuthority)
         {
-            OnImpact?.Invoke(impactData);
+            OnImpact?.Invoke(hitImpactData);
         }
 
         if (isServer)
         {
+            print(other.gameObject);
             print("Damage!");
             IDamagable damagable = null;
             // Damage the target root unless it's the same as previous root
@@ -195,13 +200,13 @@ public class MeleeWeapon : EquipmentItem, IImpacter
                         if (amountSlashed == currentPunchthrough)
                         {
                             weaponAnimator.speed = 0f;
-                            Svr_ImpactShake(impactDuration, impactAmount);
+                            Svr_ImpactShake(impactDuration, hitImpactShakeAmount);
                             JODSTime.WaitTimeEvent(impactDuration, delegate ()
                             {
                                 Svr_ResetAnimatorSpeed();
                                 Svr_EndOfAttack();
                             });
-                            Rpc_ImpactShake(connectionToClient, impactDuration, impactAmount);
+                            Rpc_ImpactShake(connectionToClient, impactDuration, hitImpactShakeAmount);
                         }
                     }
                     break;
@@ -209,11 +214,11 @@ public class MeleeWeapon : EquipmentItem, IImpacter
                     weaponAnimator.speed = 0f;
                     JODSTime.WaitTimeEvent(impactDuration, delegate ()
                     {
-                        weaponAnimator.CrossFade(IdleAnim, impactDuration);
+                        //weaponAnimator.CrossFade(IdleAnim, impactDuration); // This makes animation look dumb.
                         Svr_ResetAnimatorSpeed();
                         Svr_EndOfAttack();
                     });
-                    Rpc_ImpactShake(connectionToClient, impactDuration, impactAmount);
+                    Rpc_ImpactShake(connectionToClient, impactDuration, hitImpactShakeAmount);
                     break;
                 case DamageTypes.Pierce:
                     break;
@@ -287,6 +292,12 @@ public class MeleeWeapon : EquipmentItem, IImpacter
         if (!hasAuthority) return;
 
         Cmd_StartOfAttack();
+
+        // Wack camera shake animation played on local client.
+        if (hasAuthority)
+        {
+            OnImpact?.Invoke(missImpactData);
+        }
     }
 
     // Called by animation event.
@@ -388,8 +399,8 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     private void Rpc_ImpactShake(NetworkConnection target, float duration, float amount)
     {
         transform.parent.DOComplete();
-        transform.parent.DOPunchPosition(new Vector3(0f, 0.1f, -0.1f), duration, 10, 0.1f);
-        transform.parent.DOPunchRotation(new Vector3(2f, 1f, UnityEngine.Random.Range(-1f, 1f)), duration, 10, 0.1f);
+        transform.parent.DOPunchPosition(new Vector3(0f, 0.1f, -0.1f) * hitImpactShakeAmount, duration, 3, 0.1f);
+        transform.parent.DOPunchRotation(new Vector3(2f, 1f, UnityEngine.Random.Range(-1f, 1f)) * hitImpactShakeAmount, duration, 3, 0.1f);
     }
 
     [ClientRpc]

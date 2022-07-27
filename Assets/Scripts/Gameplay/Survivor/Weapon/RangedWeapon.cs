@@ -30,17 +30,18 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     //[SerializeField] protected int maxExtraAmmunition = 20;
 
     [Header("Game details")]
-    //[SerializeField, SyncVar] private string player = "Player name";
     [SerializeField, Range(0f, 1f), Tooltip("Affects weapon accuracy")] protected float recoil = 0.1f;
     [SerializeField, Range(0f, 1f), Tooltip("Affects weapon accuracy")] protected float aimingRecoil = 0.05f;
     [SerializeField, Tooltip("Affects weapon and camera shake")] protected float visualPunchback = 0.2f;
     [SerializeField, Tooltip("Affects weapon and camera shake")] protected float aimingVisualPunchback = 0.1f;
+    [SerializeField] private float aimingSpeed = 0.1f;
     [SerializeField] protected float hipFOV = 80f;
     [SerializeField] protected float ADSFOV = 50f;
     [SerializeField] protected float stabilization = 1f;
     [SerializeField] protected float currentAccuracy = 0f;
     [SerializeField] protected float currentCurveAccuracy = 0f;
     [SerializeField] protected AnimationCurve recoilCurve;
+    [SerializeField] private int muzzleParticleEmitAmount = 10;
 
     [Header("References")]
     [SerializeField] protected Transform shootOrigin = null;
@@ -48,7 +49,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [SerializeField] protected Camera playerCamera;
     [SerializeField] private GameObject muzzleFlash = null;
     [SerializeField] protected Transform aimSight = null;
-    protected Vector3 hipAimPosition;
     [SerializeField] private ParticleSystem muzzleParticle;
     [SerializeField] private SFXPlayer sfxPlayer = null;
 
@@ -61,6 +61,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
     [SerializeField] private bool debugWeapon = false;
 
+    protected Vector3 hipAimPosition;
     protected float damageFallOff = 0;
 
     private Transform crosshairUIParent;
@@ -80,11 +81,12 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [SyncVar] private bool isAiming = false;
     private bool canShoot = true;
     private float currentRecoil = 0f;
-    private float currentVisualPunchback = 0f;
     private int fireModeIndex = 0;
     private CameraSettings cameraSettings = null;
 
-    ImpactData impactData;
+    protected ImpactData impactData;
+    protected ImpactData aimingImpactData;
+
     public Action<ImpactData> OnImpact { get; set; }
 
     public int Magazine { 
@@ -166,7 +168,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     {
         // Initialize variables.
         currentRecoil = recoil;
-        currentVisualPunchback = visualPunchback;
         currentCurveAccuracy = recoilCurve.Evaluate(0f);
         foreach (int modeIndex in fireModes)
         {
@@ -203,7 +204,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         InitVariables();
         base.OnStartClient();
         OnImpact += ImpactShake;
-        impactData = new ImpactData(currentVisualPunchback, ImpactSourceType.Ranged);
+        impactData = new ImpactData(visualPunchback, ImpactSourceType.Ranged);
+        aimingImpactData = new ImpactData(aimingVisualPunchback, ImpactSourceType.Ranged);
     }
 
     public override void OnStartAuthority()
@@ -369,11 +371,10 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         Cmd_Aim(aim);
         ScaleCrosshair(IsAiming ? 0 : 1, 0.1f);
         cameraSettings.SetFOV(IsAiming ? ADSFOV : hipFOV, 0.1f);
-        //SetFOV(IsAiming ? ADSFOV : hipFOV, 0.1f); // TODO: Find fix for DOTween complete messing this up.
         Vector3 targetAimPosition = new Vector3(0f, 0.1f - aimSight.localPosition.y, -aimSight.localPosition.z);
 
         transform.parent.DOComplete();
-        transform.parent.DOLocalJump(IsAiming ? targetAimPosition : hipAimPosition, -0.05f, 1, 0.1f);
+        transform.parent.DOLocalJump(IsAiming ? targetAimPosition : hipAimPosition, -0.05f, 1, aimingSpeed);
     }
 
     private void OnReload(InputAction.CallbackContext context) => Cmd_Reload();
@@ -386,7 +387,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     {
         IsAiming = aim;
         currentRecoil = IsAiming ? aimingRecoil : recoil;
-        currentVisualPunchback = IsAiming ? aimingVisualPunchback : visualPunchback;
     }
 
     [Command]
@@ -654,9 +654,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     protected void ShootFX()
     {
         sfxPlayer.PlaySFX(shootSound);
-        muzzleParticle.Emit(10);
-        OnImpact?.Invoke(impactData);
-        print("ShootFX");
+        muzzleParticle.Emit(muzzleParticleEmitAmount);
+        OnImpact?.Invoke(IsAiming ? aimingImpactData : impactData);
     }
     protected void ImpactShake(ImpactData impactData)
     {
