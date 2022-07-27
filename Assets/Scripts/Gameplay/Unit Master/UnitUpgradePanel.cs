@@ -10,11 +10,29 @@ public class UnitUpgradePanel : MonoBehaviour
     [Header("Master References")]
     [SerializeField] private int unitIndex = 0;
 
+    [Header("Upgrades")]
+    private int upgradesAvailable = 0;
+
+    public int UpgradesAvailable
+    {
+        get { return upgradesAvailable; }
+        set 
+        {
+            upgradesAvailable = value;
+            upgradesAvailableText.text = "Upgrades: \n"+upgradesAvailable;
+            if (value > 0)
+            {
+                EnableUpgrades(true);
+            }
+        }
+    }
+
     [Header("General References")]
     [SerializeField] private Image unitImage = null;
     [SerializeField] private Text unitName = null;
     [SerializeField] private Text upgradeText = null;
     [SerializeField] private Text unitTypeText = null;
+    [SerializeField] private Text upgradesAvailableText = null;
     [SerializeField] private GameObject unlockPanel = null;
     [SerializeField] private Button unlockButton = null;
     [SerializeField] private Text unlockButtonText = null;
@@ -54,6 +72,7 @@ public class UnitUpgradePanel : MonoBehaviour
         unitIndex = index;
         unitListRef = unitMaster.GetUnitList(unitIndex);
         unitTypeText.text = $"Unit Type: \n{unitSO.unitDamageType}";
+        upgradesAvailableText.text = "Upgrades: \n0";
         unlocked = unitSO.starterUnit;
 
         unlockPanel.SetActive(!unitSO.starterUnit);

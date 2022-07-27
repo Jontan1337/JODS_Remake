@@ -16,6 +16,7 @@ public class UnitList
     public int upgradeMilestone = 50;
     public AnimationCurve upgradeCurve;
     public int totalUpgrades = 0;
+    public int upgradesAvailable = 0;
     [Space]
     [Space]
     public float healthModifier = 1;
@@ -1195,14 +1196,8 @@ public class UnitMaster : NetworkBehaviour
 
     private void UnitLevelUp(UnitList unit)
     {
-        unit.level++;
-
-        int newMilestone = Mathf.RoundToInt(unit.unit.upgrades.unitsToPlace *
-            (1 + unit.upgradeCurve.Evaluate((unit.upgradeCurve.keys[unit.upgradeCurve.keys.Length - 1].time / unit.totalUpgrades) * unit.level)));
-
-        unit.upgradeMilestone = newMilestone;
-
-        Rpc_UpdateMilestoneForClient(netIdentity.connectionToClient, unit.unitIndex, unit.upgradeMilestone);
+        unit.upgradesAvailable--;
+        Rpc_SetUpgradesAvailable(netIdentity.connectionToClient, unit.unitIndex, unit.upgradesAvailable);
     }
 
     public void UnlockNew(UnitList unit = null, DeployableList deployable = null)
@@ -1654,7 +1649,19 @@ public class UnitMaster : NetworkBehaviour
 
             if (chosenUnitList.upgradeMilestone <= 0)
             {
-                Rpc_EnableUpgradesForUnit(netIdentity.connectionToClient, chosenSpawnableIndex);
+                chosenUnitList.upgradesAvailable++;
+                Rpc_SetUpgradesAvailable(netIdentity.connectionToClient, chosenSpawnableIndex, chosenUnitList.upgradesAvailable);
+
+                chosenUnitList.level++;
+
+                int newMilestone = Mathf.RoundToInt(chosenUnitList.unit.upgrades.unitsToPlace *
+                (1 + chosenUnitList.upgradeCurve.Evaluate(
+                    (chosenUnitList.upgradeCurve.keys[chosenUnitList.upgradeCurve.keys.Length - 1].time / 
+                    chosenUnitList.totalUpgrades) * chosenUnitList.level)));
+
+                chosenUnitList.upgradeMilestone = newMilestone;
+
+                Rpc_UpdateMilestoneForClient(netIdentity.connectionToClient, chosenUnitList.unitIndex, chosenUnitList.upgradeMilestone);
             }
 
             print(chosenUnitList.name);
@@ -1682,11 +1689,11 @@ public class UnitMaster : NetworkBehaviour
     }
 
     [TargetRpc]
-    private void Rpc_EnableUpgradesForUnit(NetworkConnection target, int unitIndex)
+    private void Rpc_SetUpgradesAvailable(NetworkConnection target, int unitIndex, int upgradesAvailable)
     {
         UnitList chosenUnitList = unitList[unitIndex];
 
-        chosenUnitList.upgradePanel.EnableUpgrades(true);
+        chosenUnitList.upgradePanel.UpgradesAvailable = upgradesAvailable;
     }
 
     [TargetRpc]
