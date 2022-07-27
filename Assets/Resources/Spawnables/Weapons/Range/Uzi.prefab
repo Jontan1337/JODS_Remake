@@ -1261,8 +1261,9 @@ MonoBehaviour:
   highPower: 0
   recoil: 0.4
   aimingRecoil: 0.05
-  visualPunchback: 0.3
+  visualPunchback: 0.2
   aimingVisualPunchback: 0.1
+  aimingSpeed: 0.1
   hipFOV: 1
   ADSFOV: 1
   stabilization: 1.5
@@ -1292,6 +1293,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  muzzleParticleEmitAmount: 10
   shootOrigin: {fileID: 2548197299519980060}
   playerHead: {fileID: 0}
   playerCamera: {fileID: 0}

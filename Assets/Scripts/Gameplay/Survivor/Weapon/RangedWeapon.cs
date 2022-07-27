@@ -37,7 +37,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [SerializeField] private float aimingSpeed = 0.1f;
     [SerializeField] protected float hipFOV = 80f;
     [SerializeField] protected float ADSFOV = 50f;
-    [SerializeField] protected float stabilization = 1f;
+    [SerializeField, Tooltip("If stabilization is the same as the recoil, recoil won't decrease")] protected float stabilization = 1f;
     [SerializeField] protected float currentAccuracy = 0f;
     [SerializeField] protected float currentCurveAccuracy = 0f;
     [SerializeField] protected AnimationCurve recoilCurve;
