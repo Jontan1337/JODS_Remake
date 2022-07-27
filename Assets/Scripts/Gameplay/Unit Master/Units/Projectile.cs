@@ -77,11 +77,13 @@ public abstract class Projectile : NetworkBehaviour
 	{
 		if (!isServer) return;
 
+
 		if (!piercing && !hasHit)
 		{
 			hasHit = true; //Prevents the projectile from hitting multiple times
 			if (sticky)
 			{
+
 				transform.SetParent(objectHit.transform);
 				rb.velocity = Vector3.zero;
 			}

@@ -16,6 +16,7 @@ public class Syringe : Projectile
     [Server]
     public override void OnHit(Collision hit)
     {
+        print(hit.transform.name);
         base.OnHit(hit);
         IDamagable idmg = hit.collider.GetComponent<IDamagable>();
         if (idmg?.Team == Teams.Player)
