@@ -418,7 +418,9 @@ MonoBehaviour:
   recoil: 0.4
   aimingRecoil: 0.05
   visualPunchback: 0.5
-  aimingVisualPunchback: 0.1
+  aimingVisualPunchback: 0.05
+  hipFOV: 80
+  ADSFOV: 50
   stabilization: 2
   currentAccuracy: 0
   currentCurveAccuracy: 2
@@ -451,7 +453,6 @@ MonoBehaviour:
   playerCamera: {fileID: 0}
   muzzleFlash: {fileID: 296846283720215069}
   aimSight: {fileID: 6775138344138655200}
-  hipAimPosition: {x: 0, y: 0, z: 0}
   muzzleParticle: {fileID: 3552550223101688452}
   sfxPlayer: {fileID: 7493296977824143129}
   crosshairPrefab: {fileID: 7567561865917243704, guid: 3ebd556d7ba54f745bfe343e53e58796,

@@ -725,14 +725,15 @@ MonoBehaviour:
   currentPunchthrough: 2
   normalPunchthrough: 2
   damageType: 1
-  attackInterval: 0.9
+  attackInterval: 0.7
   splatterAmount: 0
   maxSplatterAmount: 0.35
   splatterAmountOnHit: 0.04
   splatterRemoveAmount: 300
   splatterRemoveAmountOnSwing: -0.01
-  impactDuration: 0.5
-  impactAmount: 1
+  impactDuration: 0.3
+  hitImpactShakeAmount: 0.6
+  missImpactShakeAmount: 0.3
   weaponAnimator: {fileID: 7119151799590538732}
   sfxPlayer: {fileID: 5247268446413630599}
   material: {fileID: 2100000, guid: f96cadb658ef79f4cb1d04fc10740bb9, type: 2}
