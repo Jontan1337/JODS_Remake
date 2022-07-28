@@ -1232,7 +1232,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  header1: 
   itemName: Item name
   equipmentType: 1
   unequippedLayer: 14
@@ -1255,7 +1254,7 @@ MonoBehaviour:
   fireRate: 950
   fireInterval: 0.06315789
   bulletsPerShot: 1
-  magazine: 99999
+  magazine: 32
   magazineSize: 32
   extraAmmunition: 64
   highPower: 0
@@ -1268,15 +1267,15 @@ MonoBehaviour:
   ADSFOV: 1
   stabilization: 1.5
   currentAccuracy: 0
-  currentCurveAccuracy: 2
+  currentCurveAccuracy: 7
   recoilCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 2
-      inSlope: 30.16
-      outSlope: 30.16
+      value: 7
+      inSlope: 25.16
+      outSlope: 25.16
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
@@ -1284,8 +1283,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 32.16
-      inSlope: 30.16
-      outSlope: 30.16
+      inSlope: 25.16
+      outSlope: 25.16
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
@@ -1306,6 +1305,7 @@ MonoBehaviour:
   shootSound: {fileID: 8300000, guid: 59033cce093954c4e968552b47b09c6a, type: 3}
   emptySound: {fileID: 8300000, guid: 6e8772b49f34d402a90016ed445d8a2f, type: 3}
   debugWeapon: 0
+  Plswork: 0
   header3: 
   range: 1000
   ignoreLayer:

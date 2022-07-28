@@ -1427,7 +1427,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  header1: 
   itemName: Item name
   equipmentType: 1
   unequippedLayer: 14
@@ -1456,19 +1455,22 @@ MonoBehaviour:
   highPower: 1
   recoil: 0.4
   aimingRecoil: 0.05
-  visualPunchback: 0.2
-  aimingVisualPunchback: 0.1
+  visualPunchback: 5
+  aimingVisualPunchback: 2
+  aimingSpeed: 0.1
+  hipFOV: 80
+  ADSFOV: 50
   stabilization: 2
   currentAccuracy: 0
-  currentCurveAccuracy: 2
+  currentCurveAccuracy: 15
   recoilCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 2
-      inSlope: 30.16
-      outSlope: 30.16
+      value: 15
+      inSlope: 17.16
+      outSlope: 17.16
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
@@ -1476,8 +1478,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 32.16
-      inSlope: 30.16
-      outSlope: 30.16
+      inSlope: 17.16
+      outSlope: 17.16
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
@@ -1485,12 +1487,12 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  muzzleParticleEmitAmount: 10
   shootOrigin: {fileID: 496574793386338643}
   playerHead: {fileID: 0}
   playerCamera: {fileID: 0}
   muzzleFlash: {fileID: 7279828956609956513}
   aimSight: {fileID: 5362741991102681338}
-  hipAimPosition: {x: 0, y: 0, z: 0}
   muzzleParticle: {fileID: 5788401340819110456}
   sfxPlayer: {fileID: 496574792408258469}
   crosshairPrefab: {fileID: 7567561865917243704, guid: 3ebd556d7ba54f745bfe343e53e58796,
@@ -1498,6 +1500,7 @@ MonoBehaviour:
   shootSound: {fileID: 8300000, guid: 4cec65af975f1ff47991f10f96662acf, type: 3}
   emptySound: {fileID: 8300000, guid: 6e8772b49f34d402a90016ed445d8a2f, type: 3}
   debugWeapon: 0
+  Plswork: 0
   header3: 
   range: 1000
   ignoreLayer:
