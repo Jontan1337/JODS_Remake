@@ -11,6 +11,7 @@ using UnityEngine.Events;
  RequireComponent(typeof(MeshCollider))]
 public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippable, IBindable
 {
+	[Title("EQUIPMENT ITEM", "", TitleAlignments.Centered)]
 	[Header("Basic info")]
 	[SerializeField] protected string itemName = "Item name";
 	[SerializeField] protected EquipmentType equipmentType = EquipmentType.None;

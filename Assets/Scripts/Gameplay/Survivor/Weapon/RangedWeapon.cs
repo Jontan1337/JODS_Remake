@@ -6,19 +6,18 @@ using System.Collections;
 using System;
 using DG.Tweening;
 using UnityEngine.Events;
+using Sirenix.OdinInspector;
 
 public abstract class RangedWeapon : EquipmentItem, IImpacter
 {
-    [Header("RANGED WEAPON")]
-    [SerializeField, TextArea(2,2)] private string header2 = "";
-    [Space]
+    [Title("RANGED WEAPON", "", TitleAlignments.Centered), Space(30f)]
     [Header("Weapon stats")]
     [SerializeField] protected int damage = 10;
     [SerializeField, Tooltip("The number of targets the weapon will penetrate.")] protected int penetrationAmount = 0;
     [SerializeField] private AmmunitionTypes ammunitionType = AmmunitionTypes.Small;
     [SerializeField, SyncVar(hook = nameof(UpdateFireModeText))] private FireModes fireMode = FireModes.Single;
     [SerializeField] private FireModes[] fireModes = null;
-    [SerializeField] private int burstBulletAmount = 3;
+    [SerializeField, ShowIf("fireMode", FireModes.Scatter)] private int burstBulletAmount = 3;
     [SerializeField] private float fireRate = 600f;
     [SerializeField] private float fireInterval = 0f;
     [SerializeField] private int bulletsPerShot = 1;
@@ -42,10 +41,11 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [SerializeField] protected float currentAccuracy = 0f;
     [SerializeField] protected float currentCurveAccuracy = 0f;
     [SerializeField] protected AnimationCurve recoilCurve;
+    [SerializeField] private float aimBaseAccuracy = 1;
     [SerializeField] private int muzzleParticleEmitAmount = 10;
 
     [Header("References")]
-    [SerializeField] protected Transform shootOrigin = null;
+    [SerializeField, Required] protected Transform shootOrigin = null;
     [SerializeField, SyncVar(hook = nameof(SetPlayerCamera))] protected Transform playerHead;
     [SerializeField] protected Camera playerCamera;
     [SerializeField] private GameObject muzzleFlash = null;
@@ -636,7 +636,14 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         while (CurrentAccuracy > 0f)
         {
             CurrentAccuracy -= stabilization * Time.deltaTime;
-            currentCurveAccuracy = recoilCurve.Evaluate(CurrentAccuracy);
+            //currentCurveAccuracy = recoilCurve.Evaluate(CurrentAccuracy);
+            float tempCA = recoilCurve.Evaluate(CurrentAccuracy);
+            Debug.LogError("aim accuracy stuff WIP: Line 641", this);
+            if (IsAiming)
+            {
+                tempCA -= recoilCurve[0].value - aimBaseAccuracy;
+            }
+            currentCurveAccuracy = tempCA;
             if (crosshairUI)
             {
                 crosshairUI.SetSize(currentCurveAccuracy);
