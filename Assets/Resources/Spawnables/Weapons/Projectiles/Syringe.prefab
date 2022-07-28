@@ -60,8 +60,9 @@ MonoBehaviour:
   hasDropoff: 0
   timeBeforeDropoff: 5
   piercing: 0
-  statusEffectsToApply: []
-  amount: 1
+  statusEffectsToApply:
+  - statusEffect: {fileID: 11400000, guid: 6cf3f0457f67a1a4499e6a42d53e9ac9, type: 2}
+    amount: 0
   statusEffectToRemove: {fileID: 11400000, guid: 6499d90d213f8aa4db7fae68321bec63,
     type: 2}
 --- !u!33 &3668033450561647344

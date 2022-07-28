@@ -103,8 +103,9 @@ public abstract class Projectile : NetworkBehaviour
 			hasHit = true; //Prevents the projectile from hitting multiple times
 			if (sticky)
 			{
-				transform.SetParent(objectHit.transform);
-				rb.isKinematic = true;
+				Rpc_OnHit(objectHit.transform);
+				//transform.SetParent(objectHit.transform);
+				//rb.isKinematic = true;
 				transform.localScale = transform.localScale;
 				//rb.transform.position = point.point - rb.velocity.normalized * 30;
 			}
@@ -113,6 +114,13 @@ public abstract class Projectile : NetworkBehaviour
 				ReturnObjectToPool(0);
 			}
 		}
+	}
+
+    [ClientRpc]
+	public void Rpc_OnHit(Transform objectHit)
+    {
+		transform.SetParent(objectHit);
+		rb.isKinematic = true;
 	}
 
 	public virtual void ReturnObjectToPool(float time)
