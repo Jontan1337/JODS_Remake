@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 using System.Collections;
 using System;
 using DG.Tweening;
+using UnityEngine.Events;
 
 public abstract class RangedWeapon : EquipmentItem, IImpacter
 {
@@ -379,6 +380,22 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
     private void OnReload(InputAction.CallbackContext context) => Cmd_Reload();
     private void OnChangeFireMode(InputAction.CallbackContext context) => Cmd_ChangeFireMode();
+
+    [Header("On Pickup")]
+    [SerializeField] private UnityEvent onPickupEvents;
+    [SerializeField] private UnityEvent onDropEvents;
+
+    public override void Rpc_Pickup(NetworkConnection target)
+    {
+        onPickupEvents.Invoke();
+        base.Rpc_Pickup(target);
+
+    }
+    public override void Rpc_Drop(NetworkConnection target)
+    {
+        onDropEvents.Invoke();
+        base.Rpc_Drop(target);
+    }
 
     #region Server
 
