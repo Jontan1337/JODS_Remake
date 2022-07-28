@@ -665,7 +665,7 @@ GameObject:
   - component: {fileID: 5205249427460471218}
   - component: {fileID: 2416133059702597145}
   - component: {fileID: 6891193634609891830}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Crosshair
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1628,6 +1628,36 @@ MonoBehaviour:
   owner: {fileID: 0}
   rb: {fileID: 496574792408258466}
   outline: {fileID: 496574792408258471}
+  onPickupEvents:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1637066271286933870}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  onDropEvents:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1637066271286933870}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   header2: 
   damage: 80
   penetrationAmount: 5
@@ -1644,7 +1674,7 @@ MonoBehaviour:
   highPower: 1
   recoil: 0.4
   aimingRecoil: 0.05
-  visualPunchback: 5
+  visualPunchback: 3
   aimingVisualPunchback: 2
   aimingSpeed: 0.1
   hipFOV: 80
@@ -1689,36 +1719,6 @@ MonoBehaviour:
   shootSound: {fileID: 8300000, guid: 4cec65af975f1ff47991f10f96662acf, type: 3}
   emptySound: {fileID: 8300000, guid: 6e8772b49f34d402a90016ed445d8a2f, type: 3}
   debugWeapon: 0
-  onPickupEvents:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1637066271286933870}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-  onDropEvents:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1637066271286933870}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   Plswork: 0
   header3: 
   range: 1000

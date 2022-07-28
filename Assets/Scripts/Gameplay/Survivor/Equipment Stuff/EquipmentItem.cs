@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 using System;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(PhysicsToggler), typeof(Rigidbody), typeof(BoxCollider)),
  RequireComponent(typeof(AuthorityController), typeof(SyncGameObjectVisuals), typeof(Outline)),
@@ -179,7 +180,7 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	[TargetRpc]
 	public virtual void Rpc_Pickup(NetworkConnection target)
 	{
-
+		onPickupEvents.Invoke();
 	}
 
 	[Command]
@@ -208,7 +209,7 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	[TargetRpc]
 	public virtual void Rpc_Drop(NetworkConnection target)
 	{
-
+		onDropEvents.Invoke();
 	}
 
 	[Server]
@@ -353,4 +354,9 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	{
 		outline.enabled = hasOutline;
 	}
+
+	[Header("On Pickup & Drop (LOCAL)")]
+	[SerializeField] private UnityEvent onPickupEvents;
+	[SerializeField] private UnityEvent onDropEvents;
+
 }
