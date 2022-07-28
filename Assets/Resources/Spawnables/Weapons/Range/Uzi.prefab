@@ -1244,6 +1244,12 @@ MonoBehaviour:
   owner: {fileID: 0}
   rb: {fileID: 2548197298498927853}
   outline: {fileID: 2548197298498927848}
+  onPickupEvents:
+    m_PersistentCalls:
+      m_Calls: []
+  onDropEvents:
+    m_PersistentCalls:
+      m_Calls: []
   header2: 
   damage: 19
   penetrationAmount: 1
@@ -1260,8 +1266,8 @@ MonoBehaviour:
   highPower: 0
   recoil: 0.4
   aimingRecoil: 0.05
-  visualPunchback: 0.2
-  aimingVisualPunchback: 0.1
+  visualPunchback: 0.4
+  aimingVisualPunchback: 0.2
   aimingSpeed: 0.1
   hipFOV: 1
   ADSFOV: 1
