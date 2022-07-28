@@ -3,14 +3,13 @@ using Mirror;
 using UnityEngine.InputSystem;
 using System;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 
 [RequireComponent(typeof(PhysicsToggler), typeof(Rigidbody), typeof(BoxCollider)),
  RequireComponent(typeof(AuthorityController), typeof(SyncGameObjectVisuals), typeof(Outline)),
  RequireComponent(typeof(MeshCollider))]
 public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippable, IBindable
 {
-	[Header("EQUIPMENT ITEM")]
-	[SerializeField, TextArea(2,2)] private string header1 = "";
 	[Header("Basic info")]
 	[SerializeField] protected string itemName = "Item name";
 	[SerializeField] protected EquipmentType equipmentType = EquipmentType.None;

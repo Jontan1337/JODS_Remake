@@ -14,7 +14,11 @@ public class GrenadeThrower : ProjectileWeapon
     protected override void Svr_PostShoot()
     {
         base.Svr_PostShoot();
-        Cmd_Destroy();
+        if (hasAuthority)
+        {
+            Cmd_Destroy();
+        }
+        else Svr_Destroy();
     }
 
     [Command]

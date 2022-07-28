@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using Sirenix.OdinInspector;
 
 public class RaycastWeapon : RangedWeapon
 {
+    [Title("EQUIPMENT ITEM")]
+    public int Plswork;
     [Header("RAYCAST WEAPON")]
     [SerializeField, TextArea(2, 2)] private string header3 = "";
 
