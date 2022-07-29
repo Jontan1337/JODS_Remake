@@ -35,14 +35,15 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [SerializeField, Tooltip("Affects weapon and camera shake")] protected float visualPunchback = 0.2f;
     [SerializeField, Tooltip("Affects weapon and camera shake")] protected float aimingVisualPunchback = 0.1f;
     [SerializeField] private float aimingSpeed = 0.1f;
-    [SerializeField] protected float hipFOV = 80f;
-    [SerializeField] protected float ADSFOV = 50f;
     [SerializeField, Tooltip("If stabilization is the same as the recoil, recoil won't decrease")] protected float stabilization = 1f;
     [SerializeField] protected float currentAccuracy = 0f;
     [SerializeField] protected float currentCurveAccuracy = 0f;
     [SerializeField] protected AnimationCurve recoilCurve;
-    [SerializeField] private float aimBaseAccuracy = 1;
+    [SerializeField, Range(0f, 10f)] private float aimBaseAccuracy = 1;
     [SerializeField] private int muzzleParticleEmitAmount = 10;
+    [Title("FOV Settings")]
+    [SerializeField] protected float hipFOV = 80f;
+    [SerializeField] protected float ADSFOV = 50f;
 
     [Header("References")]
     [SerializeField, Required] protected Transform shootOrigin = null;
@@ -205,8 +206,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         InitVariables();
         base.OnStartClient();
         OnImpact += ImpactShake;
-        impactData = new ImpactData(visualPunchback, ImpactSourceType.Ranged);
-        aimingImpactData = new ImpactData(aimingVisualPunchback, ImpactSourceType.Ranged);
+        impactData = new ImpactData(recoil, ImpactSourceType.Ranged);
+        aimingImpactData = new ImpactData(aimingRecoil, ImpactSourceType.Ranged);
     }
 
     public override void OnStartAuthority()
@@ -388,6 +389,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     {
         IsAiming = aim;
         currentRecoil = IsAiming ? aimingRecoil : recoil;
+        EvaluateAccuracy();
     }
 
     [Command]
@@ -637,13 +639,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         {
             CurrentAccuracy -= stabilization * Time.deltaTime;
             //currentCurveAccuracy = recoilCurve.Evaluate(CurrentAccuracy);
-            float tempCA = recoilCurve.Evaluate(CurrentAccuracy);
-            Debug.LogError("aim accuracy stuff WIP: Line 641", this);
-            if (IsAiming)
-            {
-                tempCA -= recoilCurve[0].value - aimBaseAccuracy;
-            }
-            currentCurveAccuracy = tempCA;
+            EvaluateAccuracy();
             if (crosshairUI)
             {
                 crosshairUI.SetSize(currentCurveAccuracy);
@@ -651,6 +647,16 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
             yield return null;
         }
         COAccuracyStabilizer = null;
+    }
+
+    private void EvaluateAccuracy()
+    {
+        float tempCA = recoilCurve.Evaluate(CurrentAccuracy);
+        if (IsAiming)
+        {
+            tempCA -= recoilCurve[0].value - aimBaseAccuracy;
+        }
+        currentCurveAccuracy = tempCA;
     }
 
     [ClientRpc]
