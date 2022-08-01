@@ -16,7 +16,7 @@ public class DoctorMedkit : EquipmentItem
 	//}
 
 	[Server]
-	public override void Svr_Interact(GameObject interacter)
+	public override void Svr_PerformInteract(GameObject interacter)
 	{
 		PlayerEquipment playerEquipment = interacter.GetComponentInChildren<PlayerEquipment>();
 

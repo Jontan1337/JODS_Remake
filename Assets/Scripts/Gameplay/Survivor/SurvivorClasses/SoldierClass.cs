@@ -57,7 +57,7 @@ public class SoldierClass : SurvivorClass
 		NetworkServer.Spawn(rocketLauncher);
 		playerEquipment = transform.parent.GetComponentInChildren<PlayerEquipment>();
 
-		rocketLauncher.GetComponent<IInteractable>().Svr_Interact(transform.root.gameObject);
+		rocketLauncher.GetComponent<IInteractable>().Svr_PerformInteract(transform.root.gameObject);
 		//playerEquipment?.Svr_Equip(rocketLauncher, EquipmentType.None);
 	}
 }

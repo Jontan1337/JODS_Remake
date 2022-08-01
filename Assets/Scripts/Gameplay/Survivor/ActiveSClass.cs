@@ -284,7 +284,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
             starterWeapon = Instantiate(survivorSO.starterWeapon, transform.position, transform.rotation);
             NetworkServer.Spawn(starterWeapon);
             yield return new WaitForSeconds(0.35f);
-            starterWeapon.GetComponent<EquipmentItem>().Svr_Interact(gameObject);
+            starterWeapon.GetComponent<EquipmentItem>().Svr_PerformInteract(gameObject);
         }
     }
     #endregion
@@ -418,13 +418,15 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
         }
     }
     [Server]
-    public void Svr_Interact(GameObject interacter)
+    public void Svr_PerformInteract(GameObject interacter)
     {
         //if (!isInteractable) return;
         print("puehgphqeg");
         StartCoroutine(BeingRevivedCo);
 
     }
-
-
+    [Server]
+    public void Svr_CancelInteract(GameObject interacter)
+    {
+    }
 }

@@ -123,7 +123,7 @@ public class EngineerClass : SurvivorClass
         NetworkServer.Spawn(turret);
         playerEquipment = transform.parent.GetComponentInChildren<PlayerEquipment>();
 
-        turret.GetComponent<IInteractable>().Svr_Interact(transform.root.gameObject);
+        turret.GetComponent<IInteractable>().Svr_PerformInteract(transform.root.gameObject);
     }
 
 }

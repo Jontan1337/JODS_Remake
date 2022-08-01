@@ -6,5 +6,7 @@ public interface IInteractable
     bool IsInteractable { get; set; }
 
     [Server]
-    void Svr_Interact(GameObject interacter);
+    void Svr_PerformInteract(GameObject interacter);
+    [Server]
+    void Svr_CancelInteract(GameObject interacter);
 }

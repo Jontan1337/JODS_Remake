@@ -108,7 +108,6 @@ public class EquipmentSlot : NetworkBehaviour
         if (!initialState)
         {
             writer.WriteGameObject(EquipmentItem);
-            print((int)EquipmentType);
             writer.WriteInt32((int)EquipmentType);
             return true;
         }

@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class Interactor : NetworkBehaviour
 {
     [SerializeField]
-    private Transform playerCamera;
+    private Transform playerCamera = null;
     [SerializeField]
     private float interactionRange = 2f;
     [SerializeField]
@@ -21,6 +21,7 @@ public class Interactor : NetworkBehaviour
 
     private RaycastHit rayHit;
     private IInteractable currentInteractable;
+    private GameObject interactedObject = null;
     private Coroutine COCreateOutlines;
 
     public Transform PlayerCamera
@@ -45,13 +46,15 @@ public class Interactor : NetworkBehaviour
     #region NetworkCallbacks
     public override void OnStartAuthority()
     {
-        JODSInput.Controls.Survivor.Interact.performed += ctx => Interact();
+        JODSInput.Controls.Survivor.Interact.performed += ctx => OnInteractPerformed();
+        JODSInput.Controls.Survivor.Interact.canceled += ctx => OnInteractCanceled();
     }
 
     public override void OnStopAuthority()
     {
         transform.root.GetComponent<SurvivorSetup>().onClientSpawnItem -= GetCamera;
-        JODSInput.Controls.Survivor.Interact.performed -= ctx => Interact();
+        JODSInput.Controls.Survivor.Interact.performed -= ctx => OnInteractPerformed();
+        JODSInput.Controls.Survivor.Interact.canceled -= ctx => OnInteractCanceled();
     }
     #endregion
 
@@ -108,7 +111,7 @@ public class Interactor : NetworkBehaviour
         Gizmos.DrawRay(new Vector3(transform.position.x, transform.position.y + 2f, transform.position.z), transform.forward * interactionRange);
     }
 
-    public void Interact()
+    public void OnInteractPerformed()
     {
         if (rayHit.collider)
         {
@@ -118,21 +121,43 @@ public class Interactor : NetworkBehaviour
             GameObject rayHitObject = rayHit.collider.gameObject;
             if (rayHitObject.TryGetComponent(out IInteractable interactable))
             {
-                if (!interactable.IsInteractable) return;
-
-                Cmd_Interact(rayHit.collider.gameObject);
+                if (!interactable.IsInteractable) return; // Redundant?
+                interactedObject = rayHitObject;
+                currentInteractable = interactable;
+                Cmd_PerformInteract(rayHit.collider.gameObject);
             }
 
         }
     }
+    public void OnInteractCanceled()
+    {
+        if (interactedObject)
+        {
+            Cmd_CancelInteract(interactedObject);
+            currentInteractable = null;
+            interactedObject = null;
+        }
+    }
 
     [Command]
-    public void Cmd_Interact(GameObject targetObject)
+    public void Cmd_PerformInteract(GameObject targetObject)
     {
         if (targetObject)
         {
             targetObject.TryGetComponent(out IInteractable interactable);
-            interactable?.Svr_Interact(gameObject);
+            interactedObject = targetObject;
+            currentInteractable = interactable;
+            interactable?.Svr_PerformInteract(gameObject);
+        }
+    }
+    [Command]
+    public void Cmd_CancelInteract(GameObject targetObject)
+    {
+        if (targetObject)
+        {
+            currentInteractable?.Svr_CancelInteract(interactedObject);
+            currentInteractable = null;
+            interactedObject = null;
         }
     }
 

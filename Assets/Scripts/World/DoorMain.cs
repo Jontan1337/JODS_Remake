@@ -25,9 +25,13 @@ public class DoorMain : NetworkBehaviour, IInteractable
     public bool IsInteractable { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
     [Server]
-    public void Svr_Interact(GameObject interacter)
+    public void Svr_PerformInteract(GameObject interacter)
     {
         ChangeState(CheckAngle(interacter.transform));
+    }
+    [Server]
+    public void Svr_CancelInteract(GameObject interacter)
+    {
     }
 
     private void ChangeState(bool front)

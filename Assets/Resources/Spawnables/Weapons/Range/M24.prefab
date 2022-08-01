@@ -512,12 +512,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1637066271286933870}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.0617, z: 0.2545}
+  m_LocalPosition: {x: 0, y: 0.1215, z: 0.2545}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 5205249427460471218}
+  m_Children: []
   m_Father: {fileID: 4872477987560357057}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &288873697897193278
 Camera:
@@ -680,11 +679,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2450525799196512025}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.0617, z: -0.2545}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 5258144800490917013}
-  m_RootOrder: 0
+  m_Father: {fileID: 4872477987560357057}
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &2416133059702597145
 MeshFilter:
@@ -1598,6 +1597,7 @@ Transform:
   - {fileID: 4277863529395698831}
   - {fileID: 2711905580131311380}
   - {fileID: 5362741991102681338}
+  - {fileID: 5205249427460471218}
   - {fileID: 5258144800490917013}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -1658,7 +1658,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  header2: 
   damage: 80
   penetrationAmount: 5
   ammunitionType: 2
@@ -1677,8 +1676,6 @@ MonoBehaviour:
   visualPunchback: 3
   aimingVisualPunchback: 2
   aimingSpeed: 0.1
-  hipFOV: 80
-  ADSFOV: 50
   stabilization: 2
   currentAccuracy: 0
   currentCurveAccuracy: 15
@@ -1706,7 +1703,10 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  aimBaseAccuracy: 1
   muzzleParticleEmitAmount: 10
+  hipFOV: 80
+  ADSFOV: 50
   shootOrigin: {fileID: 496574793386338643}
   playerHead: {fileID: 0}
   playerCamera: {fileID: 0}
@@ -1719,8 +1719,6 @@ MonoBehaviour:
   shootSound: {fileID: 8300000, guid: 4cec65af975f1ff47991f10f96662acf, type: 3}
   emptySound: {fileID: 8300000, guid: 6e8772b49f34d402a90016ed445d8a2f, type: 3}
   debugWeapon: 0
-  Plswork: 0
-  header3: 
   range: 1000
   ignoreLayer:
     serializedVersion: 2
@@ -2909,6 +2907,7 @@ MonoBehaviour:
     - {x: -0.47253016, y: -0.6231821, z: -0.62318486}
     - {x: -0.45478523, y: -0.89060116, z: -0.00000047898624}
     - {x: -0.47110233, y: -0.8820786, z: -0.0000004884486}
+  renderers: []
   materialIndex: 0
   useMaterialIndex: 1
 --- !u!54 &496574792408258466

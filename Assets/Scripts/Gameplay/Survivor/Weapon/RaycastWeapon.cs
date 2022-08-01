@@ -7,10 +7,6 @@ using Mirror;
 public class RaycastWeapon : RangedWeapon
 {
     [Title("RAYCAST WEAPON", "", TitleAlignments.Centered), Space(30f)]
-    [SerializeField] private int Plswork;
-    [Header("RAYCAST WEAPON")]
-    [SerializeField, TextArea(2, 2)] private string header3 = "";
-
     [Header("Raycast Settings")]
     [SerializeField] private float range = 1000f;
     [Header("Settings")]
@@ -25,16 +21,6 @@ public class RaycastWeapon : RangedWeapon
         if (Physics.Raycast(aimRay, out RaycastHit aimHit, range, ~ignoreLayer))
         {
             Vector3 targetPoint = aimHit.point;
-
-            //RaycastHit[] shootRayHits = Physics.RaycastAll(shootRay, range, ~ignoreLayer);
-            //for (int i = 0; i <= penetrationAmount; i++)
-            //{
-            //    RaycastHit hit = shootRayHits[shootRayHits.Length];
-            //    print(hit.collider.name);
-            //    if (hit.collider.TryGetComponent(out IDamagable damagable))
-            //    {
-            //    }
-            //}
             Ray shootRay = new Ray(shootOrigin.position, targetPoint - shootOrigin.position);
             RaycastHit shootHit = new RaycastHit();
             float currentDamage = damage;

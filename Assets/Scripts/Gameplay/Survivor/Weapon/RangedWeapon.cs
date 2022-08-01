@@ -222,18 +222,18 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     }
 
     [Server]
-    public override void Svr_Interact(GameObject interacter)
+    public override void Svr_PerformInteract(GameObject interacter)
     {
-        base.Svr_Interact(interacter);
+        base.Svr_PerformInteract(interacter);
         playerHead = interacter.GetComponent<LookController>().RotateVertical;
         playerCamera = playerHead.Find("PlayerCamera(Clone)").GetComponent<Camera>();
         cameraSettings = playerHead.Find("PlayerCamera(Clone)").GetComponent<CameraSettings>();
     }
 
     [TargetRpc]
-    public override void Rpc_Interact(NetworkConnection target, GameObject interacter)
+    public override void Rpc_PerformInteract(NetworkConnection target, GameObject interacter)
     {
-        base.Rpc_Interact(target, interacter);
+        base.Rpc_PerformInteract(target, interacter);
         playerHead = interacter.GetComponent<LookController>().RotateVertical;
         playerCamera = playerHead.Find("PlayerCamera(Clone)").GetComponent<Camera>();
         cameraSettings = playerHead.Find("PlayerCamera(Clone)").GetComponent<CameraSettings>();

@@ -68,10 +68,10 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
     }
 
     [Server]
-	public virtual void Svr_Interact(GameObject interacter)
+	public virtual void Svr_PerformInteract(GameObject interacter)
 	{
 		if (!IsInteractable) return;
-		Rpc_Interact(interacter.GetComponent<NetworkIdentity>().connectionToClient, interacter);
+		Rpc_PerformInteract(interacter.GetComponent<NetworkIdentity>().connectionToClient, interacter);
 		// Equipment should be on a child object of the player.
 		PlayerEquipment equipment = interacter.GetComponentInChildren<PlayerEquipment>();
 		owner = interacter.transform;
@@ -85,11 +85,22 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 			Debug.LogWarning($"{interacter} does not have a PlayerEquipment component", this);
 		}
 	}
+    [Server]
+	public virtual void Svr_CancelInteract(GameObject interacter)
+	{
+		if (!IsInteractable) return;
+		Rpc_CancelInteract(interacter.GetComponent<NetworkIdentity>().connectionToClient, interacter);
+	}
 
 	[TargetRpc]
-	public virtual void Rpc_Interact(NetworkConnection target, GameObject interacter)
+	public virtual void Rpc_PerformInteract(NetworkConnection target, GameObject interacter)
 	{
 		playerClass = interacter.GetComponent<ActiveSClass>();
+	}
+	[TargetRpc]
+	public virtual void Rpc_CancelInteract(NetworkConnection target, GameObject interacter)
+	{
+		playerClass = null;
 	}
 
 	[Server]

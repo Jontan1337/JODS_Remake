@@ -211,11 +211,15 @@ public class WeaponShop : NetworkBehaviour, IInteractable
     }
 
     [Server]
-    public void Svr_Interact(GameObject interacter)
+    public void Svr_PerformInteract(GameObject interacter)
     {
         Svr_HandleUser(interacter);
 
         Rpc_Interact(interacter.GetComponent<NetworkIdentity>().connectionToClient, interacter);
+    }
+    [Server]
+    public void Svr_CancelInteract(GameObject interacter)
+    {
     }
 
     [Server]
@@ -362,7 +366,7 @@ public class WeaponShop : NetworkBehaviour, IInteractable
         var spawnedItem = Instantiate(item.shopItemPrefab);
         NetworkServer.Spawn(spawnedItem);
 
-        spawnedItem.GetComponent<EquipmentItem>().Svr_Interact(player);
+        spawnedItem.GetComponent<EquipmentItem>().Svr_PerformInteract(player);
 
         //And disable the item button for others, so they can't purchase it.
         //This is done by getting the index of the button in the allSlots array.
