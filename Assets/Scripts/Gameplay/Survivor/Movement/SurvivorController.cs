@@ -41,7 +41,7 @@ public class SurvivorController : NetworkBehaviour
 
 
     CharacterController cController;
-    SurvivorAnimationManager anim;
+    SurvivorAnimationIKManager anim;
     ModifierManager modifiers;
     public float jumpSpeed;
     public bool isSprinting;
@@ -62,7 +62,7 @@ public class SurvivorController : NetworkBehaviour
     private void Start()
     {
         cController = GetComponent<CharacterController>();
-        anim = GetComponent<SurvivorAnimationManager>();
+        anim = GetComponent<SurvivorAnimationIKManager>();
         modifiers = GetComponent<ModifierManager>();
     }
 

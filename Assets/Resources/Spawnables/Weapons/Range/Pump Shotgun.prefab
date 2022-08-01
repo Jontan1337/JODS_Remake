@@ -1168,7 +1168,12 @@ MonoBehaviour:
   onDropEvents:
     m_PersistentCalls:
       m_Calls: []
-  header2: 
+  onEquipEvents:
+    m_PersistentCalls:
+      m_Calls: []
+  onUnequipEvents:
+    m_PersistentCalls:
+      m_Calls: []
   damage: 7
   penetrationAmount: 0
   ammunitionType: 1
@@ -1183,12 +1188,10 @@ MonoBehaviour:
   extraAmmunition: 17
   highPower: 1
   recoil: 0.6
-  aimingRecoil: 0.05
+  aimingRecoil: 0.4
   visualPunchback: 3
   aimingVisualPunchback: 2
   aimingSpeed: 0.1
-  hipFOV: 80
-  ADSFOV: 50
   stabilization: 0.6
   currentAccuracy: 0
   currentCurveAccuracy: 10
@@ -1216,7 +1219,10 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  aimBaseAccuracy: 1
   muzzleParticleEmitAmount: 10
+  hipFOV: 80
+  ADSFOV: 50
   shootOrigin: {fileID: 2548197299519980060}
   playerHead: {fileID: 0}
   playerCamera: {fileID: 0}
@@ -1229,8 +1235,6 @@ MonoBehaviour:
   shootSound: {fileID: 8300000, guid: 97993f933f24ef84188d173b66a2e596, type: 3}
   emptySound: {fileID: 8300000, guid: 6e8772b49f34d402a90016ed445d8a2f, type: 3}
   debugWeapon: 0
-  Plswork: 0
-  header3: 
   range: 1000
   ignoreLayer:
     serializedVersion: 2

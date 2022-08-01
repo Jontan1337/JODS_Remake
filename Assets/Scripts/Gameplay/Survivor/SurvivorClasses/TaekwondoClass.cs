@@ -193,7 +193,7 @@ public class TaekwondoClass : SurvivorClass, IHitter
 
     private void Kick(bool kicking)
     {
-        GetComponentInParent<SurvivorAnimationManager>().anim.SetBool("Kicking", kicking);
+        GetComponentInParent<SurvivorAnimationIKManager>().anim.SetBool("Kicking", kicking);
     }
 
     #endregion

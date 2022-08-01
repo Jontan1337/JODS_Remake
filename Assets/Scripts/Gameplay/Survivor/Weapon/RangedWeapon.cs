@@ -92,7 +92,14 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     public Action<ImpactData> OnImpact { get; set; }
 
     public int Magazine { 
-        get => magazine;
+        get
+        {
+            if (magazine <= 0)
+            {
+                Rpc_EmptySFX();
+            }
+            return magazine;
+        }
         private set
         {
             magazine = value;
@@ -206,8 +213,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         InitVariables();
         base.OnStartClient();
         OnImpact += ImpactShake;
-        impactData = new ImpactData(recoil, ImpactSourceType.Ranged);
-        aimingImpactData = new ImpactData(aimingRecoil, ImpactSourceType.Ranged);
+        impactData = new ImpactData(visualPunchback, ImpactSourceType.Ranged);
+        aimingImpactData = new ImpactData(aimingVisualPunchback, ImpactSourceType.Ranged);
     }
 
     public override void OnStartAuthority()
@@ -401,35 +408,30 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         {
             case FireModes.Single:
             case FireModes.SemiAuto:
-                ShootSingle();
+                Svr_ShootSingle();
                 break;
             case FireModes.Scatter:
-                ScatterShot();
+                Svr_ScatterShot();
                 break;
             case FireModes.Burst:
-                if (COShootLoop == null)
-                {
-                    COShootLoop = StartCoroutine(IEBurstShootLoop());
-                }
+                Svr_BurstShootLoop();
                 break;
             case FireModes.FullAuto:
-                if (COShootLoop == null)
-                {
-                    COShootLoop = StartCoroutine(IEFullAutoShootLoop());
-                }
+                Svr_FullAutoShootLoop();
                 break;
         }
     }
 
-    private void ScatterShot()
+    [Server]
+    private void Svr_ScatterShot()
     {
         if (!canShoot) return;
-
+        if (Magazine <= 0) return;
         int firedRounds = 0;
         // Scatter shot ammo is a single shell with multiple bullets/pellets.
         Svr_PreShoot();
         Vector2 aimPoint = UnityEngine.Random.insideUnitCircle * currentAccuracy * 10;
-        while (Magazine > 0 && firedRounds < bulletsPerShot)
+        while (firedRounds < bulletsPerShot)
         {
             firedRounds++;
             Svr_Shoot(aimPoint);
@@ -438,10 +440,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
                 Svr_StartCooldown();
                 if (!hasAuthority)
                     Rpc_StartCooldown(connectionToClient);
-                if (Magazine == 0)
-                {
-                    Rpc_EmptySFX();
-                }
                 break;
             }
         }
@@ -450,6 +448,14 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         Svr_PostShoot();
     }
 
+    [Server]
+    private void Svr_BurstShootLoop()
+    {
+        if (COShootLoop == null)
+        {
+            COShootLoop = StartCoroutine(IEBurstShootLoop());
+        }
+    }
     private IEnumerator IEBurstShootLoop()
     {
         int firedRounds = 0;
@@ -472,11 +478,16 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         if (!isLocalPlayer)
             Rpc_PostShoot(connectionToClient);
         Svr_PostShoot();
-        if (Magazine == 0)
-        {
-            Rpc_EmptySFX();
-        }
         COShootLoop = null;
+    }
+
+    [Server]
+    private void Svr_FullAutoShootLoop()
+    {
+        if (COShootLoop == null)
+        {
+            COShootLoop = StartCoroutine(IEFullAutoShootLoop());
+        }
     }
     private IEnumerator IEFullAutoShootLoop()
     {
@@ -497,17 +508,12 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
             }
             yield return null;
         }
-        // If the magazine runs out of bullets, this will be called.
-        Rpc_EmptySFX();
     }
 
-    private void ShootSingle()
+    [Server]
+    private void Svr_ShootSingle()
     {
-        if (Magazine == 0)
-        {
-            Rpc_EmptySFX();
-            return;
-        }
+        if (Magazine == 0) return;
         Svr_PreShoot();
         Svr_Shoot(Vector2.zero);
         if (!isLocalPlayer)
@@ -552,6 +558,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     protected virtual void Svr_PreShoot()
     {
         Magazine -= 1;
+        Rpc_ShootFX();
     }
     [Server]
     protected virtual void Svr_PostShoot()
@@ -662,10 +669,10 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [ClientRpc]
     protected virtual void Rpc_Shoot(Vector2 recoil)
     {
-        ShootFX();
     }
 
-    protected void ShootFX()
+    [ClientRpc]
+    protected void Rpc_ShootFX()
     {
         sfxPlayer.PlaySFX(shootSound);
         muzzleParticle.Emit(muzzleParticleEmitAmount);
