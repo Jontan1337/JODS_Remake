@@ -13,6 +13,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     private SurvivorController sController;
 
     [SerializeField] private SurvivorSO survivorSO;
+    [SerializeField] private Animator animatorController;
     [SerializeField] private SkinnedMeshRenderer bodyRenderer = null;
     [SerializeField] private SkinnedMeshRenderer headRenderer = null;
     [Space]
@@ -60,8 +61,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
             isDown = value;
             if (isDown)
             {
-                DownCo = Down();
-                BeingRevivedCo = BeingRevived();
+                DownCo = Down();                
                 StartCoroutine(DownCo);
             }
         }
@@ -148,8 +148,8 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     {
         if (test) SetSurvivorClass(survivorSO);
         JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => Ability();
-        
-        
+
+
     }
 
     #region ViewModel
@@ -244,7 +244,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
         armor = survivorSO.startingArmor;
 
         accuracy = survivorSO.accuracy;
-        reloadSpeed = survivorSO.reloadSpeed;
+        reloadSpeed = survivorSO.reloadSpeed;   
         ammoCapacity = survivorSO.ammoCapacity;
 
         sController = GetComponent<SurvivorController>();
@@ -318,6 +318,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     private IEnumerator Down()
     {
         Rpc_Down(connectionToClient);
+        animatorController.SetBool("IsDown", true);
         IsInteractable = true;
         while (downTime > 0)
         {
@@ -346,12 +347,15 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
         beingRevived = true;
         while (reviveTime > 0)
         {
+            print(beingRevived);
             print("revive time: " + reviveTime);
             reviveTime -= 1;
             yield return new WaitForSeconds(1f);
         }
+
         Health = 50;
         isDown = false;
+        animatorController.SetBool("IsDown", false);
         downTime = 30;
         reviveTime = 5;
         StopCoroutine(DownCo);
@@ -365,6 +369,14 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     private void Rpc_Revived(NetworkConnection target)
     {
         sController.enabled = true;
+    }
+
+
+    private void ReviveCancelled()
+    {
+        StopCoroutine(BeingRevivedCo);
+        beingRevived = false;
+        reviveTime = 5;
     }
 
     public Teams Team => Teams.Player;
@@ -438,14 +450,19 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     [Server]
     public void Svr_PerformInteract(GameObject interacter)
     {
-        //if (!isInteractable) return;
-        StartCoroutine(BeingRevivedCo);
-
+        print("perform");
+        if (!beingRevived)
+        {
+            BeingRevivedCo = BeingRevived();
+            StartCoroutine(BeingRevivedCo);
+        }
     }
 
 
     [Server]
     public void Svr_CancelInteract(GameObject interacter)
     {
+        print("cancel");
+        ReviveCancelled();
     }
 }
