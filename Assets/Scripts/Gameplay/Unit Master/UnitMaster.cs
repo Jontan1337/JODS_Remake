@@ -289,7 +289,6 @@ public class UnitMaster : NetworkBehaviour
         SetMasterDeployables();
 
         globalAudio = GetComponent<AudioSource>();
-        globalAudio.volume = 0.4f;
 
         if (!hasAuthority) return;
 
