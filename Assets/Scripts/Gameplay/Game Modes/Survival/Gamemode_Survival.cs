@@ -13,10 +13,10 @@ public class Gamemode_Survival : GamemodeBase
     private readonly string timeSurvivedTextDefault = "Time Survived: \n ";
 
     [Header("Shop Period Management")]
-    [SerializeField] private int timeTillNextShopPeriod = 0;
+    [SerializeField] private int timeTillNextShopPeriod = 0; //This is for reference
     [Space]
-    [SerializeField] private int timeBetweenShopPeriods = 120; //2 minutes between each shop period
-    [SerializeField] private int shopPeriodDuration = 30; //each shop period lasts 30 seconds
+    [SerializeField] private int timeBetweenShopPeriods = 120; //Just default values, not actual times
+    [SerializeField] private int shopPeriodDuration = 30; 
     [Space]
     [SerializeField] private GameObject shopPrefab = null;
 
