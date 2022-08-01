@@ -115,7 +115,7 @@ public class PlaceItem : EquipmentItem
     public override void Unbind()
     {
         print(connectionToClient);
-        // connectionToClient is null for some reason
+        // connectionToClient is null for some reason, only for client
 
         Drop(false);
 

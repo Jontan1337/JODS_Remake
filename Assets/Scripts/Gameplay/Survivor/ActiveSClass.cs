@@ -57,9 +57,9 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
         get { return isDown; }
         set
         {
-
             isDown = value;
             DownCo = Down();
+            BeingRevivedCo = BeingRevived();
             StartCoroutine(DownCo);
         }
     }
@@ -145,6 +145,8 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     {
         if (test) SetSurvivorClass(survivorSO);
         JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => Ability();
+        
+        
     }
 
     #region ViewModel
@@ -306,29 +308,50 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     }
 
     IEnumerator DownCo;
-    [SerializeField] private float downTime = 10;
+    [SerializeField] private float downTime = 30;
     private bool beingRevived = false;
+    public bool IsInteractable { get => isInteractable; set => isInteractable = value; }
+    [SerializeField, SyncVar] private bool isInteractable = false;
     private IEnumerator Down()
     {
         sController.enabled = false;
+        IsInteractable = true;
         while (downTime > 0)
         {
-            print(downTime);
+            print("down time: " + downTime);
             if (!beingRevived)
             {
                 downTime -= 1;
             }
-            //yield return null;
             yield return new WaitForSeconds(1f);
         }
         print("dead");
         IsDead = true;
     }
 
+    [SerializeField] private float reviveTime = 5;
+    IEnumerator BeingRevivedCo;
+    private IEnumerator BeingRevived()
+    {
+        beingRevived = true;
+        while (reviveTime > 0)
+        {
+            print("revive time: " + reviveTime);
+            reviveTime -= 1;
+            yield return new WaitForSeconds(1f);
+        }
+        StopCoroutine(DownCo);
+        Health = 50;
+        IsInteractable = false;
+        sController.enabled = true;
+        beingRevived = false;
+        print("Alive");
+    }
+
 
     public Teams Team => Teams.Player;
 
-    public bool IsInteractable { get; set; }
+
 
     [Server]
     public void Svr_Damage(int damage, Transform target = null)
@@ -394,9 +417,14 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
             GUI.TextField(new Rect(20, 20, 150, 20), "Active S Class Test ON");
         }
     }
-
+    [Server]
     public void Svr_Interact(GameObject interacter)
     {
-        throw new System.NotImplementedException();
+        //if (!isInteractable) return;
+        print("puehgphqeg");
+        StartCoroutine(BeingRevivedCo);
+
     }
+
+
 }
