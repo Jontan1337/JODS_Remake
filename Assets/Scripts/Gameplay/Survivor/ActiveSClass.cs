@@ -58,9 +58,12 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
         set
         {
             isDown = value;
-            DownCo = Down();
-            BeingRevivedCo = BeingRevived();
-            StartCoroutine(DownCo);
+            if (isDown)
+            {
+                DownCo = Down();
+                BeingRevivedCo = BeingRevived();
+                StartCoroutine(DownCo);
+            }
         }
     }
     private bool isDead;
@@ -91,12 +94,12 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
             {
                 StartCoroutine(HealthLossCo(prevHealth));
             }
-            if (currentHealth <= 0)
-            {
-                IsDown = true;
-            }
             if (isServer)
             {
+                if (currentHealth <= 0)
+                {
+                    IsDown = true;
+                }
                 Rpc_SyncStats(connectionToClient, currentHealth, armor);
             }
         }
@@ -314,7 +317,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     [SerializeField, SyncVar] private bool isInteractable = false;
     private IEnumerator Down()
     {
-        sController.enabled = false;
+        Rpc_Down(connectionToClient);
         IsInteractable = true;
         while (downTime > 0)
         {
@@ -329,6 +332,13 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
         IsDead = true;
     }
 
+    [TargetRpc]
+    private void Rpc_Down(NetworkConnection target)
+    {
+        sController.enabled = false;
+    }
+
+
     [SerializeField] private float reviveTime = 5;
     IEnumerator BeingRevivedCo;
     private IEnumerator BeingRevived()
@@ -340,14 +350,22 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
             reviveTime -= 1;
             yield return new WaitForSeconds(1f);
         }
-        StopCoroutine(DownCo);
         Health = 50;
+        isDown = false;
+        downTime = 30;
+        reviveTime = 5;
+        StopCoroutine(DownCo);
         IsInteractable = false;
-        sController.enabled = true;
+        Rpc_Revived(connectionToClient);
         beingRevived = false;
         print("Alive");
     }
 
+    [TargetRpc]
+    private void Rpc_Revived(NetworkConnection target)
+    {
+        sController.enabled = true;
+    }
 
     public Teams Team => Teams.Player;
 
@@ -421,10 +439,11 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     public void Svr_PerformInteract(GameObject interacter)
     {
         //if (!isInteractable) return;
-        print("puehgphqeg");
         StartCoroutine(BeingRevivedCo);
 
     }
+
+
     [Server]
     public void Svr_CancelInteract(GameObject interacter)
     {
