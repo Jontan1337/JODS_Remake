@@ -14,6 +14,7 @@ public class RaycastWeapon : RangedWeapon
     [Header("References")]
     [SerializeField] private ParticleSystem bulletTrail;
 
+    [Server]
     protected override void Svr_Shoot(Vector2 aimPoint)
     {
         Vector2 recoil = Random.insideUnitCircle * currentCurveAccuracy + aimPoint;
@@ -53,7 +54,8 @@ public class RaycastWeapon : RangedWeapon
                     if (shootHit.collider.Raycast(penRay, out penHit, range))
                     {
                         shootRay = new Ray(penHit.point, -penRay.direction);
-                        currentDamage = Mathf.Clamp(Mathf.RoundToInt(currentDamage *= damageFallOff), 1f, int.MaxValue);
+                        float damageReduction = currentDamage * damageFallOff;
+                        currentDamage = Mathf.Clamp(Mathf.RoundToInt(currentDamage - damageReduction), 1f, int.MaxValue);
                     }
                 }
                 else

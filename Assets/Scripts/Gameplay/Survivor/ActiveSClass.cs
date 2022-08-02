@@ -1,4 +1,5 @@
 ﻿using Mirror;
+using RootMotion.FinalIK;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -45,6 +46,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     public UnityEvent onDied = null;
 
     private bool abilityIsReady = true;
+    //private SurvivorAnimationIKManager 
 
     public bool AbilityIsReady
     {
@@ -61,8 +63,17 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
             isDown = value;
             if (isDown)
             {
-                DownCo = Down();                
+                DownCo = Down();
                 StartCoroutine(DownCo);
+                GetComponentInChildren<PlayerEquipment>().EquipmentItem?.Svr_Unequip();
+                GetComponent<FullBodyBipedIK>().enabled = false;
+                GetComponent<SurvivorSetup>().Rpc_ToggleHead(connectionToClient);
+            }
+            else
+            {
+                GetComponentInChildren<PlayerEquipment>().EquipmentItem?.Svr_Equip();
+                GetComponent<FullBodyBipedIK>().enabled = true;
+                GetComponent<SurvivorSetup>().Rpc_ToggleHead(connectionToClient);
             }
         }
     }
@@ -250,7 +261,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
         sController = GetComponent<SurvivorController>();
         movementSpeed = survivorSO.movementSpeed;
         GetComponent<ModifierManager>().MovementSpeed = movementSpeed;
-        GetComponent<SurvivorAnimationManager>().anim.speed = movementSpeed;
+        GetComponent<SurvivorAnimationIKManager>().anim.speed = movementSpeed;
 
         abilityCooldown = survivorSO.abilityCooldown;
 
@@ -337,6 +348,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     private void Rpc_Down(NetworkConnection target)
     {
         sController.enabled = false;
+        
     }
 
 

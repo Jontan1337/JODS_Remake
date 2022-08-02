@@ -5,7 +5,7 @@ using Mirror;
 using RootMotion.FinalIK;
 using System;
 
-public class SurvivorAnimationManager : NetworkBehaviour
+public class SurvivorAnimationIKManager : NetworkBehaviour
 {
 	public Animator anim;
 	public FullBodyBipedIK fullBodyIK;

@@ -30,6 +30,11 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	[SerializeField] private Rigidbody rb = null;
 	[SerializeField] private Outline outline = null;
 
+	[Title("On Pickup & Drop (LOCAL)")]
+	[SerializeField] private UnityEvent onPickupEvents;
+	[SerializeField] private UnityEvent onDropEvents;
+	[SerializeField] private UnityEvent onEquipEvents;
+	[SerializeField] private UnityEvent onUnequipEvents;
 	public Action<GameObject> onServerDropItem;
     private ActiveSClass playerClass = null;
 
@@ -230,12 +235,24 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 		Rpc_SetLayer(connectionToClient, true);
 		Svr_ShowItem(true);
 		Svr_DisablePhysics();
+		Rpc_Equip(connectionToClient);
 	}
 	[Server]
 	public virtual void Svr_Unequip()
 	{
 		Rpc_SetLayer(connectionToClient, false);
 		Svr_ShowItem(false);
+		Rpc_Unequip(connectionToClient);
+	}
+	[TargetRpc]
+	public virtual void Rpc_Equip(NetworkConnection target)
+	{
+		onEquipEvents.Invoke();
+	}
+	[TargetRpc]
+	public virtual void Rpc_Unequip(NetworkConnection target)
+	{
+		onUnequipEvents.Invoke();
 	}
 
 	[Server]
@@ -367,8 +384,6 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 		outline.enabled = hasOutline;
 	}
 
-	[Header("On Pickup & Drop (LOCAL)")]
-	[SerializeField] private UnityEvent onPickupEvents;
-	[SerializeField] private UnityEvent onDropEvents;
+
 
 }
