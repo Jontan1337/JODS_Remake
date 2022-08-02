@@ -366,7 +366,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
         }
 
         Health = 50;
-        isDown = false;
+        IsDown = false;
         animatorController.SetBool("IsDown", false);
         downTime = 30;
         reviveTime = 5;

@@ -78,7 +78,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  header1: 
   itemName: Mine
   equipmentType: 2
   unequippedLayer: 14
@@ -91,6 +90,18 @@ MonoBehaviour:
   owner: {fileID: 0}
   rb: {fileID: 5332746813645655036}
   outline: {fileID: 1016962461122605118}
+  onPickupEvents:
+    m_PersistentCalls:
+      m_Calls: []
+  onDropEvents:
+    m_PersistentCalls:
+      m_Calls: []
+  onEquipEvents:
+    m_PersistentCalls:
+      m_Calls: []
+  onUnequipEvents:
+    m_PersistentCalls:
+      m_Calls: []
   OnPlaced:
     m_PersistentCalls:
       m_Calls:
