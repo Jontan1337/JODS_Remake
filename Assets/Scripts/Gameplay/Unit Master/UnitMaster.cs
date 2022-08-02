@@ -5,6 +5,7 @@ using Mirror;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Pathfinding;
+using Sirenix.OdinInspector;
 
 [System.Serializable]
 public class UnitList
@@ -61,6 +62,8 @@ public class UnitList
     [Header("Other")]
     [Space]
     public int maxAmount;
+    public int currentAmount;
+    [Space]
     public bool unlocked;
     public bool chosen;
     public void Unlock(bool unlock)
@@ -101,49 +104,78 @@ public class UnitMaster : NetworkBehaviour
     [SerializeField] private UnitMasterSO masterSO = null;
     UnitMasterClass mClass = null;
 
-    [System.Serializable]
-    public class Stats
+    [Title("Stats", titleAlignment: TitleAlignments.Centered)]
+    [SerializeField, SyncVar(hook = nameof(CurrentEnergy_Hook))] private int currentEnergy = 50; //Current amount of master energy
+    [Command] private void Cmd_SetCurrentEnergy(int newVal)
     {
-        public int currentEnergy = 50; //Current amount of master energy
-        public int maxEnergy = 100; //Maximum amount of energy that can be stored
-        public int energyRechargeIncrement = 1; //How much energy recharges per second
-        public int maxEnergyIncrement = 20; //Amount to increase max energy
-        [Space]
-        public int currentXP = 0; //Current amount of master xp
-        [Space]
-        public int energyUntilNextUpgrade = 50; //When does the next upgrade decision become available
-        public int energyUntilNextUpgradeBase = 50; //When does the next upgrade decision become available 
-        public int energyLevel = 0;
-        public AnimationCurve energyRequirementCurve;
+        bool less = newVal < currentEnergy;
+        int diff = 0;
+        if (less) diff = currentEnergy - newVal;
+
+        currentEnergy = Mathf.Clamp(newVal, 0, maxEnergy);
+
+        if (less)
+        {
+            energyUntilNextUpgrade -= diff;
+            if (energyUntilNextUpgrade <= 0)
+            {
+                Rpc_ActivateUpgradeDecisions(netIdentity.connectionToClient, true);
+            }
+        }
     }
+    private void CurrentEnergy_Hook(int oldVal, int newVal)
+    {
+
+
+
+        UpdateEnergyUI();
+    }
+    [SerializeField, SyncVar] private int maxEnergy = 100; //Maximum amount of energy that can be stored
+    [Command] private void Cmd_SetMaxEnergy(int newVal)
+    {
+        maxEnergy = newVal;
+    }
+    private void MaxEnergy_Hook(int oldVal, int newVal)
+    {
+        //Set the UI slider's max value
+        UI.energySlider.maxValue = maxEnergy;
+
+        UI.energyUseSlider.maxValue = maxEnergy;
+
+        UpdateEnergyUI();
+    }
+
+    [SerializeField, SyncVar] private int energyRechargeIncrement = 1; //How much energy recharges per second
+    [Command] private void Cmd_SetEnergyRechargeIncrement(int newVal)
+    {
+        energyRechargeIncrement = newVal;
+    }
+    [SerializeField] private int maxEnergyIncrement = 20; //Amount to increase max energy
     [Space]
-    public Stats stats;
+    [SerializeField, SyncVar] private int currentXP = 0; //Current amount of master xp
+    [Command] private void Cmd_SetCurrentXP(int newVal) { currentXP = newVal; }
+    [Space]
+    [SerializeField, SyncVar] private int energyUntilNextUpgrade = 50; //When does the next upgrade decision become available
+    [Command] private void Cmd_EnergyUntilNextUpgrade(int newVal) { energyUntilNextUpgrade = newVal; }
+    [SerializeField] private int energyUntilNextUpgradeBase = 50; //When does the next upgrade decision become available 
+    [SerializeField, SyncVar] private int energyLevel = 0;
+    [SerializeField] private AnimationCurve energyRequirementCurve;
+
     private int Energy
     {
-        get { return stats.currentEnergy; }
+        get { return currentEnergy; }
         set
         {
-            bool less = value < stats.currentEnergy;
-            int diff = 0;
-            if (less) diff = stats.currentEnergy - value;
-            stats.currentEnergy = Mathf.Clamp(value, 0, stats.maxEnergy);
-            if (less)
-            {
-                stats.energyUntilNextUpgrade -= diff;
-                if (stats.energyUntilNextUpgrade <= 0)
-                {
-                    ActivateUpgradeDecisions(true);
-                }
-            }
-            UpdateEnergyUI();
+            Cmd_SetCurrentEnergy(value);
         }
     }
     private int CurrentXP
     {
-        get { return stats.currentXP; }
+        get { return currentXP; }
         set
         {
-            stats.currentXP = value;
+            currentXP = value; //LOCAL
+            Cmd_SetCurrentXP(value);
 
             //XP UI
             UI.xpText.text = CurrentXP.ToString() + "XP";
@@ -162,7 +194,7 @@ public class UnitMaster : NetworkBehaviour
     }
 
 
-    [Header("Units")]
+    [Title("Units", titleAlignment: TitleAlignments.Centered)]
     [SerializeField] private List<UnitList> unitList = new List<UnitList>();
     public UnitList GetUnitList(int index) => unitList[index];
     [Space]
@@ -198,8 +230,7 @@ public class UnitMaster : NetworkBehaviour
         public Text upgradeMenuXpText = null;
         public Text spawnText = null;
         [Space]
-        public GameObject RechargeRateButton = null;
-        public GameObject MaxEnergyButton = null;
+        public GameObject UpgradeButtons = null;
         [Space]
         public GameObject unitButtonPrefab;
         public Transform unitButtonContainer;
@@ -305,13 +336,13 @@ public class UnitMaster : NetworkBehaviour
         SwitchCamera(true);
 
         //Default starting energy stats
-        stats.currentEnergy = masterSO.startEnergy;
-        stats.maxEnergy = masterSO.startMaxEnergy;
-        stats.energyRechargeIncrement = masterSO.energyRechargeIncrement;
-        stats.maxEnergyIncrement = masterSO.maxEnergyUpgradeIncrement;
-        stats.energyUntilNextUpgrade = masterSO.energyUntilNextUpgrade;
-        stats.energyUntilNextUpgradeBase = masterSO.energyUntilNextUpgrade;
-        stats.energyRequirementCurve = masterSO.energyRequirementCurve;
+        currentEnergy = masterSO.startEnergy;
+        maxEnergy = masterSO.startMaxEnergy;
+        energyRechargeIncrement = masterSO.energyRechargeIncrement;
+        maxEnergyIncrement = masterSO.maxEnergyUpgradeIncrement;
+        energyUntilNextUpgrade = masterSO.energyUntilNextUpgrade;
+        energyUntilNextUpgradeBase = masterSO.energyUntilNextUpgrade;
+        energyRequirementCurve = masterSO.energyRequirementCurve;
 
         //Energy UI visuals
         UI.energyFillImage.color = masterSO.energyColor;
@@ -333,8 +364,6 @@ public class UnitMaster : NetworkBehaviour
         EnableFlyingMarker(false); //Disable the marker on start. Default view mode is Topdown.
 
         //-----------------------
-
-        ActivateUpgradeDecisions(false);
 
         //Coroutines
 
@@ -590,42 +619,40 @@ public class UnitMaster : NetworkBehaviour
     #endregion
     public void UpgradeEnergy(bool rate)
     {
+        Cmd_UpgradeEnergy(rate);
+
+        //Update scoreboard stat
+        Cmd_UpdateScore(1, PlayerDataStat.TotalUpgrades);
+
+        energyLevel++;
+        int newMilestone = Mathf.RoundToInt(energyUntilNextUpgradeBase *
+            (1 + energyRequirementCurve.Evaluate(
+                (energyRequirementCurve.keys[energyRequirementCurve.keys.Length - 1].time / 10) * energyLevel)));
+        Cmd_EnergyUntilNextUpgrade(newMilestone);
+    }
+
+    [Command]
+    private void Cmd_UpgradeEnergy(bool rate)
+    {
         //Deactivate the decisions
-        ActivateUpgradeDecisions(false);
+        Rpc_ActivateUpgradeDecisions(netIdentity.connectionToClient, false);
 
         //Play a sound
-        Cmd_PlayGlobalSound(true);
+        Rpc_PlayGlobalSound(true);
 
         //If player chose to upgrade the recharge rate
         if (rate)
         {
             //Increase the increment
-            stats.energyRechargeIncrement += 1;
+            energyRechargeIncrement += 1;
         }
 
         //If player chose to upgrade the max amount of energy
         else
         {
             //Increase the max amount of energy
-            stats.maxEnergy += stats.maxEnergyIncrement;
-
-            //Set the UI slider's max value
-            UI.energySlider.maxValue = stats.maxEnergy;
-
-            UI.energyUseSlider.maxValue = stats.maxEnergy;
-
-            UpdateEnergyUI();
+            maxEnergy += maxEnergyIncrement;
         }
-
-        stats.energyLevel++;
-        int newMilestone = Mathf.RoundToInt(stats.energyUntilNextUpgradeBase *
-            (1 + stats.energyRequirementCurve.Evaluate(
-                (stats.energyRequirementCurve.keys[stats.energyRequirementCurve.keys.Length - 1].time / 10) * stats.energyLevel)));
-        stats.energyUntilNextUpgrade = newMilestone;
-
-
-        //Update scoreboard stat
-        Cmd_UpdateScore(1, PlayerDataStat.TotalUpgrades);
     }
 
     #endregion
@@ -640,7 +667,7 @@ public class UnitMaster : NetworkBehaviour
             yield return new WaitForSeconds(1);
 
             //Increment the energy by energyRechargeIncrement, clamping it at the max amount of energy
-            Energy += stats.energyRechargeIncrement;
+            Energy += energyRechargeIncrement;
         }
     }
 
@@ -731,7 +758,7 @@ public class UnitMaster : NetworkBehaviour
     private void UpdateEnergyUI()
     {
         //Energy UI
-        UI.energyText.text = Energy.ToString() + "/" + stats.maxEnergy;
+        UI.energyText.text = Energy.ToString() + "/" + maxEnergy;
         UI.energySlider.value = Energy;
     }
 
@@ -745,10 +772,10 @@ public class UnitMaster : NetworkBehaviour
         uiGameplayButtons[chosenSpawnableIndex].Choose(choose);
     }
 
-    private void ActivateUpgradeDecisions(bool enable)
+    [TargetRpc]
+    private void Rpc_ActivateUpgradeDecisions(NetworkConnection target, bool enable)
     {
-        UI.MaxEnergyButton.SetActive(enable);
-        UI.RechargeRateButton.SetActive(enable);
+        UI.UpgradeButtons.SetActive(enable);
     }
 
     private void SetSpawnText(string newText)
@@ -776,6 +803,12 @@ public class UnitMaster : NetworkBehaviour
         spawnTextBool = false;
     }
 
+    [TargetRpc]
+    private void Rpc_SetSpawnText(NetworkConnection target, string newText)
+    {
+        SetSpawnText(newText);
+    }
+
     public void OpenUpgradeMenu()
     {
         bool active = !UI.upgradeMenu.activeSelf;
@@ -787,7 +820,8 @@ public class UnitMaster : NetworkBehaviour
 
     #region Particles and Effects Functions
 
-    private void SpawnEffect(Vector3 point, bool smoke = true)
+    [TargetRpc]
+    private void Rpc_SpawnEffect(NetworkConnection target, Vector3 point, bool smoke)
     {
         //Smoke particles
         spawnSmokeEffect.transform.position = point;
@@ -961,7 +995,7 @@ public class UnitMaster : NetworkBehaviour
                 else //Spawn Unit
                 {
                     //Do I have enough energy to spawn the chosen unit?
-                    if (unitList[chosenSpawnableIndex].unit.energyCost <= stats.currentEnergy)
+                    if (unitList[chosenSpawnableIndex].unit.energyCost <= currentEnergy)
                     {
                         //If yes, spawn the unit at the location
                         Spawn(hit, spawningADeployable);
@@ -996,9 +1030,7 @@ public class UnitMaster : NetworkBehaviour
             spawnName = chosenDeployable.deployablePrefab.name;
 
             uiGameplayButtons[chosenSpawnableIndex].StartCooldown(listItem.deployableCooldown);
-            StartCoroutine(DeployableCooldown(listItem));
-
-            SpawnEffect(hit.point, false);
+            StartCoroutine(DeployableCooldown(listItem));           
 
             Unchoose();
 
@@ -1020,14 +1052,10 @@ public class UnitMaster : NetworkBehaviour
             UnitList chosenUnitList = unitList[chosenSpawnableIndex];
             UnitSO chosenUnit = chosenUnitList.unit;
 
-            //Spawn a smoke effect to hide the instantiation of the unit.
-            SpawnEffect(hit.point);
-
             //If the spawn location meets the requirements, then spawn the currently selected type of unit.
 
             //A random unit from the chosen unit's prefab list gets picked, and the name gets sent to the server, which then spawns the unit.
             //This is because there can be multiple variations of one unit.
-            //spawnLevel = unitList[chosenSpawnableIndex].level;
             spawnName = chosenUnit.unitPrefab.name;
 
             //Master loses energy, because nothing is free in life
@@ -1076,9 +1104,6 @@ public class UnitMaster : NetworkBehaviour
 
         //If the location meets the requirements, then refund the unit.
         Cmd_RefundUnit(unitToRefund.gameObject);
-
-        //Spawn a smoke effect to hide the removal of the unit.
-        SpawnEffect(unitToRefund.transform.position);
 
         Energy += refundAmount;
     }
@@ -1610,11 +1635,25 @@ public class UnitMaster : NetworkBehaviour
     [Command]
     void Cmd_Spawn(Vector3 pos, string name, bool deployable)
     {
-        //Set the positions y value to be a bit higher, so that the spawnable doesn't spawn inside the floor
-        pos = new Vector3(pos.x, pos.y + 0.1f, pos.z);
-
         //If the type is 0, then spawn a deployable, not a unit
         bool spawningDeployable = deployable;
+
+        if (spawningDeployable)
+        {
+
+        }
+        else
+        {
+            UnitList chosenUnitList = unitList[chosenSpawnableIndex];
+            if (chosenUnitList.currentAmount >= chosenUnitList.maxAmount)
+            {
+                Rpc_SetSpawnText(netIdentity.connectionToClient, "Max amount of " + chosenUnitList.name + " alive.");
+                return;
+            }
+        }
+
+        //Set the positions y value to be a bit higher, so that the spawnable doesn't spawn inside the floor
+        pos = new Vector3(pos.x, pos.y + 0.1f, pos.z);
 
         string resourceLocation = spawningDeployable ? deployableResourcesLocation : unitResourcesLocation;
 
@@ -1664,12 +1703,13 @@ public class UnitMaster : NetworkBehaviour
                 Rpc_UpdateMilestoneForClient(netIdentity.connectionToClient, chosenUnitList.unitIndex, chosenUnitList.upgradeMilestone);
             }
 
-            print(chosenUnitList.name);
             unit.SetUnitSO(chosenUnitList.unit);
 
             if (chosenUnitList.hasDamageTrait) unit.ApplyDamageTrait();
             if (chosenUnitList.hasHealthTrait) unit.ApplyHealthTrait();
             if (chosenUnitList.hasDamageTrait) unit.ApplySpeedTrait();
+
+            chosenUnitList.currentAmount++;
         }
         else
         {
@@ -1683,6 +1723,8 @@ public class UnitMaster : NetworkBehaviour
                 //(Only 1 instance of a deployable is permitted in the world at a time. So when a deployable is instantiated into the world, it will stay there until the match ends.)
             }
         }
+
+        Rpc_SpawnEffect(netIdentity.connectionToClient, pos, !spawningDeployable);
 
         //Spawn the spawnable on the server
         NetworkServer.Spawn(newSpawnable);
@@ -1734,6 +1776,8 @@ public class UnitMaster : NetworkBehaviour
     [Command]
     void Cmd_RefundUnit(GameObject unitToRefund)
     {
+        Rpc_SpawnEffect(netIdentity.connectionToClient, unitToRefund.transform.position, true);
+
         NetworkServer.Destroy(unitToRefund);
     }
     [Command]

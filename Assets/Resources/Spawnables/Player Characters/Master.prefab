@@ -639,7 +639,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3665051953985499645
 RectTransform:
   m_ObjectHideFlags: 0
@@ -656,9 +656,9 @@ RectTransform:
   m_Father: {fileID: 6170638220009486958}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 159.5458, y: -19.393333}
   m_SizeDelta: {x: 200, y: 29.38}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7758178226201804880
@@ -951,9 +951,9 @@ RectTransform:
   m_Father: {fileID: 3665051953985499645}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 150, y: -14.69}
   m_SizeDelta: {x: 85, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5475011764156531792
@@ -2296,7 +2296,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000009977327, y: 0}
+  m_AnchoredPosition: {x: 0.000099761666, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &5078851688853517996
@@ -2449,9 +2449,9 @@ RectTransform:
   m_Father: {fileID: 3665051953985499645}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 50, y: -14.69}
   m_SizeDelta: {x: 85, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7687004483654573821
@@ -2934,21 +2934,20 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   masterSO: {fileID: 11400000, guid: 020c1bd2256b96247a9b702d6910df49, type: 2}
-  stats:
-    currentEnergy: 50
-    maxEnergy: 100
-    energyRechargeIncrement: 1
-    maxEnergyIncrement: 20
-    currentXP: 0
-    energyUntilNextUpgrade: 50
-    energyUntilNextUpgradeBase: 50
-    energyLevel: 0
-    energyRequirementCurve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
+  currentEnergy: 50
+  maxEnergy: 100
+  energyRechargeIncrement: 1
+  maxEnergyIncrement: 20
+  currentXP: 0
+  energyUntilNextUpgrade: 50
+  energyUntilNextUpgradeBase: 50
+  energyLevel: 0
+  energyRequirementCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   unitList:
   - name: Common
     unit: {fileID: 11400000, guid: 254796e5ec2c1ff49a903f70e84b5945, type: 2}
@@ -2991,7 +2990,8 @@ MonoBehaviour:
     hasSpeedTrait: 0
     upgradePanel: {fileID: 0}
     unitButton: {fileID: 0}
-    maxAmount: 50
+    maxAmount: 2
+    currentAmount: 0
     unlocked: 1
     chosen: 0
     unitIndex: 0
@@ -3038,6 +3038,7 @@ MonoBehaviour:
     upgradePanel: {fileID: 0}
     unitButton: {fileID: 0}
     maxAmount: 50
+    currentAmount: 0
     unlocked: 0
     chosen: 0
     unitIndex: 1
@@ -3084,6 +3085,7 @@ MonoBehaviour:
     upgradePanel: {fileID: 0}
     unitButton: {fileID: 0}
     maxAmount: 50
+    currentAmount: 0
     unlocked: 0
     chosen: 0
     unitIndex: 2
@@ -3130,6 +3132,7 @@ MonoBehaviour:
     upgradePanel: {fileID: 0}
     unitButton: {fileID: 0}
     maxAmount: 50
+    currentAmount: 0
     unlocked: 0
     chosen: 0
     unitIndex: 3
@@ -3176,6 +3179,7 @@ MonoBehaviour:
     upgradePanel: {fileID: 0}
     unitButton: {fileID: 0}
     maxAmount: 50
+    currentAmount: 0
     unlocked: 0
     chosen: 0
     unitIndex: 4
@@ -3217,8 +3221,7 @@ MonoBehaviour:
     xpText: {fileID: 803872073727899947}
     upgradeMenuXpText: {fileID: 2978817317651218296}
     spawnText: {fileID: 9004796516012174525}
-    RechargeRateButton: {fileID: 6422932333704771199}
-    MaxEnergyButton: {fileID: 3511270461695387192}
+    UpgradeButtons: {fileID: 2528542796432822469}
     unitButtonPrefab: {fileID: 1190185979252806133, guid: 42b3c13f523b1dd4ca9803cad753eea0,
       type: 3}
     unitButtonContainer: {fileID: 1156457284654815061}
