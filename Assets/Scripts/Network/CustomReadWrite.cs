@@ -288,6 +288,35 @@ public static class CustomReadWrite
     */
     #endregion
 
+
+    public static void WriteFullBodyBipedIK(this NetworkWriter writer, FullBodyBipedIK value)
+    {
+        if (value == null)
+        {
+            writer.WriteUInt32(0);
+            return;
+        }
+        NetworkIdentity identity = value.GetComponent<NetworkIdentity>();
+        if (identity != null)
+        {
+            writer.WriteUInt32(identity.netId);
+        }
+        else
+        {
+            logger.LogWarning("NetworkWriter " + value + " has no NetworkIdentity");
+            writer.WriteUInt32(0);
+        }
+    }
+    public static FullBodyBipedIK ReadFullBodyBipedIK(this NetworkReader reader)
+    {
+        NetworkIdentity identity = reader.ReadNetworkIdentity();
+        if (identity == null)
+        {
+            return null;
+        }
+        return identity.GetComponent<FullBodyBipedIK>();
+    }
+
     /*
     public static void WriteActiveSClass(this NetworkWriter writer, ActiveSClass value)
     {

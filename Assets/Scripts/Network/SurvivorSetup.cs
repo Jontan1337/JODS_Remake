@@ -39,9 +39,9 @@ public class SurvivorSetup : NetworkBehaviour
     [SerializeField] private TextMesh playerNameText = null; // Change to something else??
 
     [Header("First person setup")]
+    public SkinnedMeshRenderer headMesh = null;
     [SerializeField] private SkinnedMeshRenderer bodyMesh = null;
     [SerializeField] private SkinnedMeshRenderer armsMesh = null;
-    [SerializeField] private SkinnedMeshRenderer headMesh = null;
     [SerializeField] private Transform armatureTransform = null;
     [SerializeField] private float armatureForwardOffset = -0.3f;
 
@@ -246,5 +246,14 @@ public class SurvivorSetup : NetworkBehaviour
         GOItem.transform.SetParent(parent, false);
         dynamicallySpawnedItems.Add(GOItem);
         return GOItem;
+    }
+
+    [TargetRpc]
+    public void Rpc_ToggleHead(NetworkConnection target)
+    {
+        var shadowsOnly = UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly;
+        var on = UnityEngine.Rendering.ShadowCastingMode.On;
+        print(headMesh.shadowCastingMode == shadowsOnly);
+        headMesh.shadowCastingMode = (headMesh.shadowCastingMode == shadowsOnly) ? on : shadowsOnly;
     }
 }

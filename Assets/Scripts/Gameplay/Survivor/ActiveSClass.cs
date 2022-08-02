@@ -1,4 +1,5 @@
 ﻿using Mirror;
+using RootMotion.FinalIK;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -62,10 +63,17 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
             isDown = value;
             if (isDown)
             {
-                DownCo = Down();                
+                DownCo = Down();
                 StartCoroutine(DownCo);
-                GetComponent<CharacterController>().height = 1;
-                GetComponent<PlayerEquipment>().Svr_DeselectEquipmentSlot();
+                GetComponentInChildren<PlayerEquipment>().EquipmentItem?.Svr_Unequip();
+                GetComponent<FullBodyBipedIK>().enabled = false;
+                GetComponent<SurvivorSetup>().Rpc_ToggleHead(connectionToClient);
+            }
+            else
+            {
+                GetComponentInChildren<PlayerEquipment>().EquipmentItem?.Svr_Equip();
+                GetComponent<FullBodyBipedIK>().enabled = true;
+                GetComponent<SurvivorSetup>().Rpc_ToggleHead(connectionToClient);
             }
         }
     }
