@@ -3,6 +3,7 @@ using UnityEngine;
 using Pathfinding;
 using Mirror;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(BoxCollider))]
@@ -19,10 +20,10 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 {
     #region Fields
 
-    [Header("Necessities")]
+    [Title("Necessities", titleAlignment: TitleAlignments.Centered)]
     [SerializeField] private UnitSO unitSO;
 
-    [Header("Stats")]
+    [Title("Stats", titleAlignment: TitleAlignments.Centered)]
     [SyncVar, SerializeField] private int health = 100; //Upgradeable
     [SyncVar] public bool isDead = false;
     private int maxHealth = 0;
@@ -96,13 +97,13 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     public float[] statModifiers;
 
-    [Header("Movement")]
+    [Title("Movement", titleAlignment: TitleAlignments.Centered)]
     [SerializeField] private float movementSpeed = 1.5f;
     [Space]
     [SerializeField] private float chaseTime = 10; //How long the unit will chase, if the unit can't see it's target
     [SerializeField] private bool stoppedMoving = false;
 
-    [Header("Other")]
+    [Title("Other", titleAlignment: TitleAlignments.Centered)]
     [SerializeField] private int sightDistance = 20;
     [SerializeField] private float eyeHeight = 2f;
     [SerializeField] private int viewAngle = 50;
@@ -115,7 +116,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     [Space]
     [SerializeField] private Color particleColor = Color.red;
 
-    [Header("AI")]
+    [Title("AI", titleAlignment: TitleAlignments.Centered)]
     [SerializeField] protected Transform currentTarget = null;
     [SerializeField] private bool permanentTarget = true;
     public bool canPathfind = true;
@@ -125,7 +126,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     private CharacterController controller;
     Path path;
 
-    [Header("References")]
+    [Title("References", titleAlignment: TitleAlignments.Centered)]
     public Animator animator;
     [Space]
     [SerializeField] private SkinnedMeshRenderer bodyRenderer = null;
@@ -133,7 +134,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     [SerializeField] private SkinnedMeshRenderer leftArmRenderer = null;
     [SerializeField] private SkinnedMeshRenderer rightArmRenderer = null;
 
-    [Header("Detatchable References")]
+    [Title("Detatchable References", titleAlignment: TitleAlignments.Centered)]
     [SerializeField] private UnitBodyPart leftArm = null;
     [SerializeField] private UnitBodyPart rightArm = null;
     [SerializeField] private UnitBodyPart head = null;
@@ -183,7 +184,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     [Space]
     public Selectable select;
 
-    [Header("Ragdoll")]
+    [Title("Ragdoll", titleAlignment: TitleAlignments.Centered)]
     [SerializeField] private bool canRagdoll = true;
 
     #region Coroutine references
@@ -305,6 +306,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     public int GetHealth => health;
     public bool IsDead => isDead;
+    public static System.Action<UnitSO> OnDeath;
 
     #endregion
 
@@ -327,8 +329,9 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
                 rb.useGravity = false;
             }
         }
+
         InitialUnitSetup();
-        
+
         StartCoroutine(MovementAnimationCoroutine());
 
         if (!isServer)
@@ -339,7 +342,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
             return;
         }
-
+        
         CoSearch = SearchCoroutine();
         if (!searching) { StartCoroutine(CoSearch); searching = true; }
     }
@@ -513,7 +516,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         SetMaterialsAndMeshes();
        
         //random unit size, just to make units look less alike
-        transform.localScale = transform.localScale * Random.Range(0.9f, 1.1f);
+        transform.localScale = transform.localScale * Random.Range(0.95f, 1.1f);
     }
     
     private void SetMaterialsAndMeshes()
@@ -1225,7 +1228,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
             Svr_PostDeath();
 
-
+            OnDeath.Invoke(unitSO);
         }
     }
 

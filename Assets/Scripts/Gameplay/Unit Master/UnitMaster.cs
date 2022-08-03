@@ -206,6 +206,17 @@ public class UnitMaster : NetworkBehaviour
     [Title("Units", titleAlignment: TitleAlignments.Centered)]
     [SerializeField] private List<UnitList> unitList = new List<UnitList>();
     public UnitList GetUnitList(int index) => unitList[index];
+    public UnitList GetUnitList(UnitSO so)
+    {
+        foreach (UnitList unitListItem in unitList)
+        {
+            if (unitListItem.unit == so)
+            {
+                return unitListItem;
+            }
+        }
+        return null;
+    } 
     [Space]
     [SerializeField, SyncVar] private int chosenSpawnableIndex = 0;
     [SerializeField] private bool hasChosenASpawnable = false;
@@ -334,8 +345,6 @@ public class UnitMaster : NetworkBehaviour
         {
             //Default starting energy stats
             energyRequirementCurve = masterSO.energyRequirementCurve;
-            if (!isServer) return;
-            print("SERVER");
             currentEnergy = masterSO.startEnergy;
             maxEnergy = masterSO.startMaxEnergy;
             energyRechargeIncrement = masterSO.energyRechargeIncrement;
@@ -1707,6 +1716,8 @@ public class UnitMaster : NetworkBehaviour
 
             unit.SetUnitSO(chosenUnitList.unit);
 
+            unit.OnDeath += OnUnitDeath;
+
             if (chosenUnitList.hasDamageTrait) unit.ApplyDamageTrait();
             if (chosenUnitList.hasHealthTrait) unit.ApplyHealthTrait();
             if (chosenUnitList.hasDamageTrait) unit.ApplySpeedTrait();
@@ -1735,6 +1746,13 @@ public class UnitMaster : NetworkBehaviour
 
         //Spawn the spawnable on the server
         NetworkServer.Spawn(newSpawnable);
+    }
+
+    private void OnUnitDeath(UnitSO unit)
+    {
+        UnitList chosenUnitList = GetUnitList(unit);
+
+        chosenUnitList.currentAmount--;
     }
 
     [TargetRpc]
