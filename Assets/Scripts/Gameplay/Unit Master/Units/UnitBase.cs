@@ -306,7 +306,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     public int GetHealth => health;
     public bool IsDead => isDead;
-    public static System.Action<UnitSO> OnDeath;
+    public System.Action<UnitSO> OnDeath;
 
     #endregion
 
