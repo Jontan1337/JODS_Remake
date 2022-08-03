@@ -1224,6 +1224,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             Svr_SetDeathAnimation();
 
             Svr_PostDeath();
+
+
         }
     }
 
