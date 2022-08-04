@@ -1227,8 +1227,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             Svr_SetDeathAnimation();
 
             Svr_PostDeath();
-
-            OnDeath.Invoke(unitSO);
+            
+            OnDeath?.Invoke(unitSO);
         }
     }
 
