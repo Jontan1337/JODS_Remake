@@ -40,6 +40,8 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     [SerializeField] private Slider healthLossBar = null;
     [SerializeField] private Slider armorBar = null;
     [SerializeField] private Image abilityCooldownUI = null;
+    [SerializeField] private Image downImage = null;
+    [SerializeField] private GameObject downCanvas = null;
 
     [Header("Events")]
     public UnityEvent<float> onChangedHealth = null;
@@ -324,6 +326,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     IEnumerator DownCo;
     [SerializeField] private float downTime = 30;
     private bool beingRevived = false;
+    private float downImageOpacity = 0;
     public bool IsInteractable { get => isInteractable; set => isInteractable = value; }
     [SerializeField, SyncVar] private bool isInteractable = false;
     private IEnumerator Down()
@@ -331,25 +334,35 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
         Rpc_Down(connectionToClient);
         animatorController.SetBool("IsDown", true);
         IsInteractable = true;
+        downImageOpacity = 0;
+        downImage.color = new Color(1f, 1f, 1f, 0f);
+        
         while (downTime > 0)
         {
-            print("down time: " + downTime);
             if (!beingRevived)
             {
+                Rpc_UpdateDownImage(connectionToClient, downImageOpacity);
+                downImageOpacity += (1f / 30f);
                 downTime -= 1;
             }
             yield return new WaitForSeconds(1f);
         }
-        print("dead");
         IsDead = true;
     }
 
     [TargetRpc]
     private void Rpc_Down(NetworkConnection target)
     {
+        downCanvas.SetActive(true);
         sController.enabled = false;
-        
     }
+
+    [TargetRpc]
+    private void Rpc_UpdateDownImage(NetworkConnection target, float downImageOpacity)
+    {
+        downImage.color = new Color(1f, 1f, 1f, downImageOpacity);
+    }
+
 
 
     [SerializeField] private float reviveTime = 5;
@@ -359,14 +372,17 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
         beingRevived = true;
         while (reviveTime > 0)
         {
-            print(beingRevived);
-            print("revive time: " + reviveTime);
             reviveTime -= 1;
             yield return new WaitForSeconds(1f);
         }
+        Revived();
+    }
 
+    private void Revived()
+    {
         Health = 50;
         IsDown = false;
+        
         animatorController.SetBool("IsDown", false);
         downTime = 30;
         reviveTime = 5;
@@ -374,12 +390,12 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
         IsInteractable = false;
         Rpc_Revived(connectionToClient);
         beingRevived = false;
-        print("Alive");
     }
 
     [TargetRpc]
     private void Rpc_Revived(NetworkConnection target)
     {
+        downCanvas.SetActive(false);
         sController.enabled = true;
     }
 
@@ -412,6 +428,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
         if (IsDown)
         {
             downTime -= 0.1f;
+            downImageOpacity += (1f / 30f) * 0.1f;
         }
         else
         {
