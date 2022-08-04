@@ -645,7 +645,6 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         while (CurrentAccuracy > 0f)
         {
             CurrentAccuracy -= stabilization * Time.deltaTime;
-            //currentCurveAccuracy = recoilCurve.Evaluate(CurrentAccuracy);
             EvaluateAccuracy();
             if (crosshairUI)
             {

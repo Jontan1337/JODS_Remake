@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using Mirror;
+using DG.Tweening;
 
 public class RaycastWeapon : RangedWeapon
 {
@@ -12,7 +13,8 @@ public class RaycastWeapon : RangedWeapon
     [Header("Settings")]
     [SerializeField] private LayerMask ignoreLayer = 13;
     [Header("References")]
-    [SerializeField] private ParticleSystem bulletTrail;
+    [SerializeField, Required] private ParticleSystem bulletTrail;
+    [SerializeField, Required] private Light muzzleFlashLight;
 
     [Server]
     protected override void Svr_Shoot(Vector2 aimPoint)
@@ -71,6 +73,8 @@ public class RaycastWeapon : RangedWeapon
     protected override void Rpc_Shoot(Vector2 recoil)
     {
         base.Rpc_Shoot(recoil);
+        muzzleFlashLight.DOComplete();
+        muzzleFlashLight.DOIntensity(0.4f, 0.01f).OnComplete(() => { muzzleFlashLight.DOIntensity(0f, 0.01f); });
         Ray aimRay = playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2 + recoil.x, Screen.height / 2 + recoil.y));
         if (Physics.Raycast(aimRay, out RaycastHit aimHit, range, ~ignoreLayer))
         {
