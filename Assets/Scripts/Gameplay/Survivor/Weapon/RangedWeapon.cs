@@ -47,7 +47,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
     [Header("References")]
     [SerializeField, Required] protected Transform shootOrigin = null;
-    [SerializeField, SyncVar(hook = nameof(SetPlayerCamera))] protected Transform playerHead;
+    [SerializeField, SyncVar(hook = nameof(SetPlayerHeadAndCamera))] protected Transform playerHead;
     [SerializeField] protected Camera playerCamera;
     [SerializeField] private GameObject muzzleFlash = null;
     [SerializeField] protected Transform aimSight = null;
@@ -261,10 +261,11 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         hipAimPosition = transform.parent.localPosition;
     }
 
-    private void SetPlayerCamera(Transform oldValue, Transform newValue)
+    private void SetPlayerHeadAndCamera(Transform oldValue, Transform newValue)
     {
         if (!newValue) return;
 
+        playerHead = newValue;
         playerCamera = newValue.Find("PlayerCamera(Clone)").GetComponent<Camera>();
     }
 

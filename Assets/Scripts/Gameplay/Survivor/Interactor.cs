@@ -155,7 +155,7 @@ public class Interactor : NetworkBehaviour
     {
         if (targetObject)
         {
-            currentInteractable?.Svr_CancelInteract(interactedObject);
+            currentInteractable?.Svr_CancelInteract(gameObject);
             currentInteractable = null;
             interactedObject = null;
         }
