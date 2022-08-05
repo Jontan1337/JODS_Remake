@@ -8,18 +8,18 @@ using UnityEngine.UI;
 
 public class Interactor : NetworkBehaviour
 {
-    [SerializeField]
-    private Transform playerCamera = null;
-    [SerializeField]
-    private float interactionRange = 2f;
-    [SerializeField]
-    private LayerMask layerMask = 15;
-    [SerializeField]
-    private float inRangeOutline = 3f;
-    [SerializeField]
-    private float interactionOutline = 10f;
+    [SerializeField] private Transform playerCamera = null;
+    [SerializeField] private float interactionRange = 2f;
+    [SerializeField] private LayerMask layerMask = 15;
+    [SerializeField] private float inRangeOutline = 3f;
+    [SerializeField] private Color targetedColor = Color.green;
+    [SerializeField] private Color untargetedColor = Color.grey;
+    [SerializeField] private float interactionOutline = 10f;
+
+    public Action<RaycastHit> onTargetChanged;
 
     private RaycastHit rayHit;
+    private RaycastHit prevRayHit;
     private IInteractable currentInteractable;
     private GameObject interactedObject = null;
     private Coroutine COCreateOutlines;
@@ -66,8 +66,13 @@ public class Interactor : NetworkBehaviour
         Ray ray = new Ray(playerCamera.position, playerCamera.forward);
 
         Physics.Raycast(ray, out rayHit, interactionRange, ~layerMask);
+        if (prevRayHit.collider != rayHit.collider)
+        {
+            prevRayHit = rayHit;
+            onTargetChanged?.Invoke(rayHit);
+        }
 
-        UnityEngine.Debug.DrawRay(playerCamera.position, playerCamera.forward * interactionRange);
+        //UnityEngine.Debug.DrawRay(playerCamera.position, playerCamera.forward * interactionRange);
     }
 
     RaycastHit[] boxHit = new RaycastHit[0];
@@ -86,6 +91,7 @@ public class Interactor : NetworkBehaviour
                 if (rayHit.collider.TryGetComponent(out Outline outline))
                 {
                     outline.ShowOutline(0.1f, interactionOutline);
+                    outline.OutlineColor = targetedColor;
                 }
             }
 
@@ -98,6 +104,7 @@ public class Interactor : NetworkBehaviour
                 if (item.collider.TryGetComponent(out Outline outline))
                 {
                     outline.ShowOutline(0.1f, inRangeOutline);
+                    outline.OutlineColor = untargetedColor;
                 }
             }
 
