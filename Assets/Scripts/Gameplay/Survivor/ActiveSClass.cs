@@ -40,6 +40,8 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     [SerializeField] private Slider healthLossBar = null;
     [SerializeField] private Slider armorBar = null;
     [SerializeField] private Image abilityCooldownUI = null;
+    [SerializeField] private Image reviveTimerImageUI = null;
+    [SerializeField] private GameObject reviveTimerObjectUI = null;
     [SerializeField] private Image downImage = null;
     [SerializeField] private GameObject downCanvas = null;
 
@@ -194,8 +196,12 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
         abilityCooldownUI.fillAmount = 0;
         while (abilityCooldownCount < abilityCooldown)
         {
+
             abilityCooldownCount += (Time.deltaTime * GetComponent<ModifierManager>().Cooldown);
             abilityCooldownUI.fillAmount = abilityCooldownCount / abilityCooldown;
+
+            print(abilityCooldownUI.fillAmount);
+            print(abilityCooldownCount);
             yield return null;
         }
         abilityCooldownCount = 0;
@@ -381,8 +387,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     private void Revived()
     {
         Health = 50;
-        IsDown = false;
-        
+        IsDown = false;        
         animatorController.SetBool("IsDown", false);
         downTime = 30;
         reviveTime = 5;
@@ -400,9 +405,42 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     }
 
 
+
+    IEnumerator ReviveTimerCo;
+    private float reviveTimeCount = 0;
+    private IEnumerator ReviveTimer()
+    {
+        reviveTimeCount = 0;
+        reviveTimerObjectUI.SetActive(true);
+        reviveTimerImageUI.fillAmount = 0;
+        while (reviveTimeCount < 5)
+        {
+            reviveTimeCount += (Time.deltaTime);
+            reviveTimerImageUI.fillAmount = reviveTimeCount / 5;
+            print(reviveTimerImageUI.fillAmount);
+            yield return null;
+        }
+        reviveTimerObjectUI.SetActive(false);
+    }
+
+    [TargetRpc]
+    private void Rpc_StartReviveTimer(NetworkConnection target)
+    {
+        ReviveTimerCo = ReviveTimer();
+        StartCoroutine(ReviveTimerCo);
+    }
+
+    [TargetRpc]
+    private void Rpc_ReviveTimerCancelled(NetworkConnection target)
+    {
+        StopCoroutine(ReviveTimerCo);
+        reviveTimerObjectUI.SetActive(false);
+    }
+
     private void ReviveCancelled()
     {
         StopCoroutine(BeingRevivedCo);
+
         beingRevived = false;
         reviveTime = 5;
     }
@@ -479,19 +517,23 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     [Server]
     public void Svr_PerformInteract(GameObject interacter)
     {
-        print("perform");
         if (!beingRevived)
         {
+            interacter.GetComponent<ActiveSClass>().sController.enabled = false;
+            interacter.GetComponent<ActiveSClass>().Rpc_StartReviveTimer(interacter.GetComponent<NetworkIdentity>().connectionToClient);
             BeingRevivedCo = BeingRevived();
             StartCoroutine(BeingRevivedCo);
         }
     }
 
 
+
+
     [Server]
     public void Svr_CancelInteract(GameObject interacter)
     {
-        print("cancel");
+        interacter.GetComponent<ActiveSClass>().sController.enabled = true;
+        interacter.GetComponent<ActiveSClass>().Rpc_ReviveTimerCancelled(interacter.GetComponent<NetworkIdentity>().connectionToClient);
         ReviveCancelled();
     }
 }

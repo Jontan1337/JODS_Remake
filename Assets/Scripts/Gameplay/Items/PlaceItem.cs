@@ -98,10 +98,14 @@ public class PlaceItem : EquipmentItem
     [TargetRpc]
     private void Rpc_Cleanup(NetworkConnection target)
     {
-        print("FFS");
-
         StopCoroutine(PlaceHolderActiveCo);
         placeholder.SetActive(false);
+    }
+
+    [Command]
+    private void Cmd_Cleanup()
+    {
+        Rpc_Cleanup(connectionToClient);
     }
 
     protected override void OnLMBPerformed(InputAction.CallbackContext obj)
@@ -126,12 +130,7 @@ public class PlaceItem : EquipmentItem
 
     public void Drop(bool dropItem)
     {
-        print(connectionToClient);
-
-        if (connectionToClient != null)
-        {
-            Rpc_Cleanup(connectionToClient);
-        }
+        Cmd_Cleanup();
         switch (equipmentType)
         {
             case EquipmentType.None:
