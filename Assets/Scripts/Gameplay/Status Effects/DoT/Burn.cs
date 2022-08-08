@@ -22,6 +22,7 @@ public class Burn : StatusEffect
     {
         if (onFireParticlesPrefab == null) return;
         onFireParticles = GameObject.Instantiate(onFireParticlesPrefab, obj.transform);
+         
     }
 
     public override void OnEffectApplied()
