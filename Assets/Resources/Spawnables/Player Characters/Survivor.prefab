@@ -4360,6 +4360,7 @@ GameObject:
   - component: {fileID: 6043028673134938683}
   - component: {fileID: 8049337140043942677}
   - component: {fileID: 4047303356966882284}
+  - component: {fileID: 2735478398350233815}
   m_Layer: 13
   m_Name: Survivor
   m_TagString: Player
@@ -4412,6 +4413,9 @@ MonoBehaviour:
   syncInterval: 0.1
   sClass: {fileID: 0}
   survivorSO: {fileID: 11400000, guid: 6e02f3f114526574798927bb6afebdfd, type: 2}
+  playerEquipment: {fileID: 0}
+  fullBodyBipedIK: {fileID: 0}
+  survivorSetup: {fileID: 0}
   animatorController: {fileID: 5922127114697802274}
   bodyRenderer: {fileID: 8146840676092125171}
   headRenderer: {fileID: 2690098373533844718}
@@ -4581,7 +4585,7 @@ MonoBehaviour:
   bodyMesh: {fileID: 8146840676092125171}
   armsMesh: {fileID: 7026343827133896325}
   armatureTransform: {fileID: 2059472290479666644}
-  armatureForwardOffset: -0.4
+  armatureForwardOffset: -0.3
   prefabDisableIfPlayer: []
   prefabDisableIfNotPlayer:
   - {fileID: 8050693953223198890}
@@ -4686,6 +4690,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   inRangeOutline: 3
+  targetedColor: {r: 0, g: 1, b: 0, a: 1}
+  untargetedColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   interactionOutline: 10
 --- !u!114 &8458703505067804603
 MonoBehaviour:
@@ -4748,7 +4754,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncMode: 0
-  syncInterval: 0.02
+  syncInterval: 0.01
   clientAuthority: 1
   animator: {fileID: 5922127114697802274}
 --- !u!95 &5922127114697802274
@@ -5315,6 +5321,20 @@ MonoBehaviour:
     poleTarget: {fileID: 0}
     clampWeight: 0.1
     clampSmoothing: 2
+--- !u!114 &2735478398350233815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5922127114707202486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc82381608cfbf5498d538589a09ef72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
 --- !u!1 &5972193784617847827
 GameObject:
   m_ObjectHideFlags: 0
@@ -7609,7 +7629,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8774505771079395665
 Transform:
   m_ObjectHideFlags: 0

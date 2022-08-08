@@ -704,7 +704,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  header1: 
   itemName: Plank
   equipmentType: 1
   unequippedLayer: 14
@@ -717,9 +716,21 @@ MonoBehaviour:
   owner: {fileID: 0}
   rb: {fileID: -8637743624781331604}
   outline: {fileID: -7113823284069820927}
+  onPickupEvents:
+    m_PersistentCalls:
+      m_Calls: []
+  onDropEvents:
+    m_PersistentCalls:
+      m_Calls: []
+  onEquipEvents:
+    m_PersistentCalls:
+      m_Calls: []
+  onUnequipEvents:
+    m_PersistentCalls:
+      m_Calls: []
   ignoreLayer:
     serializedVersion: 2
-    m_Bits: 8192
+    m_Bits: 12591616
   currentDamage: 10
   normalDamage: 10
   currentPunchthrough: 2

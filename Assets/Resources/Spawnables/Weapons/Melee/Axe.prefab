@@ -185,15 +185,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  header1: 
   itemName: Axe
   equipmentType: 1
-  findMeshes: 0
   unequippedLayer: 14
   equippedLayer: 15
-  layeredObjects:
-  - {fileID: 930379364178549457}
-  - {fileID: 930379364178549457}
+  objectMeshes: []
   isInteractable: 1
   UISilhouette: {fileID: 21300000, guid: 2ffc1e1133e88f9479f77c99795e6d8f, type: 3}
   authController: {fileID: 1174335037543660417}
@@ -201,9 +197,21 @@ MonoBehaviour:
   owner: {fileID: 0}
   rb: {fileID: 8858818039796434203}
   outline: {fileID: 2056607922821574656}
+  onPickupEvents:
+    m_PersistentCalls:
+      m_Calls: []
+  onDropEvents:
+    m_PersistentCalls:
+      m_Calls: []
+  onEquipEvents:
+    m_PersistentCalls:
+      m_Calls: []
+  onUnequipEvents:
+    m_PersistentCalls:
+      m_Calls: []
   ignoreLayer:
     serializedVersion: 2
-    m_Bits: 8192
+    m_Bits: 12591616
   currentDamage: 10
   normalDamage: 10
   currentPunchthrough: 2
@@ -216,7 +224,8 @@ MonoBehaviour:
   splatterRemoveAmount: 300
   splatterRemoveAmountOnSwing: -0.01
   impactDuration: 0.2
-  impactAmount: 1
+  hitImpactShakeAmount: 1
+  missImpactShakeAmount: 1
   weaponAnimator: {fileID: 6225377672603672993}
   sfxPlayer: {fileID: 2177156062513161764}
   material: {fileID: 2100000, guid: f96cadb658ef79f4cb1d04fc10740bb9, type: 2}

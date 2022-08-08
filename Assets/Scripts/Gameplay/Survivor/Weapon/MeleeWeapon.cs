@@ -97,11 +97,6 @@ public class MeleeWeapon : EquipmentItem, IImpacter
         //colliderEnabled = false;
     }
 
-    public override void OnStartAuthority()
-    {
-
-    }
-
     protected override void OnLMBPerformed(InputAction.CallbackContext context) => Cmd_StartAttack();
     protected override void OnLMBCanceled(InputAction.CallbackContext context) => Cmd_StopAttack();
 
@@ -113,7 +108,6 @@ public class MeleeWeapon : EquipmentItem, IImpacter
         animatorEnabled = true;
         colliderEnabled = true;
         triggerCollider.enabled = true;
-        print("Svr_Pickup");
     }
 
     [Server]
@@ -131,7 +125,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     {
         base.Svr_Unequip();
         StopIEAttack();
-        //weaponAnimator.Play("Idle");
+        weaponAnimator.Play("Idle");
     }
 
     private void ResetAnimatorSpeed()

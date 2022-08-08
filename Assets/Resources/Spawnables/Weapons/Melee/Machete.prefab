@@ -5484,7 +5484,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  header1: 
   itemName: Machete
   equipmentType: 1
   unequippedLayer: 14
@@ -5497,9 +5496,21 @@ MonoBehaviour:
   owner: {fileID: 0}
   rb: {fileID: 3113723153773427216}
   outline: {fileID: 4609404701648697094}
+  onPickupEvents:
+    m_PersistentCalls:
+      m_Calls: []
+  onDropEvents:
+    m_PersistentCalls:
+      m_Calls: []
+  onEquipEvents:
+    m_PersistentCalls:
+      m_Calls: []
+  onUnequipEvents:
+    m_PersistentCalls:
+      m_Calls: []
   ignoreLayer:
     serializedVersion: 2
-    m_Bits: 8192
+    m_Bits: 12591616
   currentDamage: 15
   normalDamage: 15
   currentPunchthrough: 0
@@ -5512,7 +5523,8 @@ MonoBehaviour:
   splatterRemoveAmount: 250
   splatterRemoveAmountOnSwing: -0.005
   impactDuration: 0.1
-  impactAmount: 1
+  hitImpactShakeAmount: 1
+  missImpactShakeAmount: 1
   weaponAnimator: {fileID: 3233265353284567669}
   sfxPlayer: {fileID: 6768451046035223808}
   material: {fileID: 2100000, guid: f96cadb658ef79f4cb1d04fc10740bb9, type: 2}

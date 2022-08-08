@@ -704,7 +704,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  header1: 
   itemName: Wrench
   equipmentType: 1
   unequippedLayer: 14
@@ -717,9 +716,21 @@ MonoBehaviour:
   owner: {fileID: 0}
   rb: {fileID: -8637743624781331604}
   outline: {fileID: -7113823284069820927}
+  onPickupEvents:
+    m_PersistentCalls:
+      m_Calls: []
+  onDropEvents:
+    m_PersistentCalls:
+      m_Calls: []
+  onEquipEvents:
+    m_PersistentCalls:
+      m_Calls: []
+  onUnequipEvents:
+    m_PersistentCalls:
+      m_Calls: []
   ignoreLayer:
     serializedVersion: 2
-    m_Bits: 8192
+    m_Bits: 12591616
   currentDamage: 10
   normalDamage: 10
   currentPunchthrough: 2
@@ -732,7 +743,8 @@ MonoBehaviour:
   splatterRemoveAmount: 300
   splatterRemoveAmountOnSwing: -0.01
   impactDuration: 0.5
-  impactAmount: 1
+  hitImpactShakeAmount: 1
+  missImpactShakeAmount: 1
   weaponAnimator: {fileID: 7119151799590538732}
   sfxPlayer: {fileID: 5247268446413630599}
   material: {fileID: 2100000, guid: f96cadb658ef79f4cb1d04fc10740bb9, type: 2}

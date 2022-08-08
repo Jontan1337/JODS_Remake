@@ -14,6 +14,9 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     private SurvivorController sController;
 
     [SerializeField] private SurvivorSO survivorSO;
+    [SerializeField] private PlayerEquipment playerEquipment;
+    [SerializeField] private FullBodyBipedIK fullBodyBipedIK;
+    [SerializeField] private SurvivorSetup survivorSetup;
     [SerializeField] private Animator animatorController;
     [SerializeField] private SkinnedMeshRenderer bodyRenderer = null;
     [SerializeField] private SkinnedMeshRenderer headRenderer = null;
@@ -69,15 +72,15 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
             {
                 DownCo = Down();
                 StartCoroutine(DownCo);
-                GetComponentInChildren<PlayerEquipment>().EquipmentItem?.Svr_Unequip();
-                GetComponent<FullBodyBipedIK>().enabled = false;
-                GetComponent<SurvivorSetup>().Rpc_ToggleHead(connectionToClient);
+                playerEquipment.EquipmentItem?.Svr_Unequip();
+                fullBodyBipedIK.enabled = false;
+                survivorSetup.Rpc_ToggleHead(connectionToClient);
             }
             else
             {
-                GetComponentInChildren<PlayerEquipment>().EquipmentItem?.Svr_Equip();
-                GetComponent<FullBodyBipedIK>().enabled = true;
-                GetComponent<SurvivorSetup>().Rpc_ToggleHead(connectionToClient);
+                playerEquipment.EquipmentItem?.Svr_Equip();
+                fullBodyBipedIK.enabled = true;
+                survivorSetup.Rpc_ToggleHead(connectionToClient);
             }
         }
     }
@@ -159,11 +162,23 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     //}
     #endregion
 
+    public override void OnStartServer()
+    {
+        FindComponents();
+    }
+
+    private async void FindComponents()
+    {
+        await JODSTime.WaitTime(0.1f);
+        playerEquipment = GetComponentInChildren<PlayerEquipment>();
+        fullBodyBipedIK = GetComponent<FullBodyBipedIK>();
+        survivorSetup = GetComponent<SurvivorSetup>();
+    }
+
     public override void OnStartAuthority()
     {
         if (test) SetSurvivorClass(survivorSO);
         JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => Ability();
-
 
     }
 
