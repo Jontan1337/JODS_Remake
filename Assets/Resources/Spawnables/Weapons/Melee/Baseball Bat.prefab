@@ -185,7 +185,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  header1: 
   itemName: Bat
   equipmentType: 1
   unequippedLayer: 14
@@ -198,11 +197,23 @@ MonoBehaviour:
   owner: {fileID: 0}
   rb: {fileID: 8858818039796434203}
   outline: {fileID: 2056607922821574656}
+  onPickupEvents:
+    m_PersistentCalls:
+      m_Calls: []
+  onDropEvents:
+    m_PersistentCalls:
+      m_Calls: []
+  onEquipEvents:
+    m_PersistentCalls:
+      m_Calls: []
+  onUnequipEvents:
+    m_PersistentCalls:
+      m_Calls: []
   ignoreLayer:
     serializedVersion: 2
     m_Bits: 8192
   currentDamage: 10
-  normalDamage: 10
+  normalDamage: 40
   currentPunchthrough: 2
   normalPunchthrough: 2
   damageType: 1
@@ -213,7 +224,8 @@ MonoBehaviour:
   splatterRemoveAmount: 300
   splatterRemoveAmountOnSwing: -0.01
   impactDuration: 0.2
-  impactAmount: 1
+  hitImpactShakeAmount: 1
+  missImpactShakeAmount: 1
   weaponAnimator: {fileID: 6225377672603672993}
   sfxPlayer: {fileID: 2177156062513161764}
   material: {fileID: 2100000, guid: f96cadb658ef79f4cb1d04fc10740bb9, type: 2}
