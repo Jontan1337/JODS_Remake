@@ -82,7 +82,7 @@ public class PlaceItem : EquipmentItem
     {
         if (!obstructed && placeholderActive)
         {
-            
+
             Rpc_Cleanup(connectionToClient);
             GetComponent<IPlaceable>().Owner = transform.root;
             GetComponent<IPlaceable>()?.Svr_OnPlaced();
@@ -99,7 +99,10 @@ public class PlaceItem : EquipmentItem
     private void Rpc_Cleanup(NetworkConnection target)
     {
         StopCoroutine(PlaceHolderActiveCo);
-        placeholder.SetActive(false);
+        if (placeholder)
+        {
+            placeholder.SetActive(false);
+        }
     }
 
     [Command]
@@ -120,7 +123,7 @@ public class PlaceItem : EquipmentItem
     }
 
     public override void Unbind()
-    {        
+    {
         // connectionToClient is null for some reason, only for client
 
         Drop(false);

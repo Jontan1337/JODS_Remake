@@ -104,10 +104,7 @@ public abstract class Projectile : NetworkBehaviour
 			if (sticky)
 			{
 				Rpc_OnHit(objectHit.transform);
-				//transform.SetParent(objectHit.transform);
-				//rb.isKinematic = true;
 				transform.localScale = transform.localScale;
-				//rb.transform.position = point.point - rb.velocity.normalized * 30;
 			}
 			else
 			{

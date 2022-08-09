@@ -72,7 +72,11 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
             {
                 DownCo = Down();
                 StartCoroutine(DownCo);
-                playerEquipment.EquipmentItem?.Svr_Unequip();
+                var equip = playerEquipment.EquipmentItem;
+                if (equip)
+                {
+                    equip.Svr_Unequip();
+                }
                 fullBodyBipedIK.enabled = false;
                 survivorSetup.Rpc_ToggleHead(connectionToClient);
             }
