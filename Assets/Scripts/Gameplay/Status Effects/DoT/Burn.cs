@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
 public class Burn : StatusEffect
 {
@@ -21,14 +22,17 @@ public class Burn : StatusEffect
     private void SetOnFire()
     {
         if (onFireParticlesPrefab == null) return;
-        onFireParticles = GameObject.Instantiate(onFireParticlesPrefab, obj.transform);
-         
+        onFireParticles = GameObject.Instantiate(onFireParticlesPrefab);
+        NetworkServer.Spawn(onFireParticles);
+        onFireParticles.transform.SetParent(obj.transform, false);
     }
 
     public override void OnEffectApplied()
     {
         if (burnParticlesPrefab == null) return;
-        burnParticles = GameObject.Instantiate(burnParticlesPrefab, obj.transform);
+        burnParticles = GameObject.Instantiate(burnParticlesPrefab);
+        NetworkServer.Spawn(burnParticles);
+        burnParticles.transform.SetParent(obj.transform, false);
     }
     public override void ApplyEffect(int? amount)
     {
@@ -39,6 +43,7 @@ public class Burn : StatusEffect
     {
         GameObject.Destroy(burnParticles);
         if (onFireParticles) GameObject.Destroy(onFireParticles);
+
     }
 
     public override void Tick()

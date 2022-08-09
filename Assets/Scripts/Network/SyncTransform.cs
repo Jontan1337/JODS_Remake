@@ -3,7 +3,7 @@ using Mirror;
 using System.Collections;
 using System;
 
-public class SyncGameObjectVisuals : NetworkBehaviour
+public class SyncTransform : NetworkBehaviour
 {
     [SerializeField, SyncVar(hook = nameof(UpdateParent))] private Transform parentData;
     [SerializeField, SyncVar(hook = nameof(UpdatePosition))] private Vector3 positionData;

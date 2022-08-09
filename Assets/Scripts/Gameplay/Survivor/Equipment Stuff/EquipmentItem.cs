@@ -7,7 +7,7 @@ using Sirenix.OdinInspector;
 using UnityEngine.Events;
 
 [RequireComponent(typeof(PhysicsToggler), typeof(Rigidbody), typeof(BoxCollider)),
- RequireComponent(typeof(AuthorityController), typeof(SyncGameObjectVisuals), typeof(Outline)),
+ RequireComponent(typeof(AuthorityController), typeof(SyncTransform), typeof(Outline)),
  RequireComponent(typeof(MeshCollider))]
 public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippable, IBindable
 {
@@ -25,7 +25,7 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	[Header("References")]
 	public Sprite UISilhouette = null;
 	[SerializeField] protected AuthorityController authController = null;
-	[SerializeField] protected SyncGameObjectVisuals objectVisuals = null;
+	[SerializeField] protected SyncTransform objectVisuals = null;
 	[SerializeField] protected Transform owner = null;
 	[SerializeField] private Rigidbody rb = null;
 	[SerializeField] private Outline outline = null;
