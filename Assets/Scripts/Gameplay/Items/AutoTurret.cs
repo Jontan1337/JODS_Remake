@@ -435,7 +435,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 		}
 	}
 
-	public void Cmd_Damage(int damage, Transform source = null)
+	public void Cmd_Damage(int damage)
 	{
 		throw new System.NotImplementedException();
 	}

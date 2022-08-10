@@ -471,9 +471,9 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     }
 
     [Command]
-    public void Cmd_Damage(int damage, Transform target = null)
+    public void Cmd_Damage(int damage)
     {
-        Damage(damage, target);
+        Damage(damage);
     }
 
     void Damage(int damage, Transform source = null)
