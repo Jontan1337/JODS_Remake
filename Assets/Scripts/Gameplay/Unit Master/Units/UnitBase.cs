@@ -713,31 +713,30 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     public virtual void AcquireTarget(Transform newTarget, bool alerted = false, bool closerThanCurrent = false, bool liveEntity = false)
     {
-        targetIsLiveEntity = liveEntity;
-
-        if (!closerThanCurrent)
+        if (currentTarget)
         {
-            if (currentTarget)
+            if (!closerThanCurrent)
             {
+                //If my new target is not closer than my current target, I will continue to chase my current target.
                 if (!CloserThanTarget(newTarget)) return;
+                //If it is closer, then it will become my new target.
+                print(name + ": this " + newTarget.name + " guy is closer than my current target! imma chase him instead.");
             }
         }
+
+        targetIsLiveEntity = liveEntity;
+
         SetTarget(newTarget);
 
         NewTarget();
 
+
+        //If I didn't get alerted myself, I will alert others.
+        if (!alerted) Alert();
+
         bool makeAlertSound;
-
-        if (!alerted) //If I got alerted, I won't alert others.
-        {
-            makeAlertSound = Random.value < sounds.alertingSoundChance;
-            Alert();
-        }
-        else
-        {
-            makeAlertSound = Random.value < sounds.alertedSoundChance;
-        }
-
+        //Chance to make a sound on alert
+        makeAlertSound = Random.value < sounds.alertedSoundChance;
         if (makeAlertSound) PlaySound(sounds.alertSounds, sounds.alertVolume, true, true);
     }
 
@@ -1547,7 +1546,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
                 if (CloserThanTarget(target))
                 {
                     Debug.Log("I got shot by someone closer than my target, going after them instead.");
-                    AcquireTarget(target, false, true);
+                    AcquireTarget(target, true, true);
                 }
             }
             else
