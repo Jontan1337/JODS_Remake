@@ -44,7 +44,7 @@ public class EquipmentControl : NetworkBehaviour
 	private void Svr_ChangeControlBind(GameObject oldItem, GameObject newItem)
 	{
 		if (oldItem)
-			Rpc_UnBind(connectionToClient, oldItem);
+			Rpc_Unbind(connectionToClient, oldItem);
 
 		if (newItem)
 			Rpc_Bind(connectionToClient, newItem);
@@ -58,7 +58,7 @@ public class EquipmentControl : NetworkBehaviour
 		}
 	}
 	[TargetRpc]
-	private void Rpc_UnBind(NetworkConnection target, GameObject item)
+	private void Rpc_Unbind(NetworkConnection target, GameObject item)
 	{
 		if (item)
 		{
