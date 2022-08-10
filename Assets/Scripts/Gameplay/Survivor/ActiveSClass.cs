@@ -53,6 +53,9 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     public UnityEvent onDied = null;
 
     private bool abilityIsReady = true;
+    private Transform cameraTransform;
+    private Transform originalCameraTransformParent;
+    private Vector3 cameraRotationBeforeDown;
     //private SurvivorAnimationIKManager 
 
     public bool AbilityIsReady
@@ -78,13 +81,15 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
                     equip.Svr_Unequip();
                 }
                 fullBodyBipedIK.enabled = false;
-                survivorSetup.Rpc_ToggleHead(connectionToClient);
+                //survivorSetup.Rpc_ToggleHead(connectionToClient);
+                Rpc_SetCameraForDownedState(connectionToClient);
             }
             else
             {
                 playerEquipment.EquipmentItem?.Svr_Equip();
                 fullBodyBipedIK.enabled = true;
-                survivorSetup.Rpc_ToggleHead(connectionToClient);
+                //survivorSetup.Rpc_ToggleHead(connectionToClient);
+                Rpc_SetCameraForRevivedState(connectionToClient);
             }
         }
     }
@@ -177,20 +182,43 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
         playerEquipment = GetComponentInChildren<PlayerEquipment>();
         fullBodyBipedIK = GetComponent<FullBodyBipedIK>();
         survivorSetup = GetComponent<SurvivorSetup>();
+        cameraTransform = transform.Find("Virtual Head(Clone)/PlayerCamera(Clone)");
+        originalCameraTransformParent = transform.Find("Virtual Head(Clone)");
     }
 
     public override void OnStartAuthority()
     {
         if (test) SetSurvivorClass(survivorSO);
         JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => Ability();
+        FindCamera();
+    }
 
+    private async void FindCamera()
+    {
+        await JODSTime.WaitTime(0.1f);
+        fullBodyBipedIK = GetComponent<FullBodyBipedIK>();
+        cameraTransform = transform.Find("Virtual Head(Clone)/PlayerCamera(Clone)");
+        originalCameraTransformParent = transform.Find("Virtual Head(Clone)");
     }
 
     #region ViewModel
-    [TargetRpc]
+    [TargetRpc] // Why is this under ViewModel´??? - John
     private void Rpc_InvokeOnChangedHealth(NetworkConnection target, float healthDifference)
     {
         onChangedHealth?.Invoke(healthDifference);
+    }
+
+    [TargetRpc]
+    private void Rpc_SetCameraForDownedState(NetworkConnection target)
+    {
+        cameraTransform.SetParent(fullBodyBipedIK.references.head.GetChild(0));
+    }
+    [TargetRpc]
+    private void Rpc_SetCameraForRevivedState(NetworkConnection target)
+    {
+        cameraTransform.SetParent(originalCameraTransformParent);
+        cameraTransform.localPosition = new Vector3(0f, 0.1f, 0f);
+        cameraTransform.rotation = originalCameraTransformParent.rotation;
     }
 
     #endregion
@@ -375,6 +403,8 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     [TargetRpc]
     private void Rpc_Down(NetworkConnection target)
     {
+        JODSInput.DisableCamera();
+        animatorController.SetBool("IsDown", true);
         downCanvas.SetActive(true);
         sController.enabled = false;
     }
@@ -418,6 +448,8 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     {
         downCanvas.SetActive(false);
         sController.enabled = true;
+        JODSInput.EnableCamera();
+        animatorController.SetBool("IsDown", false);
     }
 
 
