@@ -683,7 +683,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     {
         while (!isDead)
         {
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(currentTarget ? 1.5f : 0.5f);
 
             if (Random.value < 0.05f) PlaySound(sounds.idleSounds, sounds.idleVolume, true);
 
@@ -705,7 +705,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
                 if (canSee && inViewAngle || Vector3.Distance(transform.position, col.transform.position) <= 10)
                 {
                     //I can see the player, go go go!
-                    AcquireTarget(col.transform, false, default);
+                    AcquireTarget(col.transform, currentTarget != null, default);
                 }
             }
         }
@@ -750,7 +750,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         if (attacking) { StopCoroutine(CoAttack); attacking = false; }
 
         //Start the search coroutine (start searching for survivors)
-        if (!searching) { StartCoroutine(CoSearch); searching = true; }
+        //if (!searching) { StartCoroutine(CoSearch); searching = true; }
 
         //Stop moving
         EnablePathfinding(false);
@@ -767,7 +767,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     private void NewTarget()
     {
         //Stop searching for more survivors
-        if (searching) { StopCoroutine(CoSearch); searching = false; }
+        //if (searching) { StopCoroutine(CoSearch); searching = false; }
         if (stoppedMoving) ResumeMovement();
         if (!canPathfind) EnablePathfinding();
 
@@ -921,11 +921,14 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     {
         if (!currentTarget) return true;
         if (compareTarget == null) return false;
-
+        
         float newTargetDistance = Vector3.Distance(transform.position, currentTarget.position);
         float currentTargetDistance = Vector3.Distance(transform.position, compareTarget.position);
 
-        return currentTargetDistance > newTargetDistance;
+        print("new " +newTargetDistance);
+        print("old " +currentTargetDistance);
+
+        return newTargetDistance > currentTargetDistance;
     }
 
     protected bool NextToTarget() => Vector3.Distance(transform.position, currentTarget.position) <= Mathf.Clamp(.5f + 0.4f,melee.meleeRange - 0.1f,100);
