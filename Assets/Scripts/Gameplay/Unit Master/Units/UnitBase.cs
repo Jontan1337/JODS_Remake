@@ -1572,7 +1572,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         animator.SetTrigger("Hit");
     }
 
-    public void Cmd_Damage(int damage)
+    public void Cmd_Damage(int damage, Transform source = null)
     {
         throw new System.NotImplementedException();
     }

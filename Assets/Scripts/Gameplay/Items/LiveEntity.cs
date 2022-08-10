@@ -377,7 +377,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
         health -= damage;
     }
 
-    public void Cmd_Damage(int damage)
+    public void Cmd_Damage(int damage, Transform source = null)
     {
         throw new System.NotImplementedException();
     }

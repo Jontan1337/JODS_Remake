@@ -117,7 +117,7 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEff
         unitBase.Svr_Damage(Mathf.RoundToInt(damage * multiplier), target);
     }
 
-    public void Cmd_Damage(int damage)
+    public void Cmd_Damage(int damage, Transform source = null)
     {
         throw new System.NotImplementedException();
     }
