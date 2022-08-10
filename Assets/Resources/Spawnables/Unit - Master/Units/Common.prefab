@@ -97,6 +97,8 @@ MonoBehaviour:
   onlyDetachOnDeath: 0
   attachedPart: {fileID: 140777679403519111}
   partTransform: {fileID: 6939077818653399340}
+  usePartTransform: 1
+  bodyPartStartRotation: {x: 0, y: 0, z: 0}
   bodyBloodEmitter: {fileID: 8596834661010451319}
 --- !u!1 &140777679403519111
 GameObject:
@@ -272,6 +274,8 @@ MonoBehaviour:
   onlyDetachOnDeath: 0
   attachedPart: {fileID: 140777679403519111}
   partTransform: {fileID: 6939077818653399340}
+  usePartTransform: 1
+  bodyPartStartRotation: {x: 0, y: 0, z: 0}
   bodyBloodEmitter: {fileID: 8596834661010451319}
 --- !u!1 &322275302998112273
 GameObject:
@@ -371,6 +375,8 @@ MonoBehaviour:
   onlyDetachOnDeath: 1
   attachedPart: {fileID: 0}
   partTransform: {fileID: 0}
+  usePartTransform: 1
+  bodyPartStartRotation: {x: 0, y: 0, z: 0}
   bodyBloodEmitter: {fileID: 0}
 --- !u!1 &550724862150213472
 GameObject:
@@ -485,6 +491,8 @@ MonoBehaviour:
   onlyDetachOnDeath: 1
   attachedPart: {fileID: 2156825021841531380}
   partTransform: {fileID: 5284893647958922346}
+  usePartTransform: 1
+  bodyPartStartRotation: {x: -17, y: 0, z: -1}
   bodyBloodEmitter: {fileID: 8196872781004318470}
 --- !u!1 &734870971209505097
 GameObject:
@@ -607,7 +615,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0.0015, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0.0014872362, y: 0.0028284139, z: 0.00009327807}
+  m_ConnectedAnchor: {x: 0.0014872326, y: 0.0028284139, z: 0.00009327434}
   serializedVersion: 2
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -781,7 +789,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0.0015, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.0011523349, y: -0.0009602793, z: 0.000000008498324}
+  m_ConnectedAnchor: {x: -0.0011523324, y: -0.0009602793, z: 0.000000001338777}
   serializedVersion: 2
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -1098,6 +1106,8 @@ MonoBehaviour:
   onlyDetachOnDeath: 1
   attachedPart: {fileID: 0}
   partTransform: {fileID: 0}
+  usePartTransform: 1
+  bodyPartStartRotation: {x: 0, y: 0, z: 0}
   bodyBloodEmitter: {fileID: 0}
 --- !u!1 &3055425267815783838
 GameObject:
@@ -1254,6 +1264,8 @@ MonoBehaviour:
   onlyDetachOnDeath: 1
   attachedPart: {fileID: 0}
   partTransform: {fileID: 0}
+  usePartTransform: 1
+  bodyPartStartRotation: {x: 0, y: 0, z: 0}
   bodyBloodEmitter: {fileID: 0}
 --- !u!1 &5698425771130852175
 GameObject:
@@ -1353,6 +1365,8 @@ MonoBehaviour:
   onlyDetachOnDeath: 1
   attachedPart: {fileID: 0}
   partTransform: {fileID: 0}
+  usePartTransform: 1
+  bodyPartStartRotation: {x: 0, y: 0, z: 0}
   bodyBloodEmitter: {fileID: 0}
 --- !u!54 &5843376572326849486
 Rigidbody:
@@ -1381,7 +1395,7 @@ HingeJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 6.1303074e-11, y: 0.0039999955, z: 0.000000007916246}
+  m_ConnectedAnchor: {x: -1.3877796e-17, y: 0.0039999955, z: -4.6566156e-10}
   m_UseSpring: 0
   m_Spring:
     spring: 0
@@ -1560,6 +1574,8 @@ MonoBehaviour:
   onlyDetachOnDeath: 1
   attachedPart: {fileID: 0}
   partTransform: {fileID: 0}
+  usePartTransform: 1
+  bodyPartStartRotation: {x: 0, y: 0, z: 0}
   bodyBloodEmitter: {fileID: 0}
 --- !u!1 &6883453501311072808
 GameObject:
@@ -1621,7 +1637,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0.0015, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.0014616583, y: 0.0027020185, z: -0.00015738569}
+  m_ConnectedAnchor: {x: -0.0014616554, y: 0.0027020185, z: -0.00015739547}
   serializedVersion: 2
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -1970,6 +1986,8 @@ MonoBehaviour:
   onlyDetachOnDeath: 1
   attachedPart: {fileID: 0}
   partTransform: {fileID: 0}
+  usePartTransform: 1
+  bodyPartStartRotation: {x: 0, y: 0, z: 0}
   bodyBloodEmitter: {fileID: 0}
 --- !u!1 &7333329682639660980
 GameObject:
@@ -2096,6 +2114,8 @@ MonoBehaviour:
   onlyDetachOnDeath: 0
   attachedPart: {fileID: 7074734793407302162}
   partTransform: {fileID: 4110719710867917224}
+  usePartTransform: 1
+  bodyPartStartRotation: {x: 0, y: 0, z: 0}
   bodyBloodEmitter: {fileID: 9199047574612239108}
 --- !u!1 &7548835939240170350
 GameObject:
@@ -2161,6 +2181,8 @@ MonoBehaviour:
   onlyDetachOnDeath: 1
   attachedPart: {fileID: 0}
   partTransform: {fileID: 0}
+  usePartTransform: 1
+  bodyPartStartRotation: {x: 0, y: 0, z: 0}
   bodyBloodEmitter: {fileID: 0}
 --- !u!54 &7548835939240170351
 Rigidbody:
@@ -2352,6 +2374,8 @@ MonoBehaviour:
   onlyDetachOnDeath: 0
   attachedPart: {fileID: 7074734793407302162}
   partTransform: {fileID: 4110719710867917224}
+  usePartTransform: 1
+  bodyPartStartRotation: {x: 0, y: 0, z: 0}
   bodyBloodEmitter: {fileID: 9199047574612239108}
 --- !u!1 &7611819215510802678
 GameObject:
@@ -2413,7 +2437,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0.0015, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0.0011523349, y: -0.0009602794, z: 0.000000008498324}
+  m_ConnectedAnchor: {x: 0.0011523314, y: -0.0009602794, z: 0.000000001338777}
   serializedVersion: 2
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -3044,7 +3068,7 @@ HingeJoint:
   m_Anchor: {x: 0, y: 0.001, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.000016059754, y: 0.0039973175, z: 0.00007134308}
+  m_ConnectedAnchor: {x: -0.000016055048, y: 0.0039973175, z: 0.0000713468}
   m_UseSpring: 0
   m_Spring:
     spring: 0
@@ -3161,6 +3185,8 @@ MonoBehaviour:
   onlyDetachOnDeath: 1
   attachedPart: {fileID: 0}
   partTransform: {fileID: 0}
+  usePartTransform: 1
+  bodyPartStartRotation: {x: 0, y: 0, z: 0}
   bodyBloodEmitter: {fileID: 0}
 --- !u!1 &8394401011071667202
 GameObject:

@@ -55,10 +55,11 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEff
 
         attachedPart.SetActive(false);
 
+        Quaternion rotation = partTransform.rotation;
         switch (damageType)
         {
             case DamageTypes.Blunt:
-                GameObject bloodSplatter = ObjectPool.Instance.SpawnFromLocalPool(Tags.HeadExplosionBloodSplatter, partTransform.position, partTransform.rotation, 8f);
+                GameObject bloodSplatter = ObjectPool.Instance.SpawnFromLocalPool(Tags.HeadExplosionBloodSplatter, partTransform.position, rotation, 8f);
                 if (bloodSplatter == null)
                 {
                     Debug.LogError("No blood splatter obtained from local pool");
@@ -66,7 +67,7 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEff
                 }
                 break;
             case DamageTypes.Pierce:
-                bloodSplatter = ObjectPool.Instance.SpawnFromLocalPool(Tags.HeadExplosionBloodSplatter, partTransform.position, partTransform.rotation, 8f);
+                bloodSplatter = ObjectPool.Instance.SpawnFromLocalPool(Tags.HeadExplosionBloodSplatter, partTransform.position, rotation, 8f);
                 if (bloodSplatter == null)
                 {
                     Debug.LogError("No blood splatter obtained from local pool");
@@ -74,7 +75,7 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEff
                 }
                 break;
             case DamageTypes.Slash:
-                GameObject newPart = ObjectPool.Instance.SpawnFromLocalPool(Tags.BodyPart, partTransform.position, partTransform.rotation, 8f);
+                GameObject newPart = ObjectPool.Instance.SpawnFromLocalPool(Tags.BodyPart, partTransform.position, rotation, 8f);
                 if (newPart == null)
                 {
                     Debug.LogError("No body part obtained from local pool");
@@ -95,8 +96,6 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEff
                 }
                 break;
         }
-
-
     }
     public void Detach(int damageType)
     {

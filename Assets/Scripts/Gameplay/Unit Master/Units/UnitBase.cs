@@ -925,9 +925,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         float newTargetDistance = Vector3.Distance(transform.position, currentTarget.position);
         float currentTargetDistance = Vector3.Distance(transform.position, compareTarget.position);
 
-        print("new " +newTargetDistance);
-        print("old " +currentTargetDistance);
-
         return newTargetDistance > currentTargetDistance;
     }
 
