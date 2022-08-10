@@ -29,6 +29,7 @@ public class Mine : NetworkBehaviour, IPlaceable
 
     public Transform Owner { get; set; }
 
+    [Server]
     public void Svr_OnPlaced()
     {
         GetComponent<LiveEntity>().owner = transform.root;
