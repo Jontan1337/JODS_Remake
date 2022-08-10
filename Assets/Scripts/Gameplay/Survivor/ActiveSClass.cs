@@ -218,9 +218,6 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
 
             abilityCooldownCount += (Time.deltaTime * GetComponent<ModifierManager>().Cooldown);
             abilityCooldownUI.fillAmount = abilityCooldownCount / abilityCooldown;
-
-            print(abilityCooldownUI.fillAmount);
-            print(abilityCooldownCount);
             yield return null;
         }
         abilityCooldownCount = 0;
@@ -436,7 +433,6 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
         {
             reviveTimeCount += (Time.deltaTime);
             reviveTimerImageUI.fillAmount = reviveTimeCount / 5;
-            print(reviveTimerImageUI.fillAmount);
             yield return null;
         }
         reviveTimerObjectUI.SetActive(false);
@@ -475,9 +471,9 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     }
 
     [Command]
-    public void Cmd_Damage(int damage)
+    public void Cmd_Damage(int damage, Transform target = null)
     {
-        Damage(damage);
+        Damage(damage, target);
     }
 
     void Damage(int damage, Transform source = null)
