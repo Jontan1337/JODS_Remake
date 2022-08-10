@@ -391,7 +391,7 @@ public class @Controls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""6ccb71b4-b635-4017-a2bb-c66b128851e5"",
-                    ""path"": ""<Keyboard>/i"",
+                    ""path"": ""<Keyboard>/r"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -855,7 +855,7 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""New action"",
+                    ""name"": ""Scoreboard"",
                     ""type"": ""Button"",
                     ""id"": ""64170f68-8242-49bf-ada7-adf2646080de"",
                     ""expectedControlType"": ""Button"",
@@ -867,11 +867,11 @@ public class @Controls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""7ecb809c-9257-4684-9c29-9357b803c565"",
-                    ""path"": """",
+                    ""path"": ""<Keyboard>/leftAlt"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""New action"",
+                    ""action"": ""Scoreboard"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -990,7 +990,7 @@ public class @Controls : IInputActionCollection, IDisposable
         m_General = asset.FindActionMap("General", throwIfNotFound: true);
         m_General_MouseDelta = m_General.FindAction("MouseDelta", throwIfNotFound: true);
         m_General_Movement = m_General.FindAction("Movement", throwIfNotFound: true);
-        m_General_Newaction = m_General.FindAction("New action", throwIfNotFound: true);
+        m_General_Scoreboard = m_General.FindAction("Scoreboard", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -1341,14 +1341,14 @@ public class @Controls : IInputActionCollection, IDisposable
     private IGeneralActions m_GeneralActionsCallbackInterface;
     private readonly InputAction m_General_MouseDelta;
     private readonly InputAction m_General_Movement;
-    private readonly InputAction m_General_Newaction;
+    private readonly InputAction m_General_Scoreboard;
     public struct GeneralActions
     {
         private @Controls m_Wrapper;
         public GeneralActions(@Controls wrapper) { m_Wrapper = wrapper; }
         public InputAction @MouseDelta => m_Wrapper.m_General_MouseDelta;
         public InputAction @Movement => m_Wrapper.m_General_Movement;
-        public InputAction @Newaction => m_Wrapper.m_General_Newaction;
+        public InputAction @Scoreboard => m_Wrapper.m_General_Scoreboard;
         public InputActionMap Get() { return m_Wrapper.m_General; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1364,9 +1364,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Movement.started -= m_Wrapper.m_GeneralActionsCallbackInterface.OnMovement;
                 @Movement.performed -= m_Wrapper.m_GeneralActionsCallbackInterface.OnMovement;
                 @Movement.canceled -= m_Wrapper.m_GeneralActionsCallbackInterface.OnMovement;
-                @Newaction.started -= m_Wrapper.m_GeneralActionsCallbackInterface.OnNewaction;
-                @Newaction.performed -= m_Wrapper.m_GeneralActionsCallbackInterface.OnNewaction;
-                @Newaction.canceled -= m_Wrapper.m_GeneralActionsCallbackInterface.OnNewaction;
+                @Scoreboard.started -= m_Wrapper.m_GeneralActionsCallbackInterface.OnScoreboard;
+                @Scoreboard.performed -= m_Wrapper.m_GeneralActionsCallbackInterface.OnScoreboard;
+                @Scoreboard.canceled -= m_Wrapper.m_GeneralActionsCallbackInterface.OnScoreboard;
             }
             m_Wrapper.m_GeneralActionsCallbackInterface = instance;
             if (instance != null)
@@ -1377,9 +1377,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Movement.started += instance.OnMovement;
                 @Movement.performed += instance.OnMovement;
                 @Movement.canceled += instance.OnMovement;
-                @Newaction.started += instance.OnNewaction;
-                @Newaction.performed += instance.OnNewaction;
-                @Newaction.canceled += instance.OnNewaction;
+                @Scoreboard.started += instance.OnScoreboard;
+                @Scoreboard.performed += instance.OnScoreboard;
+                @Scoreboard.canceled += instance.OnScoreboard;
             }
         }
     }
@@ -1434,6 +1434,6 @@ public class @Controls : IInputActionCollection, IDisposable
     {
         void OnMouseDelta(InputAction.CallbackContext context);
         void OnMovement(InputAction.CallbackContext context);
-        void OnNewaction(InputAction.CallbackContext context);
+        void OnScoreboard(InputAction.CallbackContext context);
     }
 }

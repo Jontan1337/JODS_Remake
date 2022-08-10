@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Mirror;
+using UnityEngine.InputSystem;
+using System;
 
 [System.Serializable]
 public class PlayerData
@@ -84,6 +86,9 @@ public abstract class GamemodeBase : NetworkBehaviour
 
     private void Start()
     {
+        JODSInput.Controls.General.Scoreboard.performed += ToggleScoreboard;
+        JODSInput.Controls.General.Scoreboard.canceled += ToggleScoreboard;
+
         AS = GetComponent<AudioSource>();
         endgameCamera.SetActive(false);
 
@@ -312,16 +317,7 @@ public abstract class GamemodeBase : NetworkBehaviour
     [Space]
     [SerializeField] private bool scoreboardIsOpen = false;
 
-    //TEMPORARY
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.LeftAlt))
-        {
-            OpenScoreboard();
-        }
-    }
-
-    private void OpenScoreboard()
+    private void ToggleScoreboard(InputAction.CallbackContext obj)
     {
         scoreboardIsOpen = !scoreboardIsOpen;
         scoreboard.SetActive(scoreboardIsOpen);
@@ -395,7 +391,7 @@ public abstract class GamemodeBase : NetworkBehaviour
         else { endgameCamera.transform.position = new Vector3(0, 5, 0); }
         */
 
-        if (!scoreboardIsOpen) OpenScoreboard(); //Open the scoreboard
+        if (!scoreboardIsOpen) ToggleScoreboard(default); //Open the scoreboard
 
         AS.PlayOneShot(endgameSound, 1f);
 
