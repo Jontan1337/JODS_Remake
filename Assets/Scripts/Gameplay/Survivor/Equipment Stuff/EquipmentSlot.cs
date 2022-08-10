@@ -120,7 +120,6 @@ public class EquipmentSlot : NetworkBehaviour
         {
             EquipmentItem = reader.ReadGameObject() ?? null;
             EquipmentType = (EquipmentType)reader.ReadInt32();
-            print(EquipmentType);
             return;
         }
     }
