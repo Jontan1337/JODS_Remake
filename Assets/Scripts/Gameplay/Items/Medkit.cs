@@ -17,7 +17,7 @@ public class Medkit : EquipmentItem
 		ActiveSClass activeSClass = GetComponentInParent<ActiveSClass>();
 		if (activeSClass.Health != 100)
 		{
-			GetComponentInParent<ActiveSClass>().Cmd_Damage(-healAmount);
+			Cmd_UseMedKit();
 
 			uses--;
 			if (uses == 0)
@@ -25,6 +25,12 @@ public class Medkit : EquipmentItem
 				UsedUp();
 			}
 		}
+	}
+
+    [Command]
+	private void Cmd_UseMedKit()
+    {
+		GetComponentInParent<ActiveSClass>().Svr_Damage(-healAmount);
 	}
 
 	private void UsedUp()
