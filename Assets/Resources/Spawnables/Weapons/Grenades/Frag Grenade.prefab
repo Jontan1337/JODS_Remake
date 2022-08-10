@@ -89,20 +89,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  header1: 
   itemName: Item name
   equipmentType: 2
   unequippedLayer: 14
   equippedLayer: 15
   objectMeshes: []
   isInteractable: 1
-  UISilhouette: {fileID: 0}
+  UISilhouette: {fileID: 21300000, guid: e85f305a0decbf14f91287bd0d355b15, type: 3}
   authController: {fileID: 4576262768916516931}
   objectVisuals: {fileID: 0}
   owner: {fileID: 0}
   rb: {fileID: 783579326545623342}
   outline: {fileID: 1645482387569777890}
-  header2: 
+  onPickupEvents:
+    m_PersistentCalls:
+      m_Calls: []
+  onDropEvents:
+    m_PersistentCalls:
+      m_Calls: []
+  onEquipEvents:
+    m_PersistentCalls:
+      m_Calls: []
+  onUnequipEvents:
+    m_PersistentCalls:
+      m_Calls: []
   damage: 10
   penetrationAmount: 0
   ammunitionType: 0
@@ -120,6 +130,7 @@ MonoBehaviour:
   aimingRecoil: 0.05
   visualPunchback: 0.2
   aimingVisualPunchback: 0.1
+  aimingSpeed: 0.1
   stabilization: 1
   currentAccuracy: 0
   currentCurveAccuracy: 0
@@ -147,18 +158,22 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  aimBaseAccuracy: 1
+  muzzleParticleEmitAmount: 10
+  hipFOV: 80
+  ADSFOV: 50
   shootOrigin: {fileID: 8128879229658872825}
   playerHead: {fileID: 0}
   playerCamera: {fileID: 0}
   muzzleFlash: {fileID: 8530027171896115994}
   aimSight: {fileID: 0}
-  hipAimPosition: {x: 0, y: 0, z: 0}
   muzzleParticle: {fileID: 5924418479978680623}
   sfxPlayer: {fileID: 8431596515971650195}
   crosshairPrefab: {fileID: 5974645982962048393, guid: b319fa02b6118d54ba57865866c9198b,
     type: 3}
   shootSound: {fileID: 8300000, guid: 2dccfa9e64a74c640a3536edcc55ed42, type: 3}
   emptySound: {fileID: 8300000, guid: 715c383811c8e0745a345d19e85fd6aa, type: 3}
+  debugWeapon: 0
   projectileSpeed: 20
   timeToLive: 5
   projectile: {fileID: 620851829577473496, guid: 654afef88c28a2c4ab0e62c385cc34ec,
@@ -238,7 +253,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  outlineMode: 1
+  outlineMode: 0
   outlineColor: {r: 0.18431373, g: 0.7921569, b: 0.3019608, a: 1}
   outlineWidth: 0
   precomputeOutline: 1
@@ -1455,8 +1470,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.25260928, y: 0.38143873, z: 1.5803077}
-  m_Center: {x: 0.000000044703484, y: -0.0007613227, z: -0.12779376}
+  m_Size: {x: 0.1, y: 0.1, z: 0.1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!82 &6539748431266621819
 AudioSource:
   m_ObjectHideFlags: 0
