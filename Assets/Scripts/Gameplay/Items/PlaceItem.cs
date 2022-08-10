@@ -83,7 +83,6 @@ public class PlaceItem : EquipmentItem
         if (!obstructed && placeholderActive)
         {
 
-            Rpc_Cleanup(connectionToClient);
             GetComponent<IPlaceable>().Owner = transform.root;
             GetComponent<IPlaceable>()?.Svr_OnPlaced();
             transform.position = placeholderPos;
@@ -93,22 +92,6 @@ public class PlaceItem : EquipmentItem
             Svr_InvokeOnDrop();
             authController.Svr_RemoveAuthority();
         }
-    }
-
-    [TargetRpc]
-    private void Rpc_Cleanup(NetworkConnection target)
-    {
-        StopCoroutine(PlaceHolderActiveCo);
-        if (placeholder)
-        {
-            placeholder.SetActive(false);
-        }
-    }
-
-    [Command]
-    private void Cmd_Cleanup()
-    {
-        Rpc_Cleanup(connectionToClient);
     }
 
     protected override void OnLMBPerformed(InputAction.CallbackContext obj)
@@ -124,16 +107,17 @@ public class PlaceItem : EquipmentItem
 
     public override void Unbind()
     {
-        // connectionToClient is null for some reason, only for client
-
         Drop(false);
-
+        StopCoroutine(PlaceHolderActiveCo);
+        if (placeholder)
+        {
+            placeholder.SetActive(false);
+        }
         base.Unbind();
     }
 
     public void Drop(bool dropItem)
     {
-        Cmd_Cleanup();
         switch (equipmentType)
         {
             case EquipmentType.None:
@@ -142,7 +126,7 @@ public class PlaceItem : EquipmentItem
                 break;
             case EquipmentType.Special:
                 if (dropItem)
-                {
+                {                    
                     Cmd_Drop();
                 }
                 break;
