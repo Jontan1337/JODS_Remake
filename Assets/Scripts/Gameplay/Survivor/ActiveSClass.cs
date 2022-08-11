@@ -47,6 +47,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     [SerializeField] private GameObject reviveTimerObjectUI = null;
     [SerializeField] private Image downImage = null;
     [SerializeField] private GameObject downCanvas = null;
+    [SerializeField] private GameObject inGameCanvas = null;
 
     [Header("Events")]
     public UnityEvent<float> onChangedHealth = null;
@@ -56,6 +57,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     private Transform cameraTransform;
     private Transform originalCameraTransformParent;
     private Vector3 cameraRotationBeforeDown;
+    private const string inGameUIPath = "UI/Canvas - In Game";
     //private SurvivorAnimationIKManager 
 
     public bool AbilityIsReady
@@ -199,6 +201,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
         fullBodyBipedIK = GetComponent<FullBodyBipedIK>();
         cameraTransform = transform.Find("Virtual Head(Clone)/PlayerCamera(Clone)");
         originalCameraTransformParent = transform.Find("Virtual Head(Clone)");
+        inGameCanvas = transform.Find($"{inGameUIPath}").gameObject;
     }
 
     #region ViewModel
@@ -404,7 +407,9 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     private void Rpc_Down(NetworkConnection target)
     {
         JODSInput.DisableCamera();
+        JODSInput.DisableHotbarControl();
         animatorController.SetBool("IsDown", true);
+        inGameCanvas.SetActive(false);
         downCanvas.SetActive(true);
         sController.enabled = false;
     }
@@ -414,8 +419,6 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     {
         downImage.color = new Color(1f, 1f, 1f, downImageOpacity);
     }
-
-
 
     [SerializeField] private float reviveTime = 5;
     IEnumerator BeingRevivedCo;
@@ -446,9 +449,11 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     [TargetRpc]
     private void Rpc_Revived(NetworkConnection target)
     {
+        inGameCanvas.SetActive(true);
         downCanvas.SetActive(false);
         sController.enabled = true;
         JODSInput.EnableCamera();
+        JODSInput.EnableHotbarControl();
         animatorController.SetBool("IsDown", false);
     }
 

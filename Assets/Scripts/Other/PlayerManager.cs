@@ -23,6 +23,9 @@ public class PlayerManager : NetworkBehaviour
     [Space]
     public Transform activeMenuCanvas;
 
+    private static PlayerManager instance;
+    private ActiveSClass activeSClass;
+
     public Transform ActiveMenuCanvas
     {
         get => activeMenuCanvas;
@@ -34,8 +37,6 @@ public class PlayerManager : NetworkBehaviour
             }
         }
     }
-
-    private static PlayerManager instance;
 
     public static PlayerManager Instance
     {
@@ -51,6 +52,12 @@ public class PlayerManager : NetworkBehaviour
         {
             equipmentBehaviourDropDown.onValueChanged.AddListener(GameSettings.Instance.SetPickupBehaviour);
         }
+        activeSClass = GetComponent<ActiveSClass>();
+    }
+
+    private async void FindComponents()
+    {
+        await JODSTime.WaitTime(0.1f);
     }
 
     public override void OnStopAuthority()
@@ -106,19 +113,22 @@ public class PlayerManager : NetworkBehaviour
         if (activeMenuCanvas)
             activeMenuCanvas.gameObject.SetActive(false);
 
-        canvasInGame.gameObject.SetActive(true);
         // Reset the target menu canvas back to standard menu.
         if (!activeMenuCanvas || !activeMenuCanvas.gameObject.activeSelf)
         {
             activeMenuCanvas = canvasMenu;
         }
-        JODSInput.EnableCamera();
+        if (!activeSClass.IsDown)
+        {
+            canvasInGame.gameObject.SetActive(true);
+            JODSInput.EnableCamera();
+            JODSInput.EnableLMB();
+            JODSInput.EnableRMB();
+            JODSInput.EnableDrop();
+            JODSInput.EnableReload();
+            JODSInput.EnableInteract();
+        }
         //JODSInput.EnableMovement();
-        JODSInput.EnableLMB();
-        JODSInput.EnableRMB();
-        JODSInput.EnableDrop();
-        JODSInput.EnableReload();
-        JODSInput.EnableInteract();
         if (hideCursorOnDisable) HideCursor();
         onMenuClosed?.Invoke();
     }

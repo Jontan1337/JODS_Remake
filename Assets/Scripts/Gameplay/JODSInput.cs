@@ -61,6 +61,14 @@ public class JODSInput : MonoBehaviour
     {
         Controls.Survivor.Interact.Disable();
     }
+    public static void EnableHotbarControl()
+    {
+        Controls.Survivor.Hotbarselecting.Enable();
+    }
+    public static void DisableHotbarControl()
+    {
+        Controls.Survivor.Hotbarselecting.Disable();
+    }
     public static void EnableLMB()
     {
         Controls.Survivor.LMB.Enable();
