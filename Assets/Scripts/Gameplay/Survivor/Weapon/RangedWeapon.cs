@@ -66,6 +66,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     protected Vector3 hipAimPosition;
     protected float damageFallOff = 0;
 
+    private Transform emptyHandsCosshair;
     private Transform crosshairUIParent;
     private Crosshair crosshairUI;
     private Transform currentAmmunitionUI;
@@ -303,6 +304,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
     private void GetUIElements(Transform root)
     {
+        emptyHandsCosshair = root.Find($"{inGameUIPath}/Crosshair/Empty hands crosshair");
         crosshairUIParent = root.Find($"{inGameUIPath}/Crosshair");
         currentAmmunitionUI = root.Find($"{inGameUIPath}/Weapon ammunition");
         extraAmmunitionUI = root.Find($"{inGameUIPath}/Weapon extra ammunition");
@@ -332,6 +334,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         crosshairUI.minSize = recoilCurve.keys[0].value;
         crosshairUI.maxSize = recoilCurve.keys[1].value;
         crosshairUI.SetSize(currentCurveAccuracy);
+        emptyHandsCosshair.gameObject.SetActive(false);
     }
     private void RemoveCrosshair()
     {
@@ -339,6 +342,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         {
             Destroy(crosshairUI.gameObject);
             crosshairUI = null;
+            emptyHandsCosshair.gameObject.SetActive(true);
         }
     }
 
