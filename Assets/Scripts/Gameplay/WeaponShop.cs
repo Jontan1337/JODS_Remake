@@ -44,6 +44,7 @@ public class WeaponShop : NetworkBehaviour, IInteractable
     [Space]
     [SerializeField] private GameObject weaponStats = null;
     [SerializeField] private Text weaponNameText = null;
+    [SerializeField] private Text weaponDamageText = null;
     [SerializeField] private Text weaponDamageValueText = null;
     [SerializeField] private Text weaponDamageTypeValueText= null;
     [SerializeField] private Text weaponDamageTypeText= null;
@@ -389,7 +390,7 @@ public class WeaponShop : NetworkBehaviour, IInteractable
         allSlots[buttonIndex].GetComponent<UIShopButton>().EnableShopButton(enable);
     }
 
-    public void ShowWeaponInfo(ShopItem item)
+    public void ShowWeaponInfo(ShopItem item, bool weapon)
     {
         if (item == null)
         {
@@ -398,15 +399,29 @@ public class WeaponShop : NetworkBehaviour, IInteractable
         }
         else
         {
-            weaponNameText.text = item.shopItemName;
+            if (weapon)
+            {
+                weaponNameText.text = item.shopItemName;
 
-            bool isMelee = item.shopItemPrefab.TryGetComponent(out MeleeWeapon meleeComponent);
-            bool isRanged = item.shopItemPrefab.TryGetComponent(out RangedWeapon rangedComponent);
+                bool isMelee = item.shopItemPrefab.TryGetComponent(out MeleeWeapon meleeComponent);
+                bool isRanged = item.shopItemPrefab.TryGetComponent(out RangedWeapon rangedComponent);
 
-            weaponDamageTypeText.text = isMelee ? "Damage Type" : "Ammo Type";
-            weaponDamageTypeValueText.text = isMelee ? meleeComponent.DamageType.ToString() : rangedComponent.AmmunitionType.ToString();
+                weaponDamageText.text = "Damage";
 
-            weaponDamageValueText.text = isMelee ? meleeComponent.Damage.ToString() : rangedComponent.Damage.ToString();
+                weaponDamageTypeText.text = isMelee ? "Damage Type" : "Ammo Type";
+                weaponDamageTypeValueText.text = isMelee ? meleeComponent.DamageType.ToString() : rangedComponent.AmmunitionType.ToString();
+
+                weaponDamageValueText.text = isMelee ? meleeComponent.Damage.ToString() : rangedComponent.Damage.ToString();                
+            }
+            else
+            {
+                weaponNameText.text = item.shopItemName;
+
+                weaponDamageText.text = "";
+                weaponDamageTypeText.text = "";
+                weaponDamageTypeValueText.text = "";
+                weaponDamageValueText.text = "";
+            }
 
             weaponStats.SetActive(true);
         }

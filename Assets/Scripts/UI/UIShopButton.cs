@@ -45,17 +45,17 @@ public class UIShopButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (weaponSlot && purchasable)
+        if (purchasable)
         {
-            shop.ShowWeaponInfo(item);
+            shop.ShowWeaponInfo(item, weaponSlot);
         }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (weaponSlot && purchasable)
+        if (purchasable)
         {
-            shop.ShowWeaponInfo(null);
+            shop.ShowWeaponInfo(null, weaponSlot);
         }
     }
 }
