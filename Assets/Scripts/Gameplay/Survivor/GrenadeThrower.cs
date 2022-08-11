@@ -14,23 +14,11 @@ public class GrenadeThrower : ProjectileWeapon
     protected override void Svr_PostShoot()
     {
         base.Svr_PostShoot();
-        if (hasAuthority)
-        {
-            Cmd_Destroy();
-        }
-        else Svr_Destroy();
+        Svr_InvokeOnDrop();
+        StartCoroutine(DestroyWait());
     }
 
-    [Command]
-    public void Cmd_Destroy()
-    {
-        StartCoroutine(DestroyWait());
-    }
-    [Server]
-    public void Svr_Destroy()
-    {
-        StartCoroutine(DestroyWait());
-    }
+
     IEnumerator DestroyWait()
     {
         yield return new WaitForSeconds(0.1f);
