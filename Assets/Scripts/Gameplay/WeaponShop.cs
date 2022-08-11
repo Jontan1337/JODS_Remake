@@ -38,6 +38,7 @@ public class WeaponShop : NetworkBehaviour, IInteractable
     [Header("References")]
     [SerializeField] private UIShopButton[] weaponSlots = null;
     [SerializeField] private UIShopButton[] equipmentSlots = null;
+    [SerializeField] private UIShopButton[] weaponAmmunitionRefill = null;
     private UIShopButton[] allSlots = null;
     [Space]
     [SerializeField] private GameObject shopCanvas = null;
@@ -244,6 +245,8 @@ public class WeaponShop : NetworkBehaviour, IInteractable
                 Rpc_ShowPoints(identity.connectionToClient,
                 GamemodeBase.Instance.Svr_GetPoints(identity.netId));
             }
+            PlayerEquipment playerEquipment = interacter.GetComponentInChildren<PlayerEquipment>();
+
             playersInShop.Add(interacter);
         }
     }

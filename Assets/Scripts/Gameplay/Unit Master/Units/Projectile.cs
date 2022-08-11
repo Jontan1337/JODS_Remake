@@ -117,7 +117,10 @@ public abstract class Projectile : NetworkBehaviour
 	public void Rpc_OnHit(Transform objectHit)
     {
 		transform.SetParent(objectHit);
-		rb.isKinematic = true;
+		if (rb)
+        {
+			rb.isKinematic = true;
+        }
 	}
 
 	public virtual void ReturnObjectToPool(float time)
