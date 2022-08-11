@@ -411,6 +411,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     private void Rpc_EmitParticle(Vector3 objectPos, Color color)
     {
         GameObject pooledParticleObject = ObjectPool.Instance.SpawnFromLocalPool(Tags.MeleeBloodSplatter, objectPos, transform.rotation);
+        Debug.Log(pooledParticleObject, pooledParticleObject);
         ParticleSystem pooledParticle = pooledParticleObject.GetComponent<ParticleSystem>();
         ParticleSystem.MainModule mainMod = pooledParticle.main;
         mainMod.startColor = color;
