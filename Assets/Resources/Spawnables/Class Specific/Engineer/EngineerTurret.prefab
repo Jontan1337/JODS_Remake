@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7186155447095251563}
   - component: {fileID: 8500687608108855327}
   - component: {fileID: 6661796361513434757}
-  m_Layer: 20
+  m_Layer: 14
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 591017393817333658}
   - component: {fileID: 6139694197850318334}
   - component: {fileID: 6693107782800241826}
-  m_Layer: 20
+  m_Layer: 14
   m_Name: Pivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -176,7 +176,7 @@ GameObject:
   - component: {fileID: 7796356959579772394}
   - component: {fileID: 5509356686024993663}
   - component: {fileID: 3347415569222595160}
-  m_Layer: 20
+  m_Layer: 14
   m_Name: Cylinder_Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -258,7 +258,7 @@ GameObject:
   - component: {fileID: 3093360455441959277}
   - component: {fileID: 6657846294898581984}
   - component: {fileID: 2287405803996969943}
-  m_Layer: 20
+  m_Layer: 14
   m_Name: MuzzleFlash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5068,7 +5068,7 @@ GameObject:
   - component: {fileID: 949804608177450984}
   - component: {fileID: 5528816523942301283}
   - component: {fileID: 585300512899588126}
-  m_Layer: 20
+  m_Layer: 14
   m_Name: Barrel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5150,7 +5150,7 @@ GameObject:
   - component: {fileID: 1483150756538309283}
   - component: {fileID: 9052884272034505645}
   - component: {fileID: 2065445298113871197}
-  m_Layer: 20
+  m_Layer: 14
   m_Name: Swivel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5232,7 +5232,7 @@ GameObject:
   - component: {fileID: 1407673187056647059}
   - component: {fileID: 1882656775485660587}
   - component: {fileID: 857526177752018831}
-  m_Layer: 20
+  m_Layer: 14
   m_Name: Pivot_Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5315,7 +5315,7 @@ GameObject:
   - component: {fileID: 1710421308108009410}
   - component: {fileID: 7050993335547455128}
   - component: {fileID: 4946367509991196450}
-  m_Layer: 20
+  m_Layer: 14
   m_Name: PlaceholderParent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5392,7 +5392,7 @@ GameObject:
   - component: {fileID: 2444438559361991463}
   - component: {fileID: 3580544252821790076}
   - component: {fileID: 5094579620516640230}
-  m_Layer: 20
+  m_Layer: 14
   m_Name: Bullet Shells
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10280,7 +10280,7 @@ GameObject:
   - component: {fileID: 6207738026347524226}
   - component: {fileID: 8697571502893237910}
   - component: {fileID: 6739022705715348103}
-  m_Layer: 20
+  m_Layer: 14
   m_Name: EngineerTurret
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10445,7 +10445,7 @@ MonoBehaviour:
   placeholder: {fileID: 6360617099066798673}
   ignoreLayer:
     serializedVersion: 2
-    m_Bits: 5308214
+    m_Bits: 4259638
   maxPlaceRange: 3
   maxSlopeAngle: 0.965
 --- !u!114 &5673176028421838261
@@ -10586,7 +10586,7 @@ GameObject:
   - component: {fileID: 4545366182062574333}
   - component: {fileID: 8576863870548936283}
   - component: {fileID: 2227130870690993336}
-  m_Layer: 20
+  m_Layer: 14
   m_Name: Swivel_Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10668,7 +10668,7 @@ GameObject:
   - component: {fileID: 7740475028431685234}
   - component: {fileID: 1536395940385551621}
   - component: {fileID: 242360033416650597}
-  m_Layer: 20
+  m_Layer: 14
   m_Name: Barrel_Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10819,6 +10819,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 90d1718961e31174cac3b5ca69a8179f,
+        type: 3}
+      propertyPath: m_Layer
+      value: 14
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 90d1718961e31174cac3b5ca69a8179f, type: 3}
