@@ -364,24 +364,16 @@ MonoBehaviour:
   unitSO: {fileID: 11400000, guid: cdc65d9cad1af5e42b5149ac75e235d9, type: 2}
   health: 1500
   isDead: 0
-  unitLevel: 1
   isMelee: 1
   isRanged: 0
   hasSpecial: 1
-  upgrades:
-    upgradeMultiplier: 0.1
-    upgradeMovementSpeed: 1
-    movementSpeedUpgradeIncrease: 0.1
-    movementSpeedUpgradeMax: 3
   melee:
     meleeDamageMin: 30
     meleeDamageMax: 50
     meleeRange: 4
     meleeCooldown: 2
     canMelee: 1
-    statusEffectToApply: {fileID: 11400000, guid: 6499d90d213f8aa4db7fae68321bec63,
-      type: 2}
-    amount: 15
+    statusEffectsToApply: []
   ranged:
     rangedDamage: 20
     minRange: 2
@@ -395,8 +387,7 @@ MonoBehaviour:
     standStill: 1
     directRangedAttack: 0
     canRanged: 0
-    statusEffectToApply: {fileID: 0}
-    amount: 0
+    statusEffectsToApply: []
   special:
     specialCooldown: 5
     specialDamage: 0
@@ -406,8 +397,8 @@ MonoBehaviour:
     lookAtTarget: 1
     availableFromStart: 1
     canSpecial: 0
-    statusEffectToApply: {fileID: 0}
-    amount: 0
+    statusEffectsToApply: []
+  statModifiers: []
   movementSpeed: 4
   chaseTime: 10
   stoppedMoving: 0
@@ -428,6 +419,7 @@ MonoBehaviour:
   particleColor: {r: 1, g: 0, b: 0, a: 1}
   currentTarget: {fileID: 0}
   permanentTarget: 1
+  canPathfind: 1
   animator: {fileID: 7671503226966945416}
   bodyRenderer: {fileID: 830470461602469063}
   headRenderer: {fileID: 6907446667297869786}
@@ -438,14 +430,22 @@ MonoBehaviour:
   head: {fileID: 828140284664274494}
   sounds:
     headHeight: 2
+    basePitch: 1
     idleSounds: []
     idleVolume: 0.3
+    alertSounds: []
+    alertVolume: 0.3
+    alertingSoundChance: 0.9
+    alertedSoundChance: 0.15
     meleeSounds: []
     meleeVolume: 0.4
-    rangedSound: {fileID: 0}
+    meleeSoundChance: 0.6
+    rangedSounds: []
     rangedVolume: 0.4
-    specialSound: {fileID: 0}
+    rangedSoundChance: 1
+    specialSounds: []
     specialVolume: 0.4
+    specialSoundChance: 1
     footstepSounds:
     - {fileID: 8300000, guid: 1fcfd8032a37e9843a0fbbe96308a4f3, type: 3}
     - {fileID: 8300000, guid: 9ba17643ba43fdf4785264231dcc63f7, type: 3}
@@ -460,13 +460,12 @@ MonoBehaviour:
     isSelected: 0
   canRagdoll: 1
   walking: 0
-  canPathfind: 1
   stopMovement: 0
   stopPathfinding: 0
   destructibleSearchRange: 20
   destructibleLayerMask:
     serializedVersion: 2
-    m_Bits: 131072
+    m_Bits: 0
   slamFX: {fileID: 1154359223081334540}
 --- !u!95 &7671503226966945416
 Animator:

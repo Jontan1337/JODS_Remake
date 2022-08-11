@@ -1244,13 +1244,14 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         {
             //Head
             case 1:
-                head.OnDetach(damageType);
+                if (head) head.OnDetach(damageType);
                 break;
 
             //Left Arm
             case 2:
-                if ((DamageTypes)damageType != DamageTypes.Pierce) { 
-                    leftArm.OnDetach(damageType);
+                if ((DamageTypes)damageType != DamageTypes.Pierce)
+                { 
+                    if(leftArm) leftArm.OnDetach(damageType);
                 }
                 break;
 
@@ -1258,7 +1259,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             case 3:
                 if ((DamageTypes)damageType != DamageTypes.Pierce)
                 {
-                    rightArm.OnDetach(damageType);
+                    if (rightArm) rightArm.OnDetach(damageType);
                 }
                 break;
         }

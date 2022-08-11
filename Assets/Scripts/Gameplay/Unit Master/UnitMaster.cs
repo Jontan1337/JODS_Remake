@@ -114,7 +114,7 @@ public class UnitMaster : NetworkBehaviour
     {
         UpdateEnergyUI();
     }
-    [SerializeField, SyncVar] private int maxEnergy = 100; //Maximum amount of energy that can be stored
+    [SerializeField, SyncVar(hook = nameof(MaxEnergy_Hook))] private int maxEnergy = 100; //Maximum amount of energy that can be stored
     [Command] private void Cmd_SetMaxEnergy(int newVal)
     {
         maxEnergy = newVal;
