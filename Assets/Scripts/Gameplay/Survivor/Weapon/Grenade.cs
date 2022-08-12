@@ -10,7 +10,7 @@ public class Grenade : Projectile
 	{
 		base.Start();
 		GetComponent<LiveEntity>().owner = owner;
-		StartCoroutine(Explode());
+		//StartCoroutine(Explode());
 	}
 
 	//public override void OnHit(Collision collision)

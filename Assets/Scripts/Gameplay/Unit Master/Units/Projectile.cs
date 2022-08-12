@@ -42,13 +42,17 @@ public abstract class Projectile : NetworkBehaviour
 
     private void OnEnable()
     {
+		print("1?");
 		if (!isServer) return;
+		print("2?");
 
 		if (!enabledFromAwake) return;
-        else active = true; 
+        else active = true;
+		print("3?");
 
 		if (hasDropoff)
 		{
+			print("gravity");
 			StartCoroutine(DropoffEnumerator());
 		}
 

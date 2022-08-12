@@ -66,7 +66,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
         private set { abilityIsReady = value; }
     }
 
-    private bool isDown;
+    [SyncVar]private bool isDown;
     public bool IsDown
     {
         get { return isDown; }
@@ -577,9 +577,6 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
             StartCoroutine(BeingRevivedCo);
         }
     }
-
-
-
 
     [Server]
     public void Svr_CancelInteract(GameObject interacter)

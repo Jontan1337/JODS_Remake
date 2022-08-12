@@ -11,11 +11,17 @@ GameObject:
   - component: {fileID: 620851829577236984}
   - component: {fileID: 5110507113077086353}
   - component: {fileID: 3199689215073154597}
+  - component: {fileID: -8369569509871250689}
   - component: {fileID: 620851829578531288}
   - component: {fileID: 620851829579662104}
   - component: {fileID: 620851829577374534}
   - component: {fileID: 6369165307938182088}
   - component: {fileID: 1573288881172487414}
+  - component: {fileID: -3456450226464795111}
+  - component: {fileID: 1936556452296454954}
+  - component: {fileID: -5651342252297522918}
+  - component: {fileID: 8374121135098480526}
+  - component: {fileID: 760315298459569867}
   m_Layer: 18
   m_Name: Frag Grenade Projectile
   m_TagString: Untagged
@@ -31,7 +37,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 620851829577473496}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 28.043701, y: 0.11471981, z: -9.438095}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -89,19 +95,60 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  active: 0
   objectPooled: 0
+  objectPoolTag: 0
+  enabledFromAwake: 1
   damage: 0
   lifetime: 5
   destroyAfterLifetime: 0
   sticky: 0
-  objectPoolTag: 0
   owner: {fileID: 0}
   hasDropoff: 1
-  timeBeforeDropoff: 0
+  timeBeforeDropoff: 1
   piercing: 0
   statusEffectsToApply: []
-  amount: 0
   explosionTimer: 4
+--- !u!114 &-8369569509871250689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 620851829577473496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2c50c5219d282d4d87c1079eb38aba7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  itemName: Item name
+  equipmentType: 0
+  unequippedLayer: 14
+  equippedLayer: 15
+  objectMeshes: []
+  isInteractable: 1
+  UISilhouette: {fileID: 0}
+  authController: {fileID: 0}
+  objectVisuals: {fileID: 0}
+  owner: {fileID: 0}
+  rb: {fileID: 0}
+  outline: {fileID: 0}
+  onPickupEvents:
+    m_PersistentCalls:
+      m_Calls: []
+  onDropEvents:
+    m_PersistentCalls:
+      m_Calls: []
+  onEquipEvents:
+    m_PersistentCalls:
+      m_Calls: []
+  onUnequipEvents:
+    m_PersistentCalls:
+      m_Calls: []
+  projectileSpeed: 20
+  timeToLive: 5
 --- !u!33 &620851829578531288
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -196,3 +243,89 @@ MonoBehaviour:
   serverOnly: 0
   m_AssetId: 
   hasSpawned: 0
+--- !u!114 &-3456450226464795111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 620851829577473496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd2d9ba65d22c654381e6e7d0b8f8311, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  hasPhysics: 1
+  _rigidbody: {fileID: 620851829577374534}
+  _collider: {fileID: 6369165307938182088}
+--- !u!114 &1936556452296454954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 620851829577473496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fcba4c48d5dd524fa98ce8812397907, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+--- !u!114 &-5651342252297522918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 620851829577473496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f48d9adfb06982e49a79b02c970de21f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  parentData: {fileID: 0}
+  positionData: {x: 0, y: 0, z: 0}
+  localPositionData: {x: 0, y: 0, z: 0}
+  rotationData: {x: 0, y: 0, z: 0, w: 0}
+  syncParent: 0
+  syncPosition: 0
+  syncRotation: 0
+--- !u!114 &8374121135098480526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 620851829577473496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 0
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineWidth: 2
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
+  materialIndex: 0
+  useMaterialIndex: 1
+--- !u!64 &760315298459569867
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 620851829577473496}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4711208715938537054, guid: 40b3d08bf40ddcf438c04908eb1b5bfc, type: 3}
