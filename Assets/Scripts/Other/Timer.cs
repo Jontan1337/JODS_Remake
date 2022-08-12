@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
 enum TimerType
 {
@@ -8,8 +9,10 @@ enum TimerType
     tickOnFinish,
     continuousAndFinish
 }
-public abstract class Timer : MonoBehaviour
+public abstract class Timer : NetworkBehaviour
 {
+    [Header("Network Settings")]
+    [SerializeField] private bool onlyServer = false;
     [Header("Timer Settings")]
     [SerializeField] private TimerType timerType = TimerType.continuousAndFinish;
     [Space]
@@ -28,6 +31,8 @@ public abstract class Timer : MonoBehaviour
 
     public virtual void Start()
     {
+        if (onlyServer && !isServer) return;
+
         if (startTimerOnAwake)
         {
             StartTimer(true, stopTime, startOnAwakeDelay);

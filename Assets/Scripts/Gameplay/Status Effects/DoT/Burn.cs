@@ -22,6 +22,7 @@ public class Burn : StatusEffect
     private void SetOnFire()
     {
         if (onFireParticlesPrefab == null) return;
+        onFire = true;
         onFireParticles = GameObject.Instantiate(onFireParticlesPrefab);
         NetworkServer.Spawn(onFireParticles);
         onFireParticles.transform.SetParent(obj.transform, false);
@@ -36,6 +37,11 @@ public class Burn : StatusEffect
     }
     public override void ApplyEffect(int? amount)
     {
+        if (amount > 0) duration = (float)amount;
+        if (amount > 5 && !onFire)
+        {
+            SetOnFire();
+        }
         idmg.Svr_Damage(onFire ? burn.onFireDamagePerTick : burn.damagePerTick);
     }
 
@@ -48,9 +54,9 @@ public class Burn : StatusEffect
 
     public override void Tick()
     {
+        Debug.Log(duration);
         if (duration > 5 && !onFire)
-        {
-            onFire = true;
+        {       
             SetOnFire();
         }
 

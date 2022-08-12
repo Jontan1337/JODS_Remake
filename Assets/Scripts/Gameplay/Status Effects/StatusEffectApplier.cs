@@ -11,11 +11,13 @@ public class StatusEffectApplier : NetworkBehaviour
 
     [Header("Objects In Collider")]
     [SerializeField] private List<GameObject> objectsInCollider = new List<GameObject>();
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         if (!isServer) return;
 
         GameObject root = other.transform.root.gameObject;
+        if (objectsInCollider.Contains(root)) return;
+
         if (root.GetComponent<StatusEffectManager>())
         {
             objectsInCollider.Add(root);

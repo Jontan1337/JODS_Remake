@@ -144,7 +144,6 @@ public class StatusEffectManager : NetworkBehaviour
         }
         else
         {
-            Debug.Log("(SVR) New Status Effect : " + newEffect.effect.name);
             statusEffects.Add(newEffect.effect.name);
 
             //Add the effect to the dictionary

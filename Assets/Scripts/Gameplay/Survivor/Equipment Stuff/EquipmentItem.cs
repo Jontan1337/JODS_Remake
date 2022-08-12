@@ -360,7 +360,7 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	#endregion
 
 	[TargetRpc]
-	private void Rpc_SetLayer(NetworkConnection target, bool isEquipped)
+	protected void Rpc_SetLayer(NetworkConnection target, bool isEquipped)
 	{
         if (isEquipped)
         {

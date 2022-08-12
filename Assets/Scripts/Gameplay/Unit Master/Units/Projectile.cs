@@ -2,17 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using Sirenix.OdinInspector;
 
 public abstract class Projectile : NetworkBehaviour
 {
+	[Header("State")]
+	[SerializeField] private bool active = false;
+	public void Activate() { active = true; }
+
 	[Header("Settings")]
 	[SerializeField] private bool objectPooled = false; //TEMPORARY
+	[SerializeField, ShowIf("objectPooled", true)] protected Tags objectPoolTag;
+	[Space]
+	[SerializeField] private bool enabledFromAwake = true;
 	[Header("Projectile Stats")]
 	public int damage = 0;
 	[SerializeField] protected int lifetime = 5;
 	[SerializeField] private bool destroyAfterLifetime = false;
 	[SerializeField] private bool sticky = false;
-	[SerializeField] protected Tags objectPoolTag;
 	[SerializeField] public Transform owner;
 	[Space]
 	[SerializeField] protected bool hasDropoff = true;
@@ -35,6 +42,11 @@ public abstract class Projectile : NetworkBehaviour
 
     private void OnEnable()
     {
+		if (!isServer) return;
+
+		if (!enabledFromAwake) return;
+        else active = true; 
+
 		if (hasDropoff)
 		{
 			StartCoroutine(DropoffEnumerator());
@@ -55,19 +67,27 @@ public abstract class Projectile : NetworkBehaviour
 		if (destroyAfterLifetime)
 		{
 			yield return new WaitForSeconds(lifetime);
-			ReturnObjectToPool(0);
+
+			if (objectPooled)
+            {
+				ReturnObjectToPool(0);
+            }
+            else
+            {
+				Destroy();
+            }
 		}
 	}
 
 	public void OnTriggerEnter(Collider col)
 	{
-		if (!isServer) return;
+		if (!isServer || !active) return;
 
 		OnHit(col);
 	}
 	private void OnCollisionEnter(Collision col)
 	{
-		if (!isServer) return;
+		if (!isServer || !active) return;
 
 		OnHit(col);
 	}
@@ -76,7 +96,6 @@ public abstract class Projectile : NetworkBehaviour
 	public virtual void OnHit(Collider objectHit)
 	{
 		if (!isServer) return;
-
 
 		if (!piercing && !hasHit)
 		{
