@@ -27,7 +27,10 @@ public class UIShopButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         { 
             item = value;
             priceText.text = item.shopItemPrice.ToString();
-            itemSprite.sprite = item.shopItemPrefab.GetComponent<EquipmentItem>().UISilhouette;
+            EquipmentItem equipmentItem = null;
+            if (item.shopItemPrefab)
+                item.shopItemPrefab.TryGetComponent(out equipmentItem);
+            itemSprite.sprite = equipmentItem ? equipmentItem.UISilhouette : null;
         }
     }
 
