@@ -317,7 +317,7 @@ public class WeaponShop : NetworkBehaviour, IInteractable
             EquipmentItem equipmentItem1 = null;
             if (goWeapon1)
             {
-                equipmentItem = goWeapon1.GetComponent<EquipmentItem>();
+                //equipmentItem = goWeapon1.GetComponent<EquipmentItem>();
                 int price = 0;
                 if (!equipmentItem1.TryGetComponent(out RangedWeapon rangedWeapon))
                 {
