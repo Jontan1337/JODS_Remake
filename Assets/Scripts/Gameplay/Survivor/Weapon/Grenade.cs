@@ -10,16 +10,18 @@ public class Grenade : Projectile
 	{
 		base.Start();
 		GetComponent<LiveEntity>().owner = owner;
-		//StartCoroutine(Explode());
 	}
 
-	//public override void OnHit(Collision collision)
-	//{
-	//	if (!isServer) return;
-	//	base.OnHit(collision);
-	//}
+    //public override void OnHit(Collision collision)
+    //{
+    //    if (!isServer) return;
 
-	IEnumerator Explode()
+    //    //base.OnHit(collision);
+    //}
+
+    public override void Activate() { base.Activate(); StartCoroutine(Explode()); }
+
+    IEnumerator Explode()
     {
 		yield return new WaitForSeconds(explosionTimer);
 		Svr_Explode();

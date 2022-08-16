@@ -8,7 +8,7 @@ public abstract class Projectile : NetworkBehaviour
 {
 	[Header("State")]
 	[SerializeField] private bool active = false;
-	public void Activate() { active = true; }
+	public virtual void Activate() { active = true; }
 
 	[Header("Settings")]
 	[SerializeField] private bool objectPooled = false; //TEMPORARY
@@ -40,19 +40,13 @@ public abstract class Projectile : NetworkBehaviour
 		rb = GetComponent<Rigidbody>();
 	}
 
-    private void OnEnable()
+    public override void OnStartServer()
     {
-		print("1?");
 		if (!isServer) return;
-		print("2?");
-
 		if (!enabledFromAwake) return;
-        else active = true;
-		print("3?");
-
+		else active = true;
 		if (hasDropoff)
 		{
-			print("gravity");
 			StartCoroutine(DropoffEnumerator());
 		}
 

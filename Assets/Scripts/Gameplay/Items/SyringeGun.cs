@@ -29,29 +29,35 @@ public class SyringeGun : ProjectileWeapon
 
     private IEnumerator IEDrop()
     {
-
         yield return new WaitForSeconds(0.2f);
         Svr_Drop();
     }
 
-    public override void Unbind()
+    public override void Svr_Drop()
     {
         if (magazine < magazineSize && magazine > 0)
         {
+            print(connectionToClient);
+            print(transform.root);
             GetComponentInParent<ActiveSClass>().Rpc_StartAbilityCooldown(transform.root.GetComponent<NetworkIdentity>().connectionToClient, transform.root);
         }
-        base.Unbind();
-        Cmd_Destroy();
+        base.Svr_Drop();
     }
 
-    [Command(ignoreAuthority = true)] //Auth is lost before method is called, so this is the only sollution we know of right now. Not optimal.
-    public void Cmd_Destroy()
+    public override void Unbind()
     {
-        StartCoroutine(DestroyWait());
-    }
-    IEnumerator DestroyWait()
-    {
-        yield return new WaitForSeconds(0.1f);
+        base.Unbind();
         NetworkServer.Destroy(gameObject);
     }
+
+    //[Command(ignoreAuthority = true)] //Auth is lost before method is called, so this is the only sollution we know of right now. Not optimal.
+    //public void Cmd_Destroy()
+    //{
+    //    StartCoroutine(DestroyWait());
+    //}
+    //IEnumerator DestroyWait()
+    //{
+    //    yield return new WaitForSeconds(0.1f);
+    //    NetworkServer.Destroy(gameObject);
+    //}
 }
