@@ -52,7 +52,8 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     [Header("Events")]
     public UnityEvent<float> onChangedHealth = null;
     public UnityEvent onDied = null;
-
+    
+    private NetworkConnection connectionToClientInteractor;
     private bool abilityIsReady = true;
     private Transform cameraTransform;
     private Transform originalCameraTransformParent;
@@ -550,24 +551,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
 
     #endregion
 
-
-    private void OnControllerColliderHit(ControllerColliderHit hit)
-    {
-        GetComponentInChildren<IHitter>()?.OnFlyingKickHit(hit);
-    }
-
-    [Header("Debug")]
-    public bool test;
-
-    private void OnGUI()
-    {
-        if (test)
-        {
-            GUI.TextField(new Rect(20, 20, 150, 20), "Active S Class Test ON");
-        }
-    }
-    NetworkConnection connectionToClientInteractor;
-
+    #region Revive Stuff
     [Server]
     public void Svr_PerformInteract(GameObject interacter)
     {
@@ -598,4 +582,24 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     {
         JODSInput.EnableMovement();
     }
+    #endregion
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        GetComponentInChildren<IHitter>()?.OnFlyingKickHit(hit);
+    }
+
+    [Header("Debug")]
+    public bool test;
+
+    private void OnGUI()
+    {
+        if (test)
+        {
+            GUI.TextField(new Rect(20, 20, 150, 20), "Active S Class Test ON");
+        }
+    }
+    
+
+
 }
