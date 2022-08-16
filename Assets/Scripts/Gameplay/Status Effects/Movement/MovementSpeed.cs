@@ -13,23 +13,23 @@ public class MovementSpeed : StatusEffect
         movementSpeed = (MovementSpeedSO) effect;
 
     }
-    public override void OnEffectApplied()
+    public override void Svr_OnEffectApplied()
     {
         modifierManager.MovementSpeed += movementSpeed.speedModifier;
 
     }
-    public override void ApplyEffect(int? amount)
+    public override void Svr_ApplyEffect(int? amount)
     {
 
     }
 
-    public override void End()
+    public override void Svr_End()
     {
         modifierManager.MovementSpeed -= movementSpeed.speedModifier;
     }
 
-    public override void Tick()
+    public override void Svr_Tick()
     {
-        base.Tick();
+        base.Svr_Tick();
     }
 }

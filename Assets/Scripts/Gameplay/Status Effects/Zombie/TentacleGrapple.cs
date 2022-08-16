@@ -15,7 +15,8 @@ public class TentacleGrapple : StatusEffect
         grapple = (TentacleGrappleSO)effect;
     }
 
-    public override void ApplyEffect(int? amount)
+    [Server]
+    public override void Svr_ApplyEffect(int? amount)
     {
         Debug.LogWarning("Tentacle Grapple Status Effect has not been implemented. " +
             "It has no effect yet. " +
@@ -24,21 +25,23 @@ public class TentacleGrapple : StatusEffect
             "disable their ability to use weapons of any kind.");
     }
 
-    public override void End()
+    [Server]
+    public override void Svr_End()
     {
         Debug.Log("UNGRAB");
         Rpc_EnableMovement(target.GetComponent<NetworkIdentity>().connectionToClient);
     }
 
-    public override void Tick()
+    [Server]
+    public override void Svr_Tick()
     {
-        base.Tick();
+        base.Svr_Tick();
         //Do Damage
         idmg.Svr_Damage(grapple.damagePerTick);
     }
 
     [Server]
-    public override void OnEffectApplied()
+    public override void Svr_OnEffectApplied()
     {
         Rpc_DisableMovement(target.GetComponent<NetworkIdentity>().connectionToClient);
     }

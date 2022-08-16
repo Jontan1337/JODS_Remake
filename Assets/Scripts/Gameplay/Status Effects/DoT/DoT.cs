@@ -10,24 +10,24 @@ public class DoT : StatusEffect
         dot = (DoTSO)effect;
     }
 
-    public override void ApplyEffect(int? amount)
+    public override void Svr_ApplyEffect(int? amount)
     {
         
     }
 
-    public override void End()
+    public override void Svr_End()
     {
         
     }
 
-    public override void OnEffectApplied()
+    public override void Svr_OnEffectApplied()
     {
         
     }
 
-    public override void Tick()
+    public override void Svr_Tick()
     {
-        base.Tick();
+        base.Svr_Tick();
         //Do Damage
         idmg.Svr_Damage(dot.damagePerTick);
     }

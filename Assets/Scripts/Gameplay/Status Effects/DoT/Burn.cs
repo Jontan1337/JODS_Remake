@@ -28,14 +28,14 @@ public class Burn : StatusEffect
         onFireParticles.transform.SetParent(obj.transform, false);
     }
 
-    public override void OnEffectApplied()
+    public override void Svr_OnEffectApplied()
     {
         if (burnParticlesPrefab == null) return;
         burnParticles = GameObject.Instantiate(burnParticlesPrefab);
         NetworkServer.Spawn(burnParticles);
         burnParticles.transform.SetParent(obj.transform, false);
     }
-    public override void ApplyEffect(int? amount)
+    public override void Svr_ApplyEffect(int? amount)
     {
         if (amount > 0) duration = (float)amount;
         if (amount > 5 && !onFire)
@@ -45,14 +45,14 @@ public class Burn : StatusEffect
         idmg.Svr_Damage(onFire ? burn.onFireDamagePerTick : burn.damagePerTick);
     }
 
-    public override void End() 
+    public override void Svr_End() 
     {
         GameObject.Destroy(burnParticles);
         if (onFireParticles) GameObject.Destroy(onFireParticles);
 
     }
 
-    public override void Tick()
+    public override void Svr_Tick()
     {
         Debug.Log(duration);
         if (duration > 5 && !onFire)
@@ -60,7 +60,7 @@ public class Burn : StatusEffect
             SetOnFire();
         }
 
-        base.Tick();
+        base.Svr_Tick();
         //Do Damage
         idmg.Svr_Damage(onFire ? burn.onFireDamagePerTick : burn.damagePerTick);
     }

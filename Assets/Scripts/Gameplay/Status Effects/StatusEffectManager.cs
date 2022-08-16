@@ -45,6 +45,7 @@ public class StatusEffectManager : NetworkBehaviour
         if (currentEffects.ContainsKey(effect))
         {
             Debug.Log("(SVR) " + effect.name + " removed");
+            if (effect.activeUntilRemoved) currentEffects[effect].Svr_End();
             currentEffects.Remove(effect);
             Svr_RemoveVisuals(effect);
         }
@@ -88,7 +89,7 @@ public class StatusEffectManager : NetworkBehaviour
             foreach (var effect in currentEffects.Values.ToList())
             {
                 //Call Tick, which does an effect over time and reduces the duration of the effect
-                effect.Tick();
+                effect.Svr_Tick();
 
                 if(playerObject) Rpc_ChangeVisualAlpha(connectionToClient, indexDict[effect.effect.name], effect.GetImageAlpha());
 
@@ -140,7 +141,7 @@ public class StatusEffectManager : NetworkBehaviour
                 }
             }
             //If this effect can stack in any way, it will stack when activated again.
-            currentEffects[effect.effect].Activate(amount);
+            currentEffects[effect.effect].Svr_Activate(amount);
         }
         else
         {
@@ -150,7 +151,7 @@ public class StatusEffectManager : NetworkBehaviour
             currentEffects.Add(newEffect.effect, newEffect);
 
             //Activate the effect
-            newEffect.Activate(amount);            
+            newEffect.Svr_Activate(amount);            
 
             //If the coroutine is not currently running, then activate it
             //The coroutine will stop itself when there are no more active effects

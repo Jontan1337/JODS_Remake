@@ -322,6 +322,7 @@ GameObject:
   - component: {fileID: 1603426130}
   - component: {fileID: 1603426131}
   - component: {fileID: 6946934380660341516}
+  - component: {fileID: 5081067386168001516}
   m_Layer: 9
   m_Name: Stronk
   m_TagString: Untagged
@@ -657,6 +658,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59a0563acb0461e49880f6790f59bd07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  onlyServer: 0
   timerType: 0
   startTimerOnAwake: 0
   startOnAwakeDelay: 1.5
@@ -786,6 +790,20 @@ MonoBehaviour:
   version: 1
   penalty: 1000
   randomStep: 10
+--- !u!136 &5081067386168001516
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1289923740817093828}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 1.45
+  m_Height: 2.9
+  m_Direction: 1
+  m_Center: {x: 0, y: 1.5, z: 0.1}
 --- !u!1 &1472669421140512547
 GameObject:
   m_ObjectHideFlags: 0
@@ -22235,15 +22253,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3ea27c5d12465714da4bd863f34a1ad6, type: 3}
---- !u!1 &3233117877208858770 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6687541496331228464, guid: 3ea27c5d12465714da4bd863f34a1ad6,
-    type: 3}
-  m_PrefabInstance: {fileID: 8075160957476541858}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &617460701703901645 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8683244817245602927, guid: 3ea27c5d12465714da4bd863f34a1ad6,
+    type: 3}
+  m_PrefabInstance: {fileID: 8075160957476541858}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &3233117877208858770 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6687541496331228464, guid: 3ea27c5d12465714da4bd863f34a1ad6,
     type: 3}
   m_PrefabInstance: {fileID: 8075160957476541858}
   m_PrefabAsset: {fileID: 0}

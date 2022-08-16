@@ -13,7 +13,7 @@ public class Infection : StatusEffect
 
     }
 
-    public override void ApplyEffect(int? amount)
+    public override void Svr_ApplyEffect(int? amount)
     {
         if (amount == null) return;
         if (infectionLevel == maxInfectionLevel) return;
@@ -28,7 +28,7 @@ public class Infection : StatusEffect
         }
     }
 
-    public override void Tick()
+    public override void Svr_Tick()
     {
         if (infectionLevel == maxInfectionLevel) return;
 
@@ -38,7 +38,7 @@ public class Infection : StatusEffect
         {
             if (infectionLevel == 0)
             {
-                End();
+                Svr_End();
             }
         }
     }
@@ -69,14 +69,14 @@ public class Infection : StatusEffect
         currentImageIndex++;
     }
 
-    public override void OnEffectApplied()
+    public override void Svr_OnEffectApplied()
     {
         
     }
 
     public override float GetImageAlpha() => (infectionLevel / (float)(maxInfectionLevel + 1f)) + (infectionRate * 0.0025f);
 
-    public override void End()
+    public override void Svr_End()
     {
         ModifierManager mm = obj.GetComponent<ModifierManager>();
 

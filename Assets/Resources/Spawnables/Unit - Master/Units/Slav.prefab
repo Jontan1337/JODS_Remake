@@ -552,6 +552,7 @@ GameObject:
   - component: {fileID: 262549877}
   - component: {fileID: 262549878}
   - component: {fileID: 1451759771662549887}
+  - component: {fileID: 7134277829284471444}
   m_Layer: 9
   m_Name: Slav
   m_TagString: Untagged
@@ -595,24 +596,16 @@ MonoBehaviour:
   unitSO: {fileID: 11400000, guid: 746c20bacaa906a419ba0951252abddd, type: 2}
   health: 80
   isDead: 0
-  unitLevel: 1
   isMelee: 1
   isRanged: 0
   hasSpecial: 0
-  upgrades:
-    upgradeMultiplier: 0.1
-    upgradeMovementSpeed: 1
-    movementSpeedUpgradeIncrease: 0.1
-    movementSpeedUpgradeMax: 3
   melee:
     meleeDamageMin: 5
     meleeDamageMax: 10
     meleeRange: 1.75
     meleeCooldown: 2
     canMelee: 1
-    statusEffectToApply: {fileID: 11400000, guid: 6499d90d213f8aa4db7fae68321bec63,
-      type: 2}
-    amount: 5
+    statusEffectsToApply: []
   ranged:
     rangedDamage: 0
     minRange: 0
@@ -626,8 +619,7 @@ MonoBehaviour:
     standStill: 1
     directRangedAttack: 0
     canRanged: 0
-    statusEffectToApply: {fileID: 0}
-    amount: 0
+    statusEffectsToApply: []
   special:
     specialCooldown: 0
     specialDamage: 0
@@ -637,8 +629,8 @@ MonoBehaviour:
     lookAtTarget: 1
     availableFromStart: 1
     canSpecial: 0
-    statusEffectToApply: {fileID: 0}
-    amount: 0
+    statusEffectsToApply: []
+  statModifiers: []
   movementSpeed: 4
   chaseTime: 15
   stoppedMoving: 0
@@ -659,6 +651,7 @@ MonoBehaviour:
   particleColor: {r: 1, g: 0, b: 0, a: 1}
   currentTarget: {fileID: 0}
   permanentTarget: 1
+  canPathfind: 1
   animator: {fileID: 3322040119633613309}
   bodyRenderer: {fileID: 4204370992101718262}
   headRenderer: {fileID: 7927091249043350507}
@@ -669,14 +662,22 @@ MonoBehaviour:
   head: {fileID: 2951808367577369948}
   sounds:
     headHeight: 2
+    basePitch: 1
     idleSounds: []
     idleVolume: 0.3
+    alertSounds: []
+    alertVolume: 0.3
+    alertingSoundChance: 0.9
+    alertedSoundChance: 0.15
     meleeSounds: []
     meleeVolume: 0.4
-    rangedSound: {fileID: 0}
+    meleeSoundChance: 0.6
+    rangedSounds: []
     rangedVolume: 0.4
-    specialSound: {fileID: 0}
+    rangedSoundChance: 1
+    specialSounds: []
     specialVolume: 0.4
+    specialSoundChance: 1
     footstepSounds:
     - {fileID: 8300000, guid: 5ed1edcdc7500a94b964e4a81775d306, type: 3}
     - {fileID: 8300000, guid: c550417728b224f4b8b9ea0daec14ad4, type: 3}
@@ -693,7 +694,6 @@ MonoBehaviour:
     isSelected: 0
   canRagdoll: 1
   walking: 0
-  canPathfind: 1
   stopMovement: 0
   stopPathfinding: 0
 --- !u!95 &3322040119633613309
@@ -886,6 +886,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59a0563acb0461e49880f6790f59bd07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  onlyServer: 0
   timerType: 0
   startTimerOnAwake: 0
   startOnAwakeDelay: 1.5
@@ -1015,6 +1018,20 @@ MonoBehaviour:
   version: 1
   penalty: 1000
   randomStep: 10
+--- !u!136 &7134277829284471444
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2321671125669910773}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.3
+  m_Height: 1.24
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.7, z: 0.1}
 --- !u!1 &2599788751589381493
 GameObject:
   m_ObjectHideFlags: 0
@@ -3410,15 +3427,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3ea27c5d12465714da4bd863f34a1ad6, type: 3}
---- !u!1 &7968991993345847785 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6687541496331228464, guid: 3ea27c5d12465714da4bd863f34a1ad6,
-    type: 3}
-  m_PrefabInstance: {fileID: 3628037009392428249}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5393189573878833334 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8683244817245602927, guid: 3ea27c5d12465714da4bd863f34a1ad6,
+    type: 3}
+  m_PrefabInstance: {fileID: 3628037009392428249}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7968991993345847785 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6687541496331228464, guid: 3ea27c5d12465714da4bd863f34a1ad6,
     type: 3}
   m_PrefabInstance: {fileID: 3628037009392428249}
   m_PrefabAsset: {fileID: 0}
@@ -3612,15 +3629,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 47f46eb35d857c34fb1b1ccd121d07fc, type: 3}
---- !u!4 &7786243978440214808 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1608835893210805546, guid: 47f46eb35d857c34fb1b1ccd121d07fc,
-    type: 3}
-  m_PrefabInstance: {fileID: 8817467655654898738}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &5206641715504011335 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3610836937551029365, guid: 47f46eb35d857c34fb1b1ccd121d07fc,
+    type: 3}
+  m_PrefabInstance: {fileID: 8817467655654898738}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &7786243978440214808 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1608835893210805546, guid: 47f46eb35d857c34fb1b1ccd121d07fc,
     type: 3}
   m_PrefabInstance: {fileID: 8817467655654898738}
   m_PrefabAsset: {fileID: 0}

@@ -1288,6 +1288,7 @@ GameObject:
   - component: {fileID: 7370644447021646929}
   - component: {fileID: 7543394233022986642}
   - component: {fileID: 4403519239043208452}
+  - component: {fileID: 9107366842586106342}
   m_Layer: 9
   m_Name: Spitter
   m_TagString: Untagged
@@ -1331,24 +1332,16 @@ MonoBehaviour:
   unitSO: {fileID: 11400000, guid: ac3d4f2c81696dc45a322377fecbb484, type: 2}
   health: 100
   isDead: 0
-  unitLevel: 1
   isMelee: 1
   isRanged: 1
   hasSpecial: 0
-  upgrades:
-    upgradeMultiplier: 0.1
-    upgradeMovementSpeed: 1
-    movementSpeedUpgradeIncrease: 0.1
-    movementSpeedUpgradeMax: 3
   melee:
     meleeDamageMin: 2
     meleeDamageMax: 10
     meleeRange: 3
     meleeCooldown: 5
     canMelee: 1
-    statusEffectToApply: {fileID: 11400000, guid: 6499d90d213f8aa4db7fae68321bec63,
-      type: 2}
-    amount: 5
+    statusEffectsToApply: []
   ranged:
     rangedDamage: 15
     minRange: 3
@@ -1363,9 +1356,7 @@ MonoBehaviour:
     standStill: 1
     directRangedAttack: 0
     canRanged: 0
-    statusEffectToApply: {fileID: 11400000, guid: 6499d90d213f8aa4db7fae68321bec63,
-      type: 2}
-    amount: 20
+    statusEffectsToApply: []
   special:
     specialCooldown: 2
     specialDamage: 0
@@ -1375,9 +1366,8 @@ MonoBehaviour:
     lookAtTarget: 1
     availableFromStart: 1
     canSpecial: 0
-    statusEffectToApply: {fileID: 11400000, guid: 273915536578c494c9ac3f927f859cee,
-      type: 2}
-    amount: 0
+    statusEffectsToApply: []
+  statModifiers: []
   movementSpeed: 1.5
   chaseTime: 20
   stoppedMoving: 0
@@ -1398,6 +1388,7 @@ MonoBehaviour:
   particleColor: {r: 0, g: 1, b: 0.07041359, a: 1}
   currentTarget: {fileID: 0}
   permanentTarget: 1
+  canPathfind: 1
   animator: {fileID: 3981117741212876076}
   bodyRenderer: {fileID: 353140572260443265}
   headRenderer: {fileID: 5817763563743707036}
@@ -1408,14 +1399,22 @@ MonoBehaviour:
   head: {fileID: 469397041601855185}
   sounds:
     headHeight: 2
+    basePitch: 1
     idleSounds: []
     idleVolume: 0.3
+    alertSounds: []
+    alertVolume: 0.3
+    alertingSoundChance: 0.9
+    alertedSoundChance: 0.15
     meleeSounds: []
     meleeVolume: 0.4
-    rangedSound: {fileID: 0}
+    meleeSoundChance: 0.6
+    rangedSounds: []
     rangedVolume: 0.4
-    specialSound: {fileID: 0}
+    rangedSoundChance: 1
+    specialSounds: []
     specialVolume: 0.4
+    specialSoundChance: 1
     footstepSounds:
     - {fileID: 8300000, guid: 7850d3eab24cc2443a75240ec4d7ad6e, type: 3}
     - {fileID: 8300000, guid: b138c25a985dcbc4eace679b6a32c2ea, type: 3}
@@ -1432,7 +1431,6 @@ MonoBehaviour:
     isSelected: 0
   canRagdoll: 1
   walking: 0
-  canPathfind: 1
   stopMovement: 0
   stopPathfinding: 0
 --- !u!95 &3981117741212876076
@@ -1625,6 +1623,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59a0563acb0461e49880f6790f59bd07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  onlyServer: 0
   timerType: 0
   startTimerOnAwake: 0
   startOnAwakeDelay: 1.5
@@ -1754,6 +1755,20 @@ MonoBehaviour:
   version: 1
   penalty: 1000
   randomStep: 10
+--- !u!136 &9107366842586106342
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2199530991413314690}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.3
+  m_Height: 1.85
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0.1}
 --- !u!1 &2511333269074462663
 GameObject:
   m_ObjectHideFlags: 0

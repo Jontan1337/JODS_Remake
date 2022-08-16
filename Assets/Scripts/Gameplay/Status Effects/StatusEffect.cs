@@ -23,7 +23,7 @@ public abstract class StatusEffect
     }
 
     //This function is called every second
-    public virtual void Tick()
+    public virtual void Svr_Tick()
     {
         if (!activeUntilRemoved)
         {
@@ -35,27 +35,27 @@ public abstract class StatusEffect
             {
                 isFinished = true;
 
-                End(); //Do something when the effect ends, like reset movement speed
+                Svr_End(); //Do something when the effect ends, like reset movement speed
             }
         }
     }
 
     //This function is called when the status effect is applied 
-    public virtual void Activate(int? amount) //Amount could be the amount of damage to apply or amount to heal etc.
+    public virtual void Svr_Activate(int? amount) //Amount could be the amount of damage to apply or amount to heal etc.
     {
         if (!isApplied)
         {
-            OnEffectApplied();
+            Svr_OnEffectApplied();
             isApplied = true;
         }
         if (effect.doEffectOnHit)
         {
-            ApplyEffect(amount);
+            Svr_ApplyEffect(amount);
         }
         else if (effect.canEffectStack || duration <= 0)
         {
             //If the effect can stack or if duration is 0, stack the effect.
-            ApplyEffect(amount);
+            Svr_ApplyEffect(amount);
             effectStacks++;
         }
 
@@ -71,9 +71,9 @@ public abstract class StatusEffect
         }
     }
 
-    public abstract void OnEffectApplied();
-    public abstract void ApplyEffect(int? amount);//This will apply the actual effect.
-    public abstract void End(); //This function is called when the effect ends, either by duration or stopped by some other means.
+    public abstract void Svr_OnEffectApplied();
+    public abstract void Svr_ApplyEffect(int? amount);//This will apply the actual effect.
+    public abstract void Svr_End(); //This function is called when the effect ends, either by duration or stopped by some other means.
     public virtual float GetImageAlpha()
     {
         if (effect.useImageAlpha) return effect.uIImageColor.a;

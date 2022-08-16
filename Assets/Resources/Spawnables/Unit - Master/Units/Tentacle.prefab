@@ -930,6 +930,7 @@ GameObject:
   - component: {fileID: 890206175}
   - component: {fileID: 890206176}
   - component: {fileID: 359016853786005919}
+  - component: {fileID: 1810290463092638355}
   m_Layer: 9
   m_Name: Tentacle
   m_TagString: Untagged
@@ -972,24 +973,16 @@ MonoBehaviour:
   unitSO: {fileID: 11400000, guid: 85b159902791cc14d9bcdbc9a9eddf26, type: 2}
   health: 150
   isDead: 0
-  unitLevel: 1
   isMelee: 1
   isRanged: 0
   hasSpecial: 1
-  upgrades:
-    upgradeMultiplier: 0.1
-    upgradeMovementSpeed: 1
-    movementSpeedUpgradeIncrease: 0.1
-    movementSpeedUpgradeMax: 3
   melee:
     meleeDamageMin: 2
     meleeDamageMax: 5
     meleeRange: 1.25
     meleeCooldown: 2
     canMelee: 1
-    statusEffectToApply: {fileID: 11400000, guid: 6499d90d213f8aa4db7fae68321bec63,
-      type: 2}
-    amount: 10
+    statusEffectsToApply: []
   ranged:
     rangedDamage: 20
     minRange: 2
@@ -1003,20 +996,18 @@ MonoBehaviour:
     standStill: 1
     directRangedAttack: 0
     canRanged: 0
-    statusEffectToApply: {fileID: 0}
-    amount: 0
+    statusEffectsToApply: []
   special:
     specialCooldown: 5
     specialDamage: 2
     specialTriggerRange: 1.25
-    specialRange: 2
+    specialRange: 4
     standStill: 0
     lookAtTarget: 1
     availableFromStart: 1
     canSpecial: 0
-    statusEffectToApply: {fileID: 11400000, guid: 7fbfc15321455b749ad2b9ef5ee7b3c4,
-      type: 2}
-    amount: 0
+    statusEffectsToApply: []
+  statModifiers: []
   movementSpeed: 1.5
   chaseTime: 10
   stoppedMoving: 0
@@ -1037,6 +1028,7 @@ MonoBehaviour:
   particleColor: {r: 1, g: 0, b: 0, a: 1}
   currentTarget: {fileID: 0}
   permanentTarget: 1
+  canPathfind: 1
   animator: {fileID: 8474330984967329327}
   bodyRenderer: {fileID: 4180718029855638980}
   headRenderer: {fileID: 7952977319489314521}
@@ -1047,14 +1039,22 @@ MonoBehaviour:
   head: {fileID: 5337166622458961100}
   sounds:
     headHeight: 2
+    basePitch: 1
     idleSounds: []
     idleVolume: 0.3
+    alertSounds: []
+    alertVolume: 0.3
+    alertingSoundChance: 0.9
+    alertedSoundChance: 0.15
     meleeSounds: []
     meleeVolume: 0.4
-    rangedSound: {fileID: 0}
+    meleeSoundChance: 0.6
+    rangedSounds: []
     rangedVolume: 0.4
-    specialSound: {fileID: 0}
+    rangedSoundChance: 1
+    specialSounds: []
     specialVolume: 0.4
+    specialSoundChance: 1
     footstepSounds:
     - {fileID: 8300000, guid: f0d7e87d558136f4aa82ab2abebbf918, type: 3}
     - {fileID: 8300000, guid: d825d8b94036fbc4db89003012ce3a66, type: 3}
@@ -1067,7 +1067,6 @@ MonoBehaviour:
     isSelected: 0
   canRagdoll: 1
   walking: 0
-  canPathfind: 1
   stopMovement: 0
   stopPathfinding: 0
   CaughtSurvivor: 0
@@ -1261,6 +1260,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59a0563acb0461e49880f6790f59bd07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  onlyServer: 0
   timerType: 2
   startTimerOnAwake: 0
   startOnAwakeDelay: 1.5
@@ -1390,6 +1392,20 @@ MonoBehaviour:
   version: 1
   penalty: 1000
   randomStep: 10
+--- !u!136 &1810290463092638355
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2334045856554427847}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.3
+  m_Height: 1.85
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &2382456407788445095
 GameObject:
   m_ObjectHideFlags: 0

@@ -12,22 +12,22 @@ public class HoT : StatusEffect
 		idmg = obj.GetComponent<IDamagable>();
 		hot = (HoTSO)effect;
 	}
-	public override void ApplyEffect(int? amount)
+	public override void Svr_ApplyEffect(int? amount)
 	{
 		idmg.Svr_Damage(-hot.healOnApply);
 	}
 
-	public override void End()
+	public override void Svr_End()
 	{
 	}
 
-	public override void OnEffectApplied()
+	public override void Svr_OnEffectApplied()
 	{
 	}
 
-	public override void Tick()
+	public override void Svr_Tick()
 	{
-		base.Tick();
+		base.Svr_Tick();
 
 		idmg.Svr_Damage(-hot.healPerTick);
 	}
