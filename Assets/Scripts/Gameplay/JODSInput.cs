@@ -6,6 +6,16 @@ public class JODSInput : MonoBehaviour
     public static Action onMovementDisabled;
     public static Action onCameraDisabled;
 
+    private static int overrides_movement = 0;
+    private static int overrides_jump = 0;
+    private static int overrides_camera = 0;
+    private static int overrides_interact = 0;
+    private static int overrides_hotbarcontrol = 0;
+    private static int overrides_lmb = 0;
+    private static int overrides_rmb = 0;
+    private static int overrides_reload = 0;
+    private static int overrides_drop = 0;
+
     public static Controls Controls { get; private set; }
 
     private void Awake()
@@ -28,77 +38,104 @@ public class JODSInput : MonoBehaviour
     // MOVEMENT
     public static void EnableMovement()
     {
-        Controls.Survivor.Movement.Enable();
+        overrides_movement++;
+        if (overrides_movement == 0)
+            Controls.Survivor.Movement.Enable();
     }
     public static void DisableMovement()
     {
+        overrides_movement--;
         Controls.Survivor.Movement.Disable();
         onMovementDisabled?.Invoke();
     }
     public static void EnableJump()
     {
-        Controls.Survivor.Jump.Enable();
+        overrides_jump++;
+        if (overrides_jump == 0)
+            Controls.Survivor.Jump.Enable();
     }
     public static void DisableJump()
     {
+        overrides_jump--;
         Controls.Survivor.Jump.Disable();
     }
     public static void EnableCamera()
     {
-        Controls.Survivor.Camera.Enable();
+        overrides_camera++;
+        if (overrides_camera == 0)
+            Controls.Survivor.Camera.Enable();
     }
     public static void DisableCamera()
     {
+        overrides_camera--;
         Controls.Survivor.Camera.Disable();
         onCameraDisabled?.Invoke();
     }
     // INTERACTION
     public static void EnableInteract()
     {
-        Controls.Survivor.Interact.Enable();
+        overrides_interact++;
+        if (overrides_interact == 0)
+            Controls.Survivor.Interact.Enable();
     }
     public static void DisableInteract()
     {
+        overrides_interact--;
         Controls.Survivor.Interact.Disable();
     }
     public static void EnableHotbarControl()
     {
-        Controls.Survivor.Hotbarselecting.Enable();
+        overrides_hotbarcontrol++;
+        if (overrides_hotbarcontrol == 0)
+            Controls.Survivor.Hotbarselecting.Enable();
     }
     public static void DisableHotbarControl()
     {
+        overrides_hotbarcontrol--;
         Controls.Survivor.Hotbarselecting.Disable();
     }
     public static void EnableLMB()
     {
-        Controls.Survivor.LMB.Enable();
+        overrides_lmb++;
+        if (overrides_lmb == 0)
+            Controls.Survivor.LMB.Enable();
     }
     public static void DisableLMB()
     {
+        overrides_lmb--;
         Controls.Survivor.LMB.Disable();
     }
     public static void EnableRMB()
     {
-        Controls.Survivor.RMB.Enable();
+        overrides_rmb++;
+        if (overrides_rmb == 0)
+            Controls.Survivor.RMB.Enable();
     }
     public static void DisableRMB()
     {
+        overrides_rmb--;
         Controls.Survivor.RMB.Disable();
     }
     public static void EnableReload()
     {
-        Controls.Survivor.Reload.Enable();
+        overrides_reload++;
+        if (overrides_reload == 0)
+            Controls.Survivor.Reload.Enable();
     }
     public static void DisableReload()
     {
+        overrides_reload--;
         Controls.Survivor.Reload.Disable();
     }
     public static void EnableDrop()
     {
-        Controls.Survivor.Drop.Enable();
+        overrides_drop++;
+        if (overrides_drop == 0)
+            Controls.Survivor.Drop.Enable();
     }
     public static void DisableDrop()
     {
+        overrides_drop--;
         Controls.Survivor.Drop.Disable();
     }
     // Menu/UI

@@ -118,16 +118,13 @@ public class PlayerManager : NetworkBehaviour
         {
             activeMenuCanvas = canvasMenu;
         }
-        if (!activeSClass.IsDown)
-        {
-            canvasInGame.gameObject.SetActive(true);
-            JODSInput.EnableCamera();
-            JODSInput.EnableLMB();
-            JODSInput.EnableRMB();
-            JODSInput.EnableDrop();
-            JODSInput.EnableReload();
-            JODSInput.EnableInteract();
-        }
+        canvasInGame.gameObject.SetActive(true);
+        JODSInput.EnableCamera();
+        JODSInput.EnableLMB();
+        JODSInput.EnableRMB();
+        JODSInput.EnableDrop();
+        JODSInput.EnableReload();
+        JODSInput.EnableInteract();
         //JODSInput.EnableMovement();
         if (hideCursorOnDisable) HideCursor();
         onMenuClosed?.Invoke();
