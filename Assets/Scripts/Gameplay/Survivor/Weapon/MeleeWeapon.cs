@@ -83,7 +83,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
         material = GetComponent<MeshRenderer>().material;
         networkAnimator = GetComponent<NetworkAnimator>();
         weaponAnimator.speed = 1f / attackInterval;
-        ignoreLayer = LayerMask.GetMask("Survivor", "StatusEffectApplierOnlySurvivor");
+        ignoreLayer = LayerMask.GetMask("Unit", "Survivor", "StatusEffectApplier", "StatusEffectApplierOnlySurvivor");
     }
 
     public override void OnStartClient()
