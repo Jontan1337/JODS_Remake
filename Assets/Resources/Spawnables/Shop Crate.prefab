@@ -406,8 +406,8 @@ MonoBehaviour:
     shopItemPrefab: {fileID: 6265878891622937683, guid: f1b9859e7949612418900c6cc2cfc0ae,
       type: 3}
     shopItemPrice: 30
-  - shopItemName: Frag Grenade
-    shopItemPrefab: {fileID: 8530027171896115994, guid: e9115eb680b63d54bacad7bb4b7ce36f,
+  - shopItemName: Frag Grenade Projectile
+    shopItemPrefab: {fileID: 620851829577473496, guid: 654afef88c28a2c4ab0e62c385cc34ec,
       type: 3}
     shopItemPrice: 80
   - shopItemName: Mine
@@ -799,7 +799,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 344788462489629879}
         m_TargetAssemblyTypeName: WeaponShop, Assembly-CSharp
-        m_MethodName: CloseShop
+        m_MethodName: OnMenuClosed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -8574,10 +8574,35 @@ PrefabInstance:
       propertyPath: shop
       value: 
       objectReference: {fileID: 344788462489629879}
+    - target: {fileID: 7038527617192587040, guid: b7df23e75b12e794db97be795e751296,
+        type: 3}
+      propertyPath: weaponSlot
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8485283365511007670, guid: b7df23e75b12e794db97be795e751296,
         type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8485283365511007670, guid: b7df23e75b12e794db97be795e751296,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 344788462489629879}
+    - target: {fileID: 8485283365511007670, guid: b7df23e75b12e794db97be795e751296,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: BuyAmmunition
+      objectReference: {fileID: 0}
+    - target: {fileID: 8485283365511007670, guid: b7df23e75b12e794db97be795e751296,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: WeaponShop, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8485283365511007670, guid: b7df23e75b12e794db97be795e751296,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b7df23e75b12e794db97be795e751296, type: 3}
@@ -9539,9 +9564,39 @@ PrefabInstance:
       propertyPath: shop
       value: 
       objectReference: {fileID: 344788462489629879}
+    - target: {fileID: 7038527617192587040, guid: b7df23e75b12e794db97be795e751296,
+        type: 3}
+      propertyPath: weaponSlot
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8485283365511007670, guid: b7df23e75b12e794db97be795e751296,
         type: 3}
       propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8485283365511007670, guid: b7df23e75b12e794db97be795e751296,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 344788462489629879}
+    - target: {fileID: 8485283365511007670, guid: b7df23e75b12e794db97be795e751296,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: BuyAmmunition
+      objectReference: {fileID: 0}
+    - target: {fileID: 8485283365511007670, guid: b7df23e75b12e794db97be795e751296,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: WeaponShop, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8485283365511007670, guid: b7df23e75b12e794db97be795e751296,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8485283365511007670, guid: b7df23e75b12e794db97be795e751296,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []

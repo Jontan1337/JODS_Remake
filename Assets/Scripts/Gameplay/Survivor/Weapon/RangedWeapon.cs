@@ -115,7 +115,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     }
     public int ExtraAmmunition { 
         get => extraAmmunition;
-        private set
+        set
         {
             extraAmmunition = value;
         }

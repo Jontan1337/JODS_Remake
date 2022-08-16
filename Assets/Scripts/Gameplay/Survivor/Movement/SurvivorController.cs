@@ -71,6 +71,7 @@ public class SurvivorController : NetworkBehaviour
     {
         JODSInput.Controls.Survivor.Movement.performed += Move;
         //JODSInput.Controls.Survivor.Movement.canceled += StoppedMoving;
+        JODSInput.onMovementDisabled += OnMovementDisabled;
         JODSInput.Controls.Survivor.Jump.performed += Jump;
         JODSInput.Controls.Survivor.Sprint.performed += OnSprintPerformed;
         JODSInput.Controls.Survivor.Sprint.canceled += OnSprintCanceled;
@@ -79,6 +80,7 @@ public class SurvivorController : NetworkBehaviour
     {
         JODSInput.Controls.Survivor.Movement.performed -= Move;
         //JODSInput.Controls.Survivor.Movement.canceled -= StoppedMoving;
+        JODSInput.onMovementDisabled -= OnMovementDisabled;
         JODSInput.Controls.Survivor.Jump.performed -= Jump;
         JODSInput.Controls.Survivor.Sprint.performed -= OnSprintPerformed;
         JODSInput.Controls.Survivor.Sprint.canceled -= OnSprintCanceled;
@@ -119,6 +121,12 @@ public class SurvivorController : NetworkBehaviour
         //{
         //    StoppedMoving();
         //}
+    }
+
+    private void OnMovementDisabled()
+    {
+        horizontal = 0f;
+        vertical = 0f;
     }
 
     private void Jump(InputAction.CallbackContext context)

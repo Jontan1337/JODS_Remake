@@ -195,10 +195,6 @@ public class WeaponShop : NetworkBehaviour, IInteractable
         }
     }
 
-    public void CloseShop()
-    {
-        Cmd_CloseShop(playerGameObject);
-    }
     [Command(ignoreAuthority = true)]
     private void Cmd_CloseShop(GameObject interacter)
     {
@@ -232,7 +228,7 @@ public class WeaponShop : NetworkBehaviour, IInteractable
     }
 
     [Server]
-    private async void Svr_HandleUser(GameObject interacter)
+    private void Svr_HandleUser(GameObject interacter)
     {
         if (playersInShop.Contains(interacter))
         {
@@ -254,41 +250,33 @@ public class WeaponShop : NetworkBehaviour, IInteractable
             }
 
             PlayerEquipment playerEquipment = interacter.GetComponentInChildren<PlayerEquipment>();
-            GameObject goWeapon1 = playerEquipment.EquipmentSlots[0].EquipmentItem;
-            RangedWeapon weapon1 = null;
-            if (goWeapon1)
-            {
-                weapon1 = goWeapon1.GetComponent<RangedWeapon>();
 
-                weaponAmmunitionRefill[0].Item = new ShopItem(
-                    weapon1.Name,
-                    playerEquipment.EquipmentSlots[0].EquipmentItem,
-                    GetAmmunitionPrice(weapon1.AmmunitionType)
-                );
-            }
-            else
+            GameObject[] goWeapons = new GameObject[2];
+            for (int i = 0; i < 2; i++)
             {
-                weaponAmmunitionRefill[0].Item = new ShopItem("", null, default);
+                GameObject goWeapon = playerEquipment.EquipmentSlots[i].EquipmentItem;
+                goWeapons[i] = goWeapon;
+                if (goWeapon)
+                {
+                    int price = 0;
+                    string weaponName = string.Empty;
+                    if (goWeapon.TryGetComponent(out RangedWeapon rangedWeapon))
+                    {
+                        price = GetAmmunitionPrice(rangedWeapon.AmmunitionType);
+                        weaponName = rangedWeapon.Name;
+                    }
+                    weaponAmmunitionRefill[i].Item = new ShopItem(
+                        weaponName,
+                        goWeapon,
+                        price
+                    );
+                }
+                else
+                {
+                    weaponAmmunitionRefill[i].Item = new ShopItem("", null, default);
+                }
             }
-
-            GameObject goWeapon2 = playerEquipment.EquipmentSlots[0].EquipmentItem;
-            RangedWeapon weapon2 = null;
-            if (goWeapon2)
-            {
-                weapon2 = goWeapon2.GetComponent<RangedWeapon>();
-
-                weaponAmmunitionRefill[1].Item = new ShopItem(
-                    weapon2.Name,
-                    playerEquipment.EquipmentSlots[1].EquipmentItem,
-                    GetAmmunitionPrice(weapon2.AmmunitionType)
-                );
-            }
-            else
-            {
-                weaponAmmunitionRefill[1].Item = new ShopItem("", null, default);
-            }
-            Rpc_SetAmmunitionRefillers(interacter.GetComponent<NetworkIdentity>().connectionToClient, goWeapon1, goWeapon2);
-            await JODSTime.WaitTime(0.1f);
+            Rpc_SetAmmunitionRefillers(interacter.GetComponent<NetworkIdentity>().connectionToClient, goWeapons[0], goWeapons[1]);
 
             playersInShop.Add(interacter);
         }
@@ -310,31 +298,63 @@ public class WeaponShop : NetworkBehaviour, IInteractable
     }
 
     [TargetRpc]
-    private async void Rpc_SetAmmunitionRefillers(NetworkConnection target, GameObject goWeapon1, GameObject goWeapon2)
+    private void Rpc_SetAmmunitionRefillers(NetworkConnection target, GameObject goWeapon1, GameObject goWeapon2)
     {
+        GameObject[] goWeapons = new GameObject[]
+        {
+            goWeapon1,
+            goWeapon2
+        };
         for (int i = 0; i < 2; i++)
         {
-            EquipmentItem equipmentItem1 = null;
-            if (goWeapon1)
+            if (goWeapons[i])
             {
-                //equipmentItem = goWeapon1.GetComponent<EquipmentItem>();
+                GameObject goWeapon = goWeapons[i];
                 int price = 0;
-                if (!equipmentItem1.TryGetComponent(out RangedWeapon rangedWeapon))
+                string weaponName = string.Empty;
+                if (goWeapon.TryGetComponent(out RangedWeapon rangedWeapon))
                 {
                     price = GetAmmunitionPrice(rangedWeapon.AmmunitionType);
+                    weaponName = rangedWeapon.Name;
+                    weaponAmmunitionRefill[i].EnableShopButton(true);
+                }
+                else
+                {
+                    weaponAmmunitionRefill[i].EnableShopButton(false);
                 }
                 weaponAmmunitionRefill[i].Item = new ShopItem(
-                    equipmentItem1.Name,
-                    goWeapon1,
+                    weaponName,
+                    goWeapon,
                     price
                 );
             }
             else
             {
-                weaponAmmunitionRefill[0].Item = new ShopItem("", null, default);
+                weaponAmmunitionRefill[i].Item = new ShopItem("", null, default);
             }
         }
-        await JODSTime.WaitTime(0.1f);
+    }
+
+    public void BuyAmmunition(int index)
+    {
+        Cmd_BuyAmmunition(index);
+    }
+
+    [Command(ignoreAuthority = true)]
+    private async void Cmd_BuyAmmunition(int index)
+    {
+        GamemodeBase gamemode = GamemodeBase.Instance;
+        PlayerEquipment playerEquipment = playerGameObject.GetComponentInChildren<PlayerEquipment>();
+        RangedWeapon weapon = playerEquipment.EquipmentSlots[index].EquipmentItem.GetComponent<RangedWeapon>();
+        NetworkIdentity networkIdentity = playerGameObject.GetComponent<NetworkIdentity>();
+        int price = weaponAmmunitionRefill[index].Item.shopItemPrice;
+        if (gamemode.Svr_GetPoints(networkIdentity.netId) >= price)
+        {
+            weapon.ExtraAmmunition += weapon.MagazineSize;
+            gamemode.Svr_ModifyStat(networkIdentity.netId, -price, PlayerDataStat.Points);
+            await JODSTime.WaitTime(0.1f);
+            Rpc_ShowPoints(networkIdentity.connectionToClient, gamemode.Svr_GetPoints(networkIdentity.netId));
+        }
     }
 
     [TargetRpc]
