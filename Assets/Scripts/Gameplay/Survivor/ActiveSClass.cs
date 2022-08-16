@@ -566,23 +566,36 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
             GUI.TextField(new Rect(20, 20, 150, 20), "Active S Class Test ON");
         }
     }
+    NetworkConnection connectionToClientInteractor;
+
     [Server]
     public void Svr_PerformInteract(GameObject interacter)
     {
         if (!beingRevived)
         {
-            interacter.GetComponent<ActiveSClass>().sController.enabled = false;
-            interacter.GetComponent<ActiveSClass>().Rpc_StartReviveTimer(interacter.GetComponent<NetworkIdentity>().connectionToClient);
+            connectionToClientInteractor = interacter.GetComponent<NetworkIdentity>().connectionToClient;
+            Rpc_DisableMovement(connectionToClientInteractor);
+            interacter.GetComponent<ActiveSClass>().Rpc_StartReviveTimer(connectionToClientInteractor);
             BeingRevivedCo = BeingRevived();
             StartCoroutine(BeingRevivedCo);
         }
     }
-
     [Server]
     public void Svr_CancelInteract(GameObject interacter)
     {
-        interacter.GetComponent<ActiveSClass>().sController.enabled = true;
-        interacter.GetComponent<ActiveSClass>().Rpc_ReviveTimerCancelled(interacter.GetComponent<NetworkIdentity>().connectionToClient);
+        Rpc_EnableMovement(connectionToClientInteractor);
+        interacter.GetComponent<ActiveSClass>().Rpc_ReviveTimerCancelled(connectionToClientInteractor);
         ReviveCancelled();
+    }
+    [TargetRpc]
+    private void Rpc_DisableMovement(NetworkConnection target)
+    {
+        JODSInput.DisableMovement();
+    }
+
+    [TargetRpc]
+    private void Rpc_EnableMovement(NetworkConnection target)
+    {
+        JODSInput.EnableMovement();
     }
 }
