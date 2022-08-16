@@ -197,7 +197,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
 
     private async void FindCamera()
     {
-        await JODSTime.WaitTime(0.1f);
+        await JODSTime.WaitTime(0.2f);
         fullBodyBipedIK = GetComponent<FullBodyBipedIK>();
         cameraTransform = transform.Find("Virtual Head(Clone)/PlayerCamera(Clone)");
         originalCameraTransformParent = transform.Find("Virtual Head(Clone)");
