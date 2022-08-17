@@ -8,7 +8,6 @@ public class Throwable : EquipmentItem
 {
 	[Header("Throwable Settings")]
 	[SerializeField] private int projectileSpeed = 20;
-	[SerializeField] private float timeToLive = 5f;
 
 
 	protected override void OnLMBPerformed(InputAction.CallbackContext obj)
@@ -21,7 +20,6 @@ public class Throwable : EquipmentItem
 	[Command]
     public void Cmd_Throw()
     {
-		print("UW");
 		transform.SetParent(null);
 		Rigidbody rb = GetComponent<Rigidbody>();
 		rb.isKinematic = false;
