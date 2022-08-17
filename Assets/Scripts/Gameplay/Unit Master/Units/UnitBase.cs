@@ -1325,6 +1325,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     {
         GetComponent<CharacterController>().enabled = false;
         GetComponent<BoxCollider>().enabled = false;
+        GetComponent<CapsuleCollider>().enabled = false;
         Collider[] colliders = GetComponentsInChildren<Collider>();
         foreach (Collider c in colliders)
         {
