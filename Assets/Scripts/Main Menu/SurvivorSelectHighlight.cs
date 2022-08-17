@@ -44,7 +44,7 @@ public class SurvivorSelectHighlight : MonoBehaviour
         if (survivorDescriptionText) survivorDescriptionText.enabled = active;
         if (survivorSpecialText) survivorSpecialText.enabled = active;
 
-        descriptionGroup.SetActive(active);
-        specialGroup.SetActive(active);
+        if (descriptionGroup) descriptionGroup.SetActive(active);
+        if (specialGroup) specialGroup.SetActive(active);
     }
 }
