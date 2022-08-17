@@ -195,20 +195,6 @@ public class WeaponShop : NetworkBehaviour, IInteractable
         }
     }
 
-    [Command(ignoreAuthority = true)]
-    private void Cmd_CloseShop(GameObject interacter)
-    {
-        Svr_HandleUser(interacter);
-        //PlayerManager.Instance.Rpc_DisableMenu(interacter.GetComponent<NetworkIdentity>().connectionToClient);
-        Rpc_CloseShop(interacter.GetComponent<NetworkIdentity>().connectionToClient);
-    }
-    [TargetRpc]
-    private void Rpc_CloseShop(NetworkConnection target)
-    {
-        print("PlayerManager DisableMenu");
-        PlayerManager.Instance.DisableMenu();
-    }
-
     [TargetRpc]
     private void Rpc_ShowPoints(NetworkConnection target, int points)
     {
@@ -375,10 +361,22 @@ public class WeaponShop : NetworkBehaviour, IInteractable
         PlayerManager.Instance.onMenuClosed += OnMenuClosed;
     }
 
+
+    // These CloseShop methods are for the UI Back button
+    public void CloseShop()
+    {
+        PlayerManager.Instance.DisableMenu();
+    }
+    // These OnMenuClosed methods are for the Escape button
     public void OnMenuClosed()
     {
-        Cmd_CloseShop(playerGameObject);
+        Cmd_OnMenuClosed(playerGameObject);
         PlayerManager.Instance.onMenuClosed -= OnMenuClosed;
+    }
+    [Command(ignoreAuthority = true)]
+    private void Cmd_OnMenuClosed(GameObject interactor)
+    {
+        Svr_HandleUser(interactor);
     }
 
     private void SetShopSlotValues(List<ShopItem> shopItems, bool weaponSlotItems)
