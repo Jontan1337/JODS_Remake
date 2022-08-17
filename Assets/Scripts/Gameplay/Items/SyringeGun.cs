@@ -47,17 +47,18 @@ public class SyringeGun : ProjectileWeapon
     public override void Unbind()
     {
         base.Unbind();
-        NetworkServer.Destroy(gameObject);
+        Cmd_Destroy();
+        //NetworkServer.Destroy(gameObject);
     }
 
-    //[Command(ignoreAuthority = true)] //Auth is lost before method is called, so this is the only sollution we know of right now. Not optimal.
-    //public void Cmd_Destroy()
-    //{
-    //    StartCoroutine(DestroyWait());
-    //}
-    //IEnumerator DestroyWait()
-    //{
-    //    yield return new WaitForSeconds(0.1f);
-    //    NetworkServer.Destroy(gameObject);
-    //}
+    [Command(ignoreAuthority = true)] //Auth is lost before method is called, so this is the only sollution we know of right now. Not optimal.
+    public void Cmd_Destroy()
+    {
+        StartCoroutine(DestroyWait());
+    }
+    IEnumerator DestroyWait()
+    {
+        yield return new WaitForSeconds(0.1f);
+        NetworkServer.Destroy(gameObject);
+    }
 }
