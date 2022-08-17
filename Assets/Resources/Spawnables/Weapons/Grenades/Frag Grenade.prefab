@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: -5651342252297522918}
   - component: {fileID: 8374121135098480526}
   - component: {fileID: 760315298459569867}
+  - component: {fileID: 6846353426764951084}
   m_Layer: 18
   m_Name: Frag Grenade
   m_TagString: Untagged
@@ -129,12 +130,12 @@ MonoBehaviour:
   equippedLayer: 15
   objectMeshes: []
   isInteractable: 1
-  UISilhouette: {fileID: 0}
-  authController: {fileID: 0}
-  objectVisuals: {fileID: 0}
+  UISilhouette: {fileID: 21300000, guid: e85f305a0decbf14f91287bd0d355b15, type: 3}
+  authController: {fileID: 1936556452296454954}
+  objectVisuals: {fileID: -5651342252297522918}
   owner: {fileID: 0}
-  rb: {fileID: 0}
-  outline: {fileID: 0}
+  rb: {fileID: 620851829577374534}
+  outline: {fileID: 8374121135098480526}
   onPickupEvents:
     m_PersistentCalls:
       m_Calls: []
@@ -292,9 +293,9 @@ MonoBehaviour:
   positionData: {x: 0, y: 0, z: 0}
   localPositionData: {x: 0, y: 0, z: 0}
   rotationData: {x: 0, y: 0, z: 0, w: 0}
-  syncParent: 0
-  syncPosition: 0
-  syncRotation: 0
+  syncParent: 1
+  syncPosition: 1
+  syncRotation: 1
 --- !u!114 &8374121135098480526
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -309,7 +310,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   outlineMode: 0
   outlineColor: {r: 1, g: 1, b: 1, a: 1}
-  outlineWidth: 2
+  outlineWidth: 0
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []
@@ -329,3 +330,21 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4711208715938537054, guid: 40b3d08bf40ddcf438c04908eb1b5bfc, type: 3}
+--- !u!114 &6846353426764951084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 620851829577473496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f74aedd71d9a4f55b3ce499326d45fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  clientAuthority: 0
+  localPositionSensitivity: 0.01
+  localRotationSensitivity: 0.01
+  localScaleSensitivity: 0.01

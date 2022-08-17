@@ -9,7 +9,7 @@ public class SyncTransform : NetworkBehaviour
     [SerializeField, SyncVar(hook = nameof(UpdatePosition))] private Vector3 positionData;
     [SerializeField, SyncVar(hook = nameof(UpdateLocalPosition))] private Vector3 localPositionData;
     [SerializeField, SyncVar(hook = nameof(UpdateRotation))] private Quaternion rotationData;
-    [SerializeField] private bool syncParent = false;
+    [SerializeField] private bool syncParent = true;
     [SerializeField] private bool syncPosition = false;
     [SerializeField] private bool syncRotation = false;
 
