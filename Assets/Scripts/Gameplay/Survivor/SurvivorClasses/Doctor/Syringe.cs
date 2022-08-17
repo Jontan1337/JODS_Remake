@@ -17,11 +17,16 @@ public class Syringe : Projectile
     public override void OnHit(Collision hit)
     {
         print(hit.transform.name);
+        var surv = hit.collider.transform.root.gameObject.GetComponent<ActiveSClass>();
         base.OnHit(hit);
         IDamagable idmg = hit.collider.GetComponent<IDamagable>();
         if (idmg?.Team == Teams.Player)
         {
-            if (statusEffectsToApply.Count > 0)
+            if (surv.IsDown)
+            {
+                surv.StartCoroutine(surv.BeingRevived());
+            }
+            else if (statusEffectsToApply.Count > 0)
             {
                 foreach (StatusEffectToApply statusEffectToApply in statusEffectsToApply)
                 {

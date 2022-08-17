@@ -28,6 +28,8 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     [SerializeField] private float abilityCooldown = 0;
     //[SerializeField] private float abilityCooldownCount = 0;
     [SerializeField] private float movementSpeed = 0;
+    [SerializeField] private float reviveTime = 5;
+    [SerializeField] private float downTime = 30;
     //[SerializeField] private float cooldownReducion = 0;
     public float abilityCooldownCount = 0;
 
@@ -60,6 +62,13 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     private Vector3 cameraRotationBeforeDown;
     private const string inGameUIPath = "UI/Canvas - In Game";
     //private SurvivorAnimationIKManager 
+
+
+    private float reviveTimeCount = 0;
+    private float downImageOpacity = 0;
+    private bool beingRevived = false;
+    public bool IsInteractable { get => isInteractable; set => isInteractable = value; }
+    [SerializeField, SyncVar] private bool isInteractable = false;
 
     public bool AbilityIsReady
     {
@@ -377,126 +386,8 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
         healthLossBool = false;
     }
 
-    IEnumerator DownCo;
-    [SerializeField] private float downTime = 30;
-    private bool beingRevived = false;
-    private float downImageOpacity = 0;
-    public bool IsInteractable { get => isInteractable; set => isInteractable = value; }
-    [SerializeField, SyncVar] private bool isInteractable = false;
-    private IEnumerator Down()
-    {
-        Rpc_Down(connectionToClient);
-        animatorController.SetBool("IsDown", true);
-        IsInteractable = true;
-        downImageOpacity = 0;
-        downImage.color = new Color(1f, 1f, 1f, 0f);
-        
-        while (downTime > 0)
-        {
-            if (!beingRevived)
-            {
-                Rpc_UpdateDownImage(connectionToClient, downImageOpacity);
-                downImageOpacity += (1f / 30f);
-                downTime -= 1;
-            }
-            yield return new WaitForSeconds(1f);
-        }
-        IsDead = true;
-    }
-
-    [TargetRpc]
-    private void Rpc_Down(NetworkConnection target)
-    {
-        JODSInput.DisableCamera();
-        JODSInput.DisableHotbarControl();
-        animatorController.SetBool("IsDown", true);
-        inGameCanvas.SetActive(false);
-        downCanvas.SetActive(true);
-        sController.enabled = false;
-    }
-
-    [TargetRpc]
-    private void Rpc_UpdateDownImage(NetworkConnection target, float downImageOpacity)
-    {
-        downImage.color = new Color(1f, 1f, 1f, downImageOpacity);
-    }
-
-    [SerializeField] private float reviveTime = 5;
-    IEnumerator BeingRevivedCo;
-    private IEnumerator BeingRevived()
-    {
-        beingRevived = true;
-        while (reviveTime > 0)
-        {
-            reviveTime -= 1;
-            yield return new WaitForSeconds(1f);
-        }
-        Revived();
-    }
-
-    private void Revived()
-    {
-        Health = 50;
-        IsDown = false;        
-        animatorController.SetBool("IsDown", false);
-        downTime = 30;
-        reviveTime = 5;
-        StopCoroutine(DownCo);
-        IsInteractable = false;
-        Rpc_Revived(connectionToClient);
-        beingRevived = false;
-    }
-
-    [TargetRpc]
-    private void Rpc_Revived(NetworkConnection target)
-    {
-        inGameCanvas.SetActive(true);
-        downCanvas.SetActive(false);
-        sController.enabled = true;
-        JODSInput.EnableCamera();
-        JODSInput.EnableHotbarControl();
-        animatorController.SetBool("IsDown", false);
-    }
 
 
-
-    IEnumerator ReviveTimerCo;
-    private float reviveTimeCount = 0;
-    private IEnumerator ReviveTimer()
-    {
-        reviveTimeCount = 0;
-        reviveTimerObjectUI.SetActive(true);
-        reviveTimerImageUI.fillAmount = 0;
-        while (reviveTimeCount < 5)
-        {
-            reviveTimeCount += (Time.deltaTime);
-            reviveTimerImageUI.fillAmount = reviveTimeCount / 5;
-            yield return null;
-        }
-        reviveTimerObjectUI.SetActive(false);
-    }
-
-    [TargetRpc]
-    private void Rpc_StartReviveTimer(NetworkConnection target)
-    {
-        ReviveTimerCo = ReviveTimer();
-        StartCoroutine(ReviveTimerCo);
-    }
-
-    [TargetRpc]
-    private void Rpc_ReviveTimerCancelled(NetworkConnection target)
-    {
-        StopCoroutine(ReviveTimerCo);
-        reviveTimerObjectUI.SetActive(false);
-    }
-
-    private void ReviveCancelled()
-    {
-        StopCoroutine(BeingRevivedCo);
-
-        beingRevived = false;
-        reviveTime = 5;
-    }
 
     public Teams Team => Teams.Player;
 
@@ -552,6 +443,120 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     #endregion
 
     #region Revive Stuff
+
+    IEnumerator DownCo;
+    private IEnumerator Down()
+    {
+        Rpc_Down(connectionToClient);
+        animatorController.SetBool("IsDown", true);
+        IsInteractable = true;
+        downImageOpacity = 0;
+        downImage.color = new Color(1f, 1f, 1f, 0f);
+
+        while (downTime > 0)
+        {
+            if (!beingRevived)
+            {
+                Rpc_UpdateDownImage(connectionToClient, downImageOpacity);
+                downImageOpacity += (1f / 30f);
+                downTime -= 1;
+            }
+            yield return new WaitForSeconds(1f);
+        }
+        IsDead = true;
+    }
+
+    [TargetRpc]
+    private void Rpc_Down(NetworkConnection target)
+    {
+        JODSInput.DisableCamera();
+        JODSInput.DisableHotbarControl();
+        animatorController.SetBool("IsDown", true);
+        inGameCanvas.SetActive(false);
+        downCanvas.SetActive(true);
+        sController.enabled = false;
+    }
+
+    [TargetRpc]
+    private void Rpc_UpdateDownImage(NetworkConnection target, float downImageOpacity)
+    {
+        downImage.color = new Color(1f, 1f, 1f, downImageOpacity);
+    }
+
+    IEnumerator BeingRevivedCo;
+    public IEnumerator BeingRevived()
+    {
+        beingRevived = true;
+        while (reviveTime > 0)
+        {
+            reviveTime -= 1;
+            yield return new WaitForSeconds(1f);
+        }
+        Revived();
+    }
+
+    private void Revived()
+    {
+        Health = 50;
+        IsDown = false;
+        animatorController.SetBool("IsDown", false);
+        downTime = 30;
+        reviveTime = 5;
+        StopCoroutine(DownCo);
+        IsInteractable = false;
+        Rpc_Revived(connectionToClient);
+        beingRevived = false;
+    }
+
+    [TargetRpc]
+    private void Rpc_Revived(NetworkConnection target)
+    {
+        inGameCanvas.SetActive(true);
+        downCanvas.SetActive(false);
+        sController.enabled = true;
+        JODSInput.EnableCamera();
+        JODSInput.EnableHotbarControl();
+        animatorController.SetBool("IsDown", false);
+    }
+
+
+    IEnumerator ReviveTimerCo;
+    private IEnumerator ReviveTimer()
+    {
+        reviveTimeCount = 0;
+        reviveTimerObjectUI.SetActive(true);
+        reviveTimerImageUI.fillAmount = 0;
+        while (reviveTimeCount < 5)
+        {
+            reviveTimeCount += (Time.deltaTime);
+            reviveTimerImageUI.fillAmount = reviveTimeCount / 5;
+            yield return null;
+        }
+        reviveTimerObjectUI.SetActive(false);
+    }
+
+    [TargetRpc]
+    private void Rpc_StartReviveTimer(NetworkConnection target)
+    {
+        ReviveTimerCo = ReviveTimer();
+        StartCoroutine(ReviveTimerCo);
+    }
+
+    [TargetRpc]
+    private void Rpc_ReviveTimerCancelled(NetworkConnection target)
+    {
+        StopCoroutine(ReviveTimerCo);
+        reviveTimerObjectUI.SetActive(false);
+    }
+
+    private void ReviveCancelled()
+    {
+        StopCoroutine(BeingRevivedCo);
+
+        beingRevived = false;
+        reviveTime = 5;
+    }
+
     [Server]
     public void Svr_PerformInteract(GameObject interacter)
     {
