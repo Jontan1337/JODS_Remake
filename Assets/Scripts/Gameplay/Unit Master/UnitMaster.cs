@@ -1397,7 +1397,7 @@ public class UnitMaster : NetworkBehaviour
             //Send the ray from the topdown camera
             ray = topdown.camera.ScreenPointToRay(Input.mousePosition);
 
-            distance = 100;
+            distance = 150;
         }
         //Is the master currently in flying view?
         else
