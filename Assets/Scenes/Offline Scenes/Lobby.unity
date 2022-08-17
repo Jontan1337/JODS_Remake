@@ -34708,7 +34708,6 @@ GameObject:
   - component: {fileID: 7107372927296446061}
   - component: {fileID: 7107372927296446059}
   - component: {fileID: 7107372927296446057}
-  - component: {fileID: 7107372927296446058}
   m_Layer: 0
   m_Name: Lobby Manager
   m_TagString: Lobby Manager
@@ -34734,18 +34733,6 @@ MonoBehaviour:
   serverMaxReceivesPerTick: 10000
   clientMaxMessageSize: 16384
   clientMaxReceivesPerTick: 1000
---- !u!114 &7107372927296446058
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7107372927296446056}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f03706cb8bdb6a34e9cd8ab5faaefb58, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &7107372927296446059
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34778,6 +34765,7 @@ MonoBehaviour:
   autoCreatePlayer: 1
   playerSpawnMethod: 0
   spawnPrefabs:
+  - {fileID: 6265878891622937683, guid: f1b9859e7949612418900c6cc2cfc0ae, type: 3}
   - {fileID: 6023377877881029952, guid: dc07d256e0fbd4341a49290e137acaab, type: 3}
   - {fileID: 507536392163164668, guid: 72b6f26d123c1ea44a6ad4d537db32d3, type: 3}
   - {fileID: 1442985027432273228, guid: ce1b3163aa8bff542a03ca0715f5393b, type: 3}
@@ -34789,6 +34777,8 @@ MonoBehaviour:
   - {fileID: 6487308696307582406, guid: 30b0c5aa4c4371844ad1fc1280529ca2, type: 3}
   - {fileID: 2679961963008141046, guid: 0cdd5d57e053ff54e8caaf2ae30a6c2d, type: 3}
   - {fileID: 2679961963008141046, guid: 17062896f89afdb41bf10104d2a1c0d8, type: 3}
+  - {fileID: 5157149931168822634, guid: 2586507c0ad8c6e46b0fc5720e4c94ac, type: 3}
+  - {fileID: 5157149931168822634, guid: ab6a23b008e4359419a748bdc3e85c66, type: 3}
   - {fileID: 5475870583975361134, guid: a482326ef0c91ba45ab298d972bd1d72, type: 3}
   - {fileID: 8187607966051383338, guid: 09c37436819aaf64987cad03a37cb16e, type: 3}
   - {fileID: 3914505573456434550, guid: bdbc2de2a5e82014c8fd223f191c0181, type: 3}
@@ -34800,7 +34790,6 @@ MonoBehaviour:
   - {fileID: 7871122390479671320, guid: 057d69b0d0562fb448f4856c33a4266b, type: 3}
   - {fileID: 5048213772917307544, guid: 5ba49680bfe199a48ae5cd1b438a1442, type: 3}
   - {fileID: 376577762905515766, guid: dfdf479a8703b2d4eba5588a2b2809ec, type: 3}
-  - {fileID: 6265878891622937683, guid: f1b9859e7949612418900c6cc2cfc0ae, type: 3}
   - {fileID: 7458314931304268821, guid: 0a863dc1cdde06b4eba6432311cb90c5, type: 3}
   - {fileID: 8254277384412570557, guid: c9f3bf72ab09d9a44bcb4f99827d35d3, type: 3}
   - {fileID: 5922127114707202486, guid: 2b66a0b1aff738e4fb22273ddadde428, type: 3}
@@ -34809,6 +34798,7 @@ MonoBehaviour:
   - {fileID: 6222407410909346251, guid: beeedc4be235b6744aca80b4be429040, type: 3}
   - {fileID: 5545151553288273671, guid: 8aa36f6128d160f4faea76bcdc7a1b24, type: 3}
   - {fileID: 1449629511276398419, guid: 6348f645c14c56e42b4b7d8f34498b26, type: 3}
+  - {fileID: 579142006993177050, guid: 54b2c4ebd847c6d4b9a13dd609d0aefc, type: 3}
   - {fileID: 8412417947739657944, guid: ee42258fe050e0f47963b6f36576ec61, type: 3}
   - {fileID: 3633784311022692507, guid: 4d6acfc1003431a4f9948763d30db7e0, type: 3}
   - {fileID: 4272586343987966315, guid: c523ce8450517074db0af53d4023ef55, type: 3}
@@ -34818,7 +34808,11 @@ MonoBehaviour:
   - {fileID: 1289923740817093828, guid: c39b0f148cfc729429b4f50b3ed3aeda, type: 3}
   - {fileID: 2334045856554427847, guid: 802bb2b379e46804a90467f24a380768, type: 3}
   - {fileID: 3613215282632267500, guid: 2fecdf493e9322a4d892f94dac02076a, type: 3}
+  - {fileID: 620851829577473496, guid: 654afef88c28a2c4ab0e62c385cc34ec, type: 3}
+  - {fileID: 8530027171896115994, guid: b99adab4ed386c14a8a31e98f908ff51, type: 3}
+  - {fileID: 2801101615081326721, guid: e288b3508fcdf3d46b218adee27257fe, type: 3}
   - {fileID: 930379364178549457, guid: cf07e03a1251a1b45a41156af5417c9a, type: 3}
+  - {fileID: 930379364178549457, guid: 84e83074afeba1749b710e308d67f8ba, type: 3}
   - {fileID: 6484964077652478879, guid: f438cd29d6d19a14598cb02467f7b01a, type: 3}
   - {fileID: 8890196892592532165, guid: 7de23485e7829f44fba47a37cd3f3df2, type: 3}
   - {fileID: 8890196892592532165, guid: 516951a347871cd4eacafa44d7eff7b3, type: 3}
@@ -34836,7 +34830,6 @@ MonoBehaviour:
   - {fileID: 5799773097203344797, guid: eeae782c43868674fbc06706a3b95c5e, type: 3}
   - {fileID: 5799773097203344797, guid: e9f5cae451d606c47829fa583924e352, type: 3}
   - {fileID: 5799773097203344797, guid: 324c8e03d8d729b41996adb7ee150a2a, type: 3}
-  - {fileID: 579142006993177050, guid: 54b2c4ebd847c6d4b9a13dd609d0aefc, type: 3}
   requiredAmountOfPlayers: 1
   mustHaveMaster: 1
   matchListContent: {fileID: 7107372926176858247}
