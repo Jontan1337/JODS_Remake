@@ -338,7 +338,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 12675588
   bulletTrail: {fileID: 8476541660368454486}
-  muzzleFlashLight: {fileID: 0}
+  muzzleFlashLight: {fileID: 8107470608600061732}
 --- !u!114 &8677567993216096715
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2846,6 +2846,7 @@ Transform:
   m_Children:
   - {fileID: 1986087315752044268}
   - {fileID: 114789194423104463}
+  - {fileID: 1493805226668922488}
   m_Father: {fileID: 4401809949159092911}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3001,6 +3002,92 @@ Transform:
   m_Father: {fileID: 4401809949159092911}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &585065971841525455
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 8677567994327279421}
+    m_Modifications:
+    - target: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6349227015990299201, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_Name
+      value: Muzzle flash light
+      objectReference: {fileID: 0}
+    - target: {fileID: 8691129205407003115, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_Intensity
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 40faf6b5a9391d24287049acde8e4747, type: 3}
+--- !u!4 &1493805226668922488 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+    type: 3}
+  m_PrefabInstance: {fileID: 585065971841525455}
+  m_PrefabAsset: {fileID: 0}
+--- !u!108 &8107470608600061732 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 8691129205407003115, guid: 40faf6b5a9391d24287049acde8e4747,
+    type: 3}
+  m_PrefabInstance: {fileID: 585065971841525455}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2425458366458718519
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3070,15 +3157,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4c822443f4a4107458334b35c4ffdde4, type: 3}
---- !u!198 &8476541660368454486 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 6055736427126893153, guid: 4c822443f4a4107458334b35c4ffdde4,
-    type: 3}
-  m_PrefabInstance: {fileID: 2425458366458718519}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &114789194423104463 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2323617313076615928, guid: 4c822443f4a4107458334b35c4ffdde4,
+    type: 3}
+  m_PrefabInstance: {fileID: 2425458366458718519}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &8476541660368454486 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 6055736427126893153, guid: 4c822443f4a4107458334b35c4ffdde4,
     type: 3}
   m_PrefabInstance: {fileID: 2425458366458718519}
   m_PrefabAsset: {fileID: 0}
@@ -3151,9 +3238,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8d15c98a7ed32a3449f4464fbf71ebf8, type: 3}
---- !u!1 &1986087315752043727 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6816969815331322273, guid: 8d15c98a7ed32a3449f4464fbf71ebf8,
+--- !u!198 &3376664394316608598 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 7766757078216870200, guid: 8d15c98a7ed32a3449f4464fbf71ebf8,
     type: 3}
   m_PrefabInstance: {fileID: 4977957572958846318}
   m_PrefabAsset: {fileID: 0}
@@ -3163,9 +3250,9 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 4977957572958846318}
   m_PrefabAsset: {fileID: 0}
---- !u!198 &3376664394316608598 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 7766757078216870200, guid: 8d15c98a7ed32a3449f4464fbf71ebf8,
+--- !u!1 &1986087315752043727 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6816969815331322273, guid: 8d15c98a7ed32a3449f4464fbf71ebf8,
     type: 3}
   m_PrefabInstance: {fileID: 4977957572958846318}
   m_PrefabAsset: {fileID: 0}

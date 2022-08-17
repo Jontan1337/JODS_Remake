@@ -540,7 +540,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 12675588
   bulletTrail: {fileID: 8004482161814986818}
-  muzzleFlashLight: {fileID: 0}
+  muzzleFlashLight: {fileID: 7910390085223996357}
 --- !u!114 &7123553018159626975
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2738,6 +2738,7 @@ Transform:
   m_Children:
   - {fileID: 88071171088475640}
   - {fileID: 1954786046378332379}
+  - {fileID: 720527283889347225}
   m_Father: {fileID: 2855640006797119931}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3165,6 +3166,92 @@ Transform:
   m_Father: {fileID: 2472292349761726273}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1538628164488718894
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 7123553017316246569}
+    m_Modifications:
+    - target: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6349227015990299201, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_Name
+      value: Muzzle flash light
+      objectReference: {fileID: 0}
+    - target: {fileID: 8691129205407003115, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_Intensity
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 40faf6b5a9391d24287049acde8e4747, type: 3}
+--- !u!4 &720527283889347225 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+    type: 3}
+  m_PrefabInstance: {fileID: 1538628164488718894}
+  m_PrefabAsset: {fileID: 0}
+--- !u!108 &7910390085223996357 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 8691129205407003115, guid: 40faf6b5a9391d24287049acde8e4747,
+    type: 3}
+  m_PrefabInstance: {fileID: 1538628164488718894}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4260385662334945827
 PrefabInstance:
   m_ObjectHideFlags: 0

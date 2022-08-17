@@ -478,7 +478,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 12675588
   bulletTrail: {fileID: 7652700168370343300}
-  muzzleFlashLight: {fileID: 0}
+  muzzleFlashLight: {fileID: 5070891404486444018}
 --- !u!114 &7493296977824143129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2747,6 +2747,7 @@ Transform:
   m_Children:
   - {fileID: 296846283720214590}
   - {fileID: 2163614382836350237}
+  - {fileID: 2479203822623310510}
   m_Father: {fileID: 2488024565149531261}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3163,6 +3164,92 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2323617313076615928, guid: 4c822443f4a4107458334b35c4ffdde4,
     type: 3}
   m_PrefabInstance: {fileID: 4483780327978035173}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &4522312402119799321
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 7493296976527337967}
+    m_Modifications:
+    - target: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6349227015990299201, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_Name
+      value: Muzzle flash light
+      objectReference: {fileID: 0}
+    - target: {fileID: 8691129205407003115, guid: 40faf6b5a9391d24287049acde8e4747,
+        type: 3}
+      propertyPath: m_Intensity
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 40faf6b5a9391d24287049acde8e4747, type: 3}
+--- !u!108 &5070891404486444018 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 8691129205407003115, guid: 40faf6b5a9391d24287049acde8e4747,
+    type: 3}
+  m_PrefabInstance: {fileID: 4522312402119799321}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &2479203822623310510 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2064229274590736567, guid: 40faf6b5a9391d24287049acde8e4747,
+    type: 3}
+  m_PrefabInstance: {fileID: 4522312402119799321}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6522375486044894140
 PrefabInstance:
