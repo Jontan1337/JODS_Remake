@@ -96,7 +96,6 @@ public class PlayerManager : NetworkBehaviour
 
     public void EnableMenu()
     {
-        print("Enable Menu");
         activeMenuCanvas.gameObject.SetActive(true);
         canvasInGame.gameObject.SetActive(false);
         JODSInput.DisableCamera();
@@ -111,7 +110,6 @@ public class PlayerManager : NetworkBehaviour
     }
     public void DisableMenu()
     {
-        print("Disable Menu");
         if (activeMenuCanvas)
             activeMenuCanvas.gameObject.SetActive(false);
 

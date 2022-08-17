@@ -18,12 +18,12 @@ public class JODSInput : MonoBehaviour
 
     public static Controls Controls { get; private set; }
 
-    private void OnGUI()
-    {
-        GUI.TextField(new Rect(20, 60, 150, 20), overrides_movement.ToString());
-        GUI.TextField(new Rect(20, 80, 150, 20), overrides_jump.ToString());
-        GUI.TextField(new Rect(20, 100, 150, 20), overrides_camera.ToString());
-    }
+    //private void OnGUI()
+    //{
+    //    GUI.TextField(new Rect(20, 60, 150, 20), overrides_movement.ToString());
+    //    GUI.TextField(new Rect(20, 80, 150, 20), overrides_jump.ToString());
+    //    GUI.TextField(new Rect(20, 100, 150, 20), overrides_camera.ToString());
+    //}
 
     private void Awake()
     {
@@ -74,7 +74,6 @@ public class JODSInput : MonoBehaviour
     }
     public static void DisableCamera()
     {
-        Debug.Assert(true, "LOG");
         overrides_camera--;
         Controls.Survivor.Camera.Disable();
         onCameraDisabled?.Invoke();
