@@ -4488,7 +4488,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   sClass: {fileID: 0}
-  survivorSO: {fileID: 11400000, guid: a6c4c8d579e294a4b88b3f2d90be9e20, type: 2}
+  survivorSO: {fileID: 11400000, guid: 1217c7de04298614a84ebffa22d3814c, type: 2}
   playerEquipment: {fileID: 0}
   fullBodyBipedIK: {fileID: 0}
   survivorSetup: {fileID: 0}
@@ -4500,6 +4500,8 @@ MonoBehaviour:
   armor: 0
   abilityCooldown: 0
   movementSpeed: 0
+  reviveTime: 5
+  downTime: 30
   abilityCooldownCount: 0
   reloadSpeed: 0
   accuracy: 0
@@ -4532,9 +4534,7 @@ MonoBehaviour:
   onDied:
     m_PersistentCalls:
       m_Calls: []
-  downTime: 30
   isInteractable: 0
-  reviveTime: 5
   test: 0
 --- !u!114 &5953086225513061613
 MonoBehaviour:
@@ -4550,6 +4550,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  gravity: 20
   groundCheck: {fileID: 1329358085}
   groundMask:
     serializedVersion: 2

@@ -120,6 +120,7 @@ public class TaekwondoClass : SurvivorClass, IHitter
     private void FlyingKickStart()
     {
         unitsHit.Clear();
+        sController.gravity = 0;
         flyingKick = true;
 
         JODSInput.DisableMovement();
@@ -128,7 +129,8 @@ public class TaekwondoClass : SurvivorClass, IHitter
     private void FlyingKickEnd()
     {
         JODSInput.EnableCamera();
-        JODSInput.DisableMovement();
+        JODSInput.EnableMovement();
+        sController.gravity = 20;
 
         flyingKickStart = 0;
         flyingKick = false;
