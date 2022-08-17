@@ -372,6 +372,7 @@ public class WeaponShop : NetworkBehaviour, IInteractable
     {
         Cmd_OnMenuClosed(playerGameObject);
         PlayerManager.Instance.onMenuClosed -= OnMenuClosed;
+        playerGameObject = null;
     }
     [Command(ignoreAuthority = true)]
     private void Cmd_OnMenuClosed(GameObject interactor)
