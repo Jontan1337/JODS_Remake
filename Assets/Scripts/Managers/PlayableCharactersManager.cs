@@ -10,17 +10,12 @@ public class PlayableCharactersManager : MonoBehaviour
     private void Awake()
     {
         PlayableCharactersManager[] otherInstance = FindObjectsOfType<PlayableCharactersManager>(true);
-        foreach (var item in otherInstance)
-        {
-            Debug.Log(item, item);
-        }
         DontDestroyOnLoad(this);
-        //print(Instance);
+
         if (Instance)
         {
             Destroy(gameObject);
         }
-        Debug.Log("Creating new Instance", this);
         Instance = this;
     }
 
