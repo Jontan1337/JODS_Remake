@@ -1009,10 +1009,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     #region Melee
     public virtual void TryMeleeAttack()
     {
-        print(name + ": TryMeleeAttack");
         if (CanSee(currentTarget) && CanMeleeAttack)
         {
-            print(name + ": ATTACK");
             AttackMelee = true;
             LookAtTarget();
         }
