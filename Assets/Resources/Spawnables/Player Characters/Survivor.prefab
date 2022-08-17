@@ -4500,6 +4500,8 @@ MonoBehaviour:
   armor: 0
   abilityCooldown: 0
   movementSpeed: 0
+  reviveTime: 5
+  downTime: 30
   abilityCooldownCount: 0
   reloadSpeed: 0
   accuracy: 0
@@ -4532,9 +4534,7 @@ MonoBehaviour:
   onDied:
     m_PersistentCalls:
       m_Calls: []
-  downTime: 30
   isInteractable: 0
-  reviveTime: 5
   test: 0
 --- !u!114 &5953086225513061613
 MonoBehaviour:
@@ -5299,7 +5299,7 @@ MonoBehaviour:
       twistWeight: 1
     boneMappings:
     - bone: {fileID: 5725092811751228179}
-      maintainRotationWeight: 0
+      maintainRotationWeight: 1
     limbMappings:
     - parentBone: {fileID: 112971418686796158}
       bone1: {fileID: 4244615878141194599}

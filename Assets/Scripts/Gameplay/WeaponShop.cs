@@ -323,16 +323,16 @@ public class WeaponShop : NetworkBehaviour, IInteractable
 
     public void BuyAmmunition(int index)
     {
-        Cmd_BuyAmmunition(index);
+        Cmd_BuyAmmunition(playerGameObject, index);
     }
 
     [Command(ignoreAuthority = true)]
-    private async void Cmd_BuyAmmunition(int index)
+    private async void Cmd_BuyAmmunition(GameObject interactor, int index)
     {
         GamemodeBase gamemode = GamemodeBase.Instance;
-        PlayerEquipment playerEquipment = playerGameObject.GetComponentInChildren<PlayerEquipment>();
+        PlayerEquipment playerEquipment = interactor.GetComponentInChildren<PlayerEquipment>();
         RangedWeapon weapon = playerEquipment.EquipmentSlots[index].EquipmentItem.GetComponent<RangedWeapon>();
-        NetworkIdentity networkIdentity = playerGameObject.GetComponent<NetworkIdentity>();
+        NetworkIdentity networkIdentity = interactor.GetComponent<NetworkIdentity>();
         int price = weaponAmmunitionRefill[index].Item.shopItemPrice;
         if (gamemode.Svr_GetPoints(networkIdentity.netId) >= price)
         {

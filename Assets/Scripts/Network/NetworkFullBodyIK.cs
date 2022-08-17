@@ -14,10 +14,9 @@ public class NetworkFullBodyIK : NetworkBehaviour
         fullBodyBipedIK = GetComponent<FullBodyBipedIK>();
     }
 
-    [Server]
+    [ServerCallback]
     private void Update()
     {
-        if (!isServer) return;
         if (isEnabled != fullBodyBipedIK.enabled)
         {
             isEnabled = fullBodyBipedIK.enabled;
