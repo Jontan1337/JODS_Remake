@@ -214,11 +214,11 @@ public class WeaponShop : NetworkBehaviour, IInteractable
     }
 
     [Server]
-    private void Svr_HandleUser(GameObject interacter)
+    private void Svr_HandleUser(GameObject interactor)
     {
-        if (playersInShop.Contains(interacter))
+        if (playersInShop.Contains(interactor))
         {
-            playersInShop.Remove(interacter);
+            playersInShop.Remove(interactor);
             if (playersInShop.Count == 0)
             {
                 Rpc_ShopVisuals(false);
@@ -230,42 +230,53 @@ public class WeaponShop : NetworkBehaviour, IInteractable
             {
                 Rpc_ShopVisuals(true);
                 if (!GamemodeBase.Instance) return;
-                NetworkIdentity identity = interacter.GetComponent<NetworkIdentity>();
+                NetworkIdentity identity = interactor.GetComponent<NetworkIdentity>();
                 Rpc_ShowPoints(identity.connectionToClient,
                 GamemodeBase.Instance.Svr_GetPoints(identity.netId));
             }
 
-            PlayerEquipment playerEquipment = interacter.GetComponentInChildren<PlayerEquipment>();
+            //Svr_SetupAmmunitionRefillers(interactor);
 
-            GameObject[] goWeapons = new GameObject[2];
-            for (int i = 0; i < 2; i++)
-            {
-                GameObject goWeapon = playerEquipment.EquipmentSlots[i].EquipmentItem;
-                goWeapons[i] = goWeapon;
-                if (goWeapon)
-                {
-                    int price = 0;
-                    string weaponName = string.Empty;
-                    if (goWeapon.TryGetComponent(out RangedWeapon rangedWeapon))
-                    {
-                        price = GetAmmunitionPrice(rangedWeapon.AmmunitionType);
-                        weaponName = rangedWeapon.Name;
-                    }
-                    weaponAmmunitionRefill[i].Item = new ShopItem(
-                        weaponName,
-                        goWeapon,
-                        price
-                    );
-                }
-                else
-                {
-                    weaponAmmunitionRefill[i].Item = new ShopItem("", null, default);
-                }
-            }
-            Rpc_SetAmmunitionRefillers(interacter.GetComponent<NetworkIdentity>().connectionToClient, goWeapons[0], goWeapons[1]);
+            //PlayerEquipment playerEquipment = interactor.GetComponentInChildren<PlayerEquipment>();
+            //GameObject goWeapon1 = playerEquipment.EquipmentSlots[0].EquipmentItem;
+            //GameObject goWeapon2 = playerEquipment.EquipmentSlots[1].EquipmentItem;
+            //Rpc_SetAmmunitionRefillers(interactor.GetComponent<NetworkIdentity>().connectionToClient, goWeapon1, goWeapon2);
 
-            playersInShop.Add(interacter);
+            playersInShop.Add(interactor);
         }
+    }
+
+    [Server]
+    private void Svr_SetupAmmunitionRefillers(GameObject interactor)
+    {
+        PlayerEquipment playerEquipment = interactor.GetComponentInChildren<PlayerEquipment>();
+
+        GameObject[] goWeapons = new GameObject[2];
+        for (int i = 0; i < 2; i++)
+        {
+            GameObject goWeapon = playerEquipment.EquipmentSlots[i].EquipmentItem;
+            goWeapons[i] = goWeapon;
+            if (goWeapon)
+            {
+                int price = 0;
+                string weaponName = string.Empty;
+                if (goWeapon.TryGetComponent(out RangedWeapon rangedWeapon))
+                {
+                    price = GetAmmunitionPrice(rangedWeapon.AmmunitionType);
+                    weaponName = rangedWeapon.Name;
+                }
+                weaponAmmunitionRefill[i].Item = new ShopItem(
+                    weaponName,
+                    goWeapon,
+                    price
+                );
+            }
+            else
+            {
+                weaponAmmunitionRefill[i].Item = new ShopItem("", null, default);
+            }
+        }
+        Rpc_SetAmmunitionRefillers(interactor.GetComponent<NetworkIdentity>().connectionToClient, goWeapons[0], goWeapons[1]);
     }
 
     private int GetAmmunitionPrice(AmmunitionTypes type)
@@ -490,6 +501,12 @@ public class WeaponShop : NetworkBehaviour, IInteractable
                 break;
             }
         }
+
+        //PlayerEquipment playerEquipment = player.GetComponentInChildren<PlayerEquipment>();
+        //GameObject goWeapon1 = playerEquipment.EquipmentSlots[0].EquipmentItem;
+        //GameObject goWeapon2 = playerEquipment.EquipmentSlots[1].EquipmentItem;
+        //Rpc_SetAmmunitionRefillers(player.GetComponent<NetworkIdentity>().connectionToClient, goWeapon1, goWeapon2);
+        //Svr_SetupAmmunitionRefillers(player);
     }
 
     [ClientRpc]
