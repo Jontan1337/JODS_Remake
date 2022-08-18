@@ -386,7 +386,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         Cmd_Aim(aim);
         ScaleCrosshair(IsAiming ? 0 : 1, 0.1f);
         cameraSettings.SetFOV(IsAiming ? ADSFOV : hipFOV, 0.1f);
-        Vector3 targetAimPosition = new Vector3(0f, 0.1f - aimSight.localPosition.y, -aimSight.localPosition.z);
+        Vector3 targetAimPosition = new Vector3(-0.14f, 0.1f - aimSight.localPosition.y, -aimSight.localPosition.z);
 
         transform.parent.DOComplete();
         transform.parent.DOLocalJump(IsAiming ? targetAimPosition : hipAimPosition, -0.05f, 1, aimingSpeed);

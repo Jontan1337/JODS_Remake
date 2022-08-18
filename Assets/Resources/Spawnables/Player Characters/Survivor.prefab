@@ -2641,7 +2641,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3149021804970846935}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -3174,7 +3174,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3985934767331093489}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -4435,8 +4435,9 @@ GameObject:
   - component: {fileID: 5922127114697802274}
   - component: {fileID: 6043028673134938683}
   - component: {fileID: 8049337140043942677}
-  - component: {fileID: 4047303356966882284}
+  - component: {fileID: 904722284761003952}
   - component: {fileID: 2735478398350233815}
+  - component: {fileID: 4047303356966882284}
   m_Layer: 13
   m_Name: Survivor
   m_TagString: Player
@@ -4555,6 +4556,7 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 1
+  animationManager: {fileID: 904722284761003952}
   jumpSpeed: 5
   isSprinting: 0
   isGrounded: 1
@@ -4644,12 +4646,18 @@ MonoBehaviour:
       position: {x: 0, y: 0.1, z: 0}
       activeType: 0
       children: []
-    - listItemName: Item Container
-      prefab: {fileID: 7469820133590246594, guid: c35b413099755c84488f6bd89608381b,
+    - listItemName: Item Container Animator
+      prefab: {fileID: 7469820133590246594, guid: 3be1ea62a2e16db40801031da390d85a,
         type: 3}
       position: {x: 0.14, y: -0.14, z: 0.4}
       activeType: 2
-      children: []
+      children:
+      - listItemName: Item Container
+        prefab: {fileID: 7469820133590246594, guid: c35b413099755c84488f6bd89608381b,
+          type: 3}
+        position: {x: 0, y: 0, z: 0}
+        activeType: 2
+        children: []
   - listItemName: Player Equipment
     prefab: {fileID: 5545151553288273671, guid: 8aa36f6128d160f4faea76bcdc7a1b24,
       type: 3}
@@ -5331,6 +5339,34 @@ MonoBehaviour:
     spineStiffness: 0.5
     pullBodyVertical: 0.5
     pullBodyHorizontal: 0
+--- !u!114 &904722284761003952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5922127114707202486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8891c7de3b5658f4481530f05f4b82f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemContainerAnimatorController: {fileID: 0}
+  survivorSetup: {fileID: 6930014499059818200}
+--- !u!114 &2735478398350233815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5922127114707202486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc82381608cfbf5498d538589a09ef72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
 --- !u!114 &4047303356966882284
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5399,20 +5435,6 @@ MonoBehaviour:
     poleTarget: {fileID: 0}
     clampWeight: 0.1
     clampSmoothing: 2
---- !u!114 &2735478398350233815
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5922127114707202486}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc82381608cfbf5498d538589a09ef72, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
 --- !u!1 &5972193784617847827
 GameObject:
   m_ObjectHideFlags: 0

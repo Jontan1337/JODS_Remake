@@ -12,10 +12,9 @@ GameObject:
   - component: {fileID: 7673085436233317429}
   - component: {fileID: 8536705584843177060}
   - component: {fileID: 6793136346190326935}
-  - component: {fileID: 2754248895177115093}
-  - component: {fileID: 3959049277974515008}
+  - component: {fileID: 1152884676840508308}
   m_Layer: 0
-  m_Name: Item Container
+  m_Name: Item Container Animator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -90,34 +89,22 @@ MonoBehaviour:
   localPositionSensitivity: 0.01
   localRotationSensitivity: 0.01
   localScaleSensitivity: 0.01
---- !u!114 &2754248895177115093
-MonoBehaviour:
+--- !u!95 &1152884676840508308
+Animator:
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7469820133590246594}
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d52b66c0c0a25e49b5e71d93eca897a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  swayVelocityX: 0.01
-  swayVelocityY: 0.02
-  swaySmoothing: 10
-  virtualHead: {fileID: 0}
---- !u!114 &3959049277974515008
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7469820133590246594}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9800f26fc28c76a4888b0396bf7ffe65, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemName: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 4f03e99499454f549b1aa77c3fffbd81, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

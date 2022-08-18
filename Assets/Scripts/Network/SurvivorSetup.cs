@@ -33,6 +33,7 @@ public class SurvivorSetup : NetworkBehaviour
     public Action<GameObject> onServerSpawnItem;
     public Action<GameObject> onClientSpawnItem;
     public Action onDestroyPlayer;
+    public Action onFinishedPlayerSetup;
 
     [Space]
     [SyncVar] public string playerName;
@@ -168,6 +169,7 @@ public class SurvivorSetup : NetworkBehaviour
             foreach (GameObject g in prefabDisableIfNotPlayer) { g.SetActive(false); }
             foreach (GameObject g in prefabEnableIfNotPlayer) { g.SetActive(true); }
         }
+        onFinishedPlayerSetup?.Invoke();
     }
 
     private void InitSpawnedItems()
@@ -194,7 +196,7 @@ public class SurvivorSetup : NetworkBehaviour
         // Loop through current child's children.
         foreach (var childsChild in dynamicChildren)
         {
-            Svr_RecursiveChildren(childsChild, parent);
+            Svr_RecursiveChildren(childsChild, GOItem.transform);
         }
     }
 

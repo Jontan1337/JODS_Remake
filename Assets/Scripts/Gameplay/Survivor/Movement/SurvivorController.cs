@@ -21,6 +21,7 @@ public class SurvivorController : NetworkBehaviour
 
     [SerializeField] private Transform groundCheck = null;
     [SerializeField] private LayerMask groundMask = 0;
+    [SerializeField] private AnimationManager animationManager = null;
 
     private bool moving;
 
@@ -108,6 +109,7 @@ public class SurvivorController : NetworkBehaviour
         cController.Move(moveDirection * Time.deltaTime);
         anim.SetFloat(xVelocity, x = Mathf.Lerp(x, horizontal, Time.deltaTime * 10));
         anim.SetFloat(yVelocity, y = Mathf.Lerp(y, Mathf.Clamp(vertical * modifiers.MovementSpeed, -1f, 2f), Time.deltaTime * 10));
+        animationManager.PlayItemContainerAnimation(IsMoving());
     }
 
     private void Move(InputAction.CallbackContext context)
@@ -154,11 +156,6 @@ public class SurvivorController : NetworkBehaviour
     }
 
     public bool IsMoving() => moveDirection.z != 0 || moveDirection.x != 0;
-    public bool IsMoving2()
-    {
-        print(moveDirection.z + "__" + moveDirection.x);
-        return moveDirection.z != 0 || moveDirection.x != 0;
-    }   
     IEnumerator Wait()
     {
         yield return null;
