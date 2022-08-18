@@ -48,6 +48,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     [SerializeField] private Image reviveTimerImageUI = null;
     [SerializeField] private GameObject reviveTimerObjectUI = null;
     [SerializeField] private Image downImage = null;
+    [SerializeField] private Image damagedImage = null;
     [SerializeField] private GameObject downCanvas = null;
     [SerializeField] private GameObject inGameCanvas = null;
 
@@ -129,6 +130,11 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
             int prevHealth = currentHealth;
             currentHealth = Mathf.Clamp(value, 0, maxHealth);
             healthBar.value = currentHealth;
+
+            if (currentHealth <= maxHealth / 2)
+            {
+                damagedImage.color = new Color(1, 1, 1, (maxHealth / 2 - (float)currentHealth) / 100 * 2);
+            }
             if (!healthLossBool)
             {
                 StartCoroutine(HealthLossCo(prevHealth));

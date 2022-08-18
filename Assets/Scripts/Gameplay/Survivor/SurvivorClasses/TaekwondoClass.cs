@@ -9,7 +9,8 @@ public class TaekwondoClass : SurvivorClass, IHitter
 {
     private CharacterController cController;
     private SurvivorController sController;
-    private LookController lController;
+    private ActiveSClass sClass;
+    ModifierManager modifiers;
 
     [SerializeField, SyncVar] private float flyingKickStart = 0;
     [SerializeField, SyncVar] private float flyingKickEnd = 100;
@@ -70,8 +71,8 @@ public class TaekwondoClass : SurvivorClass, IHitter
         {
             cController = GetComponentInParent<CharacterController>();
             sController = GetComponentInParent<SurvivorController>();
-            lController = GetComponentInParent<LookController>();
-
+            modifiers = transform.root.GetComponent<ModifierManager>();
+            sClass = GetComponentInParent<ActiveSClass>();
             lowerLeg = transform.parent.Find("Armature").GetComponentInChildren<Collider>();
         }
     }
@@ -81,10 +82,11 @@ public class TaekwondoClass : SurvivorClass, IHitter
         if (CanFlyKick())
         {
             StartCoroutine(FlyingKick());
-            GetComponentInParent<ActiveSClass>().Cmd_StartAbilityCooldown(transform.root);
+            sClass.Cmd_StartAbilityCooldown(transform.root);
         }
-        else if (!kicking && sController.isGrounded)
+        else if (!kicking && sController.isGrounded && !sController.isSprinting)
         {
+            print("kick");
             StartCoroutine(Kick());
         }
     }
@@ -111,7 +113,7 @@ public class TaekwondoClass : SurvivorClass, IHitter
         FlyingKickEnd();
 
     }
-    
+
     private void MoveForward()
     {
         cController.Move(transform.forward * flyingKickSpeed * Time.deltaTime);
@@ -175,23 +177,29 @@ public class TaekwondoClass : SurvivorClass, IHitter
             Cmd_OnHit(hit.transform.root, kickDamage);
         }
     }
-    
+
     private IEnumerator Kick()
     {
+
         unitsHit.Clear();
         kicking = true;
-        sController.enabled = false;
         Kick(kicking);
+        float speedModifier = modifiers.MovementSpeed / 2;
+
+        modifiers.MovementSpeed -= speedModifier;
         GetComponentInParent<FullBodyBipedIK>().enabled = false;
         lowerLeg.enabled = true;
 
         yield return new WaitForSeconds(0.3f);
 
         kicking = false;
-        sController.enabled = true;
+        modifiers.MovementSpeed += speedModifier;
+
         Kick(kicking);
         GetComponentInParent<FullBodyBipedIK>().enabled = true;
         lowerLeg.enabled = false;
+
+
     }
 
     private void Kick(bool kicking)
