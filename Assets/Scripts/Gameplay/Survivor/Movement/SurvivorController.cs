@@ -127,6 +127,7 @@ public class SurvivorController : NetworkBehaviour
     {
         horizontal = 0f;
         vertical = 0f;
+        moveDirection = Vector3.zero;
     }
 
     private void Jump(InputAction.CallbackContext context)
