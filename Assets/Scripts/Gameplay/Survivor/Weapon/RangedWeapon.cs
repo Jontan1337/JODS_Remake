@@ -256,11 +256,13 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     public override void Svr_ParentChanged()
     {
         hipAimPosition = transform.parent.localPosition;
+        //hipAimPosition = Vector3.zero;
     }
     [Client]
     public override void ParentChanged()
     {
         hipAimPosition = transform.parent.localPosition;
+        //hipAimPosition = Vector3.zero;
     }
 
     private void SetPlayerHeadAndCamera(Transform oldValue, Transform newValue)
@@ -386,7 +388,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         Cmd_Aim(aim);
         ScaleCrosshair(IsAiming ? 0 : 1, 0.1f);
         cameraSettings.SetFOV(IsAiming ? ADSFOV : hipFOV, 0.1f);
-        Vector3 targetAimPosition = new Vector3(-0.14f, 0.1f - aimSight.localPosition.y, -aimSight.localPosition.z);
+        Vector3 targetAimPosition = new Vector3(-0.14f, 0.1f - aimSight.localPosition.y + 0.14f, -aimSight.localPosition.z - 0.4f);
 
         transform.parent.DOComplete();
         transform.parent.DOLocalJump(IsAiming ? targetAimPosition : hipAimPosition, -0.05f, 1, aimingSpeed);
