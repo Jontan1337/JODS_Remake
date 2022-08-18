@@ -34,6 +34,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [SerializeField, Range(0f, 1f), Tooltip("Affects weapon accuracy")] protected float aimingRecoil = 0.05f;
     [SerializeField, Tooltip("Affects weapon and camera shake")] protected float visualPunchback = 0.2f;
     [SerializeField, Tooltip("Affects weapon and camera shake")] protected float aimingVisualPunchback = 0.1f;
+    [SerializeField, Tooltip("Affects rigidbodies hit")] protected float rigidbodyPunchback = 0.2f;
     [SerializeField] private float aimingSpeed = 0.1f;
     [SerializeField, Tooltip("If stabilization is the same as the recoil, recoil won't decrease")] protected float stabilization = 1f;
     [SerializeField] protected float currentAccuracy = 0f;

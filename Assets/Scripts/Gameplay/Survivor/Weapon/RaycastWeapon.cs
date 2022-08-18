@@ -40,7 +40,7 @@ public class RaycastWeapon : RangedWeapon
                             {
                                 if (shootHit.collider.TryGetComponent(out Rigidbody rb))
                                 {
-                                    rb.AddForce(transform.forward * visualPunchback * 10f, ForceMode.Impulse);
+                                    rb.AddForce(transform.forward * rigidbodyPunchback * 10f, ForceMode.Impulse);
                                 }
                             }
                             if (shootHit.collider.TryGetComponent(out IDetachable detachable))
@@ -85,6 +85,19 @@ public class RaycastWeapon : RangedWeapon
             {
                 if (Physics.Raycast(shootRay, out RaycastHit shootHit, range, ~ignoreLayer))
                 {
+                    if (shootHit.collider.TryGetComponent(out IDamagable damagable))
+                    {
+                        if (highPower)
+                        {
+                            if (damagable.IsDead)
+                            {
+                                if (shootHit.collider.TryGetComponent(out Rigidbody rb))
+                                {
+                                    rb.AddForce(transform.forward * rigidbodyPunchback * 10f, ForceMode.Impulse);
+                                }
+                            }
+                        }
+                    }
                     PhysicMaterial phyMat = shootHit.collider.sharedMaterial;
                     Bullethole(shootHit.point, shootHit.normal, phyMat ? phyMat.name : "");
                     Ray penRay = new Ray(shootHit.point + shootRay.direction * range, -shootRay.direction);
