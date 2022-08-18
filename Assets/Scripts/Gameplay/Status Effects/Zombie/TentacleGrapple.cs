@@ -18,18 +18,13 @@ public class TentacleGrapple : StatusEffect
     [Server]
     public override void Svr_ApplyEffect(int? amount)
     {
-        Debug.LogWarning("Tentacle Grapple Status Effect has not been implemented. " +
-            "It has no effect yet. " +
-            "It needs to: " +
-            "Stop the target from being able to move and " +
-            "disable their ability to use weapons of any kind.");
+
     }
 
     [Server]
     public override void Svr_End()
     {
-        Debug.Log("UNGRAB");
-        Rpc_EnableMovement(target.GetComponent<NetworkIdentity>().connectionToClient);
+        PlayerManager.Instance.Rpc_EnableEverythingButMenuAndCamera(target.GetComponent<NetworkIdentity>().connectionToClient);
     }
 
     [Server]
@@ -43,29 +38,7 @@ public class TentacleGrapple : StatusEffect
     [Server]
     public override void Svr_OnEffectApplied()
     {
-        Rpc_DisableMovement(target.GetComponent<NetworkIdentity>().connectionToClient);
+        PlayerManager.Instance.Rpc_DisableEverythingButMenuAndCamera(target.GetComponent<NetworkIdentity>().connectionToClient);
     }
 
-    [TargetRpc]
-    private void Rpc_EnableMovement(NetworkConnection target)
-    {
-        JODSInput.EnableMovement();
-        JODSInput.EnableJump();
-        JODSInput.EnableDrop();
-        JODSInput.EnableInteract();
-        JODSInput.EnableReload();
-        JODSInput.EnableLMB();
-        JODSInput.EnableRMB();
-    }
-    [TargetRpc]
-    private void Rpc_DisableMovement(NetworkConnection target)
-    {
-        JODSInput.DisableMovement();
-        JODSInput.DisableJump();
-        JODSInput.DisableDrop();
-        JODSInput.DisableInteract();
-        JODSInput.DisableReload();
-        JODSInput.DisableLMB();
-        JODSInput.DisableRMB();
-    }
 }

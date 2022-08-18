@@ -153,4 +153,30 @@ public class PlayerManager : NetworkBehaviour
         }
         SceneManager.LoadSceneAsync(sceneName);
     }
+
+    [TargetRpc]
+    public void Rpc_EnableEverythingButMenuAndCamera(NetworkConnection target)
+    {
+        JODSInput.EnableMovement();
+        JODSInput.EnableJump();
+        JODSInput.EnableDrop();
+        JODSInput.EnableInteract();
+        JODSInput.EnableReload();
+        JODSInput.EnableLMB();
+        JODSInput.EnableRMB();
+        JODSInput.EnableHotbarControl();
+
+    }
+    [TargetRpc]
+    public void Rpc_DisableEverythingButMenuAndCamera(NetworkConnection target)
+    {
+        JODSInput.DisableMovement();
+        JODSInput.DisableJump();
+        JODSInput.DisableDrop();
+        JODSInput.DisableInteract();
+        JODSInput.DisableReload();
+        JODSInput.DisableLMB();
+        JODSInput.DisableRMB();
+        JODSInput.DisableHotbarControl();
+    }
 }
