@@ -115,7 +115,6 @@ public class UnitMaster : NetworkBehaviour
 
     [Header("Debug")]
     [SerializeField] private bool test = false;
-    [SerializeField] private UnitMasterSO testSO = null;
 
     [Header("Master Class")]
     [SerializeField] private UnitMasterSO masterSO = null;
@@ -343,7 +342,7 @@ public class UnitMaster : NetworkBehaviour
         }
         if (test)
         {
-            SetMasterClass(testSO);
+            SetMasterClass(masterSO);
         }
     }
 
@@ -438,11 +437,13 @@ public class UnitMaster : NetworkBehaviour
     {
         // Left Mouse Input
         JODSInput.Controls.Master.LMB.performed += ctx => LMB();
-        JODSInput.Controls.Master.LMB.performed += ctx => StartContinuousSpawn();
-        JODSInput.Controls.Master.LMB.canceled += ctx => StopContinuousSpawn();
+        JODSInput.Controls.Master.LMB.performed += ctx => HoldLMB_Start();
+        JODSInput.Controls.Master.LMB.canceled += ctx => HoldLMB_Stop();
 
         // Right Mouse Input
         JODSInput.Controls.Master.RMB.performed += ctx => RMB();
+        JODSInput.Controls.Master.RMB.performed += ctx => HoldRMB_Start();
+        JODSInput.Controls.Master.RMB.canceled += ctx => HoldRMB_Stop();
 
         //Shift Input
         JODSInput.Controls.Master.Shift.started += ctx => ShiftButton(true);
@@ -477,11 +478,13 @@ public class UnitMaster : NetworkBehaviour
     {
         // Left Mouse Input
         JODSInput.Controls.Master.LMB.performed -= ctx => LMB();
-        JODSInput.Controls.Master.LMB.performed -= ctx => StartContinuousSpawn();
-        JODSInput.Controls.Master.LMB.canceled -= ctx => StopContinuousSpawn();
+        JODSInput.Controls.Master.LMB.performed -= ctx => HoldLMB_Start();
+        JODSInput.Controls.Master.LMB.canceled -= ctx => HoldLMB_Stop();
 
         // Right Mouse Input
         JODSInput.Controls.Master.RMB.performed -= ctx => RMB();
+        JODSInput.Controls.Master.RMB.performed -= ctx => HoldRMB_Start();
+        JODSInput.Controls.Master.RMB.canceled -= ctx => HoldRMB_Stop();
 
         //Shift Input
         JODSInput.Controls.Master.Shift.started -= ctx => ShiftButton(true);
@@ -538,10 +541,9 @@ public class UnitMaster : NetworkBehaviour
 
     #region Input Functions
 
-    [Header("Debugging")]
-    [SerializeField] private bool shift = false;
-    [SerializeField] private bool ctrl = false;
-    [SerializeField] private bool alt = false;
+    private bool shift = false;
+    private bool ctrl = false;
+    private bool alt = false;
     private void ShiftButton(bool down)
     {
         shift = down;
@@ -583,8 +585,10 @@ public class UnitMaster : NetworkBehaviour
     }
 
     #region Normal Mouse
+    #region LMB
     private void LMB()
     {
+        print($"LMB | Shift: {shift} | Ctrl: {ctrl}");
         if (alt) return;
         if (EventSystem.current.IsPointerOverGameObject()) { return; }
         if (shift && !ctrl) { Shift_LMB(); return; }
@@ -594,6 +598,33 @@ public class UnitMaster : NetworkBehaviour
         //Somehow check if master clicks on a unit button, if so do not spawn anything.
         TryToSpawnUnit();
     }
+
+    private Coroutine holdLMBco;
+    private bool holdLMB;
+    private IEnumerator HoldLMB_IE()
+    {
+        holdLMB = true;
+        while (true)
+        {
+            yield return new WaitForSeconds(0.1f);
+
+            LMB();
+        }
+    }
+    private void HoldLMB_Start()
+    {
+        if (EventSystem.current.IsPointerOverGameObject()) { return; }
+
+        holdLMBco = StartCoroutine(HoldLMB_IE());
+    }
+    private void HoldLMB_Stop()
+    {
+        if (!holdLMB) return;
+        holdLMB = false;
+        StopCoroutine(holdLMBco);
+    }
+    #endregion
+    #region RMB
     private void RMB()
     {
         if (alt) return;
@@ -605,31 +636,32 @@ public class UnitMaster : NetworkBehaviour
         //Unchoose the current unit type
         Unchoose();
     }
-    private Coroutine continuousSpawnCo;
-    private bool continuousSpawnBool;
-    private IEnumerator IEContinuousSpawn()
+    private Coroutine holdRMBco;
+    private bool holdRMB;
+    private IEnumerator HoldRMB_IE()
     {
-        continuousSpawnBool = true;
+        holdRMB = true;
         while (true)
         {
             yield return new WaitForSeconds(0.1f);
 
-            TryToSpawnUnit();
+            RMB();
         }
     }
-    private void StartContinuousSpawn()
+    private void HoldRMB_Start()
     {
-        if (alt || shift || ctrl) return;
         if (EventSystem.current.IsPointerOverGameObject()) { return; }
 
-        continuousSpawnCo = StartCoroutine(IEContinuousSpawn());
+        holdRMBco = StartCoroutine(HoldRMB_IE());
     }
-    private void StopContinuousSpawn()
+    private void HoldRMB_Stop()
     {
-        if (!continuousSpawnBool) return;
-        continuousSpawnBool = false;
-        StopCoroutine(continuousSpawnCo);
+        if (!holdRMB) return;
+        holdRMB = false;
+        StopCoroutine(holdRMBco);
     }
+    #endregion
+
     #endregion
     #region Shift Mouse
     private void Shift_LMB()
