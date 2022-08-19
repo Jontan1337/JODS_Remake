@@ -32,6 +32,27 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     [SerializeField] private float downTime = 30;
     //[SerializeField] private float cooldownReducion = 0;
     public float abilityCooldownCount = 0;
+    [SyncVar(hook = nameof(pointsHook))] public int points;
+    private void pointsHook(int oldVal, int newVal)
+    {
+        pointsText.text = "Points: " + newVal;
+        StartCoroutine(PointsIE(newVal - oldVal));
+    }
+    private IEnumerator PointsIE(int pointGain)
+    {
+        GameObject pText = Instantiate(pointGainPrefab, inGameCanvas.transform);
+        Text text = pText.GetComponent<Text>();
+        text.text = "+ " + pointGain;
+        float time = 1;
+        while (time > 0)
+        {
+            yield return null;
+            time -= Time.deltaTime;
+            text.color = new Color(1, 1, 1, time);
+            text.transform.Translate(new Vector3(0, 0.5f, 0));
+        }
+        Destroy(pText);
+    }
 
     [Space]
     [Header("Weapon Stats")]
@@ -51,9 +72,10 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     [SerializeField] private Image damagedImage = null;
     [SerializeField] private GameObject downCanvas = null;
     [SerializeField] private GameObject inGameCanvas = null;
+    [SerializeField] private Text pointsText = null;
+    [SerializeField] private GameObject pointGainPrefab = null;
 
     [Header("Events")]
-    public UnityEvent<float> onChangedHealth = null;
     public UnityEvent onDied = null;
     
     private NetworkConnection connectionToClientInteractor;
@@ -221,12 +243,6 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     }
 
     #region ViewModel
-    [TargetRpc] // Why is this under ViewModel´??? - John
-    private void Rpc_InvokeOnChangedHealth(NetworkConnection target, float healthDifference)
-    {
-        onChangedHealth?.Invoke(healthDifference);
-    }
-
     [TargetRpc]
     private void Rpc_SetCameraForDownedState(NetworkConnection target)
     {

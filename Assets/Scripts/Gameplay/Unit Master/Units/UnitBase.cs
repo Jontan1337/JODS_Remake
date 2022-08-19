@@ -1567,8 +1567,12 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
                 return;
             }
 
-            GamemodeBase.Instance.Svr_ModifyStat(target.GetComponent<NetworkIdentity>().netId, 10, PlayerDataStat.Points);
-            GamemodeBase.Instance.Svr_ModifyStat(target.GetComponent<NetworkIdentity>().netId, 1, PlayerDataStat.Kills);
+            uint playerId = target.GetComponent<NetworkIdentity>().netId;
+            var gameMode = GamemodeBase.Instance;
+
+            target.GetComponent<ActiveSClass>().points = gameMode.Svr_GetPoints(playerId) + 10;
+            gameMode.Svr_ModifyStat(playerId, 10, PlayerDataStat.Points);
+            gameMode.Svr_ModifyStat(playerId, 1, PlayerDataStat.Kills);
         }
 
         animator.SetTrigger("Hit");
