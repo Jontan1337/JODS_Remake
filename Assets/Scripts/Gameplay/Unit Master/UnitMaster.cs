@@ -606,7 +606,7 @@ public class UnitMaster : NetworkBehaviour
         holdLMB = true;
         while (true)
         {
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.075f);
 
             LMB();
         }
@@ -643,7 +643,7 @@ public class UnitMaster : NetworkBehaviour
         holdRMB = true;
         while (true)
         {
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.075f);
 
             RMB();
         }
