@@ -9,7 +9,7 @@ public class Grenade : Projectile
 	public override void Start()
 	{
 		base.Start();
-		GetComponent<LiveEntity>().owner = owner;
+		
 	}
 
     //public override void OnHit(Collision collision)
@@ -19,7 +19,12 @@ public class Grenade : Projectile
     //    //base.OnHit(collision);
     //}
 
-    public override void Activate() { base.Activate(); StartCoroutine(Explode()); }
+    public override void Activate() 
+	{
+		base.Activate(); 
+		GetComponent<LiveEntity>().owner = owner;
+		StartCoroutine(Explode()); 
+	}
 
     IEnumerator Explode()
     {
