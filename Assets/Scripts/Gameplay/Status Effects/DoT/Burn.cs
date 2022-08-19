@@ -54,7 +54,6 @@ public class Burn : StatusEffect
 
     public override void Svr_Tick()
     {
-        Debug.Log(duration);
         if (duration > 5 && !onFire)
         {       
             SetOnFire();

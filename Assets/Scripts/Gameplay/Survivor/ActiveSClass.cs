@@ -69,6 +69,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     [SerializeField] private Image reviveTimerImageUI = null;
     [SerializeField] private GameObject reviveTimerObjectUI = null;
     [SerializeField] private Image downImage = null;
+    [SerializeField] private Image lowHealthImage = null;
     [SerializeField] private Image damagedImage = null;
     [SerializeField] private GameObject downCanvas = null;
     [SerializeField] private GameObject inGameCanvas = null;
@@ -77,7 +78,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
 
     [Header("Events")]
     public UnityEvent onDied = null;
-    
+
     private NetworkConnection connectionToClientInteractor;
     private bool abilityIsReady = true;
     private Transform cameraTransform;
@@ -99,7 +100,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
         private set { abilityIsReady = value; }
     }
 
-    [SyncVar]private bool isDown;
+    [SyncVar] private bool isDown;
     public bool IsDown
     {
         get { return isDown; }
@@ -153,10 +154,9 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
             currentHealth = Mathf.Clamp(value, 0, maxHealth);
             healthBar.value = currentHealth;
 
-            if (currentHealth <= maxHealth / 2)
-            {
-                damagedImage.color = new Color(1, 1, 1, (maxHealth / 2 - (float)currentHealth) / 100 * 2);
-            }
+
+            lowHealthImage.color = new Color(1, 1, 1, (maxHealth / 2 - (float)currentHealth) / 100 * 2);
+
             if (!healthLossBool)
             {
                 StartCoroutine(HealthLossCo(prevHealth));
@@ -342,7 +342,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
         armor = survivorSO.startingArmor;
 
         accuracy = survivorSO.accuracy;
-        reloadSpeed = survivorSO.reloadSpeed;   
+        reloadSpeed = survivorSO.reloadSpeed;
         ammoCapacity = survivorSO.ammoCapacity;
 
         sController = GetComponent<SurvivorController>();
@@ -408,7 +408,41 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
         healthLossBool = false;
     }
 
+    [TargetRpc]
+    private void Rpc_DamageImage(NetworkConnection target, int damageTaken)
+    {
+        float dmgTaken = damageTaken;
+        if ((dmgTaken / 100) > damagedImage.color.a)
+        {
+            if (damagedImageBool)
+            {
+                StopCoroutine(DamangedImageCo);
+                damagedImageBool = false;
+            }
+            DamangedImageCo = DamagedImage(dmgTaken);
+            StartCoroutine(DamangedImageCo);
+        }
+    }
+    IEnumerator DamangedImageCo;
+    private bool damagedImageBool = false;
+    private IEnumerator DamagedImage(float damageTaken)
+    {
+        float time = 1;
+        float roundedValue = Mathf.Ceil(damageTaken / 20) * 20;
+        float baseValue = roundedValue / 100;
+        damagedImageBool = true;
+        damagedImage.color = new Color(1, 1, 1, baseValue);
+        yield return new WaitForSeconds(1f);
+        while (time > 0)
+        {
+            damagedImage.color = new Color(1, 1, 1, (time * baseValue));
 
+            time -= Time.deltaTime;
+            yield return null;
+        }
+        
+        damagedImageBool = false;
+    }
 
 
     public Teams Team => Teams.Player;
@@ -450,6 +484,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
             {
                 Health -= damage;
             }
+            Rpc_DamageImage(connectionToClient, damage);
         }
     }
 
@@ -626,7 +661,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
             GUI.TextField(new Rect(20, 20, 150, 20), "Active S Class Test ON");
         }
     }
-    
+
 
 
 }
