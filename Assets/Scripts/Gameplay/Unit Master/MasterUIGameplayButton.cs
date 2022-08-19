@@ -18,6 +18,7 @@ public class MasterUIGameplayButton : NetworkBehaviour
     [Header("Ui References - Unit")]
     [SerializeField] private Slider powerSlider = null;
     [SerializeField] private Slider healthSlider = null;
+    [SerializeField] private TMP_Text amountText = null;
 
     [Header("Ui References - Deployable")]
     [SerializeField] private Image cooldownImageRef = null;
@@ -48,6 +49,7 @@ public class MasterUIGameplayButton : NetworkBehaviour
     public void Unlock(bool unlock)
     {
         btn.interactable = unlock;
+        if (amountText) amountText.enabled = unlock;
     }
 
     public void StartCooldown(int time)
@@ -68,5 +70,10 @@ public class MasterUIGameplayButton : NetworkBehaviour
             time--;
             cooldownImageRef.fillAmount = time / refTime;
         }
+    }
+
+    public void UpdateUnitAmount(int amount, int max)
+    {
+        if (amountText) amountText.text = amount + " / " + max;
     }
 }

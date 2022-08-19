@@ -22,6 +22,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     [Title("Necessities", titleAlignment: TitleAlignments.Centered)]
     [SerializeField] private UnitSO unitSO;
+    public UnitSO UnitSO{ get { return unitSO; }}
+
 
     [Title("Stats", titleAlignment: TitleAlignments.Centered)]
     [SyncVar, SerializeField] private int health = 100; //Upgradeable
@@ -1369,6 +1371,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     {
         NetworkServer.Destroy(gameObject);
     }
+
     #endregion
 
     public Teams Team => Teams.Unit;

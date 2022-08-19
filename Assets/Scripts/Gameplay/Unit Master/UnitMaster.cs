@@ -13,7 +13,7 @@ public class UnitList
     public string name;
     public UnitSO unit;
     [Header("Upgrades")]
-    [SyncVar]public int level = 0;
+    [SyncVar] public int level = 0;
     public int upgradeMilestone = 50;
     public AnimationCurve upgradeCurve;
     public int totalUpgrades = 0;
@@ -62,13 +62,25 @@ public class UnitList
     [Header("Other")]
     [Space]
     public int maxAmount;
-    public int currentAmount;
+    [SerializeField] private int currentAmount;
+
+    public int CurrentAmount
+    {
+        get { return currentAmount; }
+        set 
+        { 
+            currentAmount = value;
+            if (unitButton) unitButton.UpdateUnitAmount(value, maxAmount);
+        }
+    }
+
     [Space]
     public bool unlocked;
     public bool chosen;
     public void Unlock(bool unlock)
     {
         unitButton.Unlock(unlock);
+        unitButton.UpdateUnitAmount(CurrentAmount, maxAmount);
     }
     [Space]
     public int unitIndex;
@@ -100,6 +112,11 @@ public class DeployableList
 public class UnitMaster : NetworkBehaviour
 {
     #region Fields
+
+    [Header("Debug")]
+    [SerializeField] private bool test = false;
+    [SerializeField] private UnitMasterSO testSO = null;
+
     [Header("Master Class")]
     [SerializeField] private UnitMasterSO masterSO = null;
     UnitMasterClass mClass = null;
@@ -309,9 +326,7 @@ public class UnitMaster : NetworkBehaviour
     [Title("Network", titleAlignment: TitleAlignments.Centered)]
     [SerializeField] private GameObject[] disableForOthers = null;
 
-    [Header("Debug")]
-    [SerializeField] private bool test = false;
-    [SerializeField] private UnitMasterSO testSO = null;
+
 
     #endregion
 
@@ -334,10 +349,7 @@ public class UnitMaster : NetworkBehaviour
 
     public void Initialize()
     {
-        name += $" ({masterSO.masterName})";
-        
-        SetMasterUnits();
-        SetMasterDeployables();
+        name += $" ({masterSO.masterName})";       
 
         globalAudio = GetComponent<AudioSource>();
 
@@ -357,8 +369,11 @@ public class UnitMaster : NetworkBehaviour
 
         if (!hasAuthority) return;
 
-        //AddBinds();
+        //Set all the units/deployables' stats
+        SetMasterUnits();
+        SetMasterDeployables();
 
+        //Instatiate and set unit buttons' functions
         InitializeUnitButtons();
         InitializeDeployableButtons();
 
@@ -723,7 +738,7 @@ public class UnitMaster : NetworkBehaviour
             button.GetComponent<Button>().onClick.AddListener(delegate { ChooseUnit(u); });
 
             //Start the unit button as Unlocked or Locked
-            b.Unlock(u.unlocked);
+            u.Unlock(u.unlocked);
         }
     }
 
@@ -768,7 +783,7 @@ public class UnitMaster : NetworkBehaviour
             button.GetComponent<Button>().onClick.AddListener(delegate { ChooseDeployable(d); });
 
             //Start the unit button as Unlocked or Locked
-            b.Unlock(d.unlocked);
+            d.Unlock(d.unlocked);
         }
     }
 
@@ -1655,7 +1670,7 @@ public class UnitMaster : NetworkBehaviour
         else
         {
             UnitList chosenUnitList = unitList[chosenSpawnableIndex];
-            if (chosenUnitList.currentAmount >= chosenUnitList.maxAmount)
+            if (chosenUnitList.CurrentAmount >= chosenUnitList.maxAmount)
             {
                 Rpc_SetSpawnText(netIdentity.connectionToClient, "Max amount of " + chosenUnitList.name + " alive.");
                 return;
@@ -1722,7 +1737,7 @@ public class UnitMaster : NetworkBehaviour
             if (chosenUnitList.hasHealthTrait) unit.ApplyHealthTrait();
             if (chosenUnitList.hasDamageTrait) unit.ApplySpeedTrait();
 
-            chosenUnitList.currentAmount++;
+            chosenUnitList.CurrentAmount++;
 
             //Master loses energy, because nothing is free in life
             Energy += -chosenUnitList.unit.energyCost;
@@ -1752,7 +1767,7 @@ public class UnitMaster : NetworkBehaviour
     {
         UnitList chosenUnitList = GetUnitList(unit);
 
-        chosenUnitList.currentAmount--;
+        chosenUnitList.CurrentAmount--;
     }
 
     [TargetRpc]
@@ -1802,6 +1817,9 @@ public class UnitMaster : NetworkBehaviour
     void Cmd_RefundUnit(GameObject unitToRefund, int refundAmount)
     {
         Energy += refundAmount;
+
+        UnitList unit = GetUnitList(unitToRefund.GetComponent<UnitBase>().UnitSO);
+        unit.CurrentAmount--;
 
         Rpc_SpawnEffect(netIdentity.connectionToClient, unitToRefund.transform.position, true);
 
