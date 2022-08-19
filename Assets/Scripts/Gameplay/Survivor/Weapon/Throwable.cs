@@ -12,7 +12,6 @@ public class Throwable : EquipmentItem
 
 	protected override void OnLMBPerformed(InputAction.CallbackContext obj)
 	{
-		GetComponent<Projectile>().owner = transform.root;
 		
 		Cmd_Throw();		
 	}
@@ -26,7 +25,7 @@ public class Throwable : EquipmentItem
 		rb.AddForce(transform.forward * (projectileSpeed * rb.mass), ForceMode.Impulse);
 		rb.AddTorque(new Vector3(Random.Range(-100, 100), Random.Range(-100, 100), Random.Range(-100, 100)));
 		Rpc_SetLayer(connectionToClient, false);
-
+		GetComponent<Projectile>().owner = transform.root;
 		GetComponent<Projectile>().Activate();
 		Svr_InvokeOnDrop();
 	}

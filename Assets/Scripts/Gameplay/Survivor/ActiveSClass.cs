@@ -440,7 +440,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
             time -= Time.deltaTime;
             yield return null;
         }
-        
+
         damagedImageBool = false;
     }
 
@@ -463,6 +463,16 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
 
     void Damage(int damage, Transform source = null)
     {
+        if (source)
+        {
+            if (source.GetComponent<IDamagable>().Team == Teams.Player)
+            {
+                float parsedDmg = damage;
+                damage = Mathf.RoundToInt(parsedDmg /= 2);
+            }
+        }
+
+
         if (IsDown)
         {
             downTime -= 0.1f;
