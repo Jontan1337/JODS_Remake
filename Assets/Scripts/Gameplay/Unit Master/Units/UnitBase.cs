@@ -26,8 +26,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     [Title("Stats", titleAlignment: TitleAlignments.Centered)]
     [SyncVar, SerializeField] private int health = 100; //Upgradeable
     [SyncVar] public bool isDead = false;
-    private int maxHealth = 0;
-    private int refundAmount = 0;
+    [SyncVar] private int maxHealth = 0;
+    [SyncVar] private int refundAmount = 0;
     [Space]
     [SerializeField] private bool isMelee;
     [SerializeField] private bool isRanged;
@@ -1208,7 +1208,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     #region Health
 
-    public bool IsMaxHealth => health == maxHealth;
+    public bool IsMaxHealth => health == maxHealth; 
 
 
     [Server]

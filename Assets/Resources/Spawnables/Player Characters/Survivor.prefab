@@ -1163,6 +1163,85 @@ SkinnedMeshRenderer:
     m_Center: {x: 4.656613e-10, y: -0.0016071335, z: -0.000023172703}
     m_Extent: {x: 0.006346526, y: 0.010060685, z: 0.0020349554}
   m_DirtyAABB: 0
+--- !u!1 &855244772037775922
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7839034532825423256}
+  - component: {fileID: 2285254844239763754}
+  - component: {fileID: 7966863143780647685}
+  m_Layer: 13
+  m_Name: Points Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &7839034532825423256
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 855244772037775922}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1167403141699751331}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 40, y: 150}
+  m_SizeDelta: {x: 300, y: 50}
+  m_Pivot: {x: 0, y: 0}
+--- !u!222 &2285254844239763754
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 855244772037775922}
+  m_CullTransparentMesh: 0
+--- !u!114 &7966863143780647685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 855244772037775922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.93333334, g: 0.93333334, b: 0.93333334, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 25
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 2
+    m_MaxSize: 46
+    m_Alignment: 0
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: 'Points: 0'
 --- !u!1 &871132140021747248
 GameObject:
   m_ObjectHideFlags: 0
@@ -4580,6 +4659,7 @@ MonoBehaviour:
   reviveTime: 5
   downTime: 30
   abilityCooldownCount: 0
+  points: 0
   reloadSpeed: 0
   accuracy: 0
   ammoCapacity: 0
@@ -4593,22 +4673,10 @@ MonoBehaviour:
   downImage: {fileID: 1680671564870222852}
   damagedImage: {fileID: 8739871650305063704}
   downCanvas: {fileID: 2982439891624587407}
-  inGameCanvas: {fileID: 0}
-  onChangedHealth:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 140378723284269966}
-        m_TargetAssemblyTypeName: ActiveSClass, Assembly-CSharp
-        m_MethodName: UpdateHealthBar
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+  inGameCanvas: {fileID: 8050693953223198890}
+  pointsText: {fileID: 7966863143780647685}
+  pointGainPrefab: {fileID: 9064455069424791838, guid: c13d45a4ca89bed4784eb1ce03ef13d5,
+    type: 3}
   onDied:
     m_PersistentCalls:
       m_Calls: []
@@ -7214,6 +7282,7 @@ RectTransform:
   - {fileID: 6539818057981885165}
   - {fileID: 8317755412944192257}
   - {fileID: 2175816682589021799}
+  - {fileID: 7839034532825423256}
   m_Father: {fileID: 1666174742041580916}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
