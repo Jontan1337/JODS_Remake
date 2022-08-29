@@ -20,8 +20,6 @@ public class JODSInput : MonoBehaviour
 
     private void OnGUI()
     {
-        //GUI.TextField(new Rect(20, 60, 150, 20), overrides_movement.ToString());
-        //GUI.TextField(new Rect(20, 80, 150, 20), overrides_jump.ToString());
         GUI.TextField(new Rect(20, 120, 150, 20), overrides_camera.ToString());
     }
 
@@ -42,7 +40,7 @@ public class JODSInput : MonoBehaviour
         Controls.Disable();
     }
 
-    // MOVEMENT
+    #region MOVEMENT
     public static void EnableMovement()
     {
         overrides_movement++;
@@ -78,7 +76,9 @@ public class JODSInput : MonoBehaviour
         Controls.Survivor.Camera.Disable();
         onCameraDisabled?.Invoke();
     }
-    // INTERACTION
+    #endregion
+
+    #region INTERACTION
     public static void EnableInteract()
     {
         overrides_interact++;
@@ -145,7 +145,9 @@ public class JODSInput : MonoBehaviour
         overrides_drop--;
         Controls.Survivor.Drop.Disable();
     }
-    // Menu/UI
+    #endregion
+
+    #region Menu/UI
     public static void EnableEscape()
     {
         Controls.MainMenu.Escape.Enable();
@@ -154,4 +156,5 @@ public class JODSInput : MonoBehaviour
     {
         Controls.MainMenu.Escape.Disable();
     }
+    #endregion
 }

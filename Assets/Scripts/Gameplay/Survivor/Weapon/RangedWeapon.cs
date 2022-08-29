@@ -291,10 +291,10 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     }
     public override void Unbind()
     {
-        if (hasAuthority)
-        {
-            OnLMBCanceled(default);
-        }
+        //if (hasAuthority)
+        //{
+        //    OnLMBCanceled(default);
+        //}
         base.Unbind();
         JODSInput.Controls.Survivor.Reload.performed -= OnReload;
         JODSInput.Controls.Survivor.Changefiremode.performed -= OnChangeFireMode;
@@ -582,11 +582,13 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
 
     // Later this should be called by a reload animation event.
     [Command]
-    private void Cmd_Reload()
+    private async void Cmd_Reload()
     {
         if (Magazine == MagazineSize) return;
 
-        Rpc_Reload();
+        Rpc_Reload(connectionToClient);
+        Rpc_ReloadAnimation();
+        await JODSTime.WaitTime(1f);
         if (ExtraAmmunition > (MagazineSize - Magazine))
         {
             ExtraAmmunition = ExtraAmmunition - (MagazineSize - Magazine);
@@ -597,6 +599,24 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
             Magazine += ExtraAmmunition;
             ExtraAmmunition = 0;
         }
+    }
+
+    [TargetRpc]
+    private async void Rpc_Reload(NetworkConnection target)
+    {
+        JODSInput.DisableLMB();
+        JODSInput.DisableRMB();
+        JODSInput.DisableReload();
+        JODSInput.DisableHotbarControl();
+        JODSInput.DisableInteract();
+        JODSInput.DisableDrop();
+        await JODSTime.WaitTime(1f);
+        JODSInput.EnableLMB();
+        JODSInput.EnableRMB();
+        JODSInput.EnableReload();
+        JODSInput.EnableHotbarControl();
+        JODSInput.EnableInteract();
+        JODSInput.EnableDrop();
     }
 
     [Command]
@@ -705,11 +725,23 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         transform.DOPunchRotation(new Vector3(0f, 2f, -5f), 0.2f, 0, 0.5f);
     }
     [ClientRpc]
-    protected void Rpc_Reload()
+    protected void Rpc_ReloadAnimation()
     {
         transform.DOComplete();
-        transform.DOPunchRotation(new Vector3(20f, 5f, -10f), 1f, 2, 1f);
-        transform.DOPunchPosition(new Vector3(0.05f, -0.04f, 0f), 1f, 2, 0.1f);
+        //Vector3 initialRotation = transform.rotation.eulerAngles;
+        //Vector3 initialPosition = transform.rotation.eulerAngles;
+        transform.DOLocalRotate(new Vector3(-80f, 5f, 0f), 0.2f, RotateMode.Fast).SetEase(Ease.Flash);
+        transform.DOLocalMove(new Vector3(0.2f, 0.1f, -0.05f), 0.2f).SetEase(Ease.Flash).OnComplete(Do);
+        //transform.DOPunchRotation(new Vector3(-80f, 5f, 0f), 1f, 0, 0f).SetEase(Ease.InOutQuint);
+        //transform.DOPunchPosition(new Vector3(0.1f, 0.1f, -0.05f), 1f, 0, 0f).SetEase(Ease.InOutQuint);
+        async void Do()
+        {
+            //transform.DOShakePosition(0.1f, 0.02f, 50, 90f).SetEase(Ease.Flash);
+            transform.DOShakeRotation(0.1f, 5f, 15, 90f).SetEase(Ease.InOutBounce);
+            await JODSTime.WaitTime(0.5f);
+            transform.DOLocalRotate(new Vector3(0f, 0f, 0f), 0.2f, RotateMode.Fast).SetEase(Ease.OutBack);
+            transform.DOLocalMove(new Vector3(0f, 0f, 0f), 0.2f).SetEase(Ease.OutBack);
+        }
     }
 
     #endregion

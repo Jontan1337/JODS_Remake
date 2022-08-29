@@ -237,10 +237,10 @@ public class WeaponShop : NetworkBehaviour, IInteractable
 
             //Svr_SetupAmmunitionRefillers(interactor);
 
-            //PlayerEquipment playerEquipment = interactor.GetComponentInChildren<PlayerEquipment>();
-            //GameObject goWeapon1 = playerEquipment.EquipmentSlots[0].EquipmentItem;
-            //GameObject goWeapon2 = playerEquipment.EquipmentSlots[1].EquipmentItem;
-            //Rpc_SetAmmunitionRefillers(interactor.GetComponent<NetworkIdentity>().connectionToClient, goWeapon1, goWeapon2);
+            PlayerEquipment playerEquipment = interactor.GetComponentInChildren<PlayerEquipment>();
+            GameObject goWeapon1 = playerEquipment.EquipmentSlots[0].EquipmentItem;
+            GameObject goWeapon2 = playerEquipment.EquipmentSlots[1].EquipmentItem;
+            Rpc_SetAmmunitionRefillers(interactor.GetComponent<NetworkIdentity>().connectionToClient, goWeapon1, goWeapon2);
 
             playersInShop.Add(interactor);
         }
@@ -344,7 +344,7 @@ public class WeaponShop : NetworkBehaviour, IInteractable
         PlayerEquipment playerEquipment = interactor.GetComponentInChildren<PlayerEquipment>();
         RangedWeapon weapon = playerEquipment.EquipmentSlots[index].EquipmentItem.GetComponent<RangedWeapon>();
         NetworkIdentity networkIdentity = interactor.GetComponent<NetworkIdentity>();
-        int price = weaponAmmunitionRefill[index].Item.shopItemPrice;
+        int price = GetAmmunitionPrice(weapon.AmmunitionType);
         if (gamemode.Svr_GetPoints(networkIdentity.netId) >= price)
         {
             weapon.ExtraAmmunition += weapon.MagazineSize;
