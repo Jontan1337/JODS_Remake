@@ -82,7 +82,7 @@ public class Infection : StatusEffect
 
         if (infectionLevel > 0)
         {
-           mm .MovementSpeed += 0.3f;
+            mm.MovementSpeed += 0.3f;
         }
         if (infectionLevel > 1)
         {

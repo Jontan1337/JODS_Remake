@@ -34,7 +34,8 @@ public class RaycastWeapon : RangedWeapon
                     if (shootHit.collider.TryGetComponent(out IDamagable damagable))
                     {
                         damagable.Svr_Damage((int)currentDamage, owner);
-                        if (highPower)
+                        bool detach = highPower ? highPower : Random.value > 0.6f;
+                        if (detach)
                         {
                             if (damagable.IsDead)
                             {
