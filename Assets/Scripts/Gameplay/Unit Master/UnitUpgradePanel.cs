@@ -36,6 +36,7 @@ public class UnitUpgradePanel : MonoBehaviour
     [SerializeField] private GameObject unlockPanel = null;
     [SerializeField] private Button unlockButton = null;
     [SerializeField] private Text unlockButtonText = null;
+    [SerializeField] private Text unityEnergyCostText = null;
 
     [Header("Health References")]
     [SerializeField] private Button upgradeHealthButton = null;
@@ -78,6 +79,8 @@ public class UnitUpgradePanel : MonoBehaviour
         unlockPanel.SetActive(!unitSO.starterUnit);
         unlockButton.interactable = false;
         unlockButtonText.text = $"Unlock {unitSO.name} \nRequired XP: {unitSO.xpToUnlock}";
+
+        unityEnergyCostText.text = "Energy Cost: " + unitSO.energyCost;
 
         EnableUpgrades(false);
 
