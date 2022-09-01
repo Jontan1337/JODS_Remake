@@ -1477,7 +1477,7 @@ public class UnitMaster : NetworkBehaviour
         foreach (Collider survivor in survivorsInRadius)
         {
             //Get the position of the survivor, and get the direction to check for visibility of the survivor.
-            Vector3 pPos = new Vector3(survivor.transform.position.x, survivor.transform.position.y + 1.75f, survivor.transform.position.z);
+            Vector3 pPos = new Vector3(survivor.transform.position.x, survivor.transform.position.y + 0.5f, survivor.transform.position.z);
             Vector3 dir = pPos - pos;
 
             Debug.DrawLine(pos, pPos, Color.cyan, 20f, false);

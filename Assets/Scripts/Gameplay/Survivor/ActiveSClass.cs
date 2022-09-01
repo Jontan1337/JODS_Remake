@@ -8,6 +8,11 @@ using UnityEngine.UI;
 
 public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
 {
+
+    [Header("Debug")]
+    public bool test;
+    [Space]
+
     //what is going on in this script??? - dave
 
     [SyncVar(hook = nameof(SetSurvivorClassSettings))] public SurvivorClass sClass;
@@ -660,9 +665,6 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     {
         GetComponentInChildren<IHitter>()?.OnFlyingKickHit(hit);
     }
-
-    [Header("Debug")]
-    public bool test;
 
     private void OnGUI()
     {

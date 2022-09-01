@@ -964,12 +964,14 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
                     damagable = idmg;
                 }
             }
-            if (damagable.IsDead)
+            if (damagable != null)
             {
-                LoseTarget();
+                if (damagable.IsDead)
+                {
+                    LoseTarget();
+                }
+                Attack();
             }
-
-            Attack();
         }
     }
 
