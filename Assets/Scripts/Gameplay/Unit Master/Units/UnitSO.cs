@@ -121,12 +121,15 @@ public class UnitSO : ScriptableObject
         [Header("Health")]
         public UnitUpgradePath unitUpgradesHealth;
         public string traitHealth;
+        public string traitHealthDescription;
         [Header("Damage")]
         public UnitUpgradePath unitUpgradesDamage;
         public string traitDamage;
+        public string traitDamageDescription;
         [Header("Speed")]
         public UnitUpgradePath unitUpgradesSpeed;
         public string traitSpeed;
+        public string traitSpeedDescription;
     }
     [Space]
     public Upgrades upgrades;
