@@ -186,10 +186,6 @@ public class UnitSO : ScriptableObject
     [Space]
     public Selectable select;
 
-
-    [Header("Animations")]
-    public RuntimeAnimatorController unitAnimator;
-
     [Header("Details")]
     [TextArea(1, 5)] public string description = "This is a unit";
     [Range(0, 20)] public int powerStat;

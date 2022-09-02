@@ -98,9 +98,10 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     }
 
     public float[] statModifiers;
+    public bool[] traits;
 
     [Title("Movement", titleAlignment: TitleAlignments.Centered)]
-    [SerializeField] private float movementSpeed = 1.5f;
+    [SerializeField] protected float movementSpeed = 1.5f;
     [Space]
     [SerializeField] private float chaseTime = 10; //How long the unit will chase, if the unit can't see it's target
     [SerializeField] private bool stoppedMoving = false;
@@ -238,24 +239,10 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     #region Attack Bools
 
-    [SyncVar] public bool walking;
     private bool attackMelee;
     private bool attackRange;
     private bool attackSpecial;
 
-    public bool Walking
-    {
-        get { return walking; }
-        set
-        {
-            if (value == walking) return;
-            //Only update if the new value is actually different
-
-            if (isServer) walking = value;
-
-            animator.SetBool("Walk", walking);
-        }
-    }
     public bool AttackMelee
     {
         get { return attackMelee; }
@@ -334,7 +321,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
         InitialUnitSetup();
 
-        StartCoroutine(MovementAnimationCoroutine());
 
         if (!isServer)
         {
@@ -344,6 +330,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
             return;
         }
+        StartCoroutine(MovementAnimationCoroutine());
         
         CoSearch = SearchCoroutine();
         if (!searching) { StartCoroutine(CoSearch); searching = true; }
@@ -351,6 +338,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     private void SetStats()
     {
+        print(name + ": Set Stats");
         if (!unitSO)
         {
             Debug.LogError($"{name} had no Unit Scriptable Object assigned when it tried to set it's stats!" +
@@ -460,6 +448,10 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
         //Other
         particleColor = unitSO.bloodColor;
+
+        if (traits[0]) ApplyDamageTrait();
+        if (traits[1]) ApplyHealthTrait();
+        if (traits[2]) ApplySpeedTrait();
     }
 
     public void SetUnitSO(UnitSO myNewUnit)
@@ -496,10 +488,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
         //Animations -----------------------
         animator = GetComponent<Animator>();
-        AnimatorOverrideController animationsOverride = new AnimatorOverrideController(unitSO.unitAnimator);
-
-        //Override the default animations with the unit's animations
-        animator.runtimeAnimatorController = animationsOverride;
 
         melee.canMelee = isMelee;
         ranged.canRanged = isRanged;
@@ -673,7 +661,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         {
             yield return new WaitForSeconds(0.2f);
 
-            Walking = controller.velocity.magnitude > 0.1f;
+            animator.SetFloat("Movement Speed", controller.velocity.magnitude);
         }
     }
 

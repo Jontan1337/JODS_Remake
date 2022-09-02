@@ -588,7 +588,6 @@ public class UnitMaster : NetworkBehaviour
     #region LMB
     private void LMB()
     {
-        print($"LMB | Shift: {shift} | Ctrl: {ctrl}");
         if (alt) return;
         if (EventSystem.current.IsPointerOverGameObject()) { return; }
         if (shift && !ctrl) { Shift_LMB(); return; }
@@ -1765,9 +1764,10 @@ public class UnitMaster : NetworkBehaviour
 
             unit.OnDeath += OnUnitDeath;
 
-            if (chosenUnitList.hasDamageTrait) unit.ApplyDamageTrait();
-            if (chosenUnitList.hasHealthTrait) unit.ApplyHealthTrait();
-            if (chosenUnitList.hasDamageTrait) unit.ApplySpeedTrait();
+            unit.traits = new bool[3];
+            if (chosenUnitList.hasDamageTrait) unit.traits[0] = true;
+            if (chosenUnitList.hasHealthTrait) unit.traits[1] = true;
+            if (chosenUnitList.hasSpeedTrait) unit.traits[2] = true;
 
             chosenUnitList.CurrentAmount++;
 
