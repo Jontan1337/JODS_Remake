@@ -37,6 +37,8 @@ public class UnitUpgradePanel : MonoBehaviour
     [SerializeField] private Button unlockButton = null;
     [SerializeField] private Text unlockButtonText = null;
     [SerializeField] private Text unityEnergyCostText = null;
+    [SerializeField] private GameObject traitDescriptionPanel = null;
+    [SerializeField] private Text traitDescriptionText = null;
 
     [Header("Health References")]
     [SerializeField] private Button upgradeHealthButton = null;
@@ -65,6 +67,7 @@ public class UnitUpgradePanel : MonoBehaviour
     private UnitList unitListRef;
 
     private bool[] traitUnlocked = new bool[3];
+    private string[] traitDescription = new string[3];
 
     public void InitializeUnitUpgradePanel(UnitMaster unitMaster, UnitSO unitSO, int index)
     {
@@ -105,6 +108,10 @@ public class UnitUpgradePanel : MonoBehaviour
         speedProgressSlider.maxValue = unitSO.upgrades.unitUpgradesSpeed.amountOfUpgrades;
         speedProgressSlider.value = 0;
         speedValueText.text = $"{unitSO.movementSpeed}";
+
+        traitDescription[0] = unitSO.upgrades.traitHealthDescription;
+        traitDescription[1] = unitSO.upgrades.traitDamageDescription;
+        traitDescription[2] = unitSO.upgrades.traitSpeedDescription;
     }
 
     public void EnableUpgrades(bool enable)
@@ -113,9 +120,9 @@ public class UnitUpgradePanel : MonoBehaviour
         upgradeDamageButton.interactable = enable;
         upgradeSpeedButton.interactable = enable;
 
-        unlockHealthTraitButton.interactable = traitUnlocked[0] == false ? (healthProgressSlider.value == unitSO.upgrades.unitUpgradesHealth.amountOfUpgrades ? enable : false) : false;
-        unlockDamageTraitButton.interactable = traitUnlocked[1] == false ? (damageProgressSlider.value == unitSO.upgrades.unitUpgradesDamage.amountOfUpgrades ? enable : false) : false;
-        unlockSpeedTraitButton.interactable = traitUnlocked[2] == false ? (speedProgressSlider.value == unitSO.upgrades.unitUpgradesSpeed.amountOfUpgrades ? enable : false) : false;
+        unlockHealthTraitButton.interactable = traitUnlocked[0] == false ? (healthProgressSlider.value == unitSO.upgrades.unitUpgradesHealth.amountOfUpgrades - 1 ? enable : false) : false;
+        unlockDamageTraitButton.interactable = traitUnlocked[1] == false ? (damageProgressSlider.value == unitSO.upgrades.unitUpgradesDamage.amountOfUpgrades - 1 ? enable : false) : false;
+        unlockSpeedTraitButton.interactable = traitUnlocked[2] == false ? (speedProgressSlider.value == unitSO.upgrades.unitUpgradesSpeed.amountOfUpgrades - 1 ? enable : false) : false;
     }
     
     public void UnlockCheck(int xp)
@@ -129,6 +136,16 @@ public class UnitUpgradePanel : MonoBehaviour
         unlocked = true;
         unlockPanel.SetActive(false);
         unitMaster.UnlockNew(unitListRef);
+    }
+
+    public void SetTraitDescriptions(string[] descs)
+    {
+        traitDescription = descs;
+    }
+
+    public void SetDescriptionText(int descId)
+    {
+        traitDescriptionText.text = traitDescription[descId];
     }
 
     public void SetUpgradeText(int amount)

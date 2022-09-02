@@ -31,13 +31,14 @@ public class ZombieCommon : UnitBase, IControllable
 
     public override void ApplyDamageTrait()
     {
-        Debug.Log("Hallo" + melee.statusEffectsToApply.Count);
         melee.statusEffectsToApply.Add(damageStatusEffect);
     }
 
     public override void ApplySpeedTrait()
     {
-        //throw new System.NotImplementedException();
+        print(name + " Speed");
+        animator.SetBool("Run", true);
+        movementSpeed += 3; //this is overridden by unitbase because movement speed is set with = not +=
     }
 
     #region Interface Functions

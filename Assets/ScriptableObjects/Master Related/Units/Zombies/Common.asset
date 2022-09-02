@@ -75,7 +75,7 @@ MonoBehaviour:
     availableFromStart: 1
     statusEffectsToApply: []
   upgrades:
-    unitsToPlace: 10
+    unitsToPlace: 1
     upgradeCurve:
       serializedVersion: 2
       m_Curve:
@@ -103,15 +103,18 @@ MonoBehaviour:
     unitUpgradesHealth:
       amountOfUpgrades: 5
       upgradeAmount: 0.2
-    traitHealth: Health Trait
+    traitHealth: Regeneration
+    traitHealthDescription: Commons passively regenerate health
     unitUpgradesDamage:
       amountOfUpgrades: 4
       upgradeAmount: 0.2
     traitDamage: Applies bleed
+    traitDamageDescription: Commons apply bleed on melee attacks
     unitUpgradesSpeed:
-      amountOfUpgrades: 5
+      amountOfUpgrades: 1
       upgradeAmount: 0.1
     traitSpeed: Sprint
+    traitSpeedDescription: Commons sprint instead of walking
   movementSpeed: 2
   chaseTime: 10
   sightDistance: 20
@@ -152,7 +155,6 @@ MonoBehaviour:
     footstepVolume: 0.1
   select:
     canSelect: 1
-  unitAnimator: {fileID: 9100000, guid: c0ab0f687e23e2c4eb6ce111aa51d73e, type: 2}
   description: 'The common zombie is slow and weak.
 
     It''s low price makes it
