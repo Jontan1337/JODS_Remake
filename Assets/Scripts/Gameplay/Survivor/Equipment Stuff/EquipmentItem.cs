@@ -31,10 +31,11 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	[SerializeField] private Outline outline = null;
 
 	[Title("On Pickup & Drop (LOCAL)")]
-	[SerializeField] private UnityEvent onPickupEvents;
-	[SerializeField] private UnityEvent onDropEvents;
-	[SerializeField] private UnityEvent onEquipEvents;
-	[SerializeField] private UnityEvent onUnequipEvents;
+	[SerializeField] private UnityEvent onPickupEvent;
+	[SerializeField] private UnityEvent onDropEvent;
+	[SerializeField] private UnityEvent onBeforeEquipEvent;
+	[SerializeField] private UnityEvent onEquipEvent;
+	[SerializeField] private UnityEvent onUnequipEvent;
 	public Action<GameObject> onServerDropItem;
     private ActiveSClass playerClass = null;
 
@@ -197,7 +198,7 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	[TargetRpc]
 	public virtual void Rpc_Pickup(NetworkConnection target)
 	{
-		onPickupEvents.Invoke();
+		onPickupEvent.Invoke();
 	}
 
 	[Command]
@@ -226,7 +227,7 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	[TargetRpc]
 	public virtual void Rpc_Drop(NetworkConnection target)
 	{
-		onDropEvents.Invoke();
+		onDropEvent.Invoke();
 	}
 
 	[Server]
@@ -247,12 +248,12 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	[TargetRpc]
 	public virtual void Rpc_Equip(NetworkConnection target)
 	{
-		onEquipEvents.Invoke();
+		onEquipEvent.Invoke();
 	}
 	[TargetRpc]
 	public virtual void Rpc_Unequip(NetworkConnection target)
 	{
-		onUnequipEvents.Invoke();
+		onUnequipEvent.Invoke();
 	}
 
 	[Server]
