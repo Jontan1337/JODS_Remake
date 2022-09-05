@@ -18,10 +18,10 @@ public class JODSInput : MonoBehaviour
 
     public static Controls Controls { get; private set; }
 
-    private void OnGUI()
-    {
-        GUI.TextField(new Rect(20, 120, 150, 20), overrides_camera.ToString());
-    }
+    //private void OnGUI()
+    //{
+    //    GUI.TextField(new Rect(20, 120, 150, 20), overrides_camera.ToString());
+    //}
 
     private void Awake()
     {
