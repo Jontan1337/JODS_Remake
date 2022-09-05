@@ -36,6 +36,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [SerializeField, Tooltip("Affects weapon and camera shake")] protected float aimingVisualPunchback = 0.1f;
     [SerializeField, Tooltip("Affects rigidbodies hit")] protected float rigidbodyPunchback = 0.2f;
     [SerializeField] private float aimingSpeed = 0.1f;
+    [SerializeField] private float reloadSpeed = 1f;
     [SerializeField, Tooltip("If stabilization is the same as the recoil, recoil won't decrease")] protected float stabilization = 1f;
     [SerializeField] protected float currentAccuracy = 0f;
     [SerializeField] protected float currentCurveAccuracy = 0f;
@@ -415,8 +416,10 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         switch (FireMode)
         {
             case FireModes.Single:
-            case FireModes.SemiAuto:
                 Svr_ShootSingle();
+                break;
+            case FireModes.SemiAuto:
+                Svr_ShootSemiAuto();
                 break;
             case FireModes.Scatter:
                 Svr_ScatterShot();
@@ -519,7 +522,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     }
 
     [Server]
-    private void Svr_ShootSingle()
+    private void Svr_ShootSemiAuto()
     {
         if (Magazine == 0) return;
         Svr_PreShoot();
@@ -532,8 +535,24 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         Svr_PostShoot();
     }
 
-    [Command]
+    [Server]
+    private void Svr_ShootSingle()
+    {
+        if (Magazine == 0) return;
+        Svr_PreShoot();
+        Svr_Shoot(Vector2.zero);
+        if (!isLocalPlayer)
+            Rpc_PostShoot(connectionToClient);
+        Svr_StartCooldown();
+        Rpc_ReloadAnimation(reloadSpeed);
+        if (!isLocalPlayer)
+            Rpc_StartCooldown(connectionToClient);
+        Rpc_Reload(connectionToClient);
+        Svr_PostShoot();
+    }
+
     // Stop any shoot coroutine.
+    [Command]
     private void Cmd_StopShoot()
     {
         // Stop shoot loops from firing except burst mode because
@@ -587,8 +606,8 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         if (Magazine == MagazineSize) return;
 
         Rpc_Reload(connectionToClient);
-        Rpc_ReloadAnimation();
-        await JODSTime.WaitTime(1f);
+        Rpc_ReloadAnimation(reloadSpeed);
+        await JODSTime.WaitTime(reloadSpeed);
         if (ExtraAmmunition > (MagazineSize - Magazine))
         {
             ExtraAmmunition = ExtraAmmunition - (MagazineSize - Magazine);
@@ -610,7 +629,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         JODSInput.DisableHotbarControl();
         JODSInput.DisableInteract();
         JODSInput.DisableDrop();
-        await JODSTime.WaitTime(1f);
+        await JODSTime.WaitTime(reloadSpeed);
         JODSInput.EnableLMB();
         JODSInput.EnableRMB();
         JODSInput.EnableReload();
@@ -725,7 +744,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         transform.DOPunchRotation(new Vector3(0f, 2f, -5f), 0.2f, 0, 0.5f);
     }
     [ClientRpc]
-    protected void Rpc_ReloadAnimation()
+    protected void Rpc_ReloadAnimation(float reloadSpeed)
     {
         transform.DOComplete();
         //Vector3 initialRotation = transform.rotation.eulerAngles;
@@ -738,7 +757,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         {
             //transform.DOShakePosition(0.1f, 0.02f, 50, 90f).SetEase(Ease.Flash);
             transform.DOShakeRotation(0.1f, 5f, 15, 90f).SetEase(Ease.InOutBounce);
-            await JODSTime.WaitTime(0.5f);
+            await JODSTime.WaitTime(reloadSpeed - 0.4f);
             transform.DOLocalRotate(new Vector3(0f, 0f, 0f), 0.2f, RotateMode.Fast).SetEase(Ease.OutBack);
             transform.DOLocalMove(new Vector3(0f, 0f, 0f), 0.2f).SetEase(Ease.OutBack);
         }
