@@ -5,48 +5,67 @@ using Mirror;
 
 public class Syringe : Projectile
 {
-    [SerializeField] StatusEffectSO statusEffectToRemove = null;
+    [SerializeField] StatusEffectSO statusEffect = null;
     public override void Start()
     {
         base.Start();
         objectPoolTag = Tags.Syringe;
         transform.Rotate(new Vector3(90, 0, 0));
-        StartCoroutine(LifeTime());
+        //StartCoroutine(LifeTime());
     }
     [Server]
     public override void OnHit(Collision hit)
     {
-        print(hit.transform.name);
         var surv = hit.collider.transform.root.gameObject.GetComponent<ActiveSClass>();
         base.OnHit(hit);
-        IDamagable idmg = hit.collider.GetComponent<IDamagable>();
-        if (idmg?.Team == Teams.Player)
+        if (hit.collider.TryGetComponent(out IDamagable idmg))
         {
-            if (surv.IsDown)
+            if (idmg?.Team == Teams.Player)
             {
-                surv.StartCoroutine(surv.BeingRevived());
-            }
-            else if (statusEffectsToApply.Count > 0)
-            {
-                foreach (StatusEffectToApply statusEffectToApply in statusEffectsToApply)
+                if (surv.IsDown)
                 {
-                    hit.collider.transform.root.gameObject.GetComponent<StatusEffectManager>()?
-                        .Svr_ApplyStatusEffect(statusEffectToApply.statusEffect.ApplyEffect(hit.collider.transform.root.gameObject));
+                    surv.StartCoroutine(surv.BeingRevived());
                 }
+                else if (statusEffectsToApply.Count > 0)
+                {
+                    foreach (StatusEffectToApply statusEffectToApply in statusEffectsToApply)
+                    {
+                        hit.collider.transform.root.gameObject.GetComponent<StatusEffectManager>()?
+                            .Svr_ApplyStatusEffect(statusEffectToApply.statusEffect.ApplyEffect(hit.collider.transform.root.gameObject));
+                    }
+
+
+                    Infection infect = (Infection)hit.collider.transform.root.gameObject.GetComponent<StatusEffectManager>()?.Svr_GetStatusEffect(statusEffect);
+
+                    infect.infectionLevel -= 1;
+                }
+
             }
+            else
+            {
+                UnitBase ub = hit.collider.transform.root.gameObject.GetComponent<UnitBase>();
 
+                if (!ub.TryGetComponent(out ZombieStronk stronk))
+                {
+                    for (int i = 0; i < 3; i++)
+                    {
+                        ub.Dismember_BodyPart(i, (int)DamageTypes.Blunt);
+                    }
+                    idmg?.Svr_Damage(ub.Health, owner);
+                }
+
+
+            }
         }
-        else
-        {
-            idmg?.Svr_Damage(damage, owner);
-        }
-        hit.collider.transform.root.gameObject.GetComponent<StatusEffectManager>()?.Svr_RemoveStatusEffect(statusEffectToRemove);
+
+
+
     }
 
-    IEnumerator LifeTime()
-    {
-        yield return new WaitForSeconds(5f);
-        Destroy();
-    }
+    //IEnumerator LifeTime()
+    //{
+    //    yield return new WaitForSeconds(5f);
+    //    Destroy();
+    //}
 }
 

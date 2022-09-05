@@ -50,21 +50,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  active: 0
   objectPooled: 0
+  objectPoolTag: 6
+  enabledFromAwake: 1
   damage: 0
   lifetime: 5
-  destroyAfterLifetime: 0
+  destroyAfterLifetime: 1
   sticky: 1
-  objectPoolTag: 6
   owner: {fileID: 0}
-  hasDropoff: 0
+  hasDropoff: 1
   timeBeforeDropoff: 5
   piercing: 0
   statusEffectsToApply:
   - statusEffect: {fileID: 11400000, guid: 6cf3f0457f67a1a4499e6a42d53e9ac9, type: 2}
     amount: 0
-  statusEffectToRemove: {fileID: 11400000, guid: 6499d90d213f8aa4db7fae68321bec63,
-    type: 2}
+  statusEffect: {fileID: 11400000, guid: 6499d90d213f8aa4db7fae68321bec63, type: 2}
 --- !u!33 &3668033450561647344
 MeshFilter:
   m_ObjectHideFlags: 0

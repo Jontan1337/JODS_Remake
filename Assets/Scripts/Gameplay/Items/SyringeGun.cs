@@ -22,7 +22,7 @@ public class SyringeGun : ProjectileWeapon
         base.Svr_PostShoot();
         if (syringes.Count == 0)
         {
-            GetComponentInParent<ActiveSClass>().Rpc_StartAbilityCooldown(transform.root.GetComponent<NetworkIdentity>().connectionToClient, transform.root);
+            GetComponentInParent<ActiveSClass>().Rpc_StartAbilityCooldown(owner.GetComponent<NetworkIdentity>().connectionToClient, owner);
             StartCoroutine(IEDrop());
         }
     }
@@ -37,18 +37,25 @@ public class SyringeGun : ProjectileWeapon
     {
         if (magazine < magazineSize && magazine > 0)
         {
-            print(connectionToClient);
-            print(transform.root);
-            GetComponentInParent<ActiveSClass>().Rpc_StartAbilityCooldown(transform.root.GetComponent<NetworkIdentity>().connectionToClient, transform.root);
+            GetComponentInParent<ActiveSClass>().Rpc_StartAbilityCooldown(owner.GetComponent<NetworkIdentity>().connectionToClient, owner);
         }
         base.Svr_Drop();
     }
 
     public override void Unbind()
     {
+        Cmd_StartCooldown();
         base.Unbind();
         Cmd_Destroy();
-        //NetworkServer.Destroy(gameObject);
+    }
+
+    [Command]
+    private void Cmd_StartCooldown()
+    {
+        if (magazine < magazineSize && magazine > 0)
+        {
+            GetComponentInParent<ActiveSClass>().Rpc_StartAbilityCooldown(owner.GetComponent<NetworkIdentity>().connectionToClient, owner);
+        }
     }
 
     [Command(ignoreAuthority = true)] //Auth is lost before method is called, so this is the only sollution we know of right now. Not optimal.
