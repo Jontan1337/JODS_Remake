@@ -447,9 +447,12 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         //Other
         particleColor = unitSO.bloodColor;
 
-        if (traits[0]) ApplyDamageTrait();
-        if (traits[1]) ApplyHealthTrait();
-        if (traits[2]) ApplySpeedTrait();
+        if (traits.Length > 0)
+        {
+            if (traits[0]) ApplyDamageTrait();
+            if (traits[1]) ApplyHealthTrait();
+            if (traits[2]) ApplySpeedTrait();
+        }
     }
 
     public void SetUnitSO(UnitSO myNewUnit)
