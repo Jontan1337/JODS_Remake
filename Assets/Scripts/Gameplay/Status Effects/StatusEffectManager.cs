@@ -56,6 +56,16 @@ public class StatusEffectManager : NetworkBehaviour
     }
 
     [Server]
+    public StatusEffect Svr_GetStatusEffect(StatusEffectSO effect)
+    {
+        if (currentEffects.ContainsKey(effect))
+        {
+            return currentEffects[effect];
+        }
+        else return null;
+    }
+
+    [Server]
     private void Svr_RemoveVisuals(StatusEffectSO effect)
     {
         bool effectVisual = effect.useVisual;
