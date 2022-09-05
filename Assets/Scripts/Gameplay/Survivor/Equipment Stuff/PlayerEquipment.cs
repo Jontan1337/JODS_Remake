@@ -4,7 +4,6 @@ using UnityEngine;
 using Mirror;
 using System;
 using UnityEngine.InputSystem;
-using DG.Tweening;
 
 public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
 {
@@ -68,13 +67,11 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
             GameObject oldEquippedItem = null;
             if (itemInHands)
             {
-                //Svr_UnequipSelectedEquipmentSlotItem();
                 oldEquippedItem = itemInHands;
             }
             itemInHands = value;
             if (itemInHands)
             {
-                //Svr_EquipSelectedEquipmentSlotItem();
                 EquipmentItem = itemInHands.GetComponent<EquipmentItem>();
             }
             else
@@ -119,7 +116,6 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
                 if (selectedEquipmentSlot.EquipmentItem)
                 {
                     selectedEquipmentSlot.EquipmentItem.GetComponent<EquipmentItem>().Svr_Unequip();
-                    //Svr_UnequipSelectedEquipmentSlotItem();
                 }
             }
             selectedEquipmentSlot = value;
@@ -130,7 +126,6 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
                 if (selectedEquipmentSlot.EquipmentItem)
                 {
                     selectedEquipmentSlot.EquipmentItem.GetComponent<EquipmentItem>().Svr_Equip();
-                    //Svr_EquipSelectedEquipmentSlotItem();
                 }
                 ItemInHands = selectedEquipmentSlot.EquipmentItem;
             }
@@ -181,38 +176,6 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
             weaponEquipmentSlotsUIParent = transform.parent.Find($"{inGameUIPath}/Equipment Hotbar/Equipment Hotbar Weapons");
             extraEquipmentSlotsUIParent = transform.parent.Find($"{inGameUIPath}/Equipment Hotbar/Equipment Hotbar Extra");
         }
-    }
-
-    [Server]
-    private async void Svr_UnequipSelectedEquipmentSlotItem()
-    {
-        var previousItem = selectedEquipmentSlot.EquipmentItem.GetComponent<EquipmentItem>();
-        Rpc_UnequipSelectedEquipmentSlotItem();
-        await JODSTime.WaitTime(0.3f);
-        previousItem.Svr_Unequip();
-    }
-    [Server]
-    private async void Svr_EquipSelectedEquipmentSlotItem()
-    {
-        var item = selectedEquipmentSlot.EquipmentItem.GetComponent<EquipmentItem>();
-        Rpc_EquipSelectedEquipmentSlotItem();
-        await JODSTime.WaitTime(0.2f);
-        item.Svr_Equip();
-    }
-    [ClientRpc]
-    private void Rpc_UnequipSelectedEquipmentSlotItem()
-    {
-        playerHands.DOLocalMove(new Vector3(0f, -0.3f, 0f), 0.5f).SetEase(Ease.Linear);
-        playerHands.DOLocalRotate(new Vector3(45f, 0f, -10f), 0.5f).SetEase(Ease.Linear);
-    }
-    [ClientRpc]
-    private void Rpc_EquipSelectedEquipmentSlotItem()
-    {
-        //playerHands.DOLocalMove(new Vector3(0f, -0.3f, 0f), 0f);
-        //playerHands.DOLocalRotate(new Vector3(45f, 0f, -10f), 0f);
-        //playerHands.DOComplete();
-        playerHands.DOLocalMove(new Vector3(0f, 0f, 0f), 0.5f);
-        playerHands.DOLocalRotate(new Vector3(0f, 0f, 0f), 0.5f);
     }
 
     [Command]
@@ -412,12 +375,6 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
     }
 
     [Server]
-    public void Svr_Drop(PlayerEquipment item)
-    {
-
-    }
-
-    [Server]
     public void Svr_EquipNewItem(EquipmentItem equipmentItem)
     {
         if (EquipmentItem)
@@ -481,27 +438,25 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
     }
 
     [Server]
-    private async void Svr_InvokeEquippedItemChange(GameObject oldItem, GameObject newItem)
+    private void Svr_InvokeEquippedItemChange(GameObject oldItem, GameObject newItem)
     {
-        //Rpc_AnimateEquipmentChange();
-        //await JODSTime.WaitTime(0.5f);
         onServerEquippedItemChange?.Invoke(oldItem, newItem);
         Rpc_InvokeEquippedItemChange(connectionToClient, oldItem, newItem);
     }
-    [ClientRpc]
-    private void Rpc_AnimateEquipmentChange()
-    {
-        // Refactor and move this code somewhere else.
-        playerHands.DOLocalMove(new Vector3(0f, -0.3f, 0f), 0.5f).SetEase(Ease.Linear);
-        playerHands.DOLocalRotate(new Vector3(45f, 0f, -10f), 0.5f).SetEase(Ease.Linear)
-            .OnComplete(OnComplete);
+    //[ClientRpc]
+    //private void Rpc_AnimateEquipmentChange()
+    //{
+    //    // Refactor and move this code somewhere else.
+    //    playerHands.DOLocalMove(new Vector3(0f, -0.3f, 0f), 0.5f).SetEase(Ease.Linear);
+    //    playerHands.DOLocalRotate(new Vector3(45f, 0f, -10f), 0.5f).SetEase(Ease.Linear)
+    //        .OnComplete(OnComplete);
 
-        void OnComplete()
-        {
-            playerHands.DOLocalMove(new Vector3(0f, 0f, 0f), 0.5f);
-            playerHands.DOLocalRotate(new Vector3(0f, 0f, 0f), 0.5f);
-        }
-    }
+    //    void OnComplete()
+    //    {
+    //        playerHands.DOLocalMove(new Vector3(0f, 0f, 0f), 0.5f);
+    //        playerHands.DOLocalRotate(new Vector3(0f, 0f, 0f), 0.5f);
+    //    }
+    //}
     [TargetRpc]
     private void Rpc_InvokeEquippedItemChange(NetworkConnection target, GameObject oldItem, GameObject newItem)
     {
@@ -527,8 +482,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
     }
     private void OnItemPickedUp(GameObject newItem)
     {
-        //COMoveToHands = StartCoroutine(SmoothMoveToHands(newItem));
-        MoveToHands(newItem);
+        COMoveToHands = StartCoroutine(SmoothMoveToHands(newItem));
     }
 
     [Server]
