@@ -252,7 +252,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             attackMelee = value;
             Rpc_PlayAttackAnimation(AttackAnimation.Melee, attackMelee);
             if (Random.value < sounds.meleeSoundChance) PlaySound(sounds.meleeSounds, sounds.meleeVolume, true);
-            //melee.canMelee = false;
         }
     }
     public bool AttackRange
@@ -282,7 +281,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         get { return health; }
         set
         {
-            health = value;
+            health = Mathf.Clamp(value, 0, maxHealth);
             if (health <= 0)
             {
                 Svr_Die();
@@ -338,7 +337,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     private void SetStats()
     {
-        print(name + ": Set Stats");
         if (!unitSO)
         {
             Debug.LogError($"{name} had no Unit Scriptable Object assigned when it tried to set it's stats!" +
@@ -348,8 +346,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
         //Health
         int newMaxHealth = statModifiers.Length > 0 ? Mathf.RoundToInt(unitSO.health * statModifiers[0]) : unitSO.health;
-        Health = newMaxHealth;
         maxHealth = newMaxHealth;
+        Health = newMaxHealth;
 
         //Attack bools
         isMelee = unitSO.hasMelee;
@@ -506,7 +504,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         SetMaterialsAndMeshes();
        
         //random unit size, just to make units look less alike
-        transform.localScale = transform.localScale * Random.Range(0.95f, 1.1f);
+        transform.localScale = transform.localScale * Random.Range(0.95f, 1.05f);
     }
     
     private void SetMaterialsAndMeshes()

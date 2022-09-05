@@ -26,7 +26,7 @@ public class ZombieCommon : UnitBase, IControllable
     [SerializeField] private StatusEffectToApply damageStatusEffect;
     public override void ApplyHealthTrait()
     {
-        //throw new System.NotImplementedException();
+        StartCoroutine(Regeneration());
     }
 
     public override void ApplyDamageTrait()
@@ -36,9 +36,18 @@ public class ZombieCommon : UnitBase, IControllable
 
     public override void ApplySpeedTrait()
     {
-        print(name + " Speed");
         animator.SetBool("Run", true);
-        movementSpeed += 3; //this is overridden by unitbase because movement speed is set with = not +=
+        movementSpeed += 3;
+    }
+
+    private IEnumerator Regeneration()
+    {
+        while (!IsDead)
+        {
+            yield return new WaitForSeconds(1);
+
+            Health++;
+        }
     }
 
     #region Interface Functions

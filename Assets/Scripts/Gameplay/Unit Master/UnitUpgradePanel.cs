@@ -112,6 +112,8 @@ public class UnitUpgradePanel : MonoBehaviour
         traitDescription[0] = unitSO.upgrades.traitHealthDescription;
         traitDescription[1] = unitSO.upgrades.traitDamageDescription;
         traitDescription[2] = unitSO.upgrades.traitSpeedDescription;
+
+        traitDescriptionPanel.SetActive(false);
     }
 
     public void EnableUpgrades(bool enable)
@@ -120,9 +122,9 @@ public class UnitUpgradePanel : MonoBehaviour
         upgradeDamageButton.interactable = enable;
         upgradeSpeedButton.interactable = enable;
 
-        unlockHealthTraitButton.interactable = traitUnlocked[0] == false ? (healthProgressSlider.value == unitSO.upgrades.unitUpgradesHealth.amountOfUpgrades - 1 ? enable : false) : false;
-        unlockDamageTraitButton.interactable = traitUnlocked[1] == false ? (damageProgressSlider.value == unitSO.upgrades.unitUpgradesDamage.amountOfUpgrades - 1 ? enable : false) : false;
-        unlockSpeedTraitButton.interactable = traitUnlocked[2] == false ? (speedProgressSlider.value == unitSO.upgrades.unitUpgradesSpeed.amountOfUpgrades - 1 ? enable : false) : false;
+        unlockHealthTraitButton.interactable = traitUnlocked[0] == false ? (healthProgressSlider.value == healthProgressSlider.maxValue ? enable : false) : false;
+        unlockDamageTraitButton.interactable = traitUnlocked[1] == false ? (damageProgressSlider.value == damageProgressSlider.maxValue ? enable : false) : false;
+        unlockSpeedTraitButton.interactable = traitUnlocked[2] == false ? (speedProgressSlider.value == speedProgressSlider.maxValue ? enable : false) : false;
     }
     
     public void UnlockCheck(int xp)
@@ -239,4 +241,9 @@ public class UnitUpgradePanel : MonoBehaviour
     }
 
     #endregion
+
+    private void OnDisable()
+    {
+        traitDescriptionPanel.SetActive(false);
+    }
 }

@@ -36,7 +36,7 @@ MonoBehaviour:
   xpToUpgrade: 50
   starterUnit: 0
   maxAmountAlive: 25
-  health: 60
+  health: 40
   unitDamageType: 0
   hasMelee: 1
   hasRanged: 0
@@ -100,14 +100,17 @@ MonoBehaviour:
       amountOfUpgrades: 4
       upgradeAmount: 0.2
     traitHealth: Health Trait
+    traitHealthDescription: 
     unitUpgradesDamage:
       amountOfUpgrades: 4
       upgradeAmount: 0.2
     traitDamage: Damage Trait
+    traitDamageDescription: 
     unitUpgradesSpeed:
       amountOfUpgrades: 4
       upgradeAmount: 0.2
     traitSpeed: Speed Trait
+    traitSpeedDescription: 
   movementSpeed: 4
   chaseTime: 15
   sightDistance: 20
@@ -148,7 +151,6 @@ MonoBehaviour:
     footstepVolume: 0.1
   select:
     canSelect: 1
-  unitAnimator: {fileID: 9100000, guid: 0d03a7c9ce482164cbbf48eeaf8cce33, type: 2}
   description: The slav zombie is fast and can be deadly in numbers.
   powerStat: 4
   healthStat: 3
