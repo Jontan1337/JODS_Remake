@@ -33,7 +33,9 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 	[SerializeField] private LayerMask LOSLayer = 0;
 
 	private List<Collider> enemiesInSight = new List<Collider>();
+	private bool barrelAnimation = false;
 	[SyncVar] private bool isDead;
+
 
 
 	#region Placeable
@@ -145,7 +147,6 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 	}
 
 	// Shooting animation. Played once per shot.
-	bool barrelAnimation = false;
 	IEnumerator BarrelCo;
 	IEnumerator BarrelAnimation()
 	{
