@@ -137,7 +137,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 		while (time < duration)
 		{
 			time += Time.deltaTime/duration;
-			TurretStartUp(startRot, targetRot, time);
+			pivot.localRotation = Quaternion.Lerp(Quaternion.Euler(startRot), Quaternion.Euler(targetRot), time);
 			yield return null;
 		}
 		yield return new WaitForSeconds(0.2f);
@@ -145,11 +145,6 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 		yield return new WaitForSeconds(0.4f);
 		Svr_StartSearching();
 		StartCoroutine(Duration());
-	}
-	[ClientRpc]
-	private void TurretStartUp(Vector3 startRot, Vector3 targetRot, float time)
-	{
-		pivot.localRotation = Quaternion.Lerp(Quaternion.Euler(startRot), Quaternion.Euler(targetRot), time);
 	}
 	[ClientRpc]
 	private void ShowLaser()
@@ -242,8 +237,9 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 
 	// When a target is found, the searching and passive rotation coroutines are stopped.
 	// The coroutines that makes the turret look at the target is started, and the turret attempts to shoot at the target if able.
-	[ClientRpc]
-	private void Rpc_NewTarget(Transform newTarget)
+
+	[Server]
+	private void Svr_NewTarget(Transform newTarget)
 	{
 		target = newTarget;
 
@@ -254,17 +250,11 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 
 		StartCoroutine(RotateXCo);
 		StartCoroutine(RotateYCo);
-	}
-	[Server]
-	private void Svr_NewTarget(Transform newTarget)
-	{
-		target = newTarget;
 
-		Rpc_NewTarget(newTarget);
+
 		StopCoroutine(SearchingCo);
 		ShootIntervalCo = ShootInterval();
 		StartCoroutine(ShootIntervalCo);
-
 	}
 
 
@@ -293,14 +283,6 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 	{
 		target = null;
 
-		Rpc_LostTarget();
-		StopCoroutine(ShootIntervalCo);
-		Svr_StartSearching();
-	}
-
-	[ClientRpc]
-	private void Rpc_LostTarget()
-	{
 		if (barrelAnimation)
 		{
 			StopCoroutine(BarrelCo);
@@ -308,36 +290,26 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 		}
 		StopCoroutine(RotateYCo);
 		StopCoroutine(RotateXCo);
+
+		StopCoroutine(ShootIntervalCo);
+		Svr_StartSearching();
 	}
 
 	// Starts the passive rotation and searching coroutine
 	[Server]
 	private void Svr_StartSearching()
 	{
-		//Rpc_StartRotating();
-
-		//SearchingCo = Searching();
-		//StartCoroutine(SearchingCo);
 		StartCoroutine(Wait());
-
 	}
 	IEnumerator Wait()
 	{
 		yield return new WaitForSeconds(0.1f);
-		Rpc_StartRotating();
+		RotatePassiveCo = RotatePassive();
+		StartCoroutine(RotatePassiveCo);
 
 		SearchingCo = Searching();
 		StartCoroutine(SearchingCo);
 	}
-
-	[ClientRpc]
-	private void Rpc_StartRotating()
-	{
-		RotatePassiveCo = RotatePassive();
-		StartCoroutine(RotatePassiveCo);
-	}
-
-
 
 	// Returns true if the transform that is hit by the raycast is damagable otherwise returns false.
 	// If its not damagable, checks line of sight to the target. If it's not in sight, the target is lost.
@@ -381,6 +353,8 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 	private void Svr_Die()
 	{
 		StopAllCoroutines();
+		//ObjectPool.Instance.SpawnFromLocalPool(Tags.ExplosionSmall, transform.position, Quaternion.identity, 5);
+
 		Rpc_Die();
 		NetworkServer.Destroy(gameObject);
 	}
