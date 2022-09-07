@@ -26,7 +26,6 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 	[SerializeField] private ParticleSystem muzzleFlash = null;
 	[SerializeField] private ParticleSystem bulletShell = null;
 	[SerializeField] private GameObject Laser;
-	[SerializeField] private GameObject turretSmoke = null;
 	[SerializeField, SyncVar] private Transform target = null;
 
 	[Space]
@@ -37,14 +36,49 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 	[SyncVar] private bool isDead;
 
 
+	#region Placeable
+	public Transform Owner { get; set; }
+
+	// Invoked when the turret is put down on the ground.
+	// Starts the searching coroutine, the time until the turret dies and the cooldown on the engineers ability.
+	[Server]
+	public void Svr_OnPlaced()
+	{
+		Owner.GetComponentInParent<ActiveSClass>()?.Rpc_StartAbilityCooldown(Owner.GetComponent<NetworkIdentity>().connectionToClient, Owner);
+		Rpc_ShowTurret();
+		StartCoroutine(StartUp());
+	}
+
+	#endregion
+
 	#region Coroutines
+
+	IEnumerator StartUp()
+	{
+		float time = 0;
+		float duration = 1;
+		Vector3 startRot = new Vector3(50, 0, 0);
+		Vector3 targetRot = new Vector3(0, 0, 0);
+		while (time < duration)
+		{
+			time += Time.deltaTime / duration;
+			pivot.localRotation = Quaternion.Lerp(Quaternion.Euler(startRot), Quaternion.Euler(targetRot), time);
+			yield return null;
+		}
+		yield return new WaitForSeconds(0.2f);
+		Rpc_ShowLaser();
+		yield return new WaitForSeconds(0.4f);
+		Svr_StartSearching();
+		StartCoroutine(Duration());
+	}
+
 	// The turret tries to shoot at a fixed interval. The value of fireRate should be the desired rounds per minute (RPM).
 	IEnumerator ShootIntervalCo;
 	IEnumerator ShootInterval()
 	{
 		while (true)
 		{
-			TryShoot();
+			Svr_TryShoot();
 			yield return new WaitForSeconds(1 / (fireRate / 60));
 		}
 	}
@@ -128,28 +162,10 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 		}
 	}
 
-	IEnumerator StartUp()
+	IEnumerator DestroyWait()
 	{
-		float time = 0;
-		float duration = 1;
-		Vector3 startRot = new Vector3(50, 0 ,0);
-		Vector3 targetRot = new Vector3(0, 0, 0);
-		while (time < duration)
-		{
-			time += Time.deltaTime/duration;
-			pivot.localRotation = Quaternion.Lerp(Quaternion.Euler(startRot), Quaternion.Euler(targetRot), time);
-			yield return null;
-		}
-		yield return new WaitForSeconds(0.2f);
-		ShowLaser();
-		yield return new WaitForSeconds(0.4f);
-		Svr_StartSearching();
-		StartCoroutine(Duration());
-	}
-	[ClientRpc]
-	private void ShowLaser()
-	{
-		Laser.SetActive(true);
+		yield return new WaitForSeconds(0.1f);
+		NetworkServer.Destroy(gameObject);
 	}
 
 	#endregion
@@ -175,35 +191,6 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 		{
 			Svr_LostTarget();
 		}
-	}
-	[ClientRpc]
-	private void Rpc_Shoot()
-	{
-		BarrelCo = BarrelAnimation();
-		if (barrelAnimation)
-		{
-			StopCoroutine(BarrelCo);
-			barrelAnimation = false;
-		}
-		StartCoroutine(BarrelCo);
-		muzzleFlash.Emit(50);
-		bulletShell.Emit(1);
-
-	}
-	[ClientRpc]
-	private void Rpc_Bullethole(Vector3 point, Vector3 normal, string phyMatName)
-	{
-		if (GlobalVariables.SurfaceTypes.TryGetValue(phyMatName, out Tags fxTag))
-		{
-			GameObject bulletHole = ObjectPool.Instance.SpawnFromLocalPool(fxTag, point + normal * 0.01f, Quaternion.identity, 5);
-			bulletHole.transform.LookAt(point + normal);
-		}
-	}
-	[ClientRpc]
-	private void Rpc_BulletTrail(Vector3 direction)
-	{
-		GameObject fx = ObjectPool.Instance.SpawnFromLocalPool(Tags.BulletTrail, barrel.position, Quaternion.identity, 1);
-		fx.transform.forward = direction - barrel.position;
 	}
 
 	[Server]
@@ -257,9 +244,8 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 		StartCoroutine(ShootIntervalCo);
 	}
 
-
 	// Checks a list of colliders to see which one is closest to the turret.
-	Collider GetClosestEnemyCollider(List<Collider> enemyColliders)
+	private Collider GetClosestEnemyCollider(List<Collider> enemyColliders)
 	{
 		float currentClosestDitance = 99999f;
 		Collider currentClosestEnemy = null;
@@ -299,11 +285,6 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 	[Server]
 	private void Svr_StartSearching()
 	{
-		StartCoroutine(Wait());
-	}
-	IEnumerator Wait()
-	{
-		yield return new WaitForSeconds(0.1f);
 		RotatePassiveCo = RotatePassive();
 		StartCoroutine(RotatePassiveCo);
 
@@ -316,7 +297,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 	// This is to make sure that the turret doesn't lose its target just because it isn't currently hitting it or pointing at it.
 	// Even if another unit is standing in front of the target, the turret will still try to hit the target, damaging the unit in front of it instead.
 	[Server]
-	private bool TryShoot()
+	private bool Svr_TryShoot()
 	{
 		Ray(out RaycastHit didHit, out bool lineOfSightCheck);
 		if (didHit.transform)
@@ -335,6 +316,13 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 		return false;
 	}
 
+	[Server]
+	private void Svr_Die()
+	{
+		Rpc_Die();
+		StartCoroutine(DestroyWait());
+	}
+
 	// Sends out two variables that can be used if the method is called.
 	private void Ray(out RaycastHit didHit, out bool lineOfSightCheck)
 	{
@@ -347,31 +335,59 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 		didHit = hit;
 	}
 
+    #endregion
 
-	// Stops all coroutines and destroys the turret.
-	[Server]
-	private void Svr_Die()
+    #region ClientRpcs
+
+    
+    [ClientRpc]
+	private void Rpc_ShowTurret()
 	{
-		StopAllCoroutines();
-		//ObjectPool.Instance.SpawnFromLocalPool(Tags.ExplosionSmall, transform.position, Quaternion.identity, 5);
+		swivel.gameObject.SetActive(true);
+		cylinder.gameObject.SetActive(true);
+	}
 
-		Rpc_Die();
-		NetworkServer.Destroy(gameObject);
+	[ClientRpc]
+	private void Rpc_ShowLaser()
+	{
+		Laser.SetActive(true);
+	}
+
+	[ClientRpc]
+	private void Rpc_Shoot()
+	{
+		BarrelCo = BarrelAnimation();
+		if (barrelAnimation)
+		{
+			StopCoroutine(BarrelCo);
+			barrelAnimation = false;
+		}
+		StartCoroutine(BarrelCo);
+		muzzleFlash.Emit(50);
+		bulletShell.Emit(1);
+
+	}
+
+	[ClientRpc]
+	private void Rpc_Bullethole(Vector3 point, Vector3 normal, string phyMatName)
+	{
+		if (GlobalVariables.SurfaceTypes.TryGetValue(phyMatName, out Tags fxTag))
+		{
+			GameObject bulletHole = ObjectPool.Instance.SpawnFromLocalPool(fxTag, point + normal * 0.01f, Quaternion.identity, 5);
+			bulletHole.transform.LookAt(point + normal);
+		}
+	}
+	[ClientRpc]
+	private void Rpc_BulletTrail(Vector3 direction)
+	{
+		GameObject fx = ObjectPool.Instance.SpawnFromLocalPool(Tags.BulletTrail, barrel.position, Quaternion.identity, 1);
+		fx.transform.forward = direction - barrel.position;
 	}
 
 	[ClientRpc]
 	private void Rpc_Die()
-	{	
-		StopAllCoroutines();
-		ObjectPool.Instance.SpawnFromLocalPool(Tags.ExplosionSmall, transform.position, Quaternion.identity, 5);
-	}
-
-
-	[ClientRpc]
-	private void ShowTurret()
 	{
-		swivel.gameObject.SetActive(true);
-		cylinder.gameObject.SetActive(true);
+		ObjectPool.Instance.SpawnFromLocalPool(Tags.ExplosionSmall, transform.position, Quaternion.identity, 5);
 	}
 
 	#endregion
@@ -407,20 +423,6 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 
 	#endregion
 
-	#region Placeable
-	public Transform Owner { get; set; }
-
-	// Invoked when the turret is put down on the ground.
-	// Starts the searching coroutine, the time until the turret dies and the cooldown on the engineers ability.
-	[Server]
-	public void Svr_OnPlaced()
-	{
-		Owner.GetComponentInParent<ActiveSClass>()?.Rpc_StartAbilityCooldown(Owner.GetComponent<NetworkIdentity>().connectionToClient, Owner);
-		ShowTurret();
-		StartCoroutine(StartUp());
-	}
-
-    #endregion
 
     private void OnDrawGizmosSelected()
 	{
