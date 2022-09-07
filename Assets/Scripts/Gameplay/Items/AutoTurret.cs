@@ -57,7 +57,6 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 			Svr_FindTarget();
 			yield return new WaitForSeconds(searchInterval);
 		}
-
 	}
 
 	// The RotateY coroutine controls the swivel, making it look left or right at the target.
@@ -139,7 +138,6 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 		{
 			time += Time.deltaTime/duration;
 			TurretStartUp(startRot, targetRot, time);
-			//pivot.localRotation = Quaternion.Lerp(Quaternion.Euler(startRot), Quaternion.Euler(targetRot), time);
 			yield return null;
 		}
 		yield return new WaitForSeconds(0.2f);
@@ -383,9 +381,8 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 	private void Svr_Die()
 	{
 		StopAllCoroutines();
-
+		ObjectPool.Instance.SpawnFromLocalPool(Tags.ExplosionSmall, transform.position, Quaternion.identity, 5);
 		Rpc_Die();
-		PlaySmoke();
 		NetworkServer.Destroy(gameObject);
 	}
 
@@ -393,18 +390,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 	private void Rpc_Die()
 	{
 		StopAllCoroutines();
-		PlaySmoke();
-
-	}
-
-	private void PlaySmoke()
-	{
-		turretSmoke.transform.parent = null;
-		ParticleSystem[] particleSystems = turretSmoke.GetComponentsInChildren<ParticleSystem>();
-		foreach (var item in particleSystems)
-		{
-			item.Play();
-		}
+		ObjectPool.Instance.SpawnFromLocalPool(Tags.ExplosionSmall, transform.position, Quaternion.identity, 5);
 	}
 
 
