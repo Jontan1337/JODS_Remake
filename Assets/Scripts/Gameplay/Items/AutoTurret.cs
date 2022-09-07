@@ -66,6 +66,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 	{
 		while (true)
 		{
+			if (!target) Svr_LostTarget();
 			Quaternion lookRotation = Quaternion.LookRotation((target.position - swivel.position));
 			swivel.rotation = Quaternion.RotateTowards(swivel.rotation, lookRotation, rotateSpeed);
 			swivel.localEulerAngles = new Vector3(0, swivel.localEulerAngles.y, 0);
@@ -79,6 +80,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 	{
 		while (true)
 		{
+			if (!target) Svr_LostTarget();
 			Quaternion lookRotation = Quaternion.LookRotation(((target.position + target.GetComponent<BoxCollider>().center * 1.5f) - pivot.position));
 			pivot.rotation = Quaternion.RotateTowards(pivot.rotation, lookRotation, rotateSpeed);
 			pivot.localEulerAngles = new Vector3(pivot.localEulerAngles.x, 0, 0);
@@ -259,8 +261,8 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 	private void Svr_NewTarget(Transform newTarget)
 	{
 		target = newTarget;
-		Rpc_NewTarget(newTarget);
 
+		Rpc_NewTarget(newTarget);
 		StopCoroutine(SearchingCo);
 		ShootIntervalCo = ShootInterval();
 		StartCoroutine(ShootIntervalCo);
@@ -295,10 +297,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 
 		Rpc_LostTarget();
 		StopCoroutine(ShootIntervalCo);
-
 		Svr_StartSearching();
-
-
 	}
 
 	[ClientRpc]

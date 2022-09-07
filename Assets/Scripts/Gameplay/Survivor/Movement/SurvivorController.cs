@@ -16,7 +16,7 @@ public class SurvivorController : NetworkBehaviour
     private float groundDistance = 0.2f;
     private float x, y = 0;
     private bool isJumping;
-    private float baseSpeed = 2.9f;
+    private float baseSpeed = 5f;
     public float gravity = 20;
 
     [SerializeField] private Transform groundCheck = null;
@@ -74,8 +74,8 @@ public class SurvivorController : NetworkBehaviour
         //JODSInput.Controls.Survivor.Movement.canceled += StoppedMoving;
         JODSInput.onMovementDisabled += OnMovementDisabled;
         JODSInput.Controls.Survivor.Jump.performed += Jump;
-        JODSInput.Controls.Survivor.Sprint.performed += OnSprintPerformed;
-        JODSInput.Controls.Survivor.Sprint.canceled += OnSprintCanceled;
+        //JODSInput.Controls.Survivor.Sprint.performed += OnSprintPerformed;
+        //JODSInput.Controls.Survivor.Sprint.canceled += OnSprintCanceled;
     }
     public override void OnStopAuthority()
     {
@@ -83,8 +83,8 @@ public class SurvivorController : NetworkBehaviour
         //JODSInput.Controls.Survivor.Movement.canceled -= StoppedMoving;
         JODSInput.onMovementDisabled -= OnMovementDisabled;
         JODSInput.Controls.Survivor.Jump.performed -= Jump;
-        JODSInput.Controls.Survivor.Sprint.performed -= OnSprintPerformed;
-        JODSInput.Controls.Survivor.Sprint.canceled -= OnSprintCanceled;
+        //JODSInput.Controls.Survivor.Sprint.performed -= OnSprintPerformed;
+        //JODSInput.Controls.Survivor.Sprint.canceled -= OnSprintCanceled;
     }
     #endregion
 
@@ -97,7 +97,7 @@ public class SurvivorController : NetworkBehaviour
 
         if (cController.isGrounded)
         {
-            float speed = (isSprinting ? baseSpeed * 1.75f : baseSpeed) * modifiers.MovementSpeed;
+            float speed = (/*isSprinting ? baseSpeed * 1.75f :*/ baseSpeed) * modifiers.MovementSpeed;
             moveDirection = transform.TransformDirection(new Vector3(horizontal, 0.00f, vertical)) * (speed);
             if (isJumping)
             {
@@ -145,15 +145,15 @@ public class SurvivorController : NetworkBehaviour
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
     }
 
-    private void OnSprintPerformed(InputAction.CallbackContext context)
-    {
-        isSprinting = true;
-    }
+    //private void OnSprintPerformed(InputAction.CallbackContext context)
+    //{
+    //    isSprinting = true;
+    //}
 
-    private void OnSprintCanceled(InputAction.CallbackContext context)
-    {
-        isSprinting = false;
-    }
+    //private void OnSprintCanceled(InputAction.CallbackContext context)
+    //{
+    //    isSprinting = false;
+    //}
 
     public bool IsMoving() => moveDirection.z != 0 || moveDirection.x != 0;
     IEnumerator Wait()

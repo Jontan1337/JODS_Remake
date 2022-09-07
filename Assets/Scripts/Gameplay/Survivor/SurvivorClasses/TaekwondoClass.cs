@@ -92,7 +92,7 @@ public class TaekwondoClass : SurvivorClass, IHitter
     }
     public override void ActiveAbilitySecondary()
     {
-        if (!kicking && sController.isGrounded)
+        if (!kicking && sController.isGrounded) // !weaponEquiped
         {
             StartCoroutine(Kick());
         }
@@ -148,7 +148,7 @@ public class TaekwondoClass : SurvivorClass, IHitter
 
     private bool CanFlyKick()
     {
-        return !sController.isGrounded && sController.isSprinting && sController.IsMoving();
+        return !sController.isGrounded && sController.IsMoving();
     }
 
     public void OnFlyingKickHit(ControllerColliderHit hit)
@@ -180,12 +180,10 @@ public class TaekwondoClass : SurvivorClass, IHitter
 
     private IEnumerator Kick()
     {
-
         unitsHit.Clear();
         kicking = true;
         Kick(kicking);
         float speedModifier = modifiers.MovementSpeed / 2;
-
         modifiers.MovementSpeed -= speedModifier;
         GetComponentInParent<FullBodyBipedIK>().enabled = false;
         lowerLeg.enabled = true;
