@@ -381,14 +381,13 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 	private void Svr_Die()
 	{
 		StopAllCoroutines();
-		ObjectPool.Instance.SpawnFromLocalPool(Tags.ExplosionSmall, transform.position, Quaternion.identity, 5);
 		Rpc_Die();
 		NetworkServer.Destroy(gameObject);
 	}
 
 	[ClientRpc]
 	private void Rpc_Die()
-	{
+	{	
 		StopAllCoroutines();
 		ObjectPool.Instance.SpawnFromLocalPool(Tags.ExplosionSmall, transform.position, Quaternion.identity, 5);
 	}
