@@ -91,7 +91,6 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
         while (true)
         {
             Svr_FindTarget();
-            print("hallo?");
             yield return new WaitForSeconds(searchInterval);
         }
     }
@@ -203,19 +202,12 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
         Collider[] enemiesInRange = Physics.OverlapSphere(transform.position, range, unitLayer);
         foreach (Collider item in enemiesInRange)
         {
-            Debug.DrawLine(swivel.transform.position, (item.transform.position + item.GetComponent<BoxCollider>().center), Color.blue, 0.2f);
+            Debug.DrawRay(new Vector3(swivel.transform.position.x, barrel.transform.position.y, swivel.transform.position.z), (item.transform.position) - transform.position, Color.blue, 0.2f);
 
             // For each unit in range, it raycasts to the unit to check if there is a structure blocking its line of sight.
-            if (Physics.Raycast(swivel.transform.position, ((item.transform.position + item.GetComponent<BoxCollider>().center) - transform.position), out RaycastHit hit, LOSLayer))
+            if (Physics.Raycast(new Vector3(swivel.transform.position.x, barrel.transform.position.y, swivel.transform.position.z), ((item.transform.position) - transform.position), out RaycastHit hit, LOSLayer))
             {
-                if (hit.transform.gameObject.layer != 9)
-                {
-                    print(hit.transform.name);
-                }
-
-                print(item.transform.name);
-                print(hit.transform.name);
-                print("_____");
+                print(item.GetComponent<BoxCollider>().center);
                 // Every unit that is in line of sight will be added to a new list.
                 if (hit.transform)
                 {
@@ -224,10 +216,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
                         enemiesInSight.Add(item);
                     }
                 }
-            }
-            
-            
-
+            }          
         }
         // The turret uses the list of enemies in sight to find a target.
         if (enemiesInSight.Count > 0)
