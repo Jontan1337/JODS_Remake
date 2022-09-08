@@ -91,6 +91,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
         while (true)
         {
             Svr_FindTarget();
+            print("hallo?");
             yield return new WaitForSeconds(searchInterval);
         }
     }
@@ -205,16 +206,28 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
             Debug.DrawLine(swivel.transform.position, (item.transform.position + item.GetComponent<BoxCollider>().center), Color.blue, 0.2f);
 
             // For each unit in range, it raycasts to the unit to check if there is a structure blocking its line of sight.
-            Physics.Raycast(swivel.transform.position, ((item.transform.position + item.GetComponent<BoxCollider>().center) - transform.position), out RaycastHit hit, LOSLayer);
-
-            // Every unit that is in line of sight will be added to a new list.
-            if (hit.transform)
+            if (Physics.Raycast(swivel.transform.position, ((item.transform.position + item.GetComponent<BoxCollider>().center) - transform.position), out RaycastHit hit, LOSLayer))
             {
-                if (hit.transform == item.transform)
+                if (hit.transform.gameObject.layer != 9)
                 {
-                    enemiesInSight.Add(item);
+                    print(hit.transform.name);
+                }
+
+                print(item.transform.name);
+                print(hit.transform.name);
+                print("_____");
+                // Every unit that is in line of sight will be added to a new list.
+                if (hit.transform)
+                {
+                    if (hit.transform == item.transform)
+                    {
+                        enemiesInSight.Add(item);
+                    }
                 }
             }
+            
+            
+
         }
         // The turret uses the list of enemies in sight to find a target.
         if (enemiesInSight.Count > 0)
