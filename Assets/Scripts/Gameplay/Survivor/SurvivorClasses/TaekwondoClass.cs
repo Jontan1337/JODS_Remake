@@ -10,6 +10,7 @@ public class TaekwondoClass : SurvivorClass, IHitter
     private CharacterController cController;
     private SurvivorController sController;
     private ActiveSClass sClass;
+    private PlayerEquipment playerEquipment;
     ModifierManager modifiers;
 
     [SerializeField, SyncVar] private float flyingKickStart = 0;
@@ -72,6 +73,7 @@ public class TaekwondoClass : SurvivorClass, IHitter
             cController = GetComponentInParent<CharacterController>();
             sController = GetComponentInParent<SurvivorController>();
             modifiers = transform.root.GetComponent<ModifierManager>();
+            playerEquipment = transform.parent.GetComponentInChildren<PlayerEquipment>();
             sClass = GetComponentInParent<ActiveSClass>();
             lowerLeg = transform.parent.Find("Armature").GetComponentInChildren<Collider>();
         }
@@ -84,7 +86,7 @@ public class TaekwondoClass : SurvivorClass, IHitter
             StartCoroutine(FlyingKick());
             sClass.Cmd_StartAbilityCooldown(transform.root);
         }
-        else if (!kicking && sController.isGrounded && !sController.isSprinting)
+        else if (!kicking && sController.isGrounded && !playerEquipment?.ItemInHands)
         {
             print("kick");
             StartCoroutine(Kick());
@@ -92,7 +94,7 @@ public class TaekwondoClass : SurvivorClass, IHitter
     }
     public override void ActiveAbilitySecondary()
     {
-        if (!kicking && sController.isGrounded) // !weaponEquiped
+        if (!kicking && sController.isGrounded && !playerEquipment?.ItemInHands)
         {
             StartCoroutine(Kick());
         }
