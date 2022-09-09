@@ -115,9 +115,17 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Open Upgrade Menu"",
+                    ""name"": ""Open Unit Upgrade Menu"",
                     ""type"": ""Button"",
                     ""id"": ""700fbe75-3c74-4aa8-8efb-0485e8be586e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Open Master Upgrade Menu"",
+                    ""type"": ""Button"",
+                    ""id"": ""776dae05-1d19-4624-9b69-6bd5f37c234a"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
@@ -395,7 +403,18 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Open Upgrade Menu"",
+                    ""action"": ""Open Unit Upgrade Menu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""044c16aa-efe8-49b5-a296-ae0206b0930d"",
+                    ""path"": ""<Keyboard>/t"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Open Master Upgrade Menu"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -966,7 +985,8 @@ public class @Controls : IInputActionCollection, IDisposable
         m_Master_Camera = m_Master.FindAction("Camera", throwIfNotFound: true);
         m_Master_Alt = m_Master.FindAction("Alt", throwIfNotFound: true);
         m_Master_TakeControl = m_Master.FindAction("Take Control", throwIfNotFound: true);
-        m_Master_OpenUpgradeMenu = m_Master.FindAction("Open Upgrade Menu", throwIfNotFound: true);
+        m_Master_OpenUnitUpgradeMenu = m_Master.FindAction("Open Unit Upgrade Menu", throwIfNotFound: true);
+        m_Master_OpenMasterUpgradeMenu = m_Master.FindAction("Open Master Upgrade Menu", throwIfNotFound: true);
         // Survivor
         m_Survivor = asset.FindActionMap("Survivor", throwIfNotFound: true);
         m_Survivor_LMB = m_Survivor.FindAction("LMB", throwIfNotFound: true);
@@ -1052,7 +1072,8 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_Master_Camera;
     private readonly InputAction m_Master_Alt;
     private readonly InputAction m_Master_TakeControl;
-    private readonly InputAction m_Master_OpenUpgradeMenu;
+    private readonly InputAction m_Master_OpenUnitUpgradeMenu;
+    private readonly InputAction m_Master_OpenMasterUpgradeMenu;
     public struct MasterActions
     {
         private @Controls m_Wrapper;
@@ -1069,7 +1090,8 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @Camera => m_Wrapper.m_Master_Camera;
         public InputAction @Alt => m_Wrapper.m_Master_Alt;
         public InputAction @TakeControl => m_Wrapper.m_Master_TakeControl;
-        public InputAction @OpenUpgradeMenu => m_Wrapper.m_Master_OpenUpgradeMenu;
+        public InputAction @OpenUnitUpgradeMenu => m_Wrapper.m_Master_OpenUnitUpgradeMenu;
+        public InputAction @OpenMasterUpgradeMenu => m_Wrapper.m_Master_OpenMasterUpgradeMenu;
         public InputActionMap Get() { return m_Wrapper.m_Master; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1115,9 +1137,12 @@ public class @Controls : IInputActionCollection, IDisposable
                 @TakeControl.started -= m_Wrapper.m_MasterActionsCallbackInterface.OnTakeControl;
                 @TakeControl.performed -= m_Wrapper.m_MasterActionsCallbackInterface.OnTakeControl;
                 @TakeControl.canceled -= m_Wrapper.m_MasterActionsCallbackInterface.OnTakeControl;
-                @OpenUpgradeMenu.started -= m_Wrapper.m_MasterActionsCallbackInterface.OnOpenUpgradeMenu;
-                @OpenUpgradeMenu.performed -= m_Wrapper.m_MasterActionsCallbackInterface.OnOpenUpgradeMenu;
-                @OpenUpgradeMenu.canceled -= m_Wrapper.m_MasterActionsCallbackInterface.OnOpenUpgradeMenu;
+                @OpenUnitUpgradeMenu.started -= m_Wrapper.m_MasterActionsCallbackInterface.OnOpenUnitUpgradeMenu;
+                @OpenUnitUpgradeMenu.performed -= m_Wrapper.m_MasterActionsCallbackInterface.OnOpenUnitUpgradeMenu;
+                @OpenUnitUpgradeMenu.canceled -= m_Wrapper.m_MasterActionsCallbackInterface.OnOpenUnitUpgradeMenu;
+                @OpenMasterUpgradeMenu.started -= m_Wrapper.m_MasterActionsCallbackInterface.OnOpenMasterUpgradeMenu;
+                @OpenMasterUpgradeMenu.performed -= m_Wrapper.m_MasterActionsCallbackInterface.OnOpenMasterUpgradeMenu;
+                @OpenMasterUpgradeMenu.canceled -= m_Wrapper.m_MasterActionsCallbackInterface.OnOpenMasterUpgradeMenu;
             }
             m_Wrapper.m_MasterActionsCallbackInterface = instance;
             if (instance != null)
@@ -1158,9 +1183,12 @@ public class @Controls : IInputActionCollection, IDisposable
                 @TakeControl.started += instance.OnTakeControl;
                 @TakeControl.performed += instance.OnTakeControl;
                 @TakeControl.canceled += instance.OnTakeControl;
-                @OpenUpgradeMenu.started += instance.OnOpenUpgradeMenu;
-                @OpenUpgradeMenu.performed += instance.OnOpenUpgradeMenu;
-                @OpenUpgradeMenu.canceled += instance.OnOpenUpgradeMenu;
+                @OpenUnitUpgradeMenu.started += instance.OnOpenUnitUpgradeMenu;
+                @OpenUnitUpgradeMenu.performed += instance.OnOpenUnitUpgradeMenu;
+                @OpenUnitUpgradeMenu.canceled += instance.OnOpenUnitUpgradeMenu;
+                @OpenMasterUpgradeMenu.started += instance.OnOpenMasterUpgradeMenu;
+                @OpenMasterUpgradeMenu.performed += instance.OnOpenMasterUpgradeMenu;
+                @OpenMasterUpgradeMenu.canceled += instance.OnOpenMasterUpgradeMenu;
             }
         }
     }
@@ -1407,7 +1435,8 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnCamera(InputAction.CallbackContext context);
         void OnAlt(InputAction.CallbackContext context);
         void OnTakeControl(InputAction.CallbackContext context);
-        void OnOpenUpgradeMenu(InputAction.CallbackContext context);
+        void OnOpenUnitUpgradeMenu(InputAction.CallbackContext context);
+        void OnOpenMasterUpgradeMenu(InputAction.CallbackContext context);
     }
     public interface ISurvivorActions
     {

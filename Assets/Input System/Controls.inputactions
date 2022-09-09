@@ -102,9 +102,17 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Open Upgrade Menu",
+                    "name": "Open Unit Upgrade Menu",
                     "type": "Button",
                     "id": "700fbe75-3c74-4aa8-8efb-0485e8be586e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Open Master Upgrade Menu",
+                    "type": "Button",
+                    "id": "776dae05-1d19-4624-9b69-6bd5f37c234a",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
@@ -382,7 +390,18 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Open Upgrade Menu",
+                    "action": "Open Unit Upgrade Menu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "044c16aa-efe8-49b5-a296-ae0206b0930d",
+                    "path": "<Keyboard>/t",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Open Master Upgrade Menu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

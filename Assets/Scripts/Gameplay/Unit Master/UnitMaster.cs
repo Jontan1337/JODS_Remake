@@ -164,6 +164,16 @@ public class UnitMaster : NetworkBehaviour
     [SerializeField] private int energyUntilNextUpgradeBase = 50; //When does the next upgrade decision become available 
     [SerializeField, SyncVar] private int energyLevel = 0;
     [SerializeField] private AnimationCurve energyRequirementCurve;
+    [SyncVar(hook = nameof(MasterUpgradesHook))]private int masterUpgrades = 0;
+    private void MasterUpgradesHook(int oldVal, int newVal)
+    {
+        UI.masterUpgradePointsText.text = "Upgrade Points: " + newVal;
+
+        foreach(Button b in UI.masterUpgradeButtons)
+        {
+            b.enabled = newVal > 0;
+        }
+    }
 
     private int Energy
     {
@@ -183,7 +193,7 @@ public class UnitMaster : NetworkBehaviour
                 energyUntilNextUpgrade -= diff;
                 if (energyUntilNextUpgrade <= 0)
                 {
-                    Rpc_ActivateUpgradeDecisions(netIdentity.connectionToClient, true);
+                    masterUpgrades++;
                 }
             }
         }
@@ -266,8 +276,6 @@ public class UnitMaster : NetworkBehaviour
         public Text upgradeMenuXpText = null;
         public Text spawnText = null;
         [Space]
-        public GameObject UpgradeButtons = null;
-        [Space]
         public GameObject unitButtonPrefab;
         public Transform unitButtonContainer;
         [Space]
@@ -278,14 +286,19 @@ public class UnitMaster : NetworkBehaviour
         [Space]
         public Image fadeImage;
 
-        [Header("Upgrade System UI")]
-        public GameObject upgradeMenu;
+        [Header("Unit Upgrade System UI")]
+        public GameObject unitUpgradeMenu;
         public Transform upgradeMenuContainer;
         [Space]
         public GameObject unitUpgradePanel;
         [Space]
         public GameObject deployableUpgradePanel;
         public Transform deployableUgradeMenuContainer;
+
+        [Header("Master Upgrade System UI")]
+        public GameObject masterUpgradeMenu;
+        public Text masterUpgradePointsText;
+        public Button[] masterUpgradeButtons;
     }
     [Space]
     public UserInterface UI;
@@ -394,7 +407,7 @@ public class UnitMaster : NetworkBehaviour
         UpdateEnergyUI();
         UpdateEnergyUseUI(0);
 
-        UI.upgradeMenu.SetActive(false);
+        UI.unitUpgradeMenu.SetActive(false);
 
         //Other master visuals
 
@@ -467,7 +480,8 @@ public class UnitMaster : NetworkBehaviour
         JODSInput.Controls.Master.TakeControl.performed += ctx => TryToTakeControl();
 
         //Upgrade menu Input
-        JODSInput.Controls.Master.OpenUpgradeMenu.performed += ctx => OpenUpgradeMenu();
+        JODSInput.Controls.Master.OpenUnitUpgradeMenu.performed += ctx => OpenUnitUpgradeMenu();
+        JODSInput.Controls.Master.OpenMasterUpgradeMenu.performed += ctx => OpenMasterUpgradeMenu();
 
         //Menu Input
         PlayerManager.Instance.onMenuOpened += OnMenuEnabled;
@@ -508,7 +522,8 @@ public class UnitMaster : NetworkBehaviour
         JODSInput.Controls.Master.TakeControl.performed -= ctx => TryToTakeControl();
 
         //Upgrade menu Input
-        JODSInput.Controls.Master.OpenUpgradeMenu.performed -= ctx => OpenUpgradeMenu();
+        JODSInput.Controls.Master.OpenUnitUpgradeMenu.performed -= ctx => OpenUnitUpgradeMenu();
+        JODSInput.Controls.Master.OpenUnitUpgradeMenu.performed -= ctx => OpenMasterUpgradeMenu();
 
 
         //Menu Input
@@ -697,8 +712,7 @@ public class UnitMaster : NetworkBehaviour
     [Command]
     private void Cmd_UpgradeEnergy(bool rate)
     {
-        //Deactivate the decisions
-        Rpc_ActivateUpgradeDecisions(netIdentity.connectionToClient, false);
+        masterUpgrades--;
 
         //Play a sound
         Rpc_PlayGlobalSound(true);
@@ -835,12 +849,6 @@ public class UnitMaster : NetworkBehaviour
         uiGameplayButtons[chosenSpawnableIndex].Choose(choose);
     }
 
-    [TargetRpc]
-    private void Rpc_ActivateUpgradeDecisions(NetworkConnection target, bool enable)
-    {
-        UI.UpgradeButtons.SetActive(enable);
-    }
-
     private void SetSpawnText(string newText)
     {
         if (spawnTextBool)
@@ -872,11 +880,17 @@ public class UnitMaster : NetworkBehaviour
         SetSpawnText(newText);
     }
 
-    public void OpenUpgradeMenu()
+    public void OpenUnitUpgradeMenu()
     {
-        bool active = !UI.upgradeMenu.activeSelf;
-        UI.upgradeMenu.SetActive(active);
+        bool active = !UI.unitUpgradeMenu.activeSelf;
+        UI.unitUpgradeMenu.SetActive(active);
         UI.inGameUI.SetActive(!active);
+    }
+
+    public void OpenMasterUpgradeMenu()
+    {
+        bool active = !UI.masterUpgradeMenu.activeSelf;
+        UI.masterUpgradeMenu.SetActive(active);
     }
 
     #endregion
@@ -1494,7 +1508,7 @@ public class UnitMaster : NetworkBehaviour
                     float angle = Vector3.Angle(dir, survivor.transform.forward);
 
                     //Debugs
-                    Debug.DrawRay(pos, pPos, angle > 60 ? Color.green : Color.red, 10f, false);
+                    Debug.DrawLine(pos, pPos, angle > 60 ? Color.green : Color.red, 10f, false);
 
                     //Is it inside the view angle of the survivor
                     if (angle < 60)
