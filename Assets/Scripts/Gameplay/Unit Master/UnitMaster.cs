@@ -175,6 +175,14 @@ public class UnitMaster : NetworkBehaviour
         }
     }
 
+    public enum MasterUpgradeType
+    {
+        RechargeRate = 0,
+        MaxEnergy = 1,
+        UnitCapacity = 2,
+        SurvivorOutlines = 3
+    }
+
     private int Energy
     {
         get { return currentEnergy; }
@@ -699,9 +707,9 @@ public class UnitMaster : NetworkBehaviour
         TryToRefundUnit();
     }
     #endregion
-    public void UpgradeEnergy(bool rate)
+    public void UpgradeMaster(int upgradeType)
     {
-        Cmd_UpgradeEnergy(rate);
+        Cmd_UpgradeEnergy((MasterUpgradeType)upgradeType);
 
         //Update scoreboard stat
         Cmd_UpdateScore(1, PlayerDataStat.TotalUpgrades);        
@@ -710,25 +718,27 @@ public class UnitMaster : NetworkBehaviour
     }
 
     [Command]
-    private void Cmd_UpgradeEnergy(bool rate)
+    private void Cmd_UpgradeEnergy(MasterUpgradeType upgradeType)
     {
         masterUpgrades--;
 
         //Play a sound
         Rpc_PlayGlobalSound(true);
 
-        //If player chose to upgrade the recharge rate
-        if (rate)
+        switch (upgradeType)
         {
-            //Increase the increment
-            energyRechargeIncrement += 1;
-        }
-
-        //If player chose to upgrade the max amount of energy
-        else
-        {
-            //Increase the max amount of energy
-            maxEnergy += maxEnergyIncrement;
+            case MasterUpgradeType.RechargeRate:
+                //Increase the increment
+                energyRechargeIncrement += 1;
+                break;
+            case MasterUpgradeType.MaxEnergy:
+                //Increase the max amount of energy
+                maxEnergy += maxEnergyIncrement;
+                break;
+            case MasterUpgradeType.UnitCapacity:
+                break;
+            case MasterUpgradeType.SurvivorOutlines:
+                break;
         }
     }
 
