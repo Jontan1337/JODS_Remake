@@ -30,7 +30,9 @@ public class MasterUpgradeUIButton : MonoBehaviour
 
     private void Start()
     {
-        btn = GetComponent<Button>();
+        titleText.gameObject.SetActive(false);
+        descriptionText.gameObject.SetActive(false);
+
         for (int i = 0; i < totalUpgrades.Length; i++)
         {
             counters.Add(Instantiate(imgCounter, imgCounterContainer).GetComponent<Image>());
@@ -39,13 +41,15 @@ public class MasterUpgradeUIButton : MonoBehaviour
 
     public void UnlockButton(int masterLevel, bool enable)
     {
-        btn.interactable = (enable ? masterLevel >= RequiredLevel : false);
+        bool maxUpgradeReached = currentUpgrades >= totalUpgrades.Length;
+        if (btn == null) btn = GetComponent<Button>();
+        btn.interactable = (maxUpgradeReached ? false : enable ? masterLevel >= RequiredLevel : false);
     }
 
     public void Upgrade()
     {
-        masterReference.UpgradeMaster(upgradeType);
         currentUpgrades++;
+        masterReference.UpgradeMaster(upgradeType);
 
         for (int i = 0; i < totalUpgrades.Length; i++)
         {
@@ -73,7 +77,7 @@ public class MasterUpgradeUIButton : MonoBehaviour
 
         titleText.text = title;
 
-        descriptionText.text = "Required Level: " + RequiredLevel + 
+        descriptionText.text = "Next upgrade required level: " + RequiredLevel + 
             "\n\n" + 
             description;
     }
@@ -82,8 +86,11 @@ public class MasterUpgradeUIButton : MonoBehaviour
     {
         titleText.gameObject.SetActive(false);
         descriptionText.gameObject.SetActive(false);
+    }
 
-        titleText.text = title;
-        descriptionText.text = description;
+
+    private void OnDisable()
+    {
+        HideDescription();
     }
 }

@@ -168,7 +168,7 @@ public class UnitMaster : NetworkBehaviour
         UI.masterLevelImage.fillAmount = (float)newVal / (float)energyUntilNextUpgradeTarget;
     }
     [SerializeField, SyncVar] private int energyUntilNextUpgradeTarget = 50; //When does the next upgrade decision become available
-    [Command] private void Cmd_EnergyUntilNextUpgrade()
+    [Server] private void Svr_EnergyUntilNextUpgrade()
     {
         int newMilestone = Mathf.RoundToInt(energyUntilNextUpgradeBase *
             (1 + energyRequirementCurve.Evaluate(
@@ -211,7 +211,7 @@ public class UnitMaster : NetworkBehaviour
                 energyUntilNextUpgradeValue += diff;
                 if (energyUntilNextUpgradeValue >= energyUntilNextUpgradeTarget)
                 {                    
-                    Cmd_EnergyUntilNextUpgrade();
+                    Svr_EnergyUntilNextUpgrade();
                 }
             }
         }
@@ -386,6 +386,7 @@ public class UnitMaster : NetworkBehaviour
         name += $" ({masterSO.masterName})";       
 
         globalAudio = GetComponent<AudioSource>();
+        globalAudio.clip = masterSO.globalSound;
 
         if (isServer)
         {
@@ -443,8 +444,6 @@ public class UnitMaster : NetworkBehaviour
         //Misc
         spawnSmokeAudio = spawnSmokeEffect.GetComponent<AudioSource>();
         spawnSmokeAudio.clip = masterSO.spawnSound;
-                
-        globalAudio.clip = masterSO.globalSound;
 
         //Attach the master's custom script to the gameobject.
         System.Type masterType = System.Type.GetType(masterSO.masterClass.name + ",Assembly-CSharp");
@@ -920,6 +919,14 @@ public class UnitMaster : NetworkBehaviour
     {
         bool active = !UI.masterUpgradeMenu.activeSelf;
         UI.masterUpgradeMenu.SetActive(active);
+
+        if (active)
+        {
+            foreach (Button b in UI.masterUpgradeButtons)
+            {
+                b.GetComponent<MasterUpgradeUIButton>().UnlockButton(masterLevel, masterLevel > 0);
+            }
+        }
     }
 
     #endregion
@@ -1908,6 +1915,8 @@ public class UnitMaster : NetworkBehaviour
     [ClientRpc]
     void Rpc_PlayGlobalSound(bool randomPitch)
     {
+        if (globalAudio.clip == null) return;
+
         //Assign a random pitch to the audio source
         globalAudio.pitch = randomPitch ? Random.Range(0.95f, 1.05f) : 1;
 
