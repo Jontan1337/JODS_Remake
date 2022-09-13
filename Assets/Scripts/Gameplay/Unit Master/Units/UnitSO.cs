@@ -53,6 +53,7 @@ public class UnitSO : ScriptableObject
     public bool starterUnit;
     [Space]
     public int maxAmountAlive = 50;
+    public int maxAmountAliveIncrement = 5;
 
     [Header("Stats")]
     public int health = 100;

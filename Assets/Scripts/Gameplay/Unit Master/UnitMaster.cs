@@ -121,6 +121,16 @@ public class UnitMaster : NetworkBehaviour
     UnitMasterClass mClass = null;
 
     [Title("Stats", titleAlignment: TitleAlignments.Centered)]
+
+    [SerializeField, SyncVar(hook = nameof(MasterLevelHook))] private int masterLevel = 0;
+    private void MasterLevelHook(int oldVal, int newVal)
+    {
+        if (UI.masterLevelText == null) return;
+        UI.masterLevelText.text = newVal.ToString();
+    }
+
+    [Space]
+
     [SerializeField, SyncVar(hook = nameof(CurrentEnergy_Hook))] private int currentEnergy = 50; //Current amount of master energy
     [Command] private void Cmd_SetCurrentEnergy(int newVal)
     {
@@ -151,18 +161,26 @@ public class UnitMaster : NetworkBehaviour
     [SerializeField, SyncVar] private int currentXP = 0; //Current amount of master xp
     [Command] private void Cmd_SetCurrentXP(int newVal) { CurrentXP = newVal; }
     [Space]
-    [SerializeField, SyncVar] private int energyUntilNextUpgrade = 50; //When does the next upgrade decision become available
+    [SerializeField, SyncVar(hook = nameof(EnergyUntilNextUpgradeHook))] private int energyUntilNextUpgradeValue = 0; //Current progress
+    private void EnergyUntilNextUpgradeHook(int oldVal, int newVal)
+    {
+        if (UI.masterLevelImage == null) return;
+        UI.masterLevelImage.fillAmount = (float)newVal / (float)energyUntilNextUpgradeTarget;
+    }
+    [SerializeField, SyncVar] private int energyUntilNextUpgradeTarget = 50; //When does the next upgrade decision become available
     [Command] private void Cmd_EnergyUntilNextUpgrade()
     {
         int newMilestone = Mathf.RoundToInt(energyUntilNextUpgradeBase *
             (1 + energyRequirementCurve.Evaluate(
-        (energyRequirementCurve.keys[energyRequirementCurve.keys.Length - 1].time / 10) * (energyLevel + 1))));
+        (energyRequirementCurve.keys[energyRequirementCurve.keys.Length - 1].time / 10) * (masterLevel + 1))));
 
-        energyUntilNextUpgrade = newMilestone; 
-        energyLevel++; 
+        energyUntilNextUpgradeTarget = newMilestone;
+        energyUntilNextUpgradeValue = 0; 
+        masterLevel++;
+        masterUpgrades++;
     }
+    [Space]
     [SerializeField] private int energyUntilNextUpgradeBase = 50; //When does the next upgrade decision become available 
-    [SerializeField, SyncVar] private int energyLevel = 0;
     [SerializeField] private AnimationCurve energyRequirementCurve;
     [SyncVar(hook = nameof(MasterUpgradesHook))]private int masterUpgrades = 0;
     private void MasterUpgradesHook(int oldVal, int newVal)
@@ -171,16 +189,8 @@ public class UnitMaster : NetworkBehaviour
 
         foreach(Button b in UI.masterUpgradeButtons)
         {
-            b.enabled = newVal > 0;
+            b.GetComponent<MasterUpgradeUIButton>().UnlockButton(masterLevel, newVal > 0);
         }
-    }
-
-    public enum MasterUpgradeType
-    {
-        RechargeRate = 0,
-        MaxEnergy = 1,
-        UnitCapacity = 2,
-        SurvivorOutlines = 3
     }
 
     private int Energy
@@ -198,10 +208,10 @@ public class UnitMaster : NetworkBehaviour
 
             if (less)
             {
-                energyUntilNextUpgrade -= diff;
-                if (energyUntilNextUpgrade <= 0)
-                {
-                    masterUpgrades++;
+                energyUntilNextUpgradeValue += diff;
+                if (energyUntilNextUpgradeValue >= energyUntilNextUpgradeTarget)
+                {                    
+                    Cmd_EnergyUntilNextUpgrade();
                 }
             }
         }
@@ -271,6 +281,10 @@ public class UnitMaster : NetworkBehaviour
     [System.Serializable]
     public class UserInterface
     {
+        [Header("Master Level UI")]
+        public Text masterLevelText = null;
+        public Image masterLevelImage = null;
+
         [Header("General UI")]
         public GameObject inGameUI;
         [Space]
@@ -381,7 +395,8 @@ public class UnitMaster : NetworkBehaviour
             maxEnergy = masterSO.startMaxEnergy;
             energyRechargeIncrement = masterSO.energyRechargeIncrement;
             maxEnergyIncrement = masterSO.maxEnergyUpgradeIncrement;
-            energyUntilNextUpgrade = masterSO.energyUntilNextUpgrade;
+            energyUntilNextUpgradeTarget = masterSO.energyUntilNextUpgrade;
+            energyUntilNextUpgradeValue = 0;
             energyUntilNextUpgradeBase = masterSO.energyUntilNextUpgrade;
 
             StartCoroutine(EnergyCoroutine());
@@ -707,14 +722,12 @@ public class UnitMaster : NetworkBehaviour
         TryToRefundUnit();
     }
     #endregion
-    public void UpgradeMaster(int upgradeType)
+    public void UpgradeMaster(MasterUpgradeType upgradeType)
     {
-        Cmd_UpgradeEnergy((MasterUpgradeType)upgradeType);
+        Cmd_UpgradeEnergy(upgradeType);
 
         //Update scoreboard stat
         Cmd_UpdateScore(1, PlayerDataStat.TotalUpgrades);        
-
-        Cmd_EnergyUntilNextUpgrade();
     }
 
     [Command]
@@ -736,8 +749,14 @@ public class UnitMaster : NetworkBehaviour
                 maxEnergy += maxEnergyIncrement;
                 break;
             case MasterUpgradeType.UnitCapacity:
+                foreach(UnitList unit in unitList)
+                {
+                    unit.maxAmount += unit.unit.maxAmountAliveIncrement;
+                    unit.CurrentAmount = unit.CurrentAmount; //This updates the ui, so the new max amount becomes visible.
+                }
                 break;
             case MasterUpgradeType.SurvivorOutlines:
+                print("We dont gotgitget outlnes yuet");
                 break;
         }
     }
