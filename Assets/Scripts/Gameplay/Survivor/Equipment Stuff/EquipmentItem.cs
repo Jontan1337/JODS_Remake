@@ -34,7 +34,9 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	[SerializeField] private UnityEvent onDropEvent;
 	[SerializeField] private UnityEvent onEquipEvent;
 	[SerializeField] private UnityEvent onUnequipEvent;
+
 	public Action<GameObject> onServerDropItem;
+
     private ActiveSClass playerClass = null;
 
     public bool IsInteractable { get => isInteractable; set => isInteractable = value; }
@@ -44,6 +46,8 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 
     protected virtual void Awake()
 	{
+		unequippedLayer = LayerMask.NameToLayer("Equipment");
+		equippedLayer = LayerMask.NameToLayer("FirstPerson");
 		// GetComponentsInChildren also includes the parent apparently.
 		objectMeshes = transform.GetComponentsInChildren<MeshRenderer>();
 
@@ -81,7 +85,7 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 		owner = interacter.transform;
 		if (equipment != null)
 		{
-			equipment?.Svr_Equip(gameObject, equipmentType);
+			equipment.Svr_Equip(gameObject, equipmentType);
 		}
 		else
 		{
@@ -104,7 +108,6 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	[TargetRpc]
 	public virtual void Rpc_CancelInteract(NetworkConnection target, GameObject interacter)
 	{
-		playerClass = null;
 	}
 
 	[Server]
