@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System;
 
-public class JODSInput : MonoBehaviour
+public sealed class JODSInput : MonoBehaviour
 {
     public static Action onMovementDisabled;
     public static Action onCameraDisabled;

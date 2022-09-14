@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Mirror;
 
-public class EquipmentControl : NetworkBehaviour
+public sealed class EquipmentControl : NetworkBehaviour
 {
 	private PlayerEquipment playerEquipment;
 
