@@ -2,7 +2,6 @@
 using Mirror;
 using UnityEngine.InputSystem;
 using System;
-using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine.Events;
 
@@ -33,7 +32,6 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	[Title("On Pickup & Drop (LOCAL)")]
 	[SerializeField] private UnityEvent onPickupEvent;
 	[SerializeField] private UnityEvent onDropEvent;
-	[SerializeField] private UnityEvent onBeforeEquipEvent;
 	[SerializeField] private UnityEvent onEquipEvent;
 	[SerializeField] private UnityEvent onUnequipEvent;
 	public Action<GameObject> onServerDropItem;
