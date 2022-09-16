@@ -81,7 +81,7 @@ public sealed class Explosive : NetworkBehaviour, IDamagable, IExplodable
         List<GameObject> list = new List<GameObject>(); //Add all the gameobjects connected to each collider to a list
         foreach (Collider targetCollider in collidersInRange)
         {
-            //One gameobject may container more than one collider
+            // One gameobject may contain more than one collider
             if (!list.Contains(targetCollider.gameObject))
             {
                 list.Add(targetCollider.gameObject);
@@ -90,7 +90,7 @@ public sealed class Explosive : NetworkBehaviour, IDamagable, IExplodable
         // Go through the filtered list.
         foreach (GameObject target in list)
         {
-            //store the collider component for later use
+            // Store the collider component for later use
             Collider targetCollider = target.GetComponent<Collider>();
 
             // OverlapSphere also detects itself,
