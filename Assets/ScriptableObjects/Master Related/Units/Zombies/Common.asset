@@ -40,6 +40,7 @@ MonoBehaviour:
   xpToUpgrade: 25
   starterUnit: 1
   maxAmountAlive: 75
+  maxAmountAliveIncrement: 5
   health: 50
   unitDamageType: 0
   hasMelee: 1
@@ -75,7 +76,7 @@ MonoBehaviour:
     availableFromStart: 1
     statusEffectsToApply: []
   upgrades:
-    unitsToPlace: 1
+    unitsToPlace: 10
     upgradeCurve:
       serializedVersion: 2
       m_Curve:
