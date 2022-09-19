@@ -4,7 +4,7 @@ using Mirror;
 using TMPro;
 using System;
 
-public class EquipmentSlot : NetworkBehaviour
+public sealed class EquipmentSlot : NetworkBehaviour
 {
     public string slotName;
     public Action<GameObject, GameObject> onServerItemChange;

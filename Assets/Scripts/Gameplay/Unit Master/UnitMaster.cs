@@ -924,7 +924,7 @@ public class UnitMaster : NetworkBehaviour
         {
             foreach (Button b in UI.masterUpgradeButtons)
             {
-                b.GetComponent<MasterUpgradeUIButton>().UnlockButton(masterLevel, masterLevel > 0);
+                b.GetComponent<MasterUpgradeUIButton>().UnlockButton(masterLevel, masterUpgrades > 0);
             }
         }
     }
