@@ -24,7 +24,7 @@ public class StatusEffectManager : NetworkBehaviour
 
     private void Start()
     {
-        playerObject = GetComponent<ActiveSClass>();
+        playerObject = GetComponent<ActiveSurvivorClass>();
 
         if (playerObject && imageReferenceList.Length > 0)
         {

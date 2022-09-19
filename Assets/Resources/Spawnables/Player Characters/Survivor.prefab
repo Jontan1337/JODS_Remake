@@ -4650,6 +4650,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5922127114707103126}
   - component: {fileID: 140378723284269966}
+  - component: {fileID: 4292996066726637247}
+  - component: {fileID: 2712400697136503757}
   - component: {fileID: 5953086225513061613}
   - component: {fileID: 6043028673134938684}
   - component: {fileID: 5375102334846030558}
@@ -4719,46 +4721,73 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  test: 0
+  test: 1
   sClass: {fileID: 0}
   survivorSO: {fileID: 11400000, guid: 1217c7de04298614a84ebffa22d3814c, type: 2}
-  playerEquipment: {fileID: 0}
-  fullBodyBipedIK: {fileID: 0}
-  survivorSetup: {fileID: 0}
-  animatorController: {fileID: 5922127114697802274}
   bodyRenderer: {fileID: 8146840676092125171}
   headRenderer: {fileID: 2690098373533844718}
-  currentHealth: 100
-  maxHealth: 100
-  armor: 0
-  abilityCooldown: 0
-  movementSpeed: 0
-  reviveTime: 5
-  downTime: 30
-  abilityCooldownCount: 0
-  points: 0
   reloadSpeed: 0
   accuracy: 0
   ammoCapacity: 0
   starterWeapon: {fileID: 0}
+--- !u!114 &4292996066726637247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5922127114707202486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bd4c6acc5d79c743adf396e1cf42234, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  animatorController: {fileID: 5922127114697802274}
+  currentHealth: 100
+  maxHealth: 100
+  armor: 0
+  movementSpeed: 0
+  reviveTime: 5
+  downTime: 30
   healthBar: {fileID: 5834093433503493102}
   healthLossBar: {fileID: 6616134530017234065}
   armorBar: {fileID: 8494075140871504275}
-  abilityCooldownUI: {fileID: 3931674086792631832}
-  reviveTimerImageUI: {fileID: 5905699321710195513}
-  reviveTimerObjectUI: {fileID: 3793125896990920895}
-  downImage: {fileID: 1680671564870222852}
   lowHealthImage: {fileID: 840600718719910551}
+  reviveTimerImageUI: {fileID: 0}
+  reviveTimerObjectUI: {fileID: 0}
+  downImage: {fileID: 1680671564870222852}
   damagedImage: {fileID: 8739871650305063704}
   downCanvas: {fileID: 2982439891624587407}
   inGameCanvas: {fileID: 8050693953223198890}
-  pointsText: {fileID: 7966863143780647685}
-  pointGainPrefab: {fileID: 9064455069424791838, guid: c13d45a4ca89bed4784eb1ce03ef13d5,
-    type: 3}
+  playerEquipment: {fileID: 0}
+  fullBodyBipedIK: {fileID: 8049337140043942677}
+  survivorSetup: {fileID: 6930014499059818200}
   onDied:
     m_PersistentCalls:
       m_Calls: []
+  pointsText: {fileID: 7966863143780647685}
+  pointGainPrefab: {fileID: 9064455069424791838, guid: c13d45a4ca89bed4784eb1ce03ef13d5,
+    type: 3}
   isInteractable: 0
+  points: 0
+--- !u!114 &2712400697136503757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5922127114707202486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86986ff2502ae5f4c80663b906704f76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  abilityCooldownUI: {fileID: 3931674086792631832}
+  abilityCooldown: 0
 --- !u!114 &5953086225513061613
 MonoBehaviour:
   m_ObjectHideFlags: 0

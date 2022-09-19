@@ -3,13 +3,13 @@ using Mirror;
 using System.Collections;
 using System;
 
-public class EngineerClass : SurvivorClass
+public class EngineerAbility : SurvivorAbility
 {
 
     private PlayerEquipment playerEquipment;
     private GameObject turret;
     private SurvivorController sController;
-    private ActiveSClass sClass;
+    private ActiveSurvivorClass sClass;
     private ModifierManager modifierManager;
 
 
@@ -45,7 +45,7 @@ public class EngineerClass : SurvivorClass
         if (hasAuthority || isServer)
         {
             sController = GetComponentInParent<SurvivorController>();
-            sClass = GetComponentInParent<ActiveSClass>();
+            sClass = GetComponentInParent<ActiveSurvivorClass>();
             modifierManager = GetComponentInParent<ModifierManager>();
             //RechargeCo = Recharge();
             //StartCoroutine(RechargeCo);

@@ -22,7 +22,7 @@ public class SyringeGun : ProjectileWeapon
         base.Svr_PostShoot();
         if (syringes.Count == 0)
         {
-            GetComponentInParent<ActiveSClass>().Rpc_StartAbilityCooldown(owner.GetComponent<NetworkIdentity>().connectionToClient, owner);
+            GetComponentInParent<SurvivorClassStatManager>().Rpc_StartAbilityCooldown(owner.GetComponent<NetworkIdentity>().connectionToClient, owner);
             StartCoroutine(IEDrop());
         }
     }
@@ -37,7 +37,7 @@ public class SyringeGun : ProjectileWeapon
     {
         if (magazine < magazineSize && magazine > 0)
         {
-            GetComponentInParent<ActiveSClass>().Rpc_StartAbilityCooldown(owner.GetComponent<NetworkIdentity>().connectionToClient, owner);
+            GetComponentInParent<SurvivorClassStatManager>().Rpc_StartAbilityCooldown(owner.GetComponent<NetworkIdentity>().connectionToClient, owner);
         }
         base.Svr_Drop();
     }
@@ -54,7 +54,7 @@ public class SyringeGun : ProjectileWeapon
     {
         if (magazine < magazineSize && magazine > 0)
         {
-            GetComponentInParent<ActiveSClass>().Rpc_StartAbilityCooldown(owner.GetComponent<NetworkIdentity>().connectionToClient, owner);
+            GetComponentInParent<SurvivorClassStatManager>().Rpc_StartAbilityCooldown(owner.GetComponent<NetworkIdentity>().connectionToClient, owner);
         }
     }
 

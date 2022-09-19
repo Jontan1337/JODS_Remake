@@ -1,108 +1,172 @@
-﻿using Mirror;
-using RootMotion.FinalIK;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
+using Mirror;
+using Sirenix.OdinInspector;
+using RootMotion.FinalIK;
+using UnityEngine.Events;
 
-public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
+public class CharacterStatManager : NetworkBehaviour, IDamagable, IInteractable
 {
-
-    [Header("Debug")]
-    public bool test;
-    [Space]
-
-    //what is going on in this script??? - dave
-
-    [SyncVar(hook = nameof(SetSurvivorClassSettings))] public SurvivorClass sClass;
     private SurvivorController sController;
-
-    [SerializeField] private SurvivorSO survivorSO;
-    [SerializeField] private PlayerEquipment playerEquipment;
-    [SerializeField] private FullBodyBipedIK fullBodyBipedIK;
-    [SerializeField] private SurvivorSetup survivorSetup;
     [SerializeField] private Animator animatorController;
-    [SerializeField] private SkinnedMeshRenderer bodyRenderer = null;
-    [SerializeField] private SkinnedMeshRenderer headRenderer = null;
-    [Space]
-    [Header("Stats")]
+
+
+    [Title("Stats")]
     [SerializeField] private int currentHealth = 100;
     [SerializeField] private int maxHealth = 100;
     [SerializeField] private int armor = 0;
-    [SerializeField] private float abilityCooldown = 0;
-    //[SerializeField] private float abilityCooldownCount = 0;
     [SerializeField] private float movementSpeed = 0;
     [SerializeField] private float reviveTime = 5;
     [SerializeField] private float downTime = 30;
-    //[SerializeField] private float cooldownReducion = 0;
-    public float abilityCooldownCount = 0;
+
+    [Title("UI References")]
+    [SerializeField] private Slider healthBar = null;
+    [SerializeField] private Slider healthLossBar = null;
+    [SerializeField] private Slider armorBar = null;
+    [SerializeField] private Image lowHealthImage = null;
+    [SerializeField] private Image reviveTimerImageUI = null;
+    [SerializeField] private GameObject reviveTimerObjectUI = null;
+    [SerializeField] private Image downImage = null;
+    [SerializeField] private Image damagedImage = null;
+    [SerializeField] private GameObject downCanvas = null;
+    [SerializeField] private GameObject inGameCanvas = null;
+    [Space]
+    [SerializeField] private PlayerEquipment playerEquipment;
+    [SerializeField] private FullBodyBipedIK fullBodyBipedIK;
+    [SerializeField] private SurvivorSetup survivorSetup;
+
+
+    private const string inGameUIPath = "UI/Canvas - In Game";
+
+    private Transform cameraTransform;
+    private Transform originalCameraTransformParent;
+
+    [Header("Events")]
+    public UnityEvent onDied = null;
+
+    private float reviveTimeCount = 0;
+    private float downImageOpacity = 0;
+    private bool beingRevived = false;
+    private NetworkConnection connectionToClientInteractor;
+
+    [SerializeField] private Text pointsText = null;
+    [SerializeField] private GameObject pointGainPrefab = null;
+    public bool IsInteractable { get => isInteractable; set => isInteractable = value; }
+    [SerializeField, SyncVar] private bool isInteractable = false;
+
     [SyncVar(hook = nameof(pointsHook))] public int points;
     private void pointsHook(int oldVal, int newVal)
     {
         pointsText.text = "Points: " + newVal;
         StartCoroutine(PointsIE(newVal - oldVal));
     }
-    private IEnumerator PointsIE(int pointGain)
+
+    public float MovementSpeed => movementSpeed;
+
+    public override void OnStartAuthority()
     {
-        GameObject pText = Instantiate(pointGainPrefab, inGameCanvas.transform);
-        Text text = pText.GetComponent<Text>();
-        text.text = "+ " + pointGain;
-        float time = 1;
-        while (time > 0)
-        {
-            yield return null;
-            time -= Time.deltaTime;
-            text.color = new Color(1, 1, 1, time);
-            text.transform.Translate(new Vector3(0, 0.5f, 0));
-        }
-        Destroy(pText);
+        sController = GetComponent<SurvivorController>();
     }
 
-    [Space]
-    [Header("Weapon Stats")]
-    [SerializeField] private float reloadSpeed = 0;
-    [SerializeField] private float accuracy = 0;
-    [SerializeField] private float ammoCapacity = 0;
-    [SerializeField] private GameObject starterWeapon;
-
-    [Header("UI References")]
-    [SerializeField] private Slider healthBar = null;
-    [SerializeField] private Slider healthLossBar = null;
-    [SerializeField] private Slider armorBar = null;
-    [SerializeField] private Image abilityCooldownUI = null;
-    [SerializeField] private Image reviveTimerImageUI = null;
-    [SerializeField] private GameObject reviveTimerObjectUI = null;
-    [SerializeField] private Image downImage = null;
-    [SerializeField] private Image lowHealthImage = null;
-    [SerializeField] private Image damagedImage = null;
-    [SerializeField] private GameObject downCanvas = null;
-    [SerializeField] private GameObject inGameCanvas = null;
-    [SerializeField] private Text pointsText = null;
-    [SerializeField] private GameObject pointGainPrefab = null;
-
-    [Header("Events")]
-    public UnityEvent onDied = null;
-
-    private NetworkConnection connectionToClientInteractor;
-    private bool abilityIsReady = true;
-    private Transform cameraTransform;
-    private Transform originalCameraTransformParent;
-    private Vector3 cameraRotationBeforeDown;
-    private const string inGameUIPath = "UI/Canvas - In Game";
-    //private SurvivorAnimationIKManager 
-
-
-    private float reviveTimeCount = 0;
-    private float downImageOpacity = 0;
-    private bool beingRevived = false;
-    public bool IsInteractable { get => isInteractable; set => isInteractable = value; }
-    [SerializeField, SyncVar] private bool isInteractable = false;
-
-    public bool AbilityIsReady
+    public void SetStats(int maxHealth, int armor, float movementSpeed)
     {
-        get { return abilityIsReady; }
-        private set { abilityIsReady = value; }
+        this.maxHealth = maxHealth;
+        currentHealth = maxHealth;
+        this.armor = armor;
+        this.movementSpeed = movementSpeed;
+        GetComponent<ModifierManager>().MovementSpeed = movementSpeed;
+        GetComponent<SurvivorAnimationIKManager>().anim.speed = movementSpeed;
+
+
+        healthBar.maxValue = maxHealth;
+        healthBar.value = currentHealth;
+        healthLossBar.maxValue = maxHealth;
+        armorBar.value = armor;
+    }
+
+
+    private bool isDead;
+    public bool IsDead
+    {
+        get { return isDead; }
+        set
+        {
+            //Update scoreboard stat
+            GamemodeBase.Instance.Svr_ModifyStat(GetComponent<NetworkIdentity>().netId, 0, PlayerDataStat.Alive);
+
+            isDead = value;
+            onDied?.Invoke();
+            NetworkServer.Destroy(gameObject);
+        }
+    }
+
+    public int GetHealth => currentHealth;
+
+    public int Health
+    {
+        get => currentHealth;
+        private set
+        {
+            int prevHealth = currentHealth;
+            currentHealth = Mathf.Clamp(value, 0, maxHealth);
+            healthBar.value = currentHealth;
+
+
+            lowHealthImage.color = new Color(1, 1, 1, (maxHealth / 2 - (float)currentHealth) / 100 * 2);
+
+            if (!healthLossBool)
+            {
+                StartCoroutine(HealthLossCo(prevHealth));
+            }
+            if (isServer)
+            {
+                if (currentHealth <= 0)
+                {
+                    IsDown = true;
+                }
+                Rpc_SyncStats(connectionToClient, currentHealth, armor);
+            }
+        }
+    }
+
+    public int Armor
+    {
+        get => armor;
+        private set
+        {
+            armor = value;
+            armorBar.value = armor;
+            if (isServer)
+            {
+                Rpc_SyncStats(connectionToClient, currentHealth, armor);
+            }
+        }
+    }
+
+    public override void OnStartServer()
+    {
+        FindComponents();
+    }
+
+    private async void FindComponents()
+    {
+        await JODSTime.WaitTime(0.1f);
+        playerEquipment = GetComponentInChildren<PlayerEquipment>();
+        fullBodyBipedIK = GetComponent<FullBodyBipedIK>();
+        survivorSetup = GetComponent<SurvivorSetup>();
+        cameraTransform = transform.Find("Virtual Head(Clone)/PlayerCamera(Clone)");
+        originalCameraTransformParent = transform.Find("Virtual Head(Clone)");
+    }
+
+    private async void FindCamera()
+    {
+        await JODSTime.WaitTime(0.2f);
+        fullBodyBipedIK = GetComponent<FullBodyBipedIK>();
+        cameraTransform = transform.Find("Virtual Head(Clone)/PlayerCamera(Clone)");
+        originalCameraTransformParent = transform.Find("Virtual Head(Clone)");
+        inGameCanvas = transform.Find($"{inGameUIPath}").gameObject;
     }
 
     [SyncVar] private bool isDown;
@@ -134,268 +198,6 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
             }
         }
     }
-    private bool isDead;
-    public bool IsDead
-    {
-        get { return isDead; }
-        set
-        {
-            //Update scoreboard stat
-            GamemodeBase.Instance.Svr_ModifyStat(GetComponent<NetworkIdentity>().netId, 0, PlayerDataStat.Alive);
-
-            isDead = value;
-            onDied?.Invoke();
-            NetworkServer.Destroy(gameObject);
-        }
-    }
-    public float MovementSpeed => movementSpeed;
-    public int GetHealth => currentHealth;
-    public int Health
-    {
-        get => currentHealth;
-        private set
-        {
-            int prevHealth = currentHealth;
-            currentHealth = Mathf.Clamp(value, 0, maxHealth);
-            healthBar.value = currentHealth;
-
-
-            lowHealthImage.color = new Color(1, 1, 1, (maxHealth / 2 - (float)currentHealth) / 100 * 2);
-
-            if (!healthLossBool)
-            {
-                StartCoroutine(HealthLossCo(prevHealth));
-            }
-            if (isServer)
-            {
-                if (currentHealth <= 0)
-                {
-                    IsDown = true;
-                }
-                Rpc_SyncStats(connectionToClient, currentHealth, armor);
-            }
-        }
-    }
-    public int Armor
-    {
-        get => armor;
-        private set
-        {
-            armor = value;
-            armorBar.value = armor;
-            if (isServer)
-            {
-                Rpc_SyncStats(connectionToClient, currentHealth, armor);
-            }
-        }
-    }
-
-    #region Serialization
-    //public override bool OnSerialize(NetworkWriter writer, bool initialState)
-    //{
-    //	if (!initialState)
-    //	{
-    //		writer.WriteSurvivorClass(sClass);
-    //	}
-    //	else
-    //	{
-    //		writer.WriteSurvivorClass(sClass);
-    //	}
-    //	return true;
-    //}
-    //public override void OnDeserialize(NetworkReader reader, bool initialState)
-    //{
-    //	if (!initialState)
-    //	{
-    //		sClass = reader.ReadSurvivorClass();
-    //	}
-    //	else
-    //	{
-    //		sClass = reader.ReadSurvivorClass();
-    //	}
-    //}
-    #endregion
-
-    public override void OnStartServer()
-    {
-        FindComponents();
-    }
-
-    private async void FindComponents()
-    {
-        await JODSTime.WaitTime(0.1f);
-        playerEquipment = GetComponentInChildren<PlayerEquipment>();
-        fullBodyBipedIK = GetComponent<FullBodyBipedIK>();
-        survivorSetup = GetComponent<SurvivorSetup>();
-        cameraTransform = transform.Find("Virtual Head(Clone)/PlayerCamera(Clone)");
-        originalCameraTransformParent = transform.Find("Virtual Head(Clone)");
-    }
-
-    public override void OnStartAuthority()
-    {
-        if (test) SetSurvivorClass(survivorSO);
-        JODSInput.Controls.Survivor.ActiveAbility.performed += ctx => Ability();
-        FindCamera();
-    }
-
-    private async void FindCamera()
-    {
-        await JODSTime.WaitTime(0.2f);
-        fullBodyBipedIK = GetComponent<FullBodyBipedIK>();
-        cameraTransform = transform.Find("Virtual Head(Clone)/PlayerCamera(Clone)");
-        originalCameraTransformParent = transform.Find("Virtual Head(Clone)");
-        inGameCanvas = transform.Find($"{inGameUIPath}").gameObject;
-    }
-
-    #region ViewModel
-    [TargetRpc]
-    private void Rpc_SetCameraForDownedState(NetworkConnection target)
-    {
-        cameraTransform.SetParent(fullBodyBipedIK.references.head.GetChild(0));
-    }
-    [TargetRpc]
-    private void Rpc_SetCameraForRevivedState(NetworkConnection target)
-    {
-        cameraTransform.SetParent(originalCameraTransformParent);
-        cameraTransform.localPosition = new Vector3(0f, 0.1f, 0f);
-        cameraTransform.rotation = originalCameraTransformParent.rotation;
-    }
-
-    #endregion
-
-    #region Ability Stuff
-
-    private void Ability()
-    {
-        if (AbilityIsReady)
-        {
-            sClass.ActiveAbility();
-        }
-        else
-        {
-            sClass.ActiveAbilitySecondary();
-        }
-    }
-
-    public IEnumerator AbilityCooldown()
-    {
-        AbilityIsReady = false;
-        abilityCooldownUI.fillAmount = 0;
-        while (abilityCooldownCount < abilityCooldown)
-        {
-
-            abilityCooldownCount += (Time.deltaTime * GetComponent<ModifierManager>().Cooldown);
-            abilityCooldownUI.fillAmount = abilityCooldownCount / abilityCooldown;
-            yield return null;
-        }
-        abilityCooldownCount = 0;
-        AbilityIsReady = true;
-    }
-
-    public void StartAbilityCooldownCo()
-    {
-        StartCoroutine(AbilityCooldown());
-    }
-
-    [TargetRpc]
-    public void Rpc_StartAbilityCooldown(NetworkConnection conn, Transform owner)
-    {
-        owner.GetComponentInParent<ActiveSClass>()?.StartAbilityCooldownCo();
-    }
-
-    [Command]
-    public void Cmd_StartAbilityCooldown(Transform owner)
-    {
-        Rpc_StartAbilityCooldown(GetComponent<NetworkIdentity>().connectionToClient, owner);
-    }
-
-    #endregion
-
-    #region Class Stuff
-    [ClientRpc]
-    public void Rpc_SetSurvivorClass(string _class)
-    {
-        List<SurvivorSO> survivorSOList = PlayableCharactersManager.Instance.GetAllSurvivors();
-        foreach (SurvivorSO survivor in survivorSOList)
-        {
-            if (survivor.name == _class)
-            {
-                SetSurvivorClass(survivor);
-                break;
-            }
-        }
-    }
-
-    public void SetSurvivorClass(SurvivorSO survivorSO)
-    {
-        this.survivorSO = survivorSO;
-        if (hasAuthority)
-        {
-            Cmd_SpawnClass();
-        }
-    }
-
-    private void SetSurvivorClassSettings(SurvivorClass oldValue, SurvivorClass newValue)
-    {
-        if (survivorSO.abilityObject && newValue)
-        {
-            newValue.abilityObject = survivorSO.abilityObject;
-        }
-
-        maxHealth = survivorSO.maxHealth;
-        currentHealth = maxHealth;
-        armor = survivorSO.startingArmor;
-
-        accuracy = survivorSO.accuracy;
-        reloadSpeed = survivorSO.reloadSpeed;
-        ammoCapacity = survivorSO.ammoCapacity;
-
-        sController = GetComponent<SurvivorController>();
-        movementSpeed = survivorSO.movementSpeed;
-        GetComponent<ModifierManager>().MovementSpeed = movementSpeed;
-        GetComponent<SurvivorAnimationIKManager>().anim.speed = movementSpeed;
-
-        abilityCooldown = survivorSO.abilityCooldown;
-
-        bodyRenderer.sharedMesh = survivorSO.bodyMesh;
-        headRenderer.sharedMesh = survivorSO.headMesh;
-
-        bodyRenderer.material = survivorSO.characterMaterial;
-        headRenderer.material = survivorSO.characterMaterial;
-
-        healthBar.maxValue = maxHealth;
-        healthBar.value = currentHealth;
-        healthLossBar.maxValue = maxHealth;
-        armorBar.value = armor;
-    }
-
-    [Command]
-    private void Cmd_SpawnClass()
-    {
-        StartCoroutine(SpawnClassObjects());
-    }
-
-    IEnumerator SpawnClassObjects()
-    {
-        yield return new WaitForSeconds(0.2f);
-
-        GameObject selectedClass = Instantiate(survivorSO.classScript);
-        NetworkServer.Spawn(selectedClass, gameObject);
-        selectedClass.transform.SetParent(gameObject.transform);
-
-        sClass = selectedClass.GetComponent<SurvivorClass>();
-
-        if (survivorSO.starterWeapon)
-        {
-            starterWeapon = Instantiate(survivorSO.starterWeapon, transform.position, transform.rotation);
-            NetworkServer.Spawn(starterWeapon);
-            yield return new WaitForSeconds(0.35f);
-            starterWeapon.GetComponent<EquipmentItem>().Svr_PerformInteract(gameObject);
-        }
-    }
-    #endregion
-
-    #region Health Stuff
 
     private bool healthLossBool = false;
 
@@ -477,7 +279,6 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
             }
         }
 
-
         if (IsDown)
         {
             downTime -= 0.1f;
@@ -512,7 +313,21 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
         Armor = newArmor;
     }
 
-    #endregion
+    private IEnumerator PointsIE(int pointGain)
+    {
+        GameObject pText = Instantiate(pointGainPrefab, inGameCanvas.transform);
+        Text text = pText.GetComponent<Text>();
+        text.text = "+ " + pointGain;
+        float time = 1;
+        while (time > 0)
+        {
+            yield return null;
+            time -= Time.deltaTime;
+            text.color = new Color(1, 1, 1, time);
+            text.transform.Translate(new Vector3(0, 0.5f, 0));
+        }
+        Destroy(pText);
+    }
 
     #region Revive Stuff
 
@@ -636,7 +451,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
         {
             connectionToClientInteractor = interacter.GetComponent<NetworkIdentity>().connectionToClient;
             Rpc_DisableMovement(connectionToClientInteractor);
-            interacter.GetComponent<ActiveSClass>().Rpc_StartReviveTimer(connectionToClientInteractor);
+            interacter.GetComponent<CharacterStatManager>().Rpc_StartReviveTimer(connectionToClientInteractor);
             BeingRevivedCo = BeingRevived();
             StartCoroutine(BeingRevivedCo);
         }
@@ -645,7 +460,7 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     public void Svr_CancelInteract(GameObject interacter)
     {
         Rpc_EnableMovement(connectionToClientInteractor);
-        interacter.GetComponent<ActiveSClass>().Rpc_ReviveTimerCancelled(connectionToClientInteractor);
+        interacter.GetComponent<CharacterStatManager>().Rpc_ReviveTimerCancelled(connectionToClientInteractor);
         ReviveCancelled();
     }
     [TargetRpc]
@@ -661,19 +476,19 @@ public class ActiveSClass : NetworkBehaviour, IDamagable, IInteractable
     }
     #endregion
 
-    private void OnControllerColliderHit(ControllerColliderHit hit)
+    #region ViewModel
+    [TargetRpc]
+    private void Rpc_SetCameraForDownedState(NetworkConnection target)
     {
-        GetComponentInChildren<IHitter>()?.OnFlyingKickHit(hit);
+        cameraTransform.SetParent(fullBodyBipedIK.references.head.GetChild(0));
+    }
+    [TargetRpc]
+    private void Rpc_SetCameraForRevivedState(NetworkConnection target)
+    {
+        cameraTransform.SetParent(originalCameraTransformParent);
+        cameraTransform.localPosition = new Vector3(0f, 0.1f, 0f);
+        cameraTransform.rotation = originalCameraTransformParent.rotation;
     }
 
-    private void OnGUI()
-    {
-        if (test)
-        {
-            GUI.TextField(new Rect(20, 20, 150, 20), "Active S Class Test ON");
-        }
-    }
-
-
-
+    #endregion
 }

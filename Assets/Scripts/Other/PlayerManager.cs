@@ -24,7 +24,7 @@ public class PlayerManager : NetworkBehaviour
     public Transform activeMenuCanvas;
 
     private static PlayerManager instance;
-    private ActiveSClass activeSClass;
+    private ActiveSurvivorClass activeSClass;
 
     public Transform ActiveMenuCanvas
     {
@@ -52,7 +52,7 @@ public class PlayerManager : NetworkBehaviour
         {
             equipmentBehaviourDropDown.onValueChanged.AddListener(GameSettings.Instance.SetPickupBehaviour);
         }
-        activeSClass = GetComponent<ActiveSClass>();
+        activeSClass = GetComponent<ActiveSurvivorClass>();
     }
 
     private async void FindComponents()

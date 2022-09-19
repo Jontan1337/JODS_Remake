@@ -14,8 +14,8 @@ public class Medkit : EquipmentItem
 
 	public void UseMedkit()
 	{
-		ActiveSClass activeSClass = GetComponentInParent<ActiveSClass>();
-		if (activeSClass.Health != 100)
+		CharacterStatManager characterStatController = GetComponentInParent<CharacterStatManager>();
+		if (characterStatController.Health != 100)
 		{
 			Cmd_UseMedKit();
 
@@ -30,7 +30,7 @@ public class Medkit : EquipmentItem
     [Command]
 	private void Cmd_UseMedKit()
     {
-		GetComponentInParent<ActiveSClass>().Svr_Damage(-healAmount);
+		GetComponentInParent<CharacterStatManager>().Svr_Damage(-healAmount);
 	}
 
 	private void UsedUp()

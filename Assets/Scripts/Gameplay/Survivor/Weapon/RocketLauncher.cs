@@ -11,7 +11,7 @@ public class RocketLauncher : ProjectileWeapon
 		base.Svr_Shoot(aimPoint);
 
 
-        GetComponentInParent<ActiveSClass>().Rpc_StartAbilityCooldown(transform.root.GetComponent<NetworkIdentity>().connectionToClient, transform.root);
+        GetComponentInParent<SurvivorClassStatManager>().Rpc_StartAbilityCooldown(transform.root.GetComponent<NetworkIdentity>().connectionToClient, transform.root);
         //Unbind();
     }
 

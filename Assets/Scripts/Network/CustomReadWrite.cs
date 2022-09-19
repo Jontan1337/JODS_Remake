@@ -146,7 +146,7 @@ public static class CustomReadWrite
     #endregion
 
     #region Survivor Classes
-    public static void WriteTaekwondoClass(this NetworkWriter writer, TaekwondoClass value)
+    public static void WriteTaekwondoClass(this NetworkWriter writer, TaekwondoAbility value)
     {
         if (value == null)
         {
@@ -164,17 +164,17 @@ public static class CustomReadWrite
             writer.WriteUInt32(0);
         }
     }
-    public static TaekwondoClass ReadTaekwondoClass(this NetworkReader reader)
+    public static TaekwondoAbility ReadTaekwondoClass(this NetworkReader reader)
     {
         NetworkIdentity identity = reader.ReadNetworkIdentity();
         if (identity == null)
         {
             return null;
         }
-        return identity.GetComponent<TaekwondoClass>();
+        return identity.GetComponent<TaekwondoAbility>();
     }
 
-    public static void WriteSoldierClass(this NetworkWriter writer, SoldierClass value)
+    public static void WriteSoldierClass(this NetworkWriter writer, SoldierAbility value)
     {
         if (value == null)
         {
@@ -192,17 +192,17 @@ public static class CustomReadWrite
             writer.WriteUInt32(0);
         }
     }
-    public static SoldierClass ReadSoldierClass(this NetworkReader reader)
+    public static SoldierAbility ReadSoldierClass(this NetworkReader reader)
     {
         NetworkIdentity identity = reader.ReadNetworkIdentity();
         if (identity == null)
         {
             return null;
         }
-        return identity.GetComponent<SoldierClass>();
+        return identity.GetComponent<SoldierAbility>();
     }
 
-    public static void WriteEngineerClass(this NetworkWriter writer, EngineerClass value)
+    public static void WriteEngineerClass(this NetworkWriter writer, EngineerAbility value)
     {
         if (value == null)
         {
@@ -220,14 +220,14 @@ public static class CustomReadWrite
             writer.WriteUInt32(0);
         }
     }
-    public static EngineerClass ReadEngineerClass(this NetworkReader reader)
+    public static EngineerAbility ReadEngineerClass(this NetworkReader reader)
     {
         NetworkIdentity identity = reader.ReadNetworkIdentity();
         if (identity == null)
         {
             return null;
         }
-        return identity.GetComponent<EngineerClass>();
+        return identity.GetComponent<EngineerAbility>();
     }
 
     public static void WriteHandIKEffectors(this NetworkWriter writer, HandIKEffectors value)

@@ -5,11 +5,11 @@ using UnityEngine;
 using Mirror;
 using RootMotion.FinalIK;
 
-public class TaekwondoClass : SurvivorClass, IHitter
+public class TaekwondoAbility : SurvivorAbility, IHitter
 {
     private CharacterController cController;
     private SurvivorController sController;
-    private ActiveSClass sClass;
+    private SurvivorClassStatManager sClass;
     private PlayerEquipment playerEquipment;
     ModifierManager modifiers;
 
@@ -74,7 +74,7 @@ public class TaekwondoClass : SurvivorClass, IHitter
             sController = GetComponentInParent<SurvivorController>();
             modifiers = transform.root.GetComponent<ModifierManager>();
             playerEquipment = transform.parent.GetComponentInChildren<PlayerEquipment>();
-            sClass = GetComponentInParent<ActiveSClass>();
+            sClass = GetComponentInParent<SurvivorClassStatManager>();
             lowerLeg = transform.parent.Find("Armature").GetComponentInChildren<Collider>();
         }
     }
@@ -213,6 +213,20 @@ public class TaekwondoClass : SurvivorClass, IHitter
     [Command]
     private void Cmd_OnHit(Transform hitObject, int dmg)
     {
-        hitObject.GetComponent<IDamagable>()?.Svr_Damage(dmg, gameObject.transform.root);
+        //hitObject.GetComponent<IDamagable>()?.Svr_Damage(dmg, gameObject.transform.root);
+
+        if (hitObject.TryGetComponent(out IDamagable damagable))
+        {
+            damagable.Svr_Damage(dmg, transform.root);
+            print(hitObject.name);
+            if (damagable.IsDead)
+            {
+                //Rigidbody[] rbc = hitObject.GetComponentInChildren<Rigidbody>()
+                if (hitObject.TryGetComponent(out Rigidbody rb))
+                {
+                    rb.AddForce(transform.forward * 10000000, ForceMode.Impulse);
+                }
+            }
+        }
     }
 }

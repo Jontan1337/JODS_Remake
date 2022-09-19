@@ -46,7 +46,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
     [Server]
     public void Svr_OnPlaced()
     {
-        Owner.GetComponentInParent<ActiveSClass>()?.Rpc_StartAbilityCooldown(Owner.GetComponent<NetworkIdentity>().connectionToClient, Owner);
+        Owner.GetComponentInParent<SurvivorClassStatManager>()?.Rpc_StartAbilityCooldown(Owner.GetComponent<NetworkIdentity>().connectionToClient, Owner);
         Rpc_ShowTurret();
         StartCoroutine(StartUp());
     }

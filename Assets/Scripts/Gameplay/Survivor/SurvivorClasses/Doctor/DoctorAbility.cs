@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Mirror;
 
-public class DoctorClass : SurvivorClass
+public class DoctorAbility : SurvivorAbility
 {
 	private PlayerEquipment playerEquipment;
 	private GameObject syringeGun;

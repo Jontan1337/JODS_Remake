@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Mirror;
 
-public class SoldierClass : SurvivorClass
+public class SoldierAbility : SurvivorAbility
 {
 	private PlayerEquipment playerEquipment;
 	private GameObject rocketLauncher;
