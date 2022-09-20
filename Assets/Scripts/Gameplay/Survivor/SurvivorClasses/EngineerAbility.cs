@@ -10,7 +10,7 @@ public class EngineerAbility : SurvivorAbility
     private GameObject turret;
     private SurvivorController sController;
     private ActiveSurvivorClass sClass;
-    private ModifierManager modifierManager;
+    private ModifierManagerSurvivor modifierManager;
 
 
 
@@ -46,7 +46,7 @@ public class EngineerAbility : SurvivorAbility
         {
             sController = GetComponentInParent<SurvivorController>();
             sClass = GetComponentInParent<ActiveSurvivorClass>();
-            modifierManager = GetComponentInParent<ModifierManager>();
+            modifierManager = GetComponentInParent<ModifierManagerSurvivor>();
             //RechargeCo = Recharge();
             //StartCoroutine(RechargeCo);
             sController.OnMovementStopped += StartRecharge;
@@ -84,7 +84,7 @@ public class EngineerAbility : SurvivorAbility
                 survivorsInRange = Physics.OverlapSphere(transform.position, range, survivorLayer);
                 foreach (var item in survivorsInRange)
                 {
-                    item.GetComponentInParent<ModifierManager>().Cooldown += 1;
+                    item.GetComponentInParent<ModifierManagerSurvivor>().Cooldown += 1;
                 }
                 rechargeActive = true;
             }
@@ -95,7 +95,7 @@ public class EngineerAbility : SurvivorAbility
         {
             foreach (var item in survivorsInRange)
             {
-                item.GetComponentInParent<ModifierManager>().Cooldown -= 1;
+                item.GetComponentInParent<ModifierManagerSurvivor>().Cooldown -= 1;
             }
             survivorsInRange = null;
             rechargeActive = false;

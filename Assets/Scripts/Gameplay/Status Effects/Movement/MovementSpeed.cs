@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class MovementSpeed : StatusEffect
 {
-    private ModifierManager modifierManager;    
+    private ModifierManagerSurvivor modifierManager;    
     private MovementSpeedSO movementSpeed;
 
     public MovementSpeed(StatusEffectSO effect, GameObject obj) : base(effect, obj)
     {
-        modifierManager = obj.GetComponent<ModifierManager>();
+        modifierManager = obj.GetComponent<ModifierManagerSurvivor>();
         movementSpeed = (MovementSpeedSO) effect;
 
     }

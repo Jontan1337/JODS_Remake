@@ -43,7 +43,7 @@ public class SurvivorController : NetworkBehaviour
 
     CharacterController cController;
     SurvivorAnimationIKManager anim;
-    ModifierManager modifiers;
+    ModifierManagerSurvivor modifiers;
     public float jumpSpeed;
     public bool isSprinting;
     public bool isGrounded;
@@ -64,7 +64,7 @@ public class SurvivorController : NetworkBehaviour
     {
         cController = GetComponent<CharacterController>();
         anim = GetComponent<SurvivorAnimationIKManager>();
-        modifiers = GetComponent<ModifierManager>();
+        modifiers = GetComponent<ModifierManagerSurvivor>();
     }
 
     #region NetworkBehaviour Callbacks

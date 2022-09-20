@@ -76,7 +76,7 @@ public class CharacterStatManager : NetworkBehaviour, IDamagable, IInteractable
         currentHealth = maxHealth;
         this.armor = armor;
         this.movementSpeed = movementSpeed;
-        GetComponent<ModifierManager>().MovementSpeed = movementSpeed;
+        GetComponent<ModifierManagerSurvivor>().MovementSpeed = movementSpeed;
         GetComponent<SurvivorAnimationIKManager>().anim.speed = movementSpeed;
 
 

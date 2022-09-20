@@ -11,7 +11,7 @@ public class TaekwondoAbility : SurvivorAbility, IHitter
     private SurvivorController sController;
     private SurvivorClassStatManager sClass;
     private PlayerEquipment playerEquipment;
-    ModifierManager modifiers;
+    ModifierManagerSurvivor modifiers;
 
     [SerializeField, SyncVar] private float flyingKickStart = 0;
     [SerializeField, SyncVar] private float flyingKickEnd = 100;
@@ -72,7 +72,7 @@ public class TaekwondoAbility : SurvivorAbility, IHitter
         {
             cController = GetComponentInParent<CharacterController>();
             sController = GetComponentInParent<SurvivorController>();
-            modifiers = transform.root.GetComponent<ModifierManager>();
+            modifiers = transform.root.GetComponent<ModifierManagerSurvivor>();
             playerEquipment = transform.parent.GetComponentInChildren<PlayerEquipment>();
             sClass = GetComponentInParent<SurvivorClassStatManager>();
             lowerLeg = transform.parent.Find("Armature").GetComponentInChildren<Collider>();
@@ -173,7 +173,6 @@ public class TaekwondoAbility : SurvivorAbility, IHitter
     public void OnKickHit(Collider hit)
     {
         if (!hasAuthority) return;
-        //print(hit.transform.root.name + " " + hit.transform.root.gameObject.layer);
         if (hit.gameObject.layer == 9 && kicking || hit.gameObject.layer == 10 && kicking)
         {
             Cmd_OnHit(hit.transform.root, kickDamage);
@@ -213,18 +212,16 @@ public class TaekwondoAbility : SurvivorAbility, IHitter
     [Command]
     private void Cmd_OnHit(Transform hitObject, int dmg)
     {
-        //hitObject.GetComponent<IDamagable>()?.Svr_Damage(dmg, gameObject.transform.root);
-
         if (hitObject.TryGetComponent(out IDamagable damagable))
         {
             damagable.Svr_Damage(dmg, transform.root);
             print(hitObject.name);
             if (damagable.IsDead)
             {
-                //Rigidbody[] rbc = hitObject.GetComponentInChildren<Rigidbody>()
-                if (hitObject.TryGetComponent(out Rigidbody rb))
+                Rigidbody[] rbColliderList = hitObject.GetComponentsInChildren<Rigidbody>();
+                foreach (Rigidbody rb in rbColliderList)
                 {
-                    rb.AddForce(transform.forward * 10000000, ForceMode.Impulse);
+                    rb.AddForce(transform.forward * 10, ForceMode.Impulse);
                 }
             }
         }

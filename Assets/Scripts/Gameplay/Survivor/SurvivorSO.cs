@@ -9,13 +9,12 @@ public class SurvivorSO : ScriptableObject
     [Header("Stats")]
     public int maxHealth;
     public int startingArmor;
-    public float movementSpeed;
     public float abilityCooldown;
 
-    [Header("Weapon Stats")]
-    public float reloadSpeed;
-    public float accuracy;
-    public float ammoCapacity;
+    [Header("Modifiers")]
+    public float movementSpeedModifier;
+    public float reloadSpeedModifier;
+    public float accuracyModifier;
 
     [Header("Class specific")]
     public GameObject classScript;

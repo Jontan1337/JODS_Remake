@@ -50,7 +50,7 @@ public class Infection : StatusEffect
 
         infectionRate = 0;
 
-        ModifierManager mm = obj.GetComponent<ModifierManager>();
+        ModifierManagerSurvivor mm = obj.GetComponent<ModifierManagerSurvivor>();
 
         switch (infectionLevel)
         {
@@ -78,7 +78,7 @@ public class Infection : StatusEffect
 
     public override void Svr_End()
     {
-        ModifierManager mm = obj.GetComponent<ModifierManager>();
+        ModifierManagerSurvivor mm = obj.GetComponent<ModifierManagerSurvivor>();
 
         if (infectionLevel > 0)
         {

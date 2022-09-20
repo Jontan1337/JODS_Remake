@@ -8,13 +8,6 @@ public abstract class SurvivorAbility : NetworkBehaviour
 {
     public GameObject abilityObject;
 
-
-    //public bool AbilityIsReady
-    //{
-    //    get { return abilityIsReady; }
-    //    private set { abilityIsReady = value; }
-    //}
-
     public abstract void ActiveAbility();
 
     public override void OnStartAuthority()
