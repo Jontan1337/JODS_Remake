@@ -10,7 +10,7 @@ using UnityEngine.Events;
 public class CharacterStatManager : NetworkBehaviour, IDamagable, IInteractable
 {
     private SurvivorController sController;
-    [SerializeField] private Animator animatorController;
+    [SerializeField] private Animator animatorController = null;
 
 
     [Title("Stats")]
@@ -33,9 +33,9 @@ public class CharacterStatManager : NetworkBehaviour, IDamagable, IInteractable
     [SerializeField] private GameObject downCanvas = null;
     [SerializeField] private GameObject inGameCanvas = null;
     [Space]
-    [SerializeField] private PlayerEquipment playerEquipment;
-    [SerializeField] private FullBodyBipedIK fullBodyBipedIK;
-    [SerializeField] private SurvivorSetup survivorSetup;
+    [SerializeField] private PlayerEquipment playerEquipment = null;
+    [SerializeField] private FullBodyBipedIK fullBodyBipedIK = null;
+    [SerializeField] private SurvivorSetup survivorSetup = null;
 
 
     private const string inGameUIPath = "UI/Canvas - In Game";

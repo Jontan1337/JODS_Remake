@@ -23,7 +23,7 @@ public class Lobby : NetworkManager
 {
     [Header("Lobby Settings")]
     [SerializeField, Range(0,5)] private int requiredAmountOfPlayers = 1;
-    [SerializeField] private bool mustHaveMaster;
+    [SerializeField] private bool mustHaveMaster = true;
 
     [Header("References")]
     public Transform matchListContent;

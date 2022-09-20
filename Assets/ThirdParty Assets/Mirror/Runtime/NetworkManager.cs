@@ -759,7 +759,7 @@ namespace Mirror
                 }
                 logger.Log("NetworkManager created singleton (DontDestroyOnLoad)");
                 singleton = this;
-                if (Application.isPlaying) DontDestroyOnLoad(gameObject);
+                if (Application.isPlaying && transform == transform.root) DontDestroyOnLoad(gameObject);
             }
             else
             {

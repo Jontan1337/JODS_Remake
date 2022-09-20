@@ -8,7 +8,7 @@ using UnityEngine.Events;
 public class PlaceItem : EquipmentItem
 {
 
-    [SerializeField] private UnityEvent OnPlaced = null;
+    //[SerializeField] private UnityEvent OnPlaced = null;
     [SerializeField] private GameObject placeholder = null;
     [SerializeField] private LayerMask ignoreLayer = 0;
     [SerializeField] private float maxPlaceRange = 3;

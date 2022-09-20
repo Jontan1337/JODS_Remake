@@ -50,7 +50,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
     private Coroutine COAttackInterval;
 
     private int amountSlashed = 0;
-    private bool hitOnSwing = false;
+    //private bool hitOnSwing = false;
 
     private Transform previousHitColliderParent;
 

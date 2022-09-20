@@ -25,7 +25,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
     [SerializeField] private Transform cylinder = null;
     [SerializeField] private ParticleSystem muzzleFlash = null;
     [SerializeField] private ParticleSystem bulletShell = null;
-    [SerializeField] private GameObject Laser;
+    [SerializeField] private GameObject Laser = null;
     [SerializeField, SyncVar] private Transform target = null;
 
     [Space]

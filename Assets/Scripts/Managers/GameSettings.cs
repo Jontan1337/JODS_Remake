@@ -28,7 +28,7 @@ public class GameSettings : MonoBehaviour
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject);
+            if (transform == transform.root) DontDestroyOnLoad(gameObject);
         }
         else
         {

@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class AnimationManager : MonoBehaviour
 {
-    [SerializeField] private Animator itemContainerAnimatorController;
-    [SerializeField] private SurvivorSetup survivorSetup;
+    [SerializeField] private Animator itemContainerAnimatorController = null;
+    [SerializeField] private SurvivorSetup survivorSetup = null;
 
     private void Awake()
     {

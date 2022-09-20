@@ -7,8 +7,8 @@ using UnityEngine.Events;
 
 public class JODSSlider : MonoBehaviour
 {
-    [SerializeField] private Slider slider;
-    [SerializeField] private Text text;
+    [SerializeField] private Slider slider = null;
+    [SerializeField] private Text text = null;
 
     private const string decimal2 = "n2";
 

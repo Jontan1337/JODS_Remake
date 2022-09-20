@@ -13,8 +13,8 @@ public class RaycastWeapon : RangedWeapon
     [Header("Settings")]
     [SerializeField] private LayerMask ignoreLayer = 13;
     [Header("References")]
-    [SerializeField, Required] private ParticleSystem bulletTrail;
-    [SerializeField, Required] private Light muzzleFlashLight;
+    [SerializeField, Required] private ParticleSystem bulletTrail = null;
+    [SerializeField, Required] private Light muzzleFlashLight = null;
 
     [Server]
     protected override void Svr_Shoot(Vector2 aimPoint)

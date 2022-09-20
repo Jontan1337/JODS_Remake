@@ -6,7 +6,7 @@ using Mirror;
 public class Mine : NetworkBehaviour, IPlaceable
 {
     [SerializeField] private bool armed = false;
-    [SerializeField] private SphereCollider col;
+    [SerializeField] private SphereCollider col = null;
     [SerializeField] private LayerMask mask = 0;
     [SerializeField] private BlinkingLight indicator = null;
 

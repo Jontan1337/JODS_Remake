@@ -7,9 +7,7 @@ public class ProjectileWeapon : RangedWeapon
 {
 	[Header("Projectile Settings")]
 	[SerializeField] private int projectileSpeed = 30;
-	[SerializeField] private float timeToLive = 5f;
-	//[SerializeField] private Tags bulletTag;
-	[SerializeField] private GameObject projectile;
+	[SerializeField] private GameObject projectile = null;
 
 
 	protected override void Svr_Shoot(Vector2 aimPoint)

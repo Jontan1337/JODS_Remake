@@ -9,13 +9,13 @@ using UnityEngine.UI;
 
 public class PlayerManager : NetworkBehaviour
 {
-    [SerializeField] private Transform canvasMenu;
-    [SerializeField] private Transform canvasInGame;
+    [SerializeField] private Transform canvasMenu = null;
+    [SerializeField] private Transform canvasInGame = null;
     [Space]
     [SerializeField] private bool hideCursorOnDisable = true;
     [Space]
-    [SerializeField] private bool hasEquipment;
-    [SerializeField] private Dropdown equipmentBehaviourDropDown;
+    [SerializeField] private bool hasEquipment = false;
+    [SerializeField] private Dropdown equipmentBehaviourDropDown = null;
 
     public Action onMenuOpened;
     public Action onMenuClosed;

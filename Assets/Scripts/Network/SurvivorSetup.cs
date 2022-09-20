@@ -37,7 +37,7 @@ public class SurvivorSetup : NetworkBehaviour
 
     [Space]
     [SyncVar] public string playerName;
-    [SerializeField] private TextMesh playerNameText = null; // Change to something else??
+    //[SerializeField] private TextMesh playerNameText = null; // Change to something else??
 
     [Header("First person setup")]
     public SkinnedMeshRenderer headMesh = null;

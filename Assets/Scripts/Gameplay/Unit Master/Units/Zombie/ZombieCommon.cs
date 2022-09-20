@@ -23,7 +23,7 @@ public class ZombieCommon : UnitBase, IControllable
         //throw new System.NotImplementedException();
     }
     [Header("Traits")]
-    [SerializeField] private StatusEffectToApply damageStatusEffect;
+    [SerializeField] private StatusEffectToApply damageStatusEffect = new StatusEffectToApply();
     public override void ApplyHealthTrait()
     {
         StartCoroutine(Regeneration());

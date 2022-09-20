@@ -5,8 +5,8 @@ public class PhysicsToggler : NetworkBehaviour
 {
     [SyncVar(hook = nameof(ToggleItemPhysics)), SerializeField] private bool hasPhysics = true;
 
-    [SerializeField] private Rigidbody _rigidbody;
-    [SerializeField] private Collider _collider;
+    [SerializeField] private Rigidbody _rigidbody = null;
+    [SerializeField] private Collider _collider = null;
 
     public bool HasPhysics { get => hasPhysics; }
 

@@ -8,10 +8,10 @@ namespace Assets.Scripts.UI.ViewModels
 {
     public class ControlsSettings : MonoBehaviour
     {
-        [SerializeField] private Slider mouseSensitivity;
-        [SerializeField] private Slider mouseAcceleration;
-        [SerializeField] private Slider mouseMaxAcceleration;
-        [SerializeField] private Slider mouseEasingSpeed;
+        [SerializeField] private Slider mouseSensitivity = null;
+        [SerializeField] private Slider mouseAcceleration = null;
+        [SerializeField] private Slider mouseMaxAcceleration = null;
+        [SerializeField] private Slider mouseEasingSpeed = null;
 
         private void Awake()
         {

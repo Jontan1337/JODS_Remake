@@ -50,20 +50,20 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     [Header("References")]
     [SerializeField, Required] protected Transform shootOrigin = null;
     [SerializeField, SyncVar(hook = nameof(SetPlayerHeadAndCamera))] protected Transform playerHead;
-    [SerializeField] protected Camera playerCamera;
+    [SerializeField] protected Camera playerCamera = null;
     [SerializeField] private GameObject muzzleFlash = null;
     [SerializeField] protected Transform aimSight = null;
     [SerializeField] private ParticleSystem muzzleParticle;
     [SerializeField] private SFXPlayer sfxPlayer = null;
 
     [Header("Prefabs")]
-    [SerializeField] private GameObject crosshairPrefab;
+    [SerializeField] private GameObject crosshairPrefab = null;
 
     [Header("Audio Settings")]
     [SerializeField] private AudioClip shootSound = null;
     [SerializeField] private AudioClip emptySound = null;
 
-    [SerializeField] private bool debugWeapon = false;
+    //[SerializeField] private bool debugWeapon = false;
 
     protected Vector3 hipAimPosition;
     protected float damageFallOff = 0;

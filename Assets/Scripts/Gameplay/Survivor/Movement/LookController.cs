@@ -9,10 +9,10 @@ public class LookController : NetworkBehaviour
 {
 	public Camera playerCamera;
 	public Camera playerItemCamera;
-	[SerializeField] private FirstPersonLookController firstPersonLookController;
+	[SerializeField] private FirstPersonLookController firstPersonLookController = null;
 	[SerializeField] private Transform rotateHorizontal = null;
 	[SerializeField] private Transform rotateVertical = null;
-	[SerializeField] private CameraSettings cameraSettings;
+	[SerializeField] private CameraSettings cameraSettings = null;
 
 	private PlayerEquipment playerEquipment;
 

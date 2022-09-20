@@ -79,9 +79,6 @@ public class Outline : MonoBehaviour {
   private Material outlineMaskMaterial;
   private Material outlineFillMaterial;
 
-  [SerializeField] private int materialIndex = 0;
-  [SerializeField] private bool useMaterialIndex = true;
-
   private bool needsUpdate;
 
   void Awake() {

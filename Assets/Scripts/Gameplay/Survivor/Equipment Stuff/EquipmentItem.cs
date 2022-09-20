@@ -30,10 +30,10 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	[SerializeField] private Outline outline = null;
 
 	[Title("On Pickup & Drop (LOCAL)")]
-	[SerializeField] private UnityEvent onPickupEvent;
-	[SerializeField] private UnityEvent onDropEvent;
-	[SerializeField] private UnityEvent onEquipEvent;
-	[SerializeField] private UnityEvent onUnequipEvent;
+	[SerializeField] private UnityEvent onPickupEvent = null;
+	[SerializeField] private UnityEvent onDropEvent = null;
+	[SerializeField] private UnityEvent onEquipEvent = null;
+	[SerializeField] private UnityEvent onUnequipEvent = null;
 
 	public Action<GameObject> onServerDropItem;
 
