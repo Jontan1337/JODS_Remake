@@ -37,13 +37,12 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     [System.Serializable]
     public class Melee
     {
-        public int meleeDamageMin = 0; //Upgradeable
-        public int meleeDamageMax = 0; //Upgradeable
+        public int meleeDamageMin = 0;
+        public int meleeDamageMax = 0;
         public float meleeRange = 0;
         public float meleeCooldown = 0;
         [Space]
         public bool canMelee = true;
-        //public bool standStill = true;
         [Space]
         public List<StatusEffectToApply> statusEffectsToApply;
     }
@@ -53,7 +52,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     [System.Serializable]
     public class Ranged
     {
-        public int rangedDamage = 0; //Upgradeable
+        public int rangedDamage = 0;
         public int minRange = 0;
         public int maxRange = 0;
         public int rangedCooldown = 0;
@@ -77,7 +76,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     public class Special
     {
         public int specialCooldown = 0;
-        public int specialDamage = 0; //Upgradeable
+        public int specialDamage = 0;
         public float specialTriggerRange = 5;
         public float specialRange = 5;
         [Space]
@@ -97,7 +96,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         Special
     }
 
-    public float[] statModifiers;
     public bool[] traits;
 
     [Title("Movement", titleAlignment: TitleAlignments.Centered)]
@@ -123,7 +121,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     [SerializeField] protected Transform currentTarget = null;
     [SerializeField] private bool permanentTarget = true;
     public bool canPathfind = true;
-    protected bool targetIsLiveEntity = false;
+
     private Seeker seeker;
     private AIPath ai;
     private CharacterController controller;
@@ -136,6 +134,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
     [SerializeField] private SkinnedMeshRenderer headRenderer = null;
     [SerializeField] private SkinnedMeshRenderer leftArmRenderer = null;
     [SerializeField] private SkinnedMeshRenderer rightArmRenderer = null;
+
+    private ModifierManagerUnit modifiers = null;
 
     [Title("Detatchable References", titleAlignment: TitleAlignments.Centered)]
     [SerializeField] private UnitBodyPart leftArm = null;
@@ -329,6 +329,9 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
             return;
         }
+
+        modifiers = GetComponent<ModifierManagerUnit>();
+
         StartCoroutine(MovementAnimationCoroutine());
         
         CoSearch = SearchCoroutine();
@@ -345,7 +348,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         }
 
         //Health
-        int newMaxHealth = statModifiers.Length > 0 ? Mathf.RoundToInt(unitSO.health * statModifiers[0]) : unitSO.health;
+        int newMaxHealth = Mathf.RoundToInt(unitSO.health * modifiers.Health);
         maxHealth = newMaxHealth;
         Health = newMaxHealth;
 
@@ -357,10 +360,11 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         //Melee
         if (isMelee)
         {
-            melee.meleeDamageMax = statModifiers.Length > 0 ? Mathf.RoundToInt(unitSO.melee.meleeDamageMax * statModifiers[1]) : unitSO.melee.meleeDamageMax;
-            melee.meleeDamageMin = statModifiers.Length > 0 ? Mathf.RoundToInt(unitSO.melee.meleeDamageMin * statModifiers[1]) : unitSO.melee.meleeDamageMin;
-            melee.meleeRange = unitSO.melee.meleeRange;
-            melee.meleeCooldown = unitSO.melee.meleeCooldown;
+            melee.meleeDamageMax = Mathf.RoundToInt(unitSO.melee.meleeDamageMax * modifiers.MeleeDamage);
+            melee.meleeDamageMin = Mathf.RoundToInt(unitSO.melee.meleeDamageMin * modifiers.MeleeDamage);
+            melee.meleeRange = unitSO.melee.meleeRange * modifiers.MeleeRange;
+            melee.meleeCooldown = unitSO.melee.meleeCooldown * modifiers.MeleeCooldown;
+
             foreach (StatusEffectToApply statusEffectToApply in unitSO.melee.statusEffectsToApply)
             {
                 melee.statusEffectsToApply.Add(statusEffectToApply);
@@ -370,13 +374,15 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         //Ranged
         if (isRanged)
         {
-            ranged.rangedDamage = statModifiers.Length > 0 ? Mathf.RoundToInt(unitSO.ranged.rangedDamage * statModifiers[1]) : unitSO.ranged.rangedDamage;
-            ranged.minRange = unitSO.ranged.minRange;
-            ranged.maxRange = unitSO.ranged.maxRange;
-            ranged.rangedCooldown = unitSO.ranged.rangedCooldown;
+            ranged.rangedDamage = Mathf.RoundToInt(unitSO.ranged.rangedDamage * modifiers.RangedDamage);
+            ranged.minRange = Mathf.RoundToInt(unitSO.ranged.minRange * modifiers.RangedRange);
+            ranged.maxRange = Mathf.RoundToInt(unitSO.ranged.maxRange * modifiers.RangedRange);
+            ranged.rangedCooldown = Mathf.RoundToInt(unitSO.ranged.rangedCooldown * modifiers.RangedCooldown);
+
             ranged.projectileTag = unitSO.ranged.projectileTag;
             ranged.projectileSpawnLocation = unitSO.ranged.projectileSpawnLocation;
             ranged.projectileSpeed = unitSO.ranged.projectileSpeed;
+
             ranged.standStill = unitSO.ranged.standStill;
             ranged.directRangedAttack = unitSO.ranged.directRangedAttack;
             ranged.preferredRange = unitSO.ranged.preferredRange;
@@ -389,10 +395,11 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         //Special
         if (hasSpecial)
         {
-            if (special.specialDamage != 0) special.specialDamage = statModifiers.Length > 0 ? Mathf.RoundToInt(unitSO.special.specialDamage * statModifiers[1]) : unitSO.special.specialDamage;
-            special.specialCooldown = unitSO.special.specialCooldown;
-            special.specialTriggerRange = unitSO.special.specialTriggerRange;
-            special.specialRange = unitSO.special.specialRange;
+            if (special.specialDamage != 0) special.specialDamage = Mathf.RoundToInt(unitSO.special.specialDamage * modifiers.SpecialDamage);
+            special.specialCooldown = Mathf.RoundToInt(unitSO.special.specialCooldown * modifiers.SpecialCooldown);
+            special.specialTriggerRange = unitSO.special.specialTriggerRange * modifiers.SpecialRange;
+            special.specialRange = unitSO.special.specialRange * modifiers.SpecialRange;
+
             special.standStill = unitSO.special.standStill;
             special.lookAtTarget = unitSO.special.lookAtTarget;
             special.availableFromStart = unitSO.special.availableFromStart;
@@ -403,7 +410,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         }
 
         //Movement
-        movementSpeed = unitSO.movementSpeed * (statModifiers.Length > 0 ? statModifiers[2] : 1);
+        movementSpeed = unitSO.movementSpeed * modifiers.MovementSpeed;
 
         //Refunding
         refundAmount = unitSO.refundAmount;
@@ -714,8 +721,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
                 print(name + ": this " + newTarget.name + " guy is closer than my current target! imma chase him instead.");
             }
         }
-
-        targetIsLiveEntity = liveEntity;
 
         SetTarget(newTarget);
 

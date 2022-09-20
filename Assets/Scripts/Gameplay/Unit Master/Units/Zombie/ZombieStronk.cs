@@ -21,7 +21,7 @@ public class ZombieStronk : UnitBase, IControllable
 
     public override void MeleeAttack()
     {
-        if (targetIsLiveEntity) SpecialAttack();
+        //if (targetIsLiveEntity) SpecialAttack();
 
         base.MeleeAttack();
     }

@@ -4,11 +4,20 @@ using UnityEngine;
 using Mirror;
 using Sirenix.OdinInspector;
 
+[System.Serializable]
 public class ModifierManagerUnit : ModifierManager
 {
     [Header("Unit Modifiers")]
     [Space]
     [Space]
+
+    [Title("Health Modifiers", titleAlignment: TitleAlignments.Centered)]
+    [SerializeField, Range(0, 10)] private float health = 1;
+    public float Health
+    {
+        get { return health; }
+        set { health = Mathf.Clamp(value, 0, 10); }
+    }
 
     [Title("Melee Modifiers", titleAlignment: TitleAlignments.Centered)]
     [SerializeField, Range(0, 10)] private float meleeDamage = 1;
