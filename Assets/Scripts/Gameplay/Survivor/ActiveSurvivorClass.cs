@@ -61,14 +61,10 @@ public class ActiveSurvivorClass : NetworkBehaviour
 
     private void SetSurvivorClassSettings(SurvivorAbility oldValue, SurvivorAbility newValue)
     {
-        print("????");
         if (survivorSO.abilityObject && newValue)
         {
             newValue.abilityObject = survivorSO.abilityObject;
         }
-
-        accuracy = survivorSO.accuracyModifier;
-        reloadSpeed = survivorSO.reloadSpeedModifier;
 
         characterStatManager.SetStats(survivorSO.maxHealth, survivorSO.startingArmor, survivorSO.movementSpeedModifier);
         sClassStatManager.SetStats(survivorSO.abilityCooldown);
