@@ -12,9 +12,9 @@ public class SurvivorSO : ScriptableObject
     public float abilityCooldown;
 
     [Header("Modifiers")]
-    public float movementSpeedModifier;
-    public float reloadSpeedModifier;
-    public float accuracyModifier;
+    public float movementSpeedModifier = 1;
+    public float reloadSpeedModifier = 1;
+    public float accuracyModifier = 1;
 
     [Header("Class specific")]
     public GameObject classScript;
