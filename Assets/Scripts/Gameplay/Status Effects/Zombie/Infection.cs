@@ -58,7 +58,7 @@ public class Infection : StatusEffect
                 mm.MovementSpeed -= 0.3f;
                 break;
             case 2:
-                mm.MeleeDamage -= 0.3f;
+                mm.Damage -= 0.3f;
                 break;
             case 3:
                 mm.RangedDamage -= 0.3f;
@@ -86,7 +86,7 @@ public class Infection : StatusEffect
         }
         if (infectionLevel > 1)
         {
-            mm.MeleeDamage += 0.3f;
+            mm.Damage += 0.3f;
         }
         if (infectionLevel > 2)
         {

@@ -5,9 +5,12 @@ using Mirror;
 
 public abstract class ModifierManager : NetworkBehaviour
 {
+    [Header("Base Modifiers")]
     [SyncVar, SerializeField, Range(0, 10)] private float movementSpeed = 1;
+    [Space]
     [SyncVar, SerializeField, Range(0, 10)] private float healing = 1;
-    [SyncVar, SerializeField, Range(0, 10)] private float meleeDamage = 1;
+    [Space]
+    [SyncVar, SerializeField, Range(0, 10)] private float damage = 1;
 
     public float MovementSpeed
     {
@@ -21,9 +24,9 @@ public abstract class ModifierManager : NetworkBehaviour
         set { healing = Mathf.Clamp(value, 0, 10); }
     }
 
-    public float MeleeDamage
+    public float Damage
     {
-        get { return meleeDamage; }
-        set { meleeDamage = Mathf.Clamp(value, 0, 10); }
+        get { return damage; }
+        set { damage = Mathf.Clamp(value, 0, 10); }
     }
 }
