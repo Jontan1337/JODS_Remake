@@ -4652,6 +4652,7 @@ GameObject:
   - component: {fileID: 140378723284269966}
   - component: {fileID: 4292996066726637247}
   - component: {fileID: 2712400697136503757}
+  - component: {fileID: 5323172094994939289}
   - component: {fileID: 5953086225513061613}
   - component: {fileID: 6043028673134938684}
   - component: {fileID: 5375102334846030558}
@@ -4723,12 +4724,9 @@ MonoBehaviour:
   syncInterval: 0.1
   test: 1
   sClass: {fileID: 0}
-  survivorSO: {fileID: 11400000, guid: 1217c7de04298614a84ebffa22d3814c, type: 2}
+  survivorSO: {fileID: 11400000, guid: a6c4c8d579e294a4b88b3f2d90be9e20, type: 2}
   bodyRenderer: {fileID: 8146840676092125171}
   headRenderer: {fileID: 2690098373533844718}
-  reloadSpeed: 0
-  accuracy: 0
-  ammoCapacity: 0
   starterWeapon: {fileID: 0}
 --- !u!114 &4292996066726637247
 MonoBehaviour:
@@ -4788,6 +4786,20 @@ MonoBehaviour:
   syncInterval: 0.1
   abilityCooldownUI: {fileID: 3931674086792631832}
   abilityCooldown: 0
+--- !u!114 &5323172094994939289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5922127114707202486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a368e27cdbd2e9e4b89ad188d1e3286f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  level: 1
+  experience: 0
 --- !u!114 &5953086225513061613
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4866,10 +4878,17 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   movementSpeed: 1
-  cooldown: 1
   healing: 1
-  meleeDamage: 1
+  damage: 1
+  damageResistance: 1
+  slashResistance: 1
+  bluntResistance: 1
+  pierceResistance: 1
+  fireResistance: 1
   rangedDamage: 1
+  cooldown: 1
+  reloadSpeed: 0
+  accuracy: 0
 --- !u!114 &6930014499059818200
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4917,7 +4936,6 @@ MonoBehaviour:
     children: []
   equipmentSlotsTypes: 01000000010000000200000003000000
   playerName: 
-  playerNameText: {fileID: 0}
   headMesh: {fileID: 2690098373533844718}
   bodyMesh: {fileID: 8146840676092125171}
   armsMesh: {fileID: 7026343827133896325}
@@ -8558,18 +8576,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9391a5d900ecdd640b5af37994dea7d1, type: 3}
---- !u!114 &8513568407848534108 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 778214079386882643, guid: 9391a5d900ecdd640b5af37994dea7d1,
-    type: 3}
-  m_PrefabInstance: {fileID: 9001148406866694671}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d0b652f32a2cc243917e4028fa0f046, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &5359896376376361524 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3929581517643042875, guid: 9391a5d900ecdd640b5af37994dea7d1,
@@ -8582,3 +8588,15 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 9001148406866694671}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8513568407848534108 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 778214079386882643, guid: 9391a5d900ecdd640b5af37994dea7d1,
+    type: 3}
+  m_PrefabInstance: {fileID: 9001148406866694671}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d0b652f32a2cc243917e4028fa0f046, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
