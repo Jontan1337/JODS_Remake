@@ -31,11 +31,3 @@ public class ModifierManagerSurvivor : ModifierManager
     }
 }
 
-public enum Stats
-{
-    Movementspeed,
-    Cooldown,
-    Healing,
-    MeleeDamage,
-    RangedDamage
-}
