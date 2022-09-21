@@ -55,13 +55,13 @@ public class Infection : StatusEffect
         switch (infectionLevel)
         {
             case 1:
-                mm.MovementSpeed -= 0.3f;
+                mm.data.MovementSpeed -= 0.3f;
                 break;
             case 2:
-                mm.Damage -= 0.3f;
+                mm.data.Damage -= 0.3f;
                 break;
             case 3:
-                mm.RangedDamage -= 0.3f;
+                mm.data.RangedDamage -= 0.3f;
                 break;
         }
 

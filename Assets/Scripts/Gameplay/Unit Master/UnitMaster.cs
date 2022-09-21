@@ -9,7 +9,7 @@ using Sirenix.OdinInspector;
 
 [System.Serializable]
 public class UnitList
-{
+{  
     public string name;
     public UnitSO unit;
     [Header("Upgrades")]
@@ -18,35 +18,9 @@ public class UnitList
     public AnimationCurve upgradeCurve;
     public int totalUpgrades = 0;
     public int upgradesAvailable = 0;
-    [System.Serializable]
-    public struct UpgradeModifiers
-    {
-        public float movementSpeed;
-        public float healing;
-        public float damage;
-        public float damageResistance;
-        public float slashResistance;
-        public float bluntResistance;
-        public float pierceResistance;
-        public float fireResistance;
-
-        public float health;
-        public float meleeDamage;
-        public float meleeRange;
-        public float meleeCooldown;
-        public float rangedDamage;
-        public float rangedRange;
-        public float rangedCooldown;
-        public float specialDamage;
-        public float specialCooldown;
-        public float specialRange;
-        public float chaseTime;
-        public float sightDistance;
-        public float alertSize;
-    }
-    public UpgradeModifiers modifiers;
     [Space]
     [Space]
+    public ModifierManagerUnit modifiers;
     [Space]
     [Space]
     public int upgradesTillHealthTrait = 5;
@@ -79,8 +53,8 @@ public class UnitList
 
     [Space]
     [Space]
-    public UnitUpgradePanel upgradePanel;
-    public MasterUIGameplayButton unitButton;
+    [ShowIf("upgradePanel", null)] public UnitUpgradePanel upgradePanel;
+    [ShowIf("unitButton", null)] public MasterUIGameplayButton unitButton;
     [Header("Other")]
     [Space]
     public int maxAmount;
@@ -1264,19 +1238,19 @@ public class UnitMaster : NetworkBehaviour
             //Health upgrade
             case 0:
                 upgradesLeft = --unit.upgradesTillHealthTrait;
-                unit.modifiers.health += upgradeAmount;
+                //unit.modifiers.Health += upgradeAmount;
                 newValue = unit.GetHealthStat();
                 break;
             //Damage upgrade
             case 1:
                 upgradesLeft = --unit.upgradesTillDamageTrait;
-                unit.modifiers.meleeDamage += upgradeAmount;
+                //unit.modifiers.MeleeDamage += upgradeAmount;
                 newValue = unit.GetDamageStat();
                 break;
             //Speed upgrade
             case 2:
                 upgradesLeft = --unit.upgradesTillSpeedTrait;
-                unit.modifiers.movementSpeed += upgradeAmount;
+                //unit.modifiers.MovementSpeed += upgradeAmount;
                 newValue = unit.GetSpeedStat();
                 break;
         }

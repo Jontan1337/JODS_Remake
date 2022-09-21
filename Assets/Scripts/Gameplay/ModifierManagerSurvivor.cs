@@ -1,7 +1,13 @@
 ﻿using Mirror;
 using UnityEngine;
 
-public class ModifierManagerSurvivor : ModifierManager
+public class ModifierManagerSurvivor : MonoBehaviour
+{
+    public ModifierManagerSurvivorData data;
+}
+
+[System.Serializable]
+public class ModifierManagerSurvivorData : ModifierManagerBase
 {
     [SyncVar, SerializeField, Range(0, 10)] private float rangedDamage = 1;
     [SyncVar, SerializeField, Range(0, 10)] private float cooldown = 1;

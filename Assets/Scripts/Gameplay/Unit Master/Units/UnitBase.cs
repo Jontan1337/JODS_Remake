@@ -350,7 +350,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         }
 
         //Health
-        int newMaxHealth = Mathf.RoundToInt(unitSO.health * modifiers.Health);
+        int newMaxHealth = Mathf.RoundToInt(unitSO.health * modifiers.data.Health);
         maxHealth = newMaxHealth;
         Health = newMaxHealth;
 
@@ -362,10 +362,10 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         //Melee
         if (isMelee)
         {
-            melee.meleeDamageMax = Mathf.RoundToInt(unitSO.melee.meleeDamageMax * modifiers.MeleeDamage);
-            melee.meleeDamageMin = Mathf.RoundToInt(unitSO.melee.meleeDamageMin * modifiers.MeleeDamage);
-            melee.meleeRange = unitSO.melee.meleeRange * modifiers.MeleeRange;
-            melee.meleeCooldown = unitSO.melee.meleeCooldown * modifiers.MeleeCooldown;
+            melee.meleeDamageMax = Mathf.RoundToInt(unitSO.melee.meleeDamageMax * modifiers.data.MeleeDamage);
+            melee.meleeDamageMin = Mathf.RoundToInt(unitSO.melee.meleeDamageMin * modifiers.data.MeleeDamage);
+            melee.meleeRange = unitSO.melee.meleeRange * modifiers.data.MeleeRange;
+            melee.meleeCooldown = unitSO.melee.meleeCooldown * modifiers.data.MeleeCooldown;
 
             foreach (StatusEffectToApply statusEffectToApply in unitSO.melee.statusEffectsToApply)
             {
@@ -376,10 +376,10 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         //Ranged
         if (isRanged)
         {
-            ranged.rangedDamage = Mathf.RoundToInt(unitSO.ranged.rangedDamage * modifiers.RangedDamage);
-            ranged.minRange = Mathf.RoundToInt(unitSO.ranged.minRange * modifiers.RangedRange);
-            ranged.maxRange = Mathf.RoundToInt(unitSO.ranged.maxRange * modifiers.RangedRange);
-            ranged.rangedCooldown = Mathf.RoundToInt(unitSO.ranged.rangedCooldown * modifiers.RangedCooldown);
+            ranged.rangedDamage = Mathf.RoundToInt(unitSO.ranged.rangedDamage * modifiers.data.RangedDamage);
+            ranged.minRange = Mathf.RoundToInt(unitSO.ranged.minRange * modifiers.data.RangedRange);
+            ranged.maxRange = Mathf.RoundToInt(unitSO.ranged.maxRange * modifiers.data.RangedRange);
+            ranged.rangedCooldown = Mathf.RoundToInt(unitSO.ranged.rangedCooldown * modifiers.data.RangedCooldown);
 
             ranged.projectileTag = unitSO.ranged.projectileTag;
             ranged.projectileSpawnLocation = unitSO.ranged.projectileSpawnLocation;
@@ -397,10 +397,10 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         //Special
         if (hasSpecial)
         {
-            if (special.specialDamage != 0) special.specialDamage = Mathf.RoundToInt(unitSO.special.specialDamage * modifiers.SpecialDamage);
-            special.specialCooldown = Mathf.RoundToInt(unitSO.special.specialCooldown * modifiers.SpecialCooldown);
-            special.specialTriggerRange = unitSO.special.specialTriggerRange * modifiers.SpecialRange;
-            special.specialRange = unitSO.special.specialRange * modifiers.SpecialRange;
+            if (special.specialDamage != 0) special.specialDamage = Mathf.RoundToInt(unitSO.special.specialDamage * modifiers.data.SpecialDamage);
+            special.specialCooldown = Mathf.RoundToInt(unitSO.special.specialCooldown * modifiers.data.SpecialCooldown);
+            special.specialTriggerRange = unitSO.special.specialTriggerRange * modifiers.data.SpecialRange;
+            special.specialRange = unitSO.special.specialRange * modifiers.data.SpecialRange;
 
             special.standStill = unitSO.special.standStill;
             special.lookAtTarget = unitSO.special.lookAtTarget;
@@ -412,7 +412,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
         }
 
         //Movement
-        movementSpeed = unitSO.movementSpeed * modifiers.MovementSpeed;
+        movementSpeed = unitSO.movementSpeed * modifiers.data.MovementSpeed;
 
         //Refunding
         refundAmount = unitSO.refundAmount;

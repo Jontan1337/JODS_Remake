@@ -4,9 +4,16 @@ using UnityEngine;
 using Mirror;
 using Sirenix.OdinInspector;
 
-[System.Serializable]
-public class ModifierManagerUnit : ModifierManager
+public class ModifierManagerUnit : MonoBehaviour
 {
+    public ModifierManagerUnitData data;
+}
+
+[System.Serializable]
+public class ModifierManagerUnitData : ModifierManagerBase
+{
+    
+
     [Header("Unit Modifiers")]
     [Space]
     [Space]

@@ -1,19 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Mirror;
 using Sirenix.OdinInspector;
 
-public abstract class ModifierManager : NetworkBehaviour
+[System.Serializable]
+public abstract class ModifierManagerBase
 {
     [Header("Base Modifiers")]
     #region Basic Modifers
     [Title("Basic Modifiers", titleAlignment: TitleAlignments.Centered)]
-    [SyncVar, SerializeField, Range(0, 10)] private float movementSpeed = 1;
+    [SerializeField, Range(0, 10)] private float movementSpeed = 1;
     [Space]
-    [SyncVar, SerializeField, Range(0, 10)] private float healing = 1;
+    [SerializeField, Range(0, 10)] private float healing = 1;
     [Space]
-    [SyncVar, SerializeField, Range(0, 10)] private float damage = 1;
+    [SerializeField, Range(0, 10)] private float damage = 1;
 
     public float MovementSpeed
     {
@@ -38,13 +38,13 @@ public abstract class ModifierManager : NetworkBehaviour
     #region Resistance Modifiers
 
     [Title("Resistance Modifiers", titleAlignment: TitleAlignments.Centered)]
-    [SyncVar, SerializeField, Range(0, 10)] private float damageResistance = 1;
+    [SerializeField, Range(0, 10)] private float damageResistance = 1;
     [Space]
-    [SyncVar, SerializeField, Range(0, 10)] private float slashResistance = 1;
-    [SyncVar, SerializeField, Range(0, 10)] private float bluntResistance = 1;
-    [SyncVar, SerializeField, Range(0, 10)] private float pierceResistance = 1;
+    [SerializeField, Range(0, 10)] private float slashResistance = 1;
+    [SerializeField, Range(0, 10)] private float bluntResistance = 1;
+    [SerializeField, Range(0, 10)] private float pierceResistance = 1;
     [Space]
-    [SyncVar, SerializeField, Range(0, 10)] private float fireResistance = 1;
+    [SerializeField, Range(0, 10)] private float fireResistance = 1;
 
     public float DamageResistance
     {
