@@ -62,33 +62,26 @@ public class CharacterStatManager : NetworkBehaviour, IDamagable, IInteractable
     {
         pointsText.text = "Points: " + newVal;
         StartCoroutine(PointsIE(newVal - oldVal));
+        level.GainExp(newVal - oldVal);
     }
-
-    public int Points
-    {
-        get { return points; }
-        set 
-        { 
-            points = value;
-            level.GainExp(value);
-        }
-    }
-
 
     public float MovementSpeed => movementSpeed;
 
     public override void OnStartAuthority()
     {
-        sController = GetComponent<SurvivorController>();
+
     }
 
     public void SetStats(int maxHealth, int armor, float movementSpeed)
     {
+        sController = GetComponent<SurvivorController>();
+        level = GetComponent<SurvivorLevelManager>();
+
         this.maxHealth = maxHealth;
         currentHealth = maxHealth;
         this.armor = armor;
         this.movementSpeed = movementSpeed;
-        GetComponent<ModifierManagerSurvivor>().MovementSpeed = movementSpeed;
+        GetComponent<ModifierManagerSurvivor>().data.MovementSpeed = movementSpeed;
         GetComponent<SurvivorAnimationIKManager>().anim.speed = movementSpeed;
 
 

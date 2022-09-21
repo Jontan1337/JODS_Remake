@@ -3,7 +3,7 @@ using Mirror;
 using System.Collections;
 using System;
 
-public class EngineerAbility : SurvivorAbility
+public class Engineer : Survivor
 {
 
     private PlayerEquipment playerEquipment;
@@ -84,7 +84,7 @@ public class EngineerAbility : SurvivorAbility
                 survivorsInRange = Physics.OverlapSphere(transform.position, range, survivorLayer);
                 foreach (var item in survivorsInRange)
                 {
-                    item.GetComponentInParent<ModifierManagerSurvivor>().Cooldown += 1;
+                    item.GetComponentInParent<ModifierManagerSurvivor>().data.Cooldown += 1;
                 }
                 rechargeActive = true;
             }
@@ -95,7 +95,7 @@ public class EngineerAbility : SurvivorAbility
         {
             foreach (var item in survivorsInRange)
             {
-                item.GetComponentInParent<ModifierManagerSurvivor>().Cooldown -= 1;
+                item.GetComponentInParent<ModifierManagerSurvivor>().data.Cooldown -= 1;
             }
             survivorsInRange = null;
             rechargeActive = false;

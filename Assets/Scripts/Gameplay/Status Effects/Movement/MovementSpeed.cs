@@ -15,7 +15,7 @@ public class MovementSpeed : StatusEffect
     }
     public override void Svr_OnEffectApplied()
     {
-        modifierManager.MovementSpeed += movementSpeed.speedModifier;
+        modifierManager.data.MovementSpeed += movementSpeed.speedModifier;
 
     }
     public override void Svr_ApplyEffect(int? amount)
@@ -25,7 +25,7 @@ public class MovementSpeed : StatusEffect
 
     public override void Svr_End()
     {
-        modifierManager.MovementSpeed -= movementSpeed.speedModifier;
+        modifierManager.data.MovementSpeed -= movementSpeed.speedModifier;
     }
 
     public override void Svr_Tick()

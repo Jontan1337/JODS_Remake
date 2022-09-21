@@ -97,7 +97,7 @@ public class SurvivorController : NetworkBehaviour
 
         if (cController.isGrounded)
         {
-            float speed = (/*isSprinting ? baseSpeed * 1.75f :*/ baseSpeed) * modifiers.MovementSpeed;
+            float speed = (/*isSprinting ? baseSpeed * 1.75f :*/ baseSpeed) * modifiers.data.MovementSpeed;
             moveDirection = transform.TransformDirection(new Vector3(horizontal, 0.00f, vertical)) * (speed);
             if (isJumping)
             {
@@ -108,7 +108,7 @@ public class SurvivorController : NetworkBehaviour
         moveDirection.y -= gravity * Time.deltaTime;
         cController.Move(moveDirection * Time.deltaTime);
         anim.SetFloat(xVelocity, x = Mathf.Lerp(x, horizontal, Time.deltaTime * 10));
-        anim.SetFloat(yVelocity, y = Mathf.Lerp(y, Mathf.Clamp(vertical * modifiers.MovementSpeed, -1f, 2f), Time.deltaTime * 10));
+        anim.SetFloat(yVelocity, y = Mathf.Lerp(y, Mathf.Clamp(vertical * modifiers.data.MovementSpeed, -1f, 2f), Time.deltaTime * 10));
         animationManager.PlayItemContainerAnimation(IsMoving());
     }
 

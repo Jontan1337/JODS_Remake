@@ -5,7 +5,9 @@ using Mirror;
 
 public class SurvivorLevelManager : NetworkBehaviour
 {
-    [SyncVar, SerializeField] private int level = 1;    
+    private ModifierManagerSurvivor modifiers;
+
+    [SyncVar, SerializeField] private int level = 1;
     public int Level
     {
         get { return level; }
@@ -19,19 +21,24 @@ public class SurvivorLevelManager : NetworkBehaviour
         set { experience = value; }
     }
 
-    private void LevelUp()
+    public override void OnStartAuthority()
     {
-        if (experience >= level * 100)
-        {
-            level++;
-        }
+        modifiers = GetComponentInParent<ModifierManagerSurvivor>();
+    }
+
+    [Command]
+    private void Cmd_LevelUp()
+    {
+        level++;
+        modifiers.data.MovementSpeed += 0.05f;
+        experience = 0;
     }
     private void OnGUI()
     {
         if (GUI.Button(new Rect(10, 150, 50, 20), "exp"))
         {
             GainExp(50);
-        }        
+        }
     }
 
     public void GainExp(int exp)
@@ -39,8 +46,7 @@ public class SurvivorLevelManager : NetworkBehaviour
         experience += exp;
         if (experience >= level * 100)
         {
-            level++;
-            experience = 0;
+            Cmd_LevelUp();            
         }
     }
 

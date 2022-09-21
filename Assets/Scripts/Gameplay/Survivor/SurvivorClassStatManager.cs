@@ -32,7 +32,7 @@ public class SurvivorClassStatManager : NetworkBehaviour
         while (abilityCooldownCount < abilityCooldown)
         {
 
-            abilityCooldownCount += (Time.deltaTime * GetComponent<ModifierManagerSurvivor>().Cooldown);
+            abilityCooldownCount += (Time.deltaTime * GetComponent<ModifierManagerSurvivor>().data.Cooldown);
             abilityCooldownUI.fillAmount = abilityCooldownCount / abilityCooldown;
             yield return null;
         }

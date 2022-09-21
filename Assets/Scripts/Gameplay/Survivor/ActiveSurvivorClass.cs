@@ -13,7 +13,7 @@ public class ActiveSurvivorClass : NetworkBehaviour
     public bool test;
     [Space]
 
-    [SyncVar(hook = nameof(SetSurvivorClassSettings))] public SurvivorAbility sClass;
+    [SyncVar(hook = nameof(SetSurvivorClassSettings))] public Survivor sClass;
     private SurvivorClassStatManager sClassStatManager;
     private CharacterStatManager characterStatManager;
 
@@ -30,9 +30,10 @@ public class ActiveSurvivorClass : NetworkBehaviour
 
     public override void OnStartAuthority()
     {
-        sClassStatManager = GetComponent<SurvivorClassStatManager>();
-        characterStatManager = GetComponent<CharacterStatManager>();
         if (test) SetSurvivorClass(survivorSO);
+
+        print(characterStatManager);
+
     }
 
     #region Class Stuff
@@ -59,12 +60,14 @@ public class ActiveSurvivorClass : NetworkBehaviour
         }
     }
 
-    private void SetSurvivorClassSettings(SurvivorAbility oldValue, SurvivorAbility newValue)
+    private void SetSurvivorClassSettings(Survivor oldValue, Survivor newValue)
     {
         if (survivorSO.abilityObject && newValue)
         {
             newValue.abilityObject = survivorSO.abilityObject;
         }
+        sClassStatManager = GetComponent<SurvivorClassStatManager>();
+        characterStatManager = GetComponent<CharacterStatManager>();
 
         characterStatManager.SetStats(survivorSO.maxHealth, survivorSO.startingArmor, survivorSO.movementSpeedModifier);
         sClassStatManager.SetStats(survivorSO.abilityCooldown);
@@ -90,7 +93,7 @@ public class ActiveSurvivorClass : NetworkBehaviour
         NetworkServer.Spawn(selectedClass, gameObject);
         selectedClass.transform.SetParent(gameObject.transform);
 
-        sClass = selectedClass.GetComponent<SurvivorAbility>();
+        sClass = selectedClass.GetComponent<Survivor>();
 
         if (survivorSO.starterWeapon)
         {

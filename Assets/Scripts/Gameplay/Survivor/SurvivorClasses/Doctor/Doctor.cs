@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Mirror;
 
-public class DoctorAbility : SurvivorAbility
+public class Doctor : Survivor
 {
 	private PlayerEquipment playerEquipment;
 	private GameObject syringeGun;
@@ -14,7 +14,13 @@ public class DoctorAbility : SurvivorAbility
 		}
 	}
 
-	[Command]
+  //  public override void LevelUp()
+  //  {
+		//ModifierManagerSurvivor modifiers = GetComponentInParent<ModifierManagerSurvivor>();
+		//modifiers.MovementSpeed += 1.05f;
+  //  }
+
+    [Command]
 	private void Cmd_EquipSyringeGun()
 	{
 		if (!syringeGun)

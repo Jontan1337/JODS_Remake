@@ -5,7 +5,7 @@ using UnityEngine;
 using Mirror;
 using RootMotion.FinalIK;
 
-public class TaekwondoAbility : SurvivorAbility, IHitter
+public class Taekwondo : Survivor, IHitter
 {
     private CharacterController cController;
     private SurvivorController sController;
@@ -184,15 +184,15 @@ public class TaekwondoAbility : SurvivorAbility, IHitter
         unitsHit.Clear();
         kicking = true;
         Kick(kicking);
-        float speedModifier = modifiers.MovementSpeed / 2;
-        modifiers.MovementSpeed -= speedModifier;
+        float speedModifier = modifiers.data.MovementSpeed / 2;
+        modifiers.data.MovementSpeed -= speedModifier;
         GetComponentInParent<FullBodyBipedIK>().enabled = false;
         lowerLeg.enabled = true;
 
         yield return new WaitForSeconds(0.3f);
 
         kicking = false;
-        modifiers.MovementSpeed += speedModifier;
+        modifiers.data.MovementSpeed += speedModifier;
 
         Kick(kicking);
         GetComponentInParent<FullBodyBipedIK>().enabled = true;

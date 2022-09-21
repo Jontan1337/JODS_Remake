@@ -82,15 +82,15 @@ public class Infection : StatusEffect
 
         if (infectionLevel > 0)
         {
-            mm.MovementSpeed += 0.3f;
+            mm.data.MovementSpeed += 0.3f;
         }
         if (infectionLevel > 1)
         {
-            mm.Damage += 0.3f;
+            mm.data.Damage += 0.3f;
         }
         if (infectionLevel > 2)
         {
-            mm.RangedDamage += 0.3f;
+            mm.data.RangedDamage += 0.3f;
         }
 
         infectionLevel = 0;

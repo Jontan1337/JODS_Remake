@@ -4,7 +4,7 @@ using UnityEngine;
 using Mirror;
 using System;
 
-public abstract class SurvivorAbility : NetworkBehaviour
+public abstract class Survivor : NetworkBehaviour
 {
     public GameObject abilityObject;
 
@@ -32,6 +32,9 @@ public abstract class SurvivorAbility : NetworkBehaviour
 	{
         // Override this to do something when ability is on cooldown e.g. Taekwondo kick. 
 	}
+
+    //public abstract void LevelUp();
+
 }
 
 
