@@ -10,6 +10,7 @@ using UnityEngine.Events;
 public class CharacterStatManager : NetworkBehaviour, IDamagable, IInteractable
 {
     private SurvivorController sController;
+    private SurvivorLevelManager level;
     [SerializeField] private Animator animatorController = null;
 
 
@@ -62,6 +63,17 @@ public class CharacterStatManager : NetworkBehaviour, IDamagable, IInteractable
         pointsText.text = "Points: " + newVal;
         StartCoroutine(PointsIE(newVal - oldVal));
     }
+
+    public int Points
+    {
+        get { return points; }
+        set 
+        { 
+            points = value;
+            level.GainExp(value);
+        }
+    }
+
 
     public float MovementSpeed => movementSpeed;
 
