@@ -1289,6 +1289,7 @@ GameObject:
   - component: {fileID: 7543394233022986642}
   - component: {fileID: 4403519239043208452}
   - component: {fileID: 9107366842586106342}
+  - component: {fileID: 6213518486580457301}
   m_Layer: 9
   m_Name: Spitter
   m_TagString: Untagged
@@ -1367,7 +1368,7 @@ MonoBehaviour:
     availableFromStart: 1
     canSpecial: 0
     statusEffectsToApply: []
-  statModifiers: []
+  traits: 
   movementSpeed: 1.5
   chaseTime: 20
   stoppedMoving: 0
@@ -1430,7 +1431,6 @@ MonoBehaviour:
     unitMats: []
     isSelected: 0
   canRagdoll: 1
-  walking: 0
   stopMovement: 0
   stopPathfinding: 0
 --- !u!95 &3981117741212876076
@@ -1769,6 +1769,41 @@ CapsuleCollider:
   m_Height: 1.85
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0.1}
+--- !u!114 &6213518486580457301
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2199530991413314690}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 269b249b2dbd607459107713fd4d3335, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  movementSpeed: 1
+  healing: 1
+  damage: 1
+  damageResistance: 1
+  slashResistance: 1
+  bluntResistance: 1
+  pierceResistance: 1
+  fireResistance: 1
+  health: 1
+  meleeDamage: 1
+  meleeRange: 1
+  meleeCooldown: 1
+  rangedDamage: 1
+  rangedRange: 1
+  rangedCooldown: 1
+  specialDamage: 1
+  specialCooldown: 1
+  specialRange: 1
+  chaseTime: 1
+  sightDistance: 1
+  alertSize: 1
 --- !u!1 &2511333269074462663
 GameObject:
   m_ObjectHideFlags: 0

@@ -323,6 +323,7 @@ GameObject:
   - component: {fileID: 1603426131}
   - component: {fileID: 6946934380660341516}
   - component: {fileID: 5081067386168001516}
+  - component: {fileID: 4006563641134486771}
   m_Layer: 9
   m_Name: Stronk
   m_TagString: Untagged
@@ -399,7 +400,7 @@ MonoBehaviour:
     availableFromStart: 1
     canSpecial: 0
     statusEffectsToApply: []
-  statModifiers: []
+  traits: 
   movementSpeed: 4
   chaseTime: 10
   stoppedMoving: 0
@@ -460,7 +461,6 @@ MonoBehaviour:
     unitMats: []
     isSelected: 0
   canRagdoll: 1
-  walking: 0
   stopMovement: 0
   stopPathfinding: 0
   destructibleSearchRange: 20
@@ -804,6 +804,41 @@ CapsuleCollider:
   m_Height: 2.9
   m_Direction: 1
   m_Center: {x: 0, y: 1.5, z: 0.1}
+--- !u!114 &4006563641134486771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1289923740817093828}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 269b249b2dbd607459107713fd4d3335, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  movementSpeed: 1
+  healing: 1
+  damage: 1
+  damageResistance: 1
+  slashResistance: 1
+  bluntResistance: 1
+  pierceResistance: 1
+  fireResistance: 1
+  health: 1
+  meleeDamage: 1
+  meleeRange: 1
+  meleeCooldown: 1
+  rangedDamage: 1
+  rangedRange: 1
+  rangedCooldown: 1
+  specialDamage: 1
+  specialCooldown: 1
+  specialRange: 1
+  chaseTime: 1
+  sightDistance: 1
+  alertSize: 1
 --- !u!1 &1472669421140512547
 GameObject:
   m_ObjectHideFlags: 0

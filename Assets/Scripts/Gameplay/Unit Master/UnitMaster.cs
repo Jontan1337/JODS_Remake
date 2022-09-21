@@ -18,9 +18,35 @@ public class UnitList
     public AnimationCurve upgradeCurve;
     public int totalUpgrades = 0;
     public int upgradesAvailable = 0;
+    [System.Serializable]
+    public struct UpgradeModifiers
+    {
+        public float movementSpeed;
+        public float healing;
+        public float damage;
+        public float damageResistance;
+        public float slashResistance;
+        public float bluntResistance;
+        public float pierceResistance;
+        public float fireResistance;
+
+        public float health;
+        public float meleeDamage;
+        public float meleeRange;
+        public float meleeCooldown;
+        public float rangedDamage;
+        public float rangedRange;
+        public float rangedCooldown;
+        public float specialDamage;
+        public float specialCooldown;
+        public float specialRange;
+        public float chaseTime;
+        public float sightDistance;
+        public float alertSize;
+    }
+    public UpgradeModifiers modifiers;
     [Space]
     [Space]
-    public ModifierManagerUnit modifiers = new ModifierManagerUnit();
     [Space]
     [Space]
     public int upgradesTillHealthTrait = 5;
@@ -1238,19 +1264,19 @@ public class UnitMaster : NetworkBehaviour
             //Health upgrade
             case 0:
                 upgradesLeft = --unit.upgradesTillHealthTrait;
-                unit.modifiers.Health+= upgradeAmount;
+                unit.modifiers.health += upgradeAmount;
                 newValue = unit.GetHealthStat();
                 break;
             //Damage upgrade
             case 1:
                 upgradesLeft = --unit.upgradesTillDamageTrait;
-                unit.modifiers.MeleeDamage += upgradeAmount;
+                unit.modifiers.meleeDamage += upgradeAmount;
                 newValue = unit.GetDamageStat();
                 break;
             //Speed upgrade
             case 2:
                 upgradesLeft = --unit.upgradesTillSpeedTrait;
-                unit.modifiers.MovementSpeed += upgradeAmount;
+                unit.modifiers.movementSpeed += upgradeAmount;
                 newValue = unit.GetSpeedStat();
                 break;
         }
@@ -1658,7 +1684,7 @@ public class UnitMaster : NetworkBehaviour
             u.upgradeMilestone = u.unit.upgrades.unitsToPlace;
             u.upgradeCurve = u.unit.upgrades.upgradeCurve;
 
-            u.modifiers = new ModifierManagerUnit();
+            //u.modifiers = new ModifierManagerUnit();
         }
     }
 

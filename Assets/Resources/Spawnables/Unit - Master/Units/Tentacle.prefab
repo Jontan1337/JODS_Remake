@@ -931,6 +931,7 @@ GameObject:
   - component: {fileID: 890206176}
   - component: {fileID: 359016853786005919}
   - component: {fileID: 1810290463092638355}
+  - component: {fileID: -6454976815321230933}
   m_Layer: 9
   m_Name: Tentacle
   m_TagString: Untagged
@@ -1007,7 +1008,7 @@ MonoBehaviour:
     availableFromStart: 1
     canSpecial: 0
     statusEffectsToApply: []
-  statModifiers: []
+  traits: 
   movementSpeed: 1.5
   chaseTime: 10
   stoppedMoving: 0
@@ -1066,7 +1067,6 @@ MonoBehaviour:
     unitMats: []
     isSelected: 0
   canRagdoll: 1
-  walking: 0
   stopMovement: 0
   stopPathfinding: 0
   CaughtSurvivor: 0
@@ -1406,6 +1406,41 @@ CapsuleCollider:
   m_Height: 1.85
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &-6454976815321230933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2334045856554427847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 269b249b2dbd607459107713fd4d3335, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  movementSpeed: 1
+  healing: 1
+  damage: 1
+  damageResistance: 1
+  slashResistance: 1
+  bluntResistance: 1
+  pierceResistance: 1
+  fireResistance: 1
+  health: 1
+  meleeDamage: 1
+  meleeRange: 1
+  meleeCooldown: 1
+  rangedDamage: 1
+  rangedRange: 1
+  rangedCooldown: 1
+  specialDamage: 1
+  specialCooldown: 1
+  specialRange: 1
+  chaseTime: 1
+  sightDistance: 1
+  alertSize: 1
 --- !u!1 &2382456407788445095
 GameObject:
   m_ObjectHideFlags: 0
@@ -4334,15 +4369,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3ea27c5d12465714da4bd863f34a1ad6, type: 3}
---- !u!4 &2706396637125845246 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8683244817245602927, guid: 3ea27c5d12465714da4bd863f34a1ad6,
-    type: 3}
-  m_PrefabInstance: {fileID: 6705323561791235217}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &126368863190151585 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6687541496331228464, guid: 3ea27c5d12465714da4bd863f34a1ad6,
+    type: 3}
+  m_PrefabInstance: {fileID: 6705323561791235217}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &2706396637125845246 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8683244817245602927, guid: 3ea27c5d12465714da4bd863f34a1ad6,
     type: 3}
   m_PrefabInstance: {fileID: 6705323561791235217}
   m_PrefabAsset: {fileID: 0}

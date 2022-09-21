@@ -15,6 +15,7 @@ using Sirenix.OdinInspector;
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(Seeker))]
 [RequireComponent(typeof(AIPath))]
+[RequireComponent(typeof(ModifierManagerUnit))]
 
 public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 {
@@ -318,6 +319,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             }
         }
 
+        modifiers = GetComponent<ModifierManagerUnit>();
+
         InitialUnitSetup();
 
 
@@ -330,7 +333,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             return;
         }
 
-        modifiers = GetComponent<ModifierManagerUnit>();
 
         StartCoroutine(MovementAnimationCoroutine());
         

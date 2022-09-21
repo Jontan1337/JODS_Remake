@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using Sirenix.OdinInspector;
 
 public abstract class ModifierManager : NetworkBehaviour
 {
-    #region Base Modifers
     [Header("Base Modifiers")]
+    #region Basic Modifers
+    [Title("Basic Modifiers", titleAlignment: TitleAlignments.Centered)]
     [SyncVar, SerializeField, Range(0, 10)] private float movementSpeed = 1;
     [Space]
     [SyncVar, SerializeField, Range(0, 10)] private float healing = 1;
@@ -35,7 +37,7 @@ public abstract class ModifierManager : NetworkBehaviour
 
     #region Resistance Modifiers
 
-    [Header("Resistance Modifiers")]
+    [Title("Resistance Modifiers", titleAlignment: TitleAlignments.Centered)]
     [SyncVar, SerializeField, Range(0, 10)] private float damageResistance = 1;
     [Space]
     [SyncVar, SerializeField, Range(0, 10)] private float slashResistance = 1;
@@ -43,7 +45,6 @@ public abstract class ModifierManager : NetworkBehaviour
     [SyncVar, SerializeField, Range(0, 10)] private float pierceResistance = 1;
     [Space]
     [SyncVar, SerializeField, Range(0, 10)] private float fireResistance = 1;
-
 
     public float DamageResistance
     {
