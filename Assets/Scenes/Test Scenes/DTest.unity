@@ -9722,6 +9722,7 @@ GameObject:
   - component: {fileID: 1412740584}
   - component: {fileID: 1412740583}
   - component: {fileID: 1412740582}
+  - component: {fileID: 1412740586}
   m_Layer: 0
   m_Name: Plane
   m_TagString: Ground
@@ -9806,6 +9807,40 @@ Transform:
   m_Father: {fileID: 812420380}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1412740586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1412740581}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 269b249b2dbd607459107713fd4d3335, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data:
+    movementSpeed: 1
+    healing: 1
+    damage: 1
+    damageResistance: 1
+    slashResistance: 1
+    bluntResistance: 1
+    pierceResistance: 1
+    fireResistance: 1
+    health: 1
+    meleeDamage: 1
+    meleeRange: 1
+    meleeCooldown: 1
+    rangedDamage: 1
+    rangedRange: 1
+    rangedCooldown: 1
+    specialDamage: 1
+    specialCooldown: 1
+    specialRange: 1
+    chaseTime: 1
+    sightDistance: 1
+    alertSize: 1
 --- !u!4 &1448786443 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -4216859302048453862, guid: 0bea1b293b2826e46ae8229604c49a7d,

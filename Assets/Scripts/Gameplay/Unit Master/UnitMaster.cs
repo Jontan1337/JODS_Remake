@@ -20,12 +20,12 @@ public class UnitList
     public int upgradesAvailable = 0;
     [Space]
     [Space]
-    public ModifierManagerUnit modifiers;
+    public ModifierManagerUnitData modifiers;
     [Space]
     [Space]
     public int upgradesTillHealthTrait = 5;
     public bool hasHealthTrait = false;
-    public int GetHealthStat() { return Mathf.RoundToInt((float)unit.health * 1); }
+    public int GetHealthStat() { return Mathf.RoundToInt((float)unit.health * modifiers.Health); }
     [Space]
     public int upgradesTillDamageTrait = 5;
     public bool hasDamageTrait = false;
@@ -35,13 +35,13 @@ public class UnitList
         switch (unit.unitDamageType)
         {
             case UnitDamageType.Melee:
-                damageStat = Mathf.RoundToInt(((unit.melee.meleeDamageMin + unit.melee.meleeDamageMax) / 2) * 1);
+                damageStat = Mathf.RoundToInt(((unit.melee.meleeDamageMin + unit.melee.meleeDamageMax) / 2) * modifiers.MeleeDamage);
                 break;
             case UnitDamageType.Ranged:
-                damageStat = Mathf.RoundToInt(unit.ranged.rangedDamage * 1);
+                damageStat = Mathf.RoundToInt(unit.ranged.rangedDamage * modifiers.RangedDamage);
                 break;
             case UnitDamageType.Special:
-                damageStat = Mathf.RoundToInt(unit.special.specialDamage * 1);
+                damageStat = Mathf.RoundToInt(unit.special.specialDamage * modifiers.SpecialDamage);
                 break;
         }
         return damageStat;
@@ -49,7 +49,7 @@ public class UnitList
     [Space]
     public int upgradesTillSpeedTrait = 5;
     public bool hasSpeedTrait = false;
-    public float GetSpeedStat() { return unit.movementSpeed * 1; }
+    public float GetSpeedStat() { return unit.movementSpeed * modifiers.MovementSpeed; }
 
     [Space]
     [Space]
@@ -1238,19 +1238,19 @@ public class UnitMaster : NetworkBehaviour
             //Health upgrade
             case 0:
                 upgradesLeft = --unit.upgradesTillHealthTrait;
-                //unit.modifiers.Health += upgradeAmount;
+                unit.modifiers.Health += upgradeAmount;
                 newValue = unit.GetHealthStat();
                 break;
             //Damage upgrade
             case 1:
                 upgradesLeft = --unit.upgradesTillDamageTrait;
-                //unit.modifiers.MeleeDamage += upgradeAmount;
+                unit.modifiers.MeleeDamage += upgradeAmount;
                 newValue = unit.GetDamageStat();
                 break;
             //Speed upgrade
             case 2:
                 upgradesLeft = --unit.upgradesTillSpeedTrait;
-                //unit.modifiers.MovementSpeed += upgradeAmount;
+                unit.modifiers.MovementSpeed += upgradeAmount;
                 newValue = unit.GetSpeedStat();
                 break;
         }
@@ -1658,7 +1658,7 @@ public class UnitMaster : NetworkBehaviour
             u.upgradeMilestone = u.unit.upgrades.unitsToPlace;
             u.upgradeCurve = u.unit.upgrades.upgradeCurve;
 
-            //u.modifiers = new ModifierManagerUnit();
+            u.modifiers = new ModifierManagerUnitData();
         }
     }
 
@@ -1786,7 +1786,7 @@ public class UnitMaster : NetworkBehaviour
 
             UnitList chosenUnitList = unitList[chosenSpawnableIndex];
 
-            //unit.GetComponent<ModifierManagerUnit>().s = chosenUnitList.GetAllModifiers();
+            unit.GetComponent<ModifierManagerUnit>().data = chosenUnitList.modifiers;
 
             chosenUnitList.upgradeMilestone = (int)Mathf.Clamp(chosenUnitList.upgradeMilestone -= 1, 0, Mathf.Infinity);
             Rpc_UpdateMilestoneForClient(netIdentity.connectionToClient, chosenSpawnableIndex, chosenUnitList.upgradeMilestone);
