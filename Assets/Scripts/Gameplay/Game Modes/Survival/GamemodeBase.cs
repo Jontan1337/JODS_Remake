@@ -6,37 +6,40 @@ using UnityEngine.UI;
 using Mirror;
 using UnityEngine.InputSystem;
 using System;
+using Sirenix.OdinInspector;
 
-[System.Serializable]
+[Serializable]
 public class PlayerData
 {
     public PlayerData() { }
-    public PlayerData(uint playerId, string playerName, int score, bool isMaster)
+    public PlayerData(uint playerId, string playerName, bool isMaster)
     {
-        this.playerId = playerId;
         this.playerName = playerName;
-        this.score = score;
-        this.isMaster = isMaster;
 
-        if (isMaster) return;
+        this.playerId = playerId;
 
-        alive = true;
-        points = score;
+        this.alive = true;
+
+        this.isMaster = isMaster; 
     }
 
-    [SyncVar] public string playerName;
     [Header("Shared")]
-    [SyncVar] public uint playerId;
-    [SyncVar] public int score;
-    [SyncVar] public bool isMaster;
+    public string playerName;
+    public uint playerId;
+    public bool alive;
+    public int score;
+    public int exp;
+    public int level;
+    public bool isMaster;
+
     [Header("Survivor")]
-    [SyncVar] public int points;
-    [SyncVar] public int kills;
-    [SyncVar] public bool alive;
+    public int points;
+    public int kills;
+
     [Header("Master")]
-    [SyncVar] public int unitsPlaced;
-    [SyncVar] public int totalUpgrades;
-    [SyncVar] public int totalUnitUpgrades;
+    public int unitsPlaced;
+    public int totalUpgrades;
+    public int totalUnitUpgrades;
 }
 
 public enum PlayerDataStat
@@ -70,8 +73,6 @@ public abstract class GamemodeBase : NetworkBehaviour
     public MapSettingsSO mapSettings;
 
     [Header("Points System Management")]
-    [SerializeField] private int defaultStartingPoints = 0;
-    [Space]
     [SerializeField] private List<PlayerData> playerList = new List<PlayerData>();
 
     [Header("Endgame Management")]
@@ -101,40 +102,6 @@ public abstract class GamemodeBase : NetworkBehaviour
 
     #region Point System and Player Scores
 
-    [ClientRpc]
-    private void Rpc_ChangePlayerList(PlayerData playerData)
-    {
-        bool playerExists = false;
-
-        int index = 0;
-        foreach (PlayerData player in playerList)
-        {
-            if (player.playerId == playerData.playerId)
-            {
-                index = playerList.IndexOf(player);
-                playerExists = true;
-            }
-        }
-
-        if (playerExists)
-        {
-            playerList[index] = playerData;
-        }
-
-        else playerList.Add(playerData);
-
-        //Assign the player to a scoreboard row
-        foreach (ScoreboardRow row in playerData.isMaster ? masterRows : survivorRows)
-        {
-            if (row.playerId == 0)
-            {
-                row.playerId = playerData.playerId;
-                row.SetupPlayerScore(playerData);
-                break;
-            }
-        }
-    }
-
     private PlayerData GetPlayer(uint playerId)
     {
         int index = 0;
@@ -156,27 +123,6 @@ public abstract class GamemodeBase : NetworkBehaviour
 
     [Server]
     public void Svr_ModifyStat(uint playerId, int amount, PlayerDataStat stat = PlayerDataStat.Score)
-    {
-        Rpc_ModifyPlayerData(playerId, amount, stat);
-
-        PlayerData player = GetPlayer(playerId);
-        if (!player.isMaster && amount == 0 && stat == PlayerDataStat.Alive) //Did the Alive stat get changed to 0? (Someone died)
-        {
-            bool everyoneIsDead = true;
-
-            //Iterate through all players and check if they're alive.
-            foreach(PlayerData pd in playerList)
-            {
-                if (pd == player) continue; //Skip the initial player, we know it's dead.
-
-                if (pd.alive) everyoneIsDead = false; //If the player we're checking is alive, then we don't end the game
-            }
-            if (everyoneIsDead) Svr_EndGame(); //All players are dead, end the game.
-        }
-    }
-    
-    [ClientRpc]
-    private void Rpc_ModifyPlayerData(uint playerId, int amount, PlayerDataStat stat)
     {
         PlayerData playerToModify = GetPlayer(playerId);
 
@@ -200,6 +146,9 @@ public abstract class GamemodeBase : NetworkBehaviour
             case PlayerDataStat.Alive:
                 playerToModify.alive = amount != 0; //False if 0, true if 1
                 break;
+            default:
+                playerToModify.score += amount;
+                break;
         }
 
         if (amount > 0)
@@ -207,15 +156,75 @@ public abstract class GamemodeBase : NetworkBehaviour
             playerToModify.score += amount;
         }
 
-        UpdateScoreboardRow(playerToModify);
+        Rpc_UpdateScoreboardRow(playerToModify);
+
+        if (!playerToModify.isMaster && amount == 0 && stat == PlayerDataStat.Alive) //Did the Alive stat get changed to 0? (Someone died)
+        {
+            bool everyoneIsDead = true;
+
+            //Iterate through all players and check if they're alive.
+            foreach(PlayerData pd in playerList)
+            {
+                if (pd == playerToModify) continue; //Skip the initial player, we know it's dead.
+
+                if (pd.alive) everyoneIsDead = false; //If the player we're checking is alive, then we don't end the game
+            }
+            if (everyoneIsDead) Svr_EndGame(); //All players are dead, end the game.
+        }
     }
 
+    //When a player joins the server, a PlayerData gets created with the player's info.
+    //This PlayerData then gets added to the list of players.
+    //The server then tells all clients to update the visual scoreboard with the new list of players.
+    //
+    //Only the server has these PlayerDatas, as it is the only one allowed to modify them.
     [Server]
     public void Svr_AddPlayer(uint playerId, string playerName, bool isMaster = false)
     {
-        PlayerData newPlayer = new PlayerData(playerId, playerName, defaultStartingPoints, isMaster);
+        PlayerData newPlayer = new PlayerData(playerId, playerName, isMaster);
 
-        Rpc_ChangePlayerList(newPlayer);
+        bool playerExists = false;
+
+        int index = 0;
+
+        foreach (PlayerData player in playerList)
+        {
+            if (player.playerId == newPlayer.playerId)
+            {
+                index = playerList.IndexOf(player);
+                playerExists = true;
+            }
+        }
+
+        if (playerExists)
+        {
+            playerList[index] = newPlayer;
+        }
+
+        else playerList.Add(newPlayer);
+
+        Rpc_ChangePlayerList(playerList);
+    }
+
+    //This method overrides the visual scoreboard, inserting all players in the list into their own row.
+    [ClientRpc]
+    private void Rpc_ChangePlayerList(List<PlayerData> playerData)
+    {
+       List<ScoreboardRow> usedRows = new List<ScoreboardRow>();
+        foreach (PlayerData player in playerData)
+        {
+            //Assign the player to a scoreboard row
+            foreach (ScoreboardRow row in player.isMaster ? masterRows : survivorRows)
+            {
+                if (!usedRows.Contains(row))
+                {
+                    row.playerId = player.playerId;
+                    row.SetupPlayerScore(player);
+                    usedRows.Add(row);
+                    break;
+                }
+            }
+        }
     }
 
     #endregion
@@ -321,29 +330,23 @@ public abstract class GamemodeBase : NetworkBehaviour
     {
         scoreboardIsOpen = !scoreboardIsOpen;
         scoreboard.SetActive(scoreboardIsOpen);
-
-        if (scoreboardIsOpen)
-        {
-            UpdateScoreboard();
-        }
     }
 
-    private void UpdateScoreboard()
+    [Server]
+    private void Svr_UpdateScoreboardRow(PlayerData pd)
     {
-        foreach (PlayerData pd in playerList)
+        foreach (ScoreboardRow row in pd.isMaster ? masterRows : survivorRows)
         {
-            foreach (ScoreboardRow row in pd.isMaster ? masterRows : survivorRows)
+            if (row.playerId == pd.playerId)
             {
-                if (row.playerId == pd.playerId)
-                {
-                    row.ChangeScores(pd);
-                    break;
-                }
+                row.ChangeScores(pd);
+                break;
             }
         }
     }
 
-    private void UpdateScoreboardRow(PlayerData pd)
+    [ClientRpc]
+    private void Rpc_UpdateScoreboardRow(PlayerData pd)
     {
         foreach (ScoreboardRow row in pd.isMaster ? masterRows : survivorRows)
         {
@@ -431,8 +434,9 @@ public abstract class GamemodeBase : NetworkBehaviour
         }
     }
 
+
     #endregion
 
-    [Header("Debug")]
+    [BoxGroup("Debug")]
     [SerializeField] private bool test = false;
 }
