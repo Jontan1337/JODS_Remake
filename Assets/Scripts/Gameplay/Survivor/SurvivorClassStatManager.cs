@@ -24,7 +24,6 @@ public class SurvivorClassStatManager : NetworkBehaviour
         this.abilityCooldown = abilityCooldown;
     }
 
-
     public IEnumerator AbilityCooldown()
     {
         AbilityIsReady = false;

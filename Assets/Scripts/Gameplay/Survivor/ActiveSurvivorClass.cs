@@ -16,6 +16,7 @@ public class ActiveSurvivorClass : NetworkBehaviour
     [SyncVar(hook = nameof(SetSurvivorClassSettings))] public Survivor sClass;
     private SurvivorClassStatManager sClassStatManager;
     private CharacterStatManager characterStatManager;
+    private SurvivorLevelManager survivorLvlManager;
 
     [SerializeField] private SurvivorSO survivorSO;
 
@@ -68,6 +69,9 @@ public class ActiveSurvivorClass : NetworkBehaviour
         }
         sClassStatManager = GetComponent<SurvivorClassStatManager>();
         characterStatManager = GetComponent<CharacterStatManager>();
+        survivorLvlManager = GetComponent<SurvivorLevelManager>();
+
+        survivorLvlManager.LevelUpModifiersSetup(survivorSO.levelUpModifiers);
 
         characterStatManager.SetStats(survivorSO.maxHealth, survivorSO.startingArmor, survivorSO.baseModifiers.MovementSpeed);
         sClassStatManager.SetStats(survivorSO.abilityCooldown);
