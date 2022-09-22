@@ -109,7 +109,7 @@ public class UnitMaster : NetworkBehaviour
 {
     #region Fields
 
-    [Header("Debug")]
+    [BoxGroup("Debug")]
     [SerializeField] private bool test = false;
 
     [Header("Master Class")]
@@ -127,7 +127,8 @@ public class UnitMaster : NetworkBehaviour
 
     [Space]
 
-    [SerializeField, SyncVar(hook = nameof(CurrentEnergy_Hook))] private int currentEnergy = 50; //Current amount of master energy
+    [SerializeField, BoxGroup("Energy"),
+        SyncVar(hook = nameof(CurrentEnergy_Hook))] private int currentEnergy = 50; //Current amount of master energy
     [Command] private void Cmd_SetCurrentEnergy(int newVal)
     {
         Energy = newVal;
@@ -136,7 +137,8 @@ public class UnitMaster : NetworkBehaviour
     {
         UpdateEnergyUI();
     }
-    [SerializeField, SyncVar(hook = nameof(MaxEnergy_Hook))] private int maxEnergy = 100; //Maximum amount of energy that can be stored
+    [SerializeField, BoxGroup("Energy"),
+        SyncVar(hook = nameof(MaxEnergy_Hook))] private int maxEnergy = 100; //Maximum amount of energy that can be stored
     [Command] private void Cmd_SetMaxEnergy(int newVal)
     {
         maxEnergy = newVal;
@@ -151,33 +153,36 @@ public class UnitMaster : NetworkBehaviour
         UpdateEnergyUI();
     }
 
-    [SerializeField, SyncVar] private int energyRechargeIncrement = 1; //How much energy recharges per second
-    [SerializeField] private int maxEnergyIncrement = 20; //Amount to increase max energy
+    [SerializeField, BoxGroup("Energy"),
+        SyncVar] private int energyRechargeIncrement = 1; //How much energy recharges per second
+    [SerializeField, BoxGroup("Energy")] private int maxEnergyIncrement = 20; //Amount to increase max energy
     [Space]
-    [SerializeField, SyncVar] private int currentXP = 0; //Current amount of master xp
+    [SerializeField, SyncVar, BoxGroup("Experience")] private int currentEXP = 0; //Current amount of master xp
     [Command] private void Cmd_SetCurrentXP(int newVal) { CurrentXP = newVal; }
     [Space]
-    [SerializeField, SyncVar(hook = nameof(EnergyUntilNextUpgradeHook))] private int energyUntilNextUpgradeValue = 0; //Current progress
-    private void EnergyUntilNextUpgradeHook(int oldVal, int newVal)
+    [SerializeField, BoxGroup("Experience"),
+        SyncVar(hook = nameof(ExpUntilNextUpgradeHook))] private int expUntilNextUpgradeValue = 0; //Current progress
+    private void ExpUntilNextUpgradeHook(int oldVal, int newVal)
     {
         if (UI.masterLevelImage == null) return;
-        UI.masterLevelImage.fillAmount = (float)newVal / (float)energyUntilNextUpgradeTarget;
+        UI.masterLevelImage.fillAmount = (float)newVal / (float)expUntilNextUpgradeTarget;
     }
-    [SerializeField, SyncVar] private int energyUntilNextUpgradeTarget = 50; //When does the next upgrade decision become available
-    [Server] private void Svr_EnergyUntilNextUpgrade()
+    [SerializeField, BoxGroup("Experience"),
+        SyncVar] private int expUntilNextUpgradeTarget = 50; //When does the next upgrade decision become available
+    [Server] private void Svr_ExpUntilNextUpgrade()
     {
-        int newMilestone = Mathf.RoundToInt(energyUntilNextUpgradeBase *
-            (1 + energyRequirementCurve.Evaluate(
-        (energyRequirementCurve.keys[energyRequirementCurve.keys.Length - 1].time / 10) * (masterLevel + 1))));
+        int newMilestone = Mathf.RoundToInt(expUntilNextUpgradeBase *
+            (1 + expRequirementCurve.Evaluate(
+        (expRequirementCurve.keys[expRequirementCurve.keys.Length - 1].time / 10) * (masterLevel + 1))));
 
-        energyUntilNextUpgradeTarget = newMilestone;
-        energyUntilNextUpgradeValue = 0; 
+        expUntilNextUpgradeTarget = newMilestone;
+        expUntilNextUpgradeValue = 0; 
         masterLevel++;
         masterUpgrades++;
     }
     [Space]
-    [SerializeField] private int energyUntilNextUpgradeBase = 50; //When does the next upgrade decision become available 
-    [SerializeField] private AnimationCurve energyRequirementCurve;
+    [SerializeField, BoxGroup("Experience")] private int expUntilNextUpgradeBase = 50; //When does the next upgrade decision become available 
+    [SerializeField, BoxGroup("Experience")] private AnimationCurve expRequirementCurve;
     [SyncVar(hook = nameof(MasterUpgradesHook))]private int masterUpgrades = 0;
     private void MasterUpgradesHook(int oldVal, int newVal)
     {
@@ -196,31 +201,32 @@ public class UnitMaster : NetworkBehaviour
         {
             if (!isServer) return;
 
-            bool less = value < currentEnergy;
-            int diff = 0;
-            if (less) diff = currentEnergy - value;
-
             currentEnergy = Mathf.Clamp(value, 0, maxEnergy);
-
-            if (less)
-            {
-                energyUntilNextUpgradeValue += diff;
-                if (energyUntilNextUpgradeValue >= energyUntilNextUpgradeTarget)
-                {                    
-                    Svr_EnergyUntilNextUpgrade();
-                }
-            }
         }
     }
     private int CurrentXP
     {
-        get { return currentXP; }
+        get { return currentEXP; }
         set
         {
             if (!isServer) return;
-            currentXP = value;
+
+            bool gain = value > currentEXP;
+            int diff = 0;
+            if (gain) diff = value - currentEXP;
+
+            currentEXP = value;
 
             Rpc_UpdateXpUI(netIdentity.connectionToClient, value);
+
+            if (gain)
+            {
+                expUntilNextUpgradeValue += diff;
+                if (expUntilNextUpgradeValue >= expUntilNextUpgradeTarget)
+                {
+                    Svr_ExpUntilNextUpgrade();
+                }
+            }
         }
     }
 
@@ -387,14 +393,14 @@ public class UnitMaster : NetworkBehaviour
         if (isServer)
         {
             //Default starting energy stats
-            energyRequirementCurve = masterSO.energyRequirementCurve;
+            expRequirementCurve = masterSO.energyRequirementCurve;
             currentEnergy = masterSO.startEnergy;
             maxEnergy = masterSO.startMaxEnergy;
             energyRechargeIncrement = masterSO.energyRechargeIncrement;
             maxEnergyIncrement = masterSO.maxEnergyUpgradeIncrement;
-            energyUntilNextUpgradeTarget = masterSO.energyUntilNextUpgrade;
-            energyUntilNextUpgradeValue = 0;
-            energyUntilNextUpgradeBase = masterSO.energyUntilNextUpgrade;
+            expUntilNextUpgradeTarget = masterSO.energyUntilNextUpgrade;
+            expUntilNextUpgradeValue = 0;
+            expUntilNextUpgradeBase = masterSO.energyUntilNextUpgrade;
 
             StartCoroutine(EnergyCoroutine());
         }
