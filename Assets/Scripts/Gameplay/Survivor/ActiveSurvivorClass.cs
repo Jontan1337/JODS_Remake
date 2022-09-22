@@ -69,7 +69,7 @@ public class ActiveSurvivorClass : NetworkBehaviour
         sClassStatManager = GetComponent<SurvivorClassStatManager>();
         characterStatManager = GetComponent<CharacterStatManager>();
 
-        characterStatManager.SetStats(survivorSO.maxHealth, survivorSO.startingArmor, survivorSO.movementSpeedModifier);
+        characterStatManager.SetStats(survivorSO.maxHealth, survivorSO.startingArmor, survivorSO.baseModifiers.MovementSpeed);
         sClassStatManager.SetStats(survivorSO.abilityCooldown);
 
         bodyRenderer.sharedMesh = survivorSO.bodyMesh;

@@ -23,12 +23,13 @@ public class SurvivorLevelManager : NetworkBehaviour
 
     public override void OnStartAuthority()
     {
-        modifiers = GetComponentInParent<ModifierManagerSurvivor>();
+        
     }
 
     [Command]
     private void Cmd_LevelUp()
     {
+        modifiers = GetComponentInParent<ModifierManagerSurvivor>();
         level++;
         modifiers.data.MovementSpeed += 0.05f;
         experience = 0;

@@ -16,9 +16,32 @@ MonoBehaviour:
   maxHealth: 100
   startingArmor: 0
   abilityCooldown: 60
-  movementSpeedModifier: 1
-  reloadSpeedModifier: 1
-  accuracyModifier: 1
+  levelUpModifiers:
+    movementSpeed: 0.05
+    healing: 0
+    damage: 0
+    damageResistance: 0
+    slashResistance: 0
+    bluntResistance: 0
+    pierceResistance: 0
+    fireResistance: 0
+    rangedDamage: 1
+    cooldown: 1
+    reloadSpeed: 0
+    accuracy: 0
+  baseModifiers:
+    movementSpeed: 1
+    healing: 1
+    damage: 1
+    damageResistance: 1
+    slashResistance: 1
+    bluntResistance: 1
+    pierceResistance: 1
+    fireResistance: 1
+    rangedDamage: 1
+    cooldown: 1
+    reloadSpeed: 0
+    accuracy: 0
   classScript: {fileID: 507536392163164668, guid: 72b6f26d123c1ea44a6ad4d537db32d3,
     type: 3}
   starterWeapon: {fileID: 6484964077652478879, guid: 31b9270438c1cb348ab05dc21d04e8cb,
