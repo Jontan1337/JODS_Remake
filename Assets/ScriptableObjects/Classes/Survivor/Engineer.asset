@@ -14,11 +14,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   survivorName: Engineer
   maxHealth: 100
-  startingArmor: 10
+  startingArmor: 30
   abilityCooldown: 105
-  movementSpeedModifier: 1
-  reloadSpeedModifier: 1
-  accuracyModifier: 1
+  levelUpModifiers:
+    movementSpeed: 0
+    healing: 0.03
+    damage: 0
+    damageResistance: 0.03
+    slashResistance: 1
+    bluntResistance: 1
+    pierceResistance: 1
+    fireResistance: 0
+    rangedDamage: 0
+    meleeDamage: 0.03
+    abilityDamage: 0.03
+    cooldown: 0.03
+    reloadSpeed: 0
+    accuracy: 0
+  baseModifiers:
+    movementSpeed: 1
+    healing: 1
+    damage: 1
+    damageResistance: 1
+    slashResistance: 1
+    bluntResistance: 1
+    pierceResistance: 1
+    fireResistance: 1
+    rangedDamage: 1
+    meleeDamage: 1.2
+    abilityDamage: 1
+    cooldown: 1
+    reloadSpeed: 1
+    accuracy: 0.9
   classScript: {fileID: 1442985027432273228, guid: ce1b3163aa8bff542a03ca0715f5393b,
     type: 3}
   starterWeapon: {fileID: 8890196892592532165, guid: 516951a347871cd4eacafa44d7eff7b3,

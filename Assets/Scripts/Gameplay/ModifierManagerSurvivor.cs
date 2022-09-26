@@ -10,6 +10,8 @@ public class ModifierManagerSurvivor : MonoBehaviour
 public class ModifierManagerSurvivorData : ModifierManagerBase
 {
     [SerializeField, Range(0, 10)] private float rangedDamage = 1;
+    [SerializeField, Range(0, 10)] private float meleeDamage = 1;
+    [SerializeField, Range(0, 10)] private float abilityDamage = 1;
     [SerializeField, Range(0, 10)] private float cooldown = 1;
     [SerializeField, Range(0, 10)] private float reloadSpeed = 1;
     [SerializeField, Range(0, 10)] private float accuracy = 1;
@@ -19,6 +21,16 @@ public class ModifierManagerSurvivorData : ModifierManagerBase
     {
         get { return rangedDamage; }
         set { rangedDamage = Mathf.Clamp(value, 0, 10); }
+    }
+    public float MeleeDamage
+    {
+        get { return meleeDamage; }
+        set { meleeDamage = Mathf.Clamp(value, 0, 10); }
+    }
+    public float AbilityDamage
+    {
+        get { return abilityDamage; }
+        set { abilityDamage = Mathf.Clamp(value, 0, 10); }
     }
     public float Accuracy
     {

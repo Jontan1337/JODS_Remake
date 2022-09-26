@@ -32,15 +32,17 @@ public class SurvivorLevelManager : NetworkBehaviour
     {
         survivorModifiers = GetComponentInParent<ModifierManagerSurvivor>();
         level++;
-        survivorModifiers.data.MovementSpeed *= 1 + levelUpModifiers.MovementSpeed;
-        survivorModifiers.data.Healing *= 1 + levelUpModifiers.Healing;
-        survivorModifiers.data.Damage *= 1 + levelUpModifiers.Damage;
-        survivorModifiers.data.DamageResistance *= 1 + levelUpModifiers.DamageResistance;
-        survivorModifiers.data.FireResistance *= 1 + levelUpModifiers.FireResistance;
-        survivorModifiers.data.RangedDamage *= 1 + levelUpModifiers.RangedDamage;
-        survivorModifiers.data.Cooldown *= 1 + levelUpModifiers.Cooldown;
-        survivorModifiers.data.ReloadSpeed *= 1 + levelUpModifiers.ReloadSpeed;
-        survivorModifiers.data.Accuracy *= 1 + levelUpModifiers.Accuracy;
+
+        survivorModifiers.data.MovementSpeed += levelUpModifiers.MovementSpeed;
+        survivorModifiers.data.Healing += levelUpModifiers.Healing;
+        survivorModifiers.data.DamageResistance += levelUpModifiers.DamageResistance;
+        survivorModifiers.data.FireResistance += levelUpModifiers.FireResistance;
+        survivorModifiers.data.RangedDamage += levelUpModifiers.RangedDamage;
+        survivorModifiers.data.MeleeDamage += levelUpModifiers.MeleeDamage;
+        survivorModifiers.data.AbilityDamage += levelUpModifiers.AbilityDamage;
+        survivorModifiers.data.Cooldown += levelUpModifiers.Cooldown;
+        survivorModifiers.data.ReloadSpeed += levelUpModifiers.ReloadSpeed;
+        survivorModifiers.data.Accuracy += levelUpModifiers.Accuracy;
 
         print("Level up");
 
@@ -52,7 +54,7 @@ public class SurvivorLevelManager : NetworkBehaviour
         if (level < 10)
         {
             experience += exp;
-            if (experience >= level * 100)
+            if (experience >= 100 + (level * 125))
             {
                 Cmd_LevelUp();
             }

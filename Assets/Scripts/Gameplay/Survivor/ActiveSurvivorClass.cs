@@ -17,6 +17,7 @@ public class ActiveSurvivorClass : NetworkBehaviour
     private SurvivorClassStatManager sClassStatManager;
     private CharacterStatManager characterStatManager;
     private SurvivorLevelManager survivorLvlManager;
+    private ModifierManagerSurvivor survivorModifiers;
 
     [SerializeField] private SurvivorSO survivorSO;
 
@@ -70,8 +71,23 @@ public class ActiveSurvivorClass : NetworkBehaviour
         sClassStatManager = GetComponent<SurvivorClassStatManager>();
         characterStatManager = GetComponent<CharacterStatManager>();
         survivorLvlManager = GetComponent<SurvivorLevelManager>();
+        survivorModifiers = GetComponent<ModifierManagerSurvivor>();
+
+        survivorModifiers.data.MovementSpeed = survivorSO.baseModifiers.MovementSpeed;
+        survivorModifiers.data.Healing = survivorSO.baseModifiers.Healing;
+        survivorModifiers.data.DamageResistance = survivorSO.baseModifiers.DamageResistance;
+        survivorModifiers.data.FireResistance = survivorSO.baseModifiers.FireResistance;
+        survivorModifiers.data.RangedDamage = survivorSO.baseModifiers.RangedDamage;
+        survivorModifiers.data.MeleeDamage = survivorSO.baseModifiers.MeleeDamage;
+        survivorModifiers.data.AbilityDamage = survivorSO.baseModifiers.AbilityDamage;
+        survivorModifiers.data.Cooldown = survivorSO.baseModifiers.Cooldown;
+        survivorModifiers.data.ReloadSpeed = survivorSO.baseModifiers.ReloadSpeed;
+        survivorModifiers.data.Accuracy = survivorSO.baseModifiers.Accuracy;
+
 
         survivorLvlManager.LevelUpModifiersSetup(survivorSO.levelUpModifiers);
+
+
 
         characterStatManager.SetStats(survivorSO.maxHealth, survivorSO.startingArmor, survivorSO.baseModifiers.MovementSpeed);
         sClassStatManager.SetStats(survivorSO.abilityCooldown);

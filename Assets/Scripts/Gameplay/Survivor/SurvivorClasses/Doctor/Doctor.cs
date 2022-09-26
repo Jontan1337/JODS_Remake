@@ -14,12 +14,6 @@ public class Doctor : Survivor
 		}
 	}
 
-  //  public override void LevelUp()
-  //  {
-		//ModifierManagerSurvivor modifiers = GetComponentInParent<ModifierManagerSurvivor>();
-		//modifiers.MovementSpeed += 1.05f;
-  //  }
-
     [Command]
 	private void Cmd_EquipSyringeGun()
 	{
