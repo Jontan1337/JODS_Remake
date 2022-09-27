@@ -41,7 +41,6 @@ public class Taekwondo : Survivor, IHitter
             writer.WriteSingle(flyingKickEnd);
             writer.WriteSingle(flyingKickSpeed);
 
-            writer.WriteInt32(flyingKickDamage);
 
             writer.WriteBoolean(flyingKick);
             return true;
@@ -59,7 +58,6 @@ public class Taekwondo : Survivor, IHitter
             flyingKickEnd = reader.ReadSingle();
             flyingKickSpeed = reader.ReadSingle();
 
-            flyingKickDamage = reader.ReadInt32();
 
             flyingKick = reader.ReadBoolean();
         }
@@ -76,6 +74,7 @@ public class Taekwondo : Survivor, IHitter
             playerEquipment = transform.parent.GetComponentInChildren<PlayerEquipment>();
             sClass = GetComponentInParent<SurvivorClassStatManager>();
             lowerLeg = transform.parent.Find("Armature").GetComponentInChildren<Collider>();
+
         }
     }
 
@@ -161,7 +160,7 @@ public class Taekwondo : Survivor, IHitter
         {
             unitsHit.Add(hit.collider);
             Physics.IgnoreCollision(hit.collider, cController);
-            Cmd_OnHit(hit.transform, flyingKickDamage);
+            Cmd_OnHit(hit.transform, Mathf.RoundToInt(abilityDamage * modifiers.data.AbilityDamage));
         }
         else if (hit.gameObject.layer == 0 && flyingKick) flyingKickStart = flyingKickEnd;
     }
@@ -175,7 +174,7 @@ public class Taekwondo : Survivor, IHitter
         if (!hasAuthority) return;
         if (hit.gameObject.layer == 9 && kicking || hit.gameObject.layer == 10 && kicking)
         {
-            Cmd_OnHit(hit.transform.root, kickDamage);
+            Cmd_OnHit(hit.transform.root, Mathf.RoundToInt((abilityDamage / 2) * modifiers.data.AbilityDamage));
         }
     }
 
@@ -203,7 +202,7 @@ public class Taekwondo : Survivor, IHitter
 
     private void Kick(bool kicking)
     {
-        GetComponentInParent<SurvivorAnimationIKManager>().anim.SetBool("Kicking", kicking);
+        GetComponentInParent<SurvivorAnimationManager>().anim.SetBool("Kicking", kicking);
     }
 
     #endregion

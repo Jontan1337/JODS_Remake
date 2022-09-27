@@ -8,6 +8,8 @@ public abstract class Survivor : NetworkBehaviour
 {
     public GameObject abilityObject;
 
+    [SerializeField, SyncVar] protected int abilityDamage;
+
     public abstract void ActiveAbility();
 
     public override void OnStartAuthority()
@@ -33,7 +35,6 @@ public abstract class Survivor : NetworkBehaviour
         // Override this to do something when ability is on cooldown e.g. Taekwondo kick. 
 	}
 
-    //public abstract void LevelUp();
 
 }
 
