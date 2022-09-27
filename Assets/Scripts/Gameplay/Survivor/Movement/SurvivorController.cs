@@ -25,6 +25,9 @@ public class SurvivorController : NetworkBehaviour
 
     private bool moving;
 
+    [Header("Events")]
+    public UnityEvent onDownTimerFinished = null;
+
     //public bool Moving
     //{
     //    get { return moving; }
@@ -65,6 +68,7 @@ public class SurvivorController : NetworkBehaviour
         cController = GetComponent<CharacterController>();
         anim = GetComponent<SurvivorAnimationIKManager>();
         modifiers = GetComponent<ModifierManagerSurvivor>();
+
     }
 
     #region NetworkBehaviour Callbacks

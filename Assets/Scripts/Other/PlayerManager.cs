@@ -25,6 +25,8 @@ public class PlayerManager : NetworkBehaviour
 
     private static PlayerManager instance;
     private ActiveSurvivorClass activeSClass;
+    private CharacterStatManager characterStatManager;
+
 
     public Transform ActiveMenuCanvas
     {
@@ -66,6 +68,28 @@ public class PlayerManager : NetworkBehaviour
         if (hasEquipment)
         {
             equipmentBehaviourDropDown.onValueChanged.RemoveListener(GameSettings.Instance.SetPickupBehaviour);
+        }
+    }
+    public override void OnStartClient()
+    {
+        if (isServer)
+        {
+            characterStatManager = GetComponent<CharacterStatManager>();
+            characterStatManager.onDownChanged.AddListener(delegate (bool isDown) { OnDownChanged(isDown); });
+        }
+    }
+
+    private void OnDownChanged(bool isDown)
+    {
+        if (isDown)
+        {
+            Rpc_DisableEverythingButMenuAndCamera(connectionToClient);
+            Rpc_DisableCamera(connectionToClient);
+        }
+        else
+        {
+            Rpc_EnableEverythingButMenuAndCamera(connectionToClient);
+            Rpc_EnableCamera(connectionToClient);
         }
     }
 
@@ -178,5 +202,16 @@ public class PlayerManager : NetworkBehaviour
         JODSInput.DisableLMB();
         JODSInput.DisableRMB();
         JODSInput.DisableHotbarControl();
+    }
+
+    [TargetRpc]
+    public void Rpc_EnableCamera(NetworkConnection target)
+    {
+        JODSInput.EnableCamera();
+    }
+    [TargetRpc]
+    public void Rpc_DisableCamera(NetworkConnection target)
+    {
+        JODSInput.DisableCamera();
     }
 }
