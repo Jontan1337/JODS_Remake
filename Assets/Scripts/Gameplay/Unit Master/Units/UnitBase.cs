@@ -1414,7 +1414,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     #endregion
 
-    #region Commanding Units & Refunding
+    #region Commanding Units, Refunding & Control
     #region Selecting
     public void Select(Color highlightColor)
     {
@@ -1457,6 +1457,11 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     public abstract void OnSelect();
     public abstract void OnDeselect();
+
+    public void TakeControl()
+    {
+        print(name + ": Master is in control.");
+    }
 
     #region Commands
 

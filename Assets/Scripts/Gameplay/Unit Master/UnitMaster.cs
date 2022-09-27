@@ -1429,16 +1429,23 @@ public class UnitMaster : NetworkBehaviour
     private void TryToTakeControl()
     {
         if (!takingControlBool) {
-
+            if (Energy < 30)
+            {
+                SetSpawnText("Not enough energy to take control of units");
+                return;
+            }
             Raycast(out bool didHit, out RaycastHit hit);
             if (didHit)
             {
-                StartCoroutine(IETakingControl(hit.transform));
+                if (hit.transform.TryGetComponent(out UnitBase unitBase))
+                {
+                    StartCoroutine(IETakingControl(unitBase));
+                }
             }
         }
     }
     bool takingControlBool = false;
-    private IEnumerator IETakingControl(Transform targetToControl)
+    private IEnumerator IETakingControl(UnitBase targetToControl)
     {
         takingControlBool = true;
 
@@ -1447,7 +1454,9 @@ public class UnitMaster : NetworkBehaviour
         Camera currentCamera = GetCurrentCamera;
         if (!inTopdownView)
         {
-            GameObject zoomCamera = Instantiate(currentCamera.gameObject, currentCamera.transform.position, currentCamera.transform.rotation);
+            GameObject zoomCamera = 
+                Instantiate(currentCamera.gameObject, currentCamera.transform.position, currentCamera.transform.rotation);
+
             currentCamera = zoomCamera.GetComponent<Camera>();
         }
 
@@ -1462,7 +1471,8 @@ public class UnitMaster : NetworkBehaviour
             else
             {
                 currentCamera.fieldOfView += Time.deltaTime * 20;
-                currentCamera.transform.position = Vector3.Lerp(currentCamera.transform.position, targetToControl.position, Time.deltaTime);
+                currentCamera.transform.position = 
+                    Vector3.Lerp(currentCamera.transform.position, targetToControl.transform.position, Time.deltaTime);
             }
 
             elapsedTime += Time.deltaTime;
@@ -1474,6 +1484,7 @@ public class UnitMaster : NetworkBehaviour
         if (!inTopdownView) Destroy(currentCamera);
         yield return new WaitForSeconds(1f);
 
+        targetToControl.TakeControl();
     }
 
     #endregion
