@@ -4798,7 +4798,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a368e27cdbd2e9e4b89ad188d1e3286f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  level: 1
+  syncMode: 0
+  syncInterval: 0.1
+  levelUpModifiers:
+    movementSpeed: 1
+    healing: 1
+    damage: 1
+    damageResistance: 1
+    slashResistance: 1
+    bluntResistance: 1
+    pierceResistance: 1
+    fireResistance: 1
+    rangedDamage: 1
+    cooldown: 1
+    reloadSpeed: 1
+    accuracy: 1
+  level: 0
   experience: 0
 --- !u!114 &5953086225513061613
 MonoBehaviour:
@@ -4875,20 +4890,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36c70d60edf9bb34d8744e58ed9ce7c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  movementSpeed: 1
-  healing: 1
-  damage: 1
-  damageResistance: 1
-  slashResistance: 1
-  bluntResistance: 1
-  pierceResistance: 1
-  fireResistance: 1
-  rangedDamage: 1
-  cooldown: 1
-  reloadSpeed: 0
-  accuracy: 0
+  data:
+    movementSpeed: 1
+    healing: 1
+    damage: 1
+    damageResistance: 1
+    slashResistance: 1
+    bluntResistance: 1
+    pierceResistance: 1
+    fireResistance: 1
+    rangedDamage: 1
+    cooldown: 1
+    reloadSpeed: 1
+    accuracy: 1
 --- !u!114 &6930014499059818200
 MonoBehaviour:
   m_ObjectHideFlags: 0

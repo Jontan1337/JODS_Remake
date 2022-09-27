@@ -17,31 +17,35 @@ MonoBehaviour:
   startingArmor: 0
   abilityCooldown: 60
   levelUpModifiers:
-    movementSpeed: 0.05
-    healing: 0
+    movementSpeed: 0.03
+    healing: 0.03
     damage: 0
     damageResistance: 0
     slashResistance: 0
     bluntResistance: 0
     pierceResistance: 0
     fireResistance: 0
-    rangedDamage: 1
-    cooldown: 1
-    reloadSpeed: 0
-    accuracy: 0
+    rangedDamage: 0.015
+    meleeDamage: 0
+    abilityDamage: 0
+    cooldown: 0.045
+    reloadSpeed: 0.015
+    accuracy: 0.015
   baseModifiers:
     movementSpeed: 1
-    healing: 1
+    healing: 1.2
     damage: 1
-    damageResistance: 1
+    damageResistance: 0.9
     slashResistance: 1
     bluntResistance: 1
     pierceResistance: 1
     fireResistance: 1
     rangedDamage: 1
+    meleeDamage: 1
+    abilityDamage: 1
     cooldown: 1
-    reloadSpeed: 0
-    accuracy: 0
+    reloadSpeed: 1
+    accuracy: 1
   classScript: {fileID: 507536392163164668, guid: 72b6f26d123c1ea44a6ad4d537db32d3,
     type: 3}
   starterWeapon: {fileID: 6484964077652478879, guid: 31b9270438c1cb348ab05dc21d04e8cb,

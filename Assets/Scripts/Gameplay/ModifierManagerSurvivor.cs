@@ -1,5 +1,5 @@
-﻿using Mirror;
-using UnityEngine;
+﻿using UnityEngine;
+using System;
 
 public class ModifierManagerSurvivor : MonoBehaviour
 {
@@ -9,16 +9,28 @@ public class ModifierManagerSurvivor : MonoBehaviour
 [System.Serializable]
 public class ModifierManagerSurvivorData : ModifierManagerBase
 {
-    [SyncVar, SerializeField, Range(0, 10)] private float rangedDamage = 1;
-    [SyncVar, SerializeField, Range(0, 10)] private float cooldown = 1;
-    [SyncVar, SerializeField, Range(0, 10)] private float reloadSpeed = 0;
-    [SyncVar, SerializeField, Range(0, 10)] private float accuracy = 0;
+    [SerializeField, Range(0, 10)] private float rangedDamage = 1;
+    [SerializeField, Range(0, 10)] private float meleeDamage = 1;
+    [SerializeField, Range(0, 10)] private float abilityDamage = 1;
+    [SerializeField, Range(0, 10)] private float cooldown = 1;
+    [SerializeField, Range(0, 10)] private float reloadSpeed = 1;
+    [SerializeField, Range(0, 10)] private float accuracy = 1;
 
 
     public float RangedDamage
     {
         get { return rangedDamage; }
         set { rangedDamage = Mathf.Clamp(value, 0, 10); }
+    }
+    public float MeleeDamage
+    {
+        get { return meleeDamage; }
+        set { meleeDamage = Mathf.Clamp(value, 0, 10); }
+    }
+    public float AbilityDamage
+    {
+        get { return abilityDamage; }
+        set { abilityDamage = Mathf.Clamp(value, 0, 10); }
     }
     public float Accuracy
     {
@@ -35,5 +47,6 @@ public class ModifierManagerSurvivorData : ModifierManagerBase
         get { return cooldown; }
         set { cooldown = Mathf.Clamp(value, 0, 10); }
     }
+
 }
 
