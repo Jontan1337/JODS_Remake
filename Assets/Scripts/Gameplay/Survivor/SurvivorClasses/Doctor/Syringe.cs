@@ -24,7 +24,7 @@ public class Syringe : Projectile
             {
                 if (surv.IsDown)
                 {
-                    surv.StartCoroutine(surv.BeingRevived());
+                    //surv.StartCoroutine(surv.BeingRevived());
                 }
                 else if (statusEffectsToApply.Count > 0)
                 {

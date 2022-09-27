@@ -152,7 +152,6 @@ public class CharacterStatManager : NetworkBehaviour, IDamagable
 
     public void SetStats(int maxHealth, int armor, float movementSpeed)
     {
-        sController = GetComponent<SurvivorController>();
         level = GetComponent<SurvivorLevelManager>();
 
         this.maxHealth = maxHealth;
