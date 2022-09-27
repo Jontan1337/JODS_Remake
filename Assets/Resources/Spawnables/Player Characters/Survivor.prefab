@@ -4659,7 +4659,7 @@ GameObject:
   - component: {fileID: 6904755547420367345}
   - component: {fileID: 6930014499059818200}
   - component: {fileID: 7813640879047218699}
-  - component: {fileID: -8129304323802531665}
+  - component: {fileID: 1553288617611644362}
   - component: {fileID: 748090733530408348}
   - component: {fileID: 140378723284269972}
   - component: {fileID: 8458703505067804603}
@@ -4747,28 +4747,26 @@ MonoBehaviour:
   maxHealth: 100
   armor: 0
   movementSpeed: 0
-  reviveTime: 5
-  downTime: 30
   healthBar: {fileID: 5834093433503493102}
   healthLossBar: {fileID: 6616134530017234065}
   armorBar: {fileID: 8494075140871504275}
   lowHealthImage: {fileID: 840600718719910551}
-  reviveTimerImageUI: {fileID: 0}
-  reviveTimerObjectUI: {fileID: 0}
-  downImage: {fileID: 1680671564870222852}
   damagedImage: {fileID: 8739871650305063704}
-  downCanvas: {fileID: 2982439891624587407}
   inGameCanvas: {fileID: 8050693953223198890}
   playerEquipment: {fileID: 0}
-  fullBodyBipedIK: {fileID: 8049337140043942677}
   survivorSetup: {fileID: 6930014499059818200}
   onDied:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamaged:
+    m_PersistentCalls:
+      m_Calls: []
+  onDownChanged:
     m_PersistentCalls:
       m_Calls: []
   pointsText: {fileID: 7966863143780647685}
   pointGainPrefab: {fileID: 9064455069424791838, guid: c13d45a4ca89bed4784eb1ce03ef13d5,
     type: 3}
-  isInteractable: 0
   points: 0
 --- !u!114 &2712400697136503757
 MonoBehaviour:
@@ -4810,6 +4808,8 @@ MonoBehaviour:
     pierceResistance: 1
     fireResistance: 1
     rangedDamage: 1
+    meleeDamage: 1
+    abilityDamage: 1
     cooldown: 1
     reloadSpeed: 1
     accuracy: 1
@@ -4835,6 +4835,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   animationManager: {fileID: 904722284761003952}
+  onDownTimerFinished:
+    m_PersistentCalls:
+      m_Calls: []
   jumpSpeed: 5
   isSprinting: 0
   isGrounded: 1
@@ -4900,6 +4903,8 @@ MonoBehaviour:
     pierceResistance: 1
     fireResistance: 1
     rangedDamage: 1
+    meleeDamage: 1
+    abilityDamage: 1
     cooldown: 1
     reloadSpeed: 1
     accuracy: 1
@@ -4987,7 +4992,7 @@ MonoBehaviour:
   hasEquipment: 1
   equipmentBehaviourDropDown: {fileID: 8513568407848534108}
   activeMenuCanvas: {fileID: 0}
---- !u!114 &-8129304323802531665
+--- !u!114 &1553288617611644362
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4996,15 +5001,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 5922127114707202486}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c23d6d1beb055cb42a0c8d2300361835, type: 3}
+  m_Script: {fileID: 11500000, guid: f6aa34b1eef451b439429c2aae02c3ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
   anim: {fileID: 5922127114697802274}
-  fullBodyIK: {fileID: 8049337140043942677}
+  fullBodyBipedIK: {fileID: 8049337140043942677}
   rightHandEffector: {fileID: 0}
   leftHandEffector: {fileID: 0}
+  cameraTransform: {fileID: 0}
+  originalCameraTransformParent: {fileID: 0}
   firstPersonRightShoulderEffector: {fileID: 7095229876627484630}
   firstPersonLeftShoulderEffector: {fileID: 534719101154810644}
   firstPersonRightShoulderAimingEffector: {fileID: 2580423560709408382}

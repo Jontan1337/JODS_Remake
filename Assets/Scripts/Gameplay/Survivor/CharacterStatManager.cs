@@ -116,12 +116,6 @@ public class CharacterStatManager : NetworkBehaviour, IDamagable
         }
     }
 
-    public override void OnStartServer()
-    {
-        FindComponents();
-
-    }
-
     public override void OnStartClient()
     {
         if (isServer)
@@ -138,8 +132,6 @@ public class CharacterStatManager : NetworkBehaviour, IDamagable
         await JODSTime.WaitTime(0.1f);
         playerEquipment = GetComponentInChildren<PlayerEquipment>();
         survivorSetup = GetComponent<SurvivorSetup>();
-        cameraTransform = transform.Find("Virtual Head(Clone)/PlayerCamera(Clone)");
-        originalCameraTransformParent = transform.Find("Virtual Head(Clone)");
     }
 
     private async void FindCamera()
@@ -159,7 +151,7 @@ public class CharacterStatManager : NetworkBehaviour, IDamagable
         this.armor = armor;
         this.movementSpeed = movementSpeed;
         GetComponent<ModifierManagerSurvivor>().data.MovementSpeed = movementSpeed;
-        GetComponent<SurvivorAnimationIKManager>().anim.speed = movementSpeed;
+        GetComponent<SurvivorAnimationManager>().anim.speed = movementSpeed;
 
 
         healthBar.maxValue = maxHealth;
@@ -338,18 +330,6 @@ public class CharacterStatManager : NetworkBehaviour, IDamagable
     }
 
     #region ViewModel
-    [TargetRpc]
-    private void Rpc_SetCameraForDownedState(NetworkConnection target)
-    {
-        //cameraTransform.SetParent(fullBodyBipedIK.references.head.GetChild(0));
-    }
-    [TargetRpc]
-    private void Rpc_SetCameraForRevivedState(NetworkConnection target)
-    {
-        cameraTransform.SetParent(originalCameraTransformParent);
-        cameraTransform.localPosition = new Vector3(0f, 0.1f, 0f);
-        cameraTransform.rotation = originalCameraTransformParent.rotation;
-    }
 
     #endregion
 }
