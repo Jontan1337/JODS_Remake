@@ -54,13 +54,13 @@ public class ReviveManager : NetworkBehaviour, IInteractable
     {
         if (isDown)
         {
-            characterStatManager.onDamaged.AddListener(delegate () { OnDamaged(); });
+            characterStatManager.onDamaged.AddListener(delegate { OnDamaged(); });
             DownCo = Down();
             StartCoroutine(DownCo);
         }
         else
         {
-            characterStatManager.onDamaged.RemoveListener(delegate () { OnDamaged(); });
+            characterStatManager.onDamaged.RemoveListener(delegate { OnDamaged(); });
         }
     }
 

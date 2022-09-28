@@ -43,7 +43,7 @@ public class SurvivorAnimationManager : NetworkBehaviour
         }
 		if (isServer)
         {
-			characterStatManager = GetComponent<CharacterStatManager>();
+			characterStatManager = GetComponent<SurvivorStatManager>();
 			characterStatManager.onDownChanged.AddListener(delegate (bool isDown) { Svr_OnDownChanged(isDown); });
         }
 	}

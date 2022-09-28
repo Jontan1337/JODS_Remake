@@ -278,7 +278,7 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
                     {
                         if (isServer)
                         {
-                            IDamagable damagable = target.GetComponent<IDamagable>();
+                            IDamagableTeam damagable = target.GetComponent<IDamagableTeam>();
                             int newExplosionDamage = explosionDamage;
                             // Check if explosion is from a rocket, then it is friendly fire.
                             //if (TryGetComponent(out WeaponType weaponType))

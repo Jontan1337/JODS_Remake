@@ -153,7 +153,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
         if (isServer)
         {
             onServerItemPickedUp += Svr_OnItemPickedUp;
-            characterStatManager = GetComponentInParent<CharacterStatManager>();
+            characterStatManager = GetComponentInParent<SurvivorStatManager>();
             characterStatManager.onDownChanged.AddListener(delegate (bool isDown) { Svr_OnDownChanged(isDown); } );
         }
         if (hasAuthority)

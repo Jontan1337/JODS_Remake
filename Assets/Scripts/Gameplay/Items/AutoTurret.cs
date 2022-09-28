@@ -183,15 +183,10 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
         PhysicMaterial phyMat = didHit.collider.sharedMaterial;
         Rpc_Bullethole(didHit.point, didHit.normal, phyMat ? phyMat.name : "");
         Rpc_BulletTrail(didHit.point);
+
         // The turret uses a raycast to check if a damagable unit is in front of its barrel.
         // The turret will shoot at any unit that can be damaged, even if it's not the target.
         didHit.transform.GetComponent<IDamagable>()?.Svr_Damage(damage, Owner);
-
-        // If the target is dead after the shot, the target is lost.
-        if (target.GetComponent<IDamagable>().IsDead)
-        {
-            Svr_LostTarget();
-        }
     }
 
     [Server]
@@ -231,6 +226,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
     [Server]
     private void Svr_NewTarget(Transform newTarget)
     {
+        target.GetComponent<StatManagerBase>().onDied.AddListener(delegate { Svr_LostTarget(); });
         target = newTarget;
 
         StopCoroutine(RotatePassiveCo);
@@ -270,6 +266,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
     [Server]
     private void Svr_LostTarget()
     {
+        target.GetComponent<StatManagerBase>().onDied.RemoveListener(delegate { Svr_LostTarget(); });
         target = null;
 
         if (barrelAnimation)
