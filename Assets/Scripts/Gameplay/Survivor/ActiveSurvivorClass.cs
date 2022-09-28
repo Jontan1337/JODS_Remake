@@ -15,7 +15,7 @@ public class ActiveSurvivorClass : NetworkBehaviour
 
     [SyncVar(hook = nameof(SetSurvivorClassSettings))] public Survivor sClass;
     private SurvivorClassStatManager sClassStatManager;
-    private CharacterStatManager characterStatManager;
+    private SurvivorStatManager characterStatManager;
     private SurvivorLevelManager survivorLvlManager;
     private ModifierManagerSurvivor survivorModifiers;
 
@@ -69,7 +69,7 @@ public class ActiveSurvivorClass : NetworkBehaviour
             newValue.abilityObject = survivorSO.abilityObject;
         }
         sClassStatManager = GetComponent<SurvivorClassStatManager>();
-        characterStatManager = GetComponent<CharacterStatManager>();
+        characterStatManager = GetComponent<SurvivorStatManager>();
         survivorLvlManager = GetComponent<SurvivorLevelManager>();
         survivorModifiers = GetComponent<ModifierManagerSurvivor>();
 

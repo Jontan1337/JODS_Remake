@@ -25,7 +25,7 @@ public class PlayerManager : NetworkBehaviour
 
     private static PlayerManager instance;
     private ActiveSurvivorClass activeSClass;
-    private CharacterStatManager characterStatManager;
+    private SurvivorStatManager characterStatManager;
 
 
     public Transform ActiveMenuCanvas
@@ -74,7 +74,7 @@ public class PlayerManager : NetworkBehaviour
     {
         if (isServer)
         {
-            characterStatManager = GetComponent<CharacterStatManager>();
+            characterStatManager = GetComponent<SurvivorStatManager>();
             characterStatManager.onDownChanged.AddListener(delegate (bool isDown) { OnDownChanged(isDown); });
         }
     }

@@ -27,7 +27,7 @@ public class SurvivorAnimationManager : NetworkBehaviour
 	private bool isInitialized = false;
     public bool IsInitialized => isInitialized;
 
-	private CharacterStatManager characterStatManager;
+	private SurvivorStatManager characterStatManager;
 
     private void Awake()
 	{

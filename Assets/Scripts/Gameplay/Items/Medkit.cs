@@ -14,7 +14,7 @@ public class Medkit : EquipmentItem
 
 	public void UseMedkit()
 	{
-		CharacterStatManager characterStatController = GetComponentInParent<CharacterStatManager>();
+		SurvivorStatManager characterStatController = GetComponentInParent<SurvivorStatManager>();
 		if (characterStatController.Health != 100)
 		{
 			Cmd_UseMedKit();
@@ -30,7 +30,7 @@ public class Medkit : EquipmentItem
     [Command]
 	private void Cmd_UseMedKit()
     {
-		GetComponentInParent<CharacterStatManager>().Svr_Damage(-healAmount);
+		GetComponentInParent<SurvivorStatManager>().Svr_Damage(-healAmount);
 	}
 
 	private void UsedUp()

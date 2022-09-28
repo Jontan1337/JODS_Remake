@@ -1576,7 +1576,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             uint playerId = target.GetComponent<NetworkIdentity>().netId;
             var gameMode = GamemodeBase.Instance;
 
-            target.GetComponent<CharacterStatManager>().points = gameMode.Svr_GetPoints(playerId) + 10;
+            target.GetComponent<SurvivorStatManager>().points = gameMode.Svr_GetPoints(playerId) + 10;
             gameMode.Svr_ModifyStat(playerId, 10, PlayerDataStat.Points);
             gameMode.Svr_ModifyStat(playerId, 1, PlayerDataStat.Kills);
         }

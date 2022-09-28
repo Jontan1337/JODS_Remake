@@ -40,7 +40,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
     private int equipmentSlotsCount = 0;
     private Coroutine COMoveToHands;
     private SurvivorSetup playerSetup;
-    private CharacterStatManager characterStatManager;
+    private SurvivorStatManager characterStatManager;
 
     private const string inGameUIPath = "UI/Canvas - In Game";
 
