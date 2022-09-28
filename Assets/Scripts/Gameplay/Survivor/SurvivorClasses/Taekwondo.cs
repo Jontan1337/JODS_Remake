@@ -87,7 +87,6 @@ public class Taekwondo : Survivor, IHitter
         }
         else if (!kicking && sController.isGrounded && !playerEquipment?.ItemInHands)
         {
-            print("kick");
             StartCoroutine(Kick());
         }
     }
@@ -175,6 +174,7 @@ public class Taekwondo : Survivor, IHitter
         if (hit.gameObject.layer == 9 && kicking || hit.gameObject.layer == 10 && kicking)
         {
             Cmd_OnHit(hit.transform.root, Mathf.RoundToInt((abilityDamage / 2) * modifiers.data.AbilityDamage));
+            print(Mathf.RoundToInt((abilityDamage / 2) * modifiers.data.AbilityDamage));
         }
     }
 
