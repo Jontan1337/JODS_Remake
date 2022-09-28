@@ -12,7 +12,7 @@ public class StatManagerBase : NetworkBehaviour, IDamagable
     public virtual int Health
     {
         get => health;
-        protected set
+        set
         {
             int prevHealth = health;
             health = Mathf.Clamp(value, 0, maxHealth);
@@ -34,6 +34,14 @@ public class StatManagerBase : NetworkBehaviour, IDamagable
     [SerializeField, SyncVar(hook = nameof(MaxHealthHook))] protected int maxHealth = 100;
 
     protected virtual void MaxHealthHook(int oldVal, int newVal) { }
+    public virtual int MaxHealth
+    {
+        get => maxHealth;
+        set
+        {
+            maxHealth = value;
+        }
+    }
 
     [Header("Events")]
     public UnityEvent onDied = null;

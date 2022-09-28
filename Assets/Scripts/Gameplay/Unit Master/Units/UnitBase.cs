@@ -27,9 +27,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagableTeam, IParticleEffe
 
 
     [Title("Stats", titleAlignment: TitleAlignments.Centered)]
-    [SyncVar, SerializeField] private int health = 100; //Upgradeable
     [SyncVar] public bool isDead = false;
-    [SyncVar] private int maxHealth = 0;
     [SyncVar] private int refundAmount = 0;
     [Space]
     [SerializeField] private bool isMelee;
@@ -135,6 +133,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagableTeam, IParticleEffe
     [SerializeField] private SkinnedMeshRenderer headRenderer = null;
     [SerializeField] private SkinnedMeshRenderer leftArmRenderer = null;
     [SerializeField] private SkinnedMeshRenderer rightArmRenderer = null;
+    private UnitStatManager statManager;
 
     private ModifierManagerUnit modifiers = null;
 
@@ -277,24 +276,10 @@ public abstract class UnitBase : NetworkBehaviour, IDamagableTeam, IParticleEffe
             if (Random.value < sounds.specialSoundChance) PlaySound(sounds.specialSounds, sounds.specialVolume, true);
         }
     }
-    public int Health
-    {
-        get { return health; }
-        set
-        {
-            health = Mathf.Clamp(value, 0, maxHealth);
-            if (health <= 0)
-            {
-                Svr_Die();
-            }
-        }
-    }
     public Color ParticleColor { get => particleColor; }
 
     #endregion
 
-    public int GetHealth => health;
-    public bool IsDead => isDead;
     public System.Action<UnitSO> OnDeath;
 
     #endregion
@@ -318,6 +303,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagableTeam, IParticleEffe
                 rb.useGravity = false;
             }
         }
+
+        statManager = GetComponent<UnitStatManager>();
 
         modifiers = GetComponent<ModifierManagerUnit>();
 
@@ -351,8 +338,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagableTeam, IParticleEffe
 
         //Health
         int newMaxHealth = Mathf.RoundToInt(unitSO.health * modifiers.data.Health);
-        maxHealth = newMaxHealth;
-        Health = newMaxHealth;
+        statManager.MaxHealth = newMaxHealth;
+        statManager.Health = newMaxHealth;
 
         //Attack bools
         isMelee = unitSO.hasMelee;
@@ -1194,7 +1181,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagableTeam, IParticleEffe
 
     #region Health
 
-    public bool IsMaxHealth => health == maxHealth; 
+    public bool IsMaxHealth => statManager.Health == statManager.MaxHealth; 
 
 
     [Server]
@@ -1550,7 +1537,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagableTeam, IParticleEffe
             }
         }
 
-        Health -= damage;
+        statManager.Health -= damage;
 
         if (IsDead)
         {
