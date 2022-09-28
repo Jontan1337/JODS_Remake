@@ -35,7 +35,8 @@ public class RaycastWeapon : RangedWeapon
                 {
                     if (shootHit.collider.TryGetComponent(out IDamagable damagable))
                     {
-                        shootHit.collider.GetComponent<StatManagerBase>().onDied.AddListener(delegate { Svr_OnTargetDied(); });
+                        StatManagerBase statManagerBase = shootHit.collider.GetComponentInParent<StatManagerBase>();
+                        statManagerBase.onDied.AddListener(delegate { Svr_OnTargetDied(); });
                         bool detach = highPower ? highPower : Random.value > 0.6f;
                         if (detach)
                         {
@@ -45,7 +46,7 @@ public class RaycastWeapon : RangedWeapon
                             }
                         }
                         damagable.Svr_Damage((int)currentDamage, owner);
-                        shootHit.collider.GetComponent<StatManagerBase>().onDied.RemoveListener(delegate { Svr_OnTargetDied(); });
+                        statManagerBase.onDied.RemoveListener(delegate { Svr_OnTargetDied(); });
                     }
                     // This ray shoots it's own collider on the other side to get the "penetration point"
                     // on the opposite side of the collider where the bullet should leave.
