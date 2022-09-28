@@ -5,7 +5,7 @@ using Sirenix.OdinInspector;
 
 public class SurvivorAnimationManager : NetworkBehaviour
 {
-	public Animator anim = null;
+	public Animator characerAnimator = null;
 	[SerializeField] private FullBodyBipedIK fullBodyBipedIK = null;
 	[Space]
 	[SerializeField] private Transform rightHandEffector;
@@ -44,6 +44,7 @@ public class SurvivorAnimationManager : NetworkBehaviour
 		if (isServer)
         {
 			characterStatManager = GetComponent<CharacterStatManager>();
+			characterStatManager.onDownChanged.AddListener(delegate (bool isDown) { Svr_OnDownChanged(isDown); });
         }
 	}
 
@@ -95,13 +96,29 @@ public class SurvivorAnimationManager : NetworkBehaviour
 
 	public void SetFloat(string param, float value)
 	{
-		anim.SetFloat(param, value);
+		characerAnimator.SetFloat(param, value);
 	}
 	public void SetBool(string param, bool value)
 	{
-		anim.SetBool(param, value);
+		characerAnimator.SetBool(param, value);
 	}
 
+	[Server]
+	private void Svr_OnDownChanged(bool isDown)
+    {
+		if (isDown)
+        {
+			Rpc_SetCameraForDownedState(connectionToClient);
+			fullBodyBipedIK.enabled = false;
+			characerAnimator.SetBool("IsDown", true);
+        }
+		else
+        {
+			Rpc_SetCameraForRevivedState(connectionToClient);
+			fullBodyBipedIK.enabled = true;
+			characerAnimator.SetBool("IsDown", false);
+        }
+    }
 	[TargetRpc]
 	private void Rpc_SetCameraForDownedState(NetworkConnection target)
 	{

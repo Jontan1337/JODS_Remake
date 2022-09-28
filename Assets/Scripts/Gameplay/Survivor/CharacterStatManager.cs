@@ -124,7 +124,6 @@ public class CharacterStatManager : NetworkBehaviour, IDamagable
             reviveManager.onDownTimerFinished.AddListener(delegate () { OnDownTimerFinished(); });
             reviveManager.onRevived.AddListener(delegate () { OnRevived(); });
         }
-
     }
 
     private async void FindComponents()
@@ -132,13 +131,6 @@ public class CharacterStatManager : NetworkBehaviour, IDamagable
         await JODSTime.WaitTime(0.1f);
         playerEquipment = GetComponentInChildren<PlayerEquipment>();
         survivorSetup = GetComponent<SurvivorSetup>();
-    }
-
-    private async void FindCamera()
-    {
-        await JODSTime.WaitTime(0.2f);
-        cameraTransform = transform.Find("Virtual Head(Clone)/PlayerCamera(Clone)");
-        originalCameraTransformParent = transform.Find("Virtual Head(Clone)");
         inGameCanvas = transform.Find($"{inGameUIPath}").gameObject;
     }
 
@@ -151,7 +143,7 @@ public class CharacterStatManager : NetworkBehaviour, IDamagable
         this.armor = armor;
         this.movementSpeed = movementSpeed;
         GetComponent<ModifierManagerSurvivor>().data.MovementSpeed = movementSpeed;
-        GetComponent<SurvivorAnimationManager>().anim.speed = movementSpeed;
+        GetComponent<SurvivorAnimationManager>().characerAnimator.speed = movementSpeed;
 
 
         healthBar.maxValue = maxHealth;
@@ -304,16 +296,12 @@ public class CharacterStatManager : NetworkBehaviour, IDamagable
             //    {
             //        equip.Svr_Unequip();
             //    }
-            //    fullBodyBipedIK.enabled = false;
             //    //survivorSetup.Rpc_ToggleHead(connectionToClient);
-            //    Rpc_SetCameraForDownedState(connectionToClient);
             //}
             //else
             //{
             //    playerEquipment.EquipmentItem?.Svr_Equip();
-            //    fullBodyBipedIK.enabled = true;
             //    //survivorSetup.Rpc_ToggleHead(connectionToClient);
-            //    Rpc_SetCameraForRevivedState(connectionToClient);
             //}
         }
     }
