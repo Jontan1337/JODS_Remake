@@ -29,31 +29,29 @@ public class SurvivorStatManager : StatManagerBase, IDamagableTeam
         armorBar.value = newVal;
     }
 
-    [SerializeField, SyncVar(hook = nameof(HealthHook))] new protected int health;
     public override int Health
     {
-        get => base.health;
+        get => health;
         protected set
         {
-            int prevHealth = base.health;
-            base.health = Mathf.Clamp(value, 0, maxHealth);
+            health = Mathf.Clamp(value, 0, maxHealth);
 
             if (isServer)
             {
-                if (base.health <= 0)
+                if (health <= 0)
                 {
                     IsDown = true;
                 }
             }
         }
     }
-    private void HealthHook(int oldVal, int newVal)
+    protected override void HealthHook(int oldVal, int newVal)
     {
         if (!hasAuthority) return;
 
-        healthBar.value = base.health;
+        healthBar.value = health;
 
-        lowHealthImage.color = new Color(1, 1, 1, (maxHealth / 2 - (float)base.health) / 100 * 2);
+        lowHealthImage.color = new Color(1, 1, 1, (maxHealth / 2 - (float)health) / 100 * 2);
 
         if (!healthLossBool)
         {
@@ -137,14 +135,14 @@ public class SurvivorStatManager : StatManagerBase, IDamagableTeam
         level = GetComponent<SurvivorLevelManager>();
 
         this.maxHealth = maxHealth;
-        base.health = maxHealth;
+        health = maxHealth;
         this.armor = armor;
         //GetComponent<ModifierManagerSurvivor>().data.MovementSpeed = movementSpeed;
         //GetComponent<SurvivorAnimationManager>().characerAnimator.speed = movementSpeed;
 
 
         healthBar.maxValue = maxHealth;
-        healthBar.value = base.health;
+        healthBar.value = health;
         healthLossBar.maxValue = maxHealth;
         armorBar.value = armor;
     }

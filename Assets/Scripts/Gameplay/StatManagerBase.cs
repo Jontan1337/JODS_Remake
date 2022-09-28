@@ -1,4 +1,5 @@
 ﻿using Mirror;
+using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,9 +7,8 @@ using UnityEngine.Events;
 
 public class StatManagerBase : NetworkBehaviour, IDamagable
 {
-    [SerializeField, SyncVar] protected int health = 100;
-    [SerializeField, SyncVar] protected int maxHealth = 100;
-
+    [BoxGroup("Health Stats")]
+    [SerializeField, SyncVar(hook = nameof(HealthHook))] protected int health = 100;
     public virtual int Health
     {
         get => health;
@@ -28,7 +28,12 @@ public class StatManagerBase : NetworkBehaviour, IDamagable
             }
         }
     }
+    protected virtual void HealthHook(int oldVal, int newVal) { }
 
+    [BoxGroup("Health Stats")]
+    [SerializeField, SyncVar(hook = nameof(MaxHealthHook))] protected int maxHealth = 100;
+
+    protected virtual void MaxHealthHook(int oldVal, int newVal) { }
 
     [Header("Events")]
     public UnityEvent onDied = null;
