@@ -40,6 +40,7 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
     private int equipmentSlotsCount = 0;
     private Coroutine COMoveToHands;
     private SurvivorSetup playerSetup;
+    private SurvivorStatManager characterStatManager;
 
     private const string inGameUIPath = "UI/Canvas - In Game";
 
@@ -152,6 +153,8 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
         if (isServer)
         {
             onServerItemPickedUp += Svr_OnItemPickedUp;
+            characterStatManager = GetComponentInParent<CharacterStatManager>();
+            characterStatManager.onDownChanged.AddListener(delegate (bool isDown) { Svr_OnDownChanged(isDown); } );
         }
         if (hasAuthority)
         {
@@ -304,6 +307,19 @@ public class PlayerEquipment : NetworkBehaviour, IInitializable<SurvivorSetup>
         playerHands = value;
     }
     #endregion
+
+    [Server]
+    private void Svr_OnDownChanged(bool isDown)
+    {
+        if (isDown)
+        {
+            EquipmentItem?.Svr_Unequip();
+        }
+        else
+        {
+            EquipmentItem?.Svr_Equip();
+        }
+    }
 
     [Server]
     public void Svr_Equip(GameObject equipment, EquipmentType equipmentType)

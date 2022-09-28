@@ -7,7 +7,7 @@ using Sirenix.OdinInspector;
 using RootMotion.FinalIK;
 using UnityEngine.Events;
 
-public class CharacterStatManager : NetworkBehaviour, IDamagable
+public class SurvivorStatManager : StatManagerBase, IDamagableTeam
 {
     private SurvivorLevelManager level;
     private ReviveManager reviveManager;
@@ -15,10 +15,51 @@ public class CharacterStatManager : NetworkBehaviour, IDamagable
 
 
     [Title("Stats")]
-    [SerializeField] private int currentHealth = 100;
-    [SerializeField] private int maxHealth = 100;
-    [SerializeField] private int armor = 0;
-    [SerializeField] private float movementSpeed = 0;
+    [SerializeField, SyncVar(hook = nameof(ArmorHook))] private int armor = 0;
+    public int Armor
+    {
+        get => armor;
+        private set
+        {
+            armor = value;
+        }
+    }
+    private void ArmorHook(int oldVal, int newVal)
+    {
+        armorBar.value = newVal;
+    }
+
+    [SerializeField, SyncVar(hook = nameof(HealthHook))] new protected int health;
+    public override int Health
+    {
+        get => base.health;
+        protected set
+        {
+            int prevHealth = base.health;
+            base.health = Mathf.Clamp(value, 0, maxHealth);
+
+            if (isServer)
+            {
+                if (base.health <= 0)
+                {
+                    IsDown = true;
+                }
+            }
+        }
+    }
+    private void HealthHook(int oldVal, int newVal)
+    {
+        if (!hasAuthority) return;
+
+        healthBar.value = base.health;
+
+        lowHealthImage.color = new Color(1, 1, 1, (maxHealth / 2 - (float)base.health) / 100 * 2);
+
+        if (!healthLossBool)
+        {
+            StartCoroutine(HealthLossCo(oldVal));
+        }
+    }
 
 
     [Title("UI References")]
@@ -36,16 +77,12 @@ public class CharacterStatManager : NetworkBehaviour, IDamagable
 
     private const string inGameUIPath = "UI/Canvas - In Game";
 
-    private Transform cameraTransform;
-    private Transform originalCameraTransformParent;
 
-    [Header("Events")]
-    public UnityEvent onDied = null;
-    public UnityEvent onDamaged = null;
     public UnityEvent<bool> onDownChanged = null;
 
     [SerializeField] private Text pointsText = null;
     [SerializeField] private GameObject pointGainPrefab = null;
+    public Teams Team => Teams.Player;
 
 
     [SyncVar(hook = nameof(pointsHook))] public int points;
@@ -55,8 +92,6 @@ public class CharacterStatManager : NetworkBehaviour, IDamagable
         StartCoroutine(PointsIE(newVal - oldVal));
         level.GainExp(newVal - oldVal);
     }
-
-    public float MovementSpeed => movementSpeed;
 
     private bool isDead;
     public bool IsDead
@@ -70,49 +105,6 @@ public class CharacterStatManager : NetworkBehaviour, IDamagable
             isDead = value;
             onDied?.Invoke();
             NetworkServer.Destroy(gameObject);
-        }
-    }
-
-    public int GetHealth => currentHealth;
-
-    public int Health
-    {
-        get => currentHealth;
-        private set
-        {
-            int prevHealth = currentHealth;
-            currentHealth = Mathf.Clamp(value, 0, maxHealth);
-            healthBar.value = currentHealth;
-
-
-            lowHealthImage.color = new Color(1, 1, 1, (maxHealth / 2 - (float)currentHealth) / 100 * 2);
-
-            if (!healthLossBool)
-            {
-                StartCoroutine(HealthLossCo(prevHealth));
-            }
-            if (isServer)
-            {
-                if (currentHealth <= 0)
-                {
-                    IsDown = true;
-                }
-                Rpc_SyncStats(connectionToClient, currentHealth, armor);
-            }
-        }
-    }
-
-    public int Armor
-    {
-        get => armor;
-        private set
-        {
-            armor = value;
-            armorBar.value = armor;
-            if (isServer)
-            {
-                Rpc_SyncStats(connectionToClient, currentHealth, armor);
-            }
         }
     }
 
@@ -137,36 +129,24 @@ public class CharacterStatManager : NetworkBehaviour, IDamagable
     private async void FindCamera()
     {
         await JODSTime.WaitTime(0.2f);
-        cameraTransform = transform.Find("Virtual Head(Clone)/PlayerCamera(Clone)");
-        originalCameraTransformParent = transform.Find("Virtual Head(Clone)");
         inGameCanvas = transform.Find($"{inGameUIPath}").gameObject;
     }
 
-    public void SetStats(int maxHealth, int armor, float movementSpeed)
+    public void SetStats(int maxHealth, int armor)
     {
         level = GetComponent<SurvivorLevelManager>();
 
         this.maxHealth = maxHealth;
-        currentHealth = maxHealth;
+        base.health = maxHealth;
         this.armor = armor;
-        this.movementSpeed = movementSpeed;
-        GetComponent<ModifierManagerSurvivor>().data.MovementSpeed = movementSpeed;
-        GetComponent<SurvivorAnimationManager>().anim.speed = movementSpeed;
+        //GetComponent<ModifierManagerSurvivor>().data.MovementSpeed = movementSpeed;
+        //GetComponent<SurvivorAnimationManager>().characerAnimator.speed = movementSpeed;
 
 
         healthBar.maxValue = maxHealth;
-        healthBar.value = currentHealth;
+        healthBar.value = base.health;
         healthLossBar.maxValue = maxHealth;
         armorBar.value = armor;
-    }
-
-    // Why are we using an Rpc to update the player's armor instead of just making it a SyncVar?????
-    [TargetRpc]
-    public void Rpc_SyncStats(NetworkConnection target, int newHealth, int newArmor)
-    {
-        if (isServer) return;
-        Health = newHealth;
-        Armor = newArmor;
     }
 
     private IEnumerator PointsIE(int pointGain)
@@ -240,32 +220,21 @@ public class CharacterStatManager : NetworkBehaviour, IDamagable
         damagedImageBool = false;
     }
 
-    public Teams Team => Teams.Player;
 
     [Server]
-    public void Svr_Damage(int damage, Transform target = null)
+    public override void Svr_Damage(int damage, Transform target = null)
     {
-        Damage(damage, target);
-    }
-
-    [Command]
-    public void Cmd_Damage(int damage)
-    {
-        Damage(damage);
-    }
-
-    void Damage(int damage, Transform source = null)
-    {
-        if (source)
+        if (target)
         {
-            if (source.GetComponent<IDamagable>().Team == Teams.Player)
+            if (target.TryGetComponent(out IDamagableTeam ITeam))
             {
-                float parsedDmg = damage;
-                damage = Mathf.RoundToInt(parsedDmg /= 2);
+                if (ITeam.Team == Teams.Player)
+                {
+                    float parsedDmg = damage;
+                    damage = Mathf.RoundToInt(parsedDmg /= 2);
+                }
             }
         }
-
-        onDamaged?.Invoke();
 
         if (!IsDown)
         {
@@ -317,6 +286,7 @@ public class CharacterStatManager : NetworkBehaviour, IDamagable
             //}
         }
     }
+
 
     private void OnDownTimerFinished()
     {

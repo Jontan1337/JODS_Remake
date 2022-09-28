@@ -33,13 +33,13 @@ public class ReviveManager : NetworkBehaviour, IInteractable
 
     [SerializeField, SyncVar] private bool isInteractable = false;
     public bool IsInteractable { get => isInteractable; set => isInteractable = value; }
-    private CharacterStatManager characterStatManager;
+    private SurvivorStatManager characterStatManager;
 
     public override void OnStartClient()
     {
         if (isServer)
         {
-            characterStatManager = GetComponent<CharacterStatManager>();
+            characterStatManager = GetComponent<SurvivorStatManager>();
             characterStatManager.onDownChanged.AddListener(delegate (bool isDown) { OnDownChanged(isDown); });
         }
     }

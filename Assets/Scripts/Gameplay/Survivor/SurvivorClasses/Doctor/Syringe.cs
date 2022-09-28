@@ -16,7 +16,7 @@ public class Syringe : Projectile
     [Server]
     public override void OnHit(Collision hit)
     {
-        var surv = hit.collider.transform.root.gameObject.GetComponent<CharacterStatManager>();
+        var surv = hit.collider.transform.root.gameObject.GetComponent<SurvivorStatManager>();
         base.OnHit(hit);
         if (hit.collider.TryGetComponent(out IDamagable idmg))
         {

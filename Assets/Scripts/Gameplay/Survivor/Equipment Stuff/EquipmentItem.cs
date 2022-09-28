@@ -37,7 +37,7 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 
 	public Action<GameObject> onServerDropItem;
 
-    private CharacterStatManager playerClass = null;
+    private SurvivorStatManager playerClass = null;
 
     public bool IsInteractable { get => isInteractable; set => isInteractable = value; }
 	public string Name => itemName;
@@ -103,7 +103,7 @@ public abstract class EquipmentItem : NetworkBehaviour, IInteractable, IEquippab
 	[TargetRpc]
 	public virtual void Rpc_PerformInteract(NetworkConnection target, GameObject interacter)
 	{
-		playerClass = interacter.GetComponent<CharacterStatManager>();
+		playerClass = interacter.GetComponent<SurvivorStatManager>();
 	}
 	[TargetRpc]
 	public virtual void Rpc_CancelInteract(NetworkConnection target, GameObject interacter)

@@ -17,7 +17,7 @@ using Sirenix.OdinInspector;
 [RequireComponent(typeof(AIPath))]
 [RequireComponent(typeof(ModifierManagerUnit))]
 
-public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
+public abstract class UnitBase : NetworkBehaviour, IDamagableTeam, IParticleEffect
 {
     #region Fields
 
@@ -758,6 +758,9 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     private void SetTarget(Transform newTarget, bool? permanent = false)
     {
+        if (currentTarget != null) currentTarget.GetComponent<StatManagerBase>().onDied.RemoveListener(delegate { LoseTarget(); });
+        if (newTarget != null) newTarget.GetComponent<StatManagerBase>().onDied.AddListener(delegate { LoseTarget(); });
+
         currentTarget = newTarget;
         permanentTarget = permanent ?? false; //If the target is permanent, the unit will never stop chasing the target.
     }
@@ -940,9 +943,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
 
     private IEnumerator AttackCoroutine()
     {
-        Transform myTarget = null;
-        IDamagable damagable = null;
-
         while (true)
         {
             yield return new WaitForSeconds(0.5f);
@@ -952,22 +952,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
                 LoseTarget();
                 break;
             }
-            if (currentTarget != myTarget) //Is my current target a new target?
-            {
-                myTarget = currentTarget; //If so, get the IDamageable component and store it as a variable so we don't have to get it each iteration
-                if (currentTarget.TryGetComponent(out IDamagable idmg))
-                {
-                    damagable = idmg;
-                }
-            }
-            if (damagable != null)
-            {
-                if (damagable.IsDead)
-                {
-                    LoseTarget();
-                }
-                Attack();
-            }
+
+            Attack();            
         }
     }
 
@@ -1576,7 +1562,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagable, IParticleEffect
             uint playerId = target.GetComponent<NetworkIdentity>().netId;
             var gameMode = GamemodeBase.Instance;
 
-            target.GetComponent<CharacterStatManager>().points = gameMode.Svr_GetPoints(playerId) + 10;
+            target.GetComponent<SurvivorStatManager>().points = gameMode.Svr_GetPoints(playerId) + 10;
             gameMode.Svr_ModifyStat(playerId, 10, PlayerDataStat.Points);
             gameMode.Svr_ModifyStat(playerId, 1, PlayerDataStat.Kills);
         }
