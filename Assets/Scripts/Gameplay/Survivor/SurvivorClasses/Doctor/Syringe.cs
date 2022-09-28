@@ -18,7 +18,7 @@ public class Syringe : Projectile
     {
         var surv = hit.collider.transform.root.gameObject.GetComponent<SurvivorStatManager>();
         base.OnHit(hit);
-        if (hit.collider.TryGetComponent(out IDamagable idmg))
+        if (hit.collider.TryGetComponent(out IDamagableTeam idmg))
         {
             if (idmg?.Team == Teams.Player)
             {

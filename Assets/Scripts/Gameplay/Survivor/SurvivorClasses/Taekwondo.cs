@@ -213,16 +213,22 @@ public class Taekwondo : Survivor, IHitter
     {
         if (hitObject.TryGetComponent(out IDamagable damagable))
         {
+            StatManagerBase statManagerBase = hitObject.GetComponent<StatManagerBase>(); 
+
+            statManagerBase.onDied.AddListener(delegate { ApplyForce(hitObject); });
+
             damagable.Svr_Damage(dmg, transform.root);
-            print(hitObject.name);
-            if (damagable.IsDead)
-            {
-                Rigidbody[] rbColliderList = hitObject.GetComponentsInChildren<Rigidbody>();
-                foreach (Rigidbody rb in rbColliderList)
-                {
-                    rb.AddForce(transform.forward * 10, ForceMode.Impulse);
-                }
-            }
+
+            statManagerBase.onDied.RemoveListener(delegate { ApplyForce(hitObject); });
+        }
+    }
+
+    private void ApplyForce(Transform hitObject)
+    {
+        Rigidbody[] rbColliderList = hitObject.GetComponentsInChildren<Rigidbody>();
+        foreach (Rigidbody rb in rbColliderList)
+        {
+            rb.AddForce(transform.forward * 10, ForceMode.Impulse);
         }
     }
 }
