@@ -19,7 +19,7 @@ public class StatManagerBase : NetworkBehaviour, IDamagable
 
             if (prevHealth < health)
             {
-                onDamaged?.Invoke();
+                onDamaged?.Invoke(health);
             }
 
             if (health < 0)
@@ -32,7 +32,7 @@ public class StatManagerBase : NetworkBehaviour, IDamagable
 
     [Header("Events")]
     public UnityEvent onDied = null;
-    public UnityEvent onDamaged = null;
+    public UnityEvent<int> onDamaged = null;
 
     public virtual void Svr_Damage(int damage, Transform source = null)
     {
