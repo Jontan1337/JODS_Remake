@@ -48,6 +48,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
     {
         Owner.GetComponentInParent<SurvivorClassStatManager>()?.Rpc_StartAbilityCooldown(Owner.GetComponent<NetworkIdentity>().connectionToClient, Owner);
         Rpc_ShowTurret();
+        //damage =  Mathf.RoundToInt(Owner.GetComponentInParent<Survivor>().abilityDamage * Owner.GetComponentInParent<ModifierManagerSurvivor>().data.AbilityDamage);
         StartCoroutine(StartUp());
     }
 
@@ -187,6 +188,11 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
         // The turret uses a raycast to check if a damagable unit is in front of its barrel.
         // The turret will shoot at any unit that can be damaged, even if it's not the target.
         didHit.transform.GetComponent<IDamagable>()?.Svr_Damage(damage, Owner);
+        // If the target is dead after the shot, the target is lost.
+        if (target.GetComponent<BaseStatManager>().IsDead)
+        {
+            Svr_LostTarget();
+        }
     }
 
     [Server]
@@ -202,7 +208,6 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
             // For each unit in range, it raycasts to the unit to check if there is a structure blocking its line of sight.
             if (Physics.Raycast(new Vector3(swivel.transform.position.x, barrel.transform.position.y, swivel.transform.position.z), ((item.transform.position) - transform.position), out RaycastHit hit, LOSLayer))
             {
-                print(item.GetComponent<BoxCollider>().center);
                 // Every unit that is in line of sight will be added to a new list.
                 if (hit.transform)
                 {
@@ -226,8 +231,8 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
     [Server]
     private void Svr_NewTarget(Transform newTarget)
     {
-        target.GetComponent<BaseStatManager>().onDied.AddListener(delegate { Svr_LostTarget(); });
         target = newTarget;
+        //target.GetComponent<BaseStatManager>().onDied.AddListener(delegate { Svr_LostTarget(); });
 
         StopCoroutine(RotatePassiveCo);
 
@@ -266,8 +271,10 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
     [Server]
     private void Svr_LostTarget()
     {
-        target.GetComponent<BaseStatManager>().onDied.RemoveListener(delegate { Svr_LostTarget(); });
+        print("hallo?");
+
         target = null;
+        //target.GetComponent<BaseStatManager>().onDied.RemoveListener(delegate { Svr_LostTarget(); });
 
         if (barrelAnimation)
         {
@@ -340,6 +347,14 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 
         // A bool that is determined by a raycast that checks if there is a straight line between the turret and the target, without any structures in between.
         Physics.Raycast(transform.position, ((target.position + target.GetComponent<BoxCollider>().center) - transform.position), out RaycastHit hitLOS, LOSLayer);
+
+        if (hitLOS.transform == null)
+        {
+            lineOfSightCheck = false;
+            Svr_LostTarget();
+            return;
+        }
+
         lineOfSightCheck = hitLOS.transform.root == target;
 
     }

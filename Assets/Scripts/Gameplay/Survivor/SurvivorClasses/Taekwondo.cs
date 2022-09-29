@@ -16,8 +16,6 @@ public class Taekwondo : Survivor, IHitter
     [SerializeField, SyncVar] private float flyingKickStart = 0;
     [SerializeField, SyncVar] private float flyingKickEnd = 100;
     [SerializeField, SyncVar] private float flyingKickSpeed = 1.5f;
-    [SerializeField, SyncVar] private int flyingKickDamage = 100;
-    [SerializeField, SyncVar] private int kickDamage = 50;
 
     [SerializeField] private Collider lowerLeg;
     [SyncVar] private bool flyingKick = false;

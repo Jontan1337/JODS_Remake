@@ -8,7 +8,7 @@ public abstract class Survivor : NetworkBehaviour
 {
     public GameObject abilityObject;
 
-    [SerializeField, SyncVar] protected int abilityDamage;
+    [SerializeField, SyncVar] public int abilityDamage;
 
     public abstract void ActiveAbility();
 

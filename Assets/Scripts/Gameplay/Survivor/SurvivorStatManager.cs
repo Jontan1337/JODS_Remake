@@ -11,8 +11,6 @@ public class SurvivorStatManager : BaseStatManager, IDamagableTeam
 {
     private SurvivorLevelManager level;
     private ReviveManager reviveManager;
-    [SerializeField] private Animator animatorController = null;
-
 
     [Title("Stats")]
     [SerializeField, SyncVar(hook = nameof(ArmorHook))] private int armor = 0;
@@ -68,8 +66,6 @@ public class SurvivorStatManager : BaseStatManager, IDamagableTeam
     [SerializeField] private Image damagedImage = null;
     [SerializeField] private GameObject inGameCanvas = null;
     [Space]
-    [SerializeField] private PlayerEquipment playerEquipment = null;
-    //[SerializeField] private FullBodyBipedIK fullBodyBipedIK = null;
     [SerializeField] private SurvivorSetup survivorSetup = null;
 
 
@@ -120,7 +116,6 @@ public class SurvivorStatManager : BaseStatManager, IDamagableTeam
     private async void FindComponents()
     {
         await JODSTime.WaitTime(0.1f);
-        playerEquipment = GetComponentInChildren<PlayerEquipment>();
         survivorSetup = GetComponent<SurvivorSetup>();
     }
 
@@ -222,17 +217,21 @@ public class SurvivorStatManager : BaseStatManager, IDamagableTeam
     [Server]
     public override void Svr_Damage(int damage, Transform target = null)
     {
-        if (target)
-        {
-            if (target.TryGetComponent(out IDamagableTeam ITeam))
-            {
-                if (ITeam.Team == Teams.Player)
-                {
-                    float parsedDmg = damage;
-                    damage = Mathf.RoundToInt(parsedDmg /= 2);
-                }
-            }
-        }
+        //if (target)
+        //{
+        //    if (target.TryGetComponent(out IDamagableTeam ITeam))
+        //    {
+        //        if (ITeam.Team == Teams.Player)
+        //        {
+
+        //            damage = Mathf.RoundToInt(damage /= 2);
+        //        }
+        //    }
+        //}
+        float floatDmg = damage;
+        print(damage);
+        damage = Mathf.RoundToInt(floatDmg /= GetComponent<ModifierManagerSurvivor>().data.DamageResistance);
+        print(damage);
 
         if (!IsDown)
         {
@@ -296,8 +295,4 @@ public class SurvivorStatManager : BaseStatManager, IDamagableTeam
         Health = 50;
         IsDown = false;
     }
-
-    #region ViewModel
-
-    #endregion
 }
