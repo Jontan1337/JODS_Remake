@@ -226,7 +226,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
     [Server]
     private void Svr_NewTarget(Transform newTarget)
     {
-        target.GetComponent<StatManagerBase>().onDied.AddListener(delegate { Svr_LostTarget(); });
+        target.GetComponent<BaseStatManager>().onDied.AddListener(delegate { Svr_LostTarget(); });
         target = newTarget;
 
         StopCoroutine(RotatePassiveCo);
@@ -266,7 +266,7 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
     [Server]
     private void Svr_LostTarget()
     {
-        target.GetComponent<StatManagerBase>().onDied.RemoveListener(delegate { Svr_LostTarget(); });
+        target.GetComponent<BaseStatManager>().onDied.RemoveListener(delegate { Svr_LostTarget(); });
         target = null;
 
         if (barrelAnimation)

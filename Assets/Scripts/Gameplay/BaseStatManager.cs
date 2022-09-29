@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class StatManagerBase : NetworkBehaviour, IDamagable
+public class BaseStatManager : NetworkBehaviour, IDamagable
 {
     [BoxGroup("Health Stats")]
     [SerializeField, SyncVar(hook = nameof(HealthHook))] protected int health = 100;

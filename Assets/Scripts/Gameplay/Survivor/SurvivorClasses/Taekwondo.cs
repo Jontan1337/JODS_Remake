@@ -213,7 +213,7 @@ public class Taekwondo : Survivor, IHitter
     {
         if (hitObject.TryGetComponent(out IDamagable damagable))
         {
-            StatManagerBase statManagerBase = hitObject.GetComponent<StatManagerBase>(); 
+            BaseStatManager statManagerBase = hitObject.GetComponent<BaseStatManager>(); 
 
             statManagerBase.onDied.AddListener(delegate { ApplyForce(hitObject); });
 

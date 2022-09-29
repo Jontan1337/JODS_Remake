@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UnitStatManager : StatManagerBase
+public class UnitStatManager : BaseStatManager
 {
 
 }

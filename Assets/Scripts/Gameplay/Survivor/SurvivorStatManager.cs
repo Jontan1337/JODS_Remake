@@ -7,7 +7,7 @@ using Sirenix.OdinInspector;
 using RootMotion.FinalIK;
 using UnityEngine.Events;
 
-public class SurvivorStatManager : StatManagerBase, IDamagableTeam
+public class SurvivorStatManager : BaseStatManager, IDamagableTeam
 {
     private SurvivorLevelManager level;
     private ReviveManager reviveManager;

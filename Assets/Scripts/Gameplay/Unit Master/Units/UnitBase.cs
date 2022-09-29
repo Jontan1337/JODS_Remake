@@ -745,8 +745,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagableTeam, IParticleEffe
 
     private void SetTarget(Transform newTarget, bool? permanent = false)
     {
-        if (currentTarget != null) currentTarget.GetComponent<StatManagerBase>().onDied.RemoveListener(delegate { LoseTarget(); });
-        if (newTarget != null) newTarget.GetComponent<StatManagerBase>().onDied.AddListener(delegate { LoseTarget(); });
+        if (currentTarget != null) currentTarget.GetComponent<BaseStatManager>().onDied.RemoveListener(delegate { LoseTarget(); });
+        if (newTarget != null) newTarget.GetComponent<BaseStatManager>().onDied.AddListener(delegate { LoseTarget(); });
 
         currentTarget = newTarget;
         permanentTarget = permanent ?? false; //If the target is permanent, the unit will never stop chasing the target.

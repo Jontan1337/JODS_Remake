@@ -35,7 +35,7 @@ public class RaycastWeapon : RangedWeapon
                 {
                     if (shootHit.collider.TryGetComponent(out IDamagable damagable))
                     {
-                        StatManagerBase statManagerBase = shootHit.collider.GetComponentInParent<StatManagerBase>();
+                        BaseStatManager statManagerBase = shootHit.collider.GetComponentInParent<BaseStatManager>();
                         statManagerBase.onDied.AddListener(delegate { Svr_OnTargetDied(); });
                         bool detach = highPower ? highPower : Random.value > 0.6f;
                         if (detach)
