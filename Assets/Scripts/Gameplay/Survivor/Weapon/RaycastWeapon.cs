@@ -45,6 +45,13 @@ public class RaycastWeapon : RangedWeapon
                                 detachable.Detach((int)DamageTypes.Pierce);
                             }
                         }
+                        if (shootHit.collider.TryGetComponent(out IDamagableTeam damagableTeam))
+                        {
+                            if (damagableTeam.Team == Teams.Player)
+                            {
+                                currentDamage /= 2;
+                            }
+                        }
                         damagable.Svr_Damage((int)currentDamage, owner);
                         statManagerBase.onDied.RemoveListener(delegate { Svr_OnTargetDied(); });
                     }
