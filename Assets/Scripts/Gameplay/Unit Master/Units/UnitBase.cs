@@ -1443,11 +1443,6 @@ public abstract class UnitBase : BaseStatManager, IParticleEffect
     public virtual void OnSelect() { }
     public virtual void OnDeselect() { }
 
-    public void TakeControl()
-    {
-        print(name + ": Master is in control.");
-    }
-
     #region Commands
 
     [Server]

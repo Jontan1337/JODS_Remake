@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class ZombieTentacle : UnitBase, IControllable
+public class ZombieTentacle : UnitBase
 {
     [Header("Tentacle")]
     [SerializeField] private bool CaughtSurvivor = false;
@@ -113,9 +113,6 @@ public class ZombieTentacle : UnitBase, IControllable
 
 
     #region Interface Functions
-    public void TakeControl()
-    {
-        throw new System.NotImplementedException();
-    }
+
     #endregion
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class ZombieStronk : UnitBase, IControllable
+public class ZombieStronk : UnitBase
 {
     [Header("Stronk")]
     [SerializeField] private float destructibleSearchRange = 20f;
@@ -85,9 +85,6 @@ public class ZombieStronk : UnitBase, IControllable
     }
 
     #region Interface Functions
-    public void TakeControl()
-    {
-        throw new System.NotImplementedException();
-    }
+
     #endregion
 }

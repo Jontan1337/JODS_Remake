@@ -1484,7 +1484,7 @@ public class UnitMaster : NetworkBehaviour
         if (!inTopdownView) Destroy(currentCamera);
         yield return new WaitForSeconds(1f);
 
-        targetToControl.TakeControl();
+        //TAKE CONTROL OF DA ZOMBE
     }
 
     #endregion

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class ZombieSpitter : UnitBase, IControllable
+public class ZombieSpitter : UnitBase
 {
     public override void Attack()
     {
@@ -30,9 +30,6 @@ public class ZombieSpitter : UnitBase, IControllable
     }
 
     #region Interface Functions
-    public void TakeControl()
-    {
-        throw new System.NotImplementedException();
-    }
+
     #endregion
 }

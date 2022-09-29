@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class ZombieSlav : UnitBase, IControllable
+public class ZombieSlav : UnitBase
 {
     public override void Attack()
     {
@@ -32,9 +32,6 @@ public class ZombieSlav : UnitBase, IControllable
 
 
     #region Interface Functions
-    public void TakeControl()
-    {
-        throw new System.NotImplementedException();
-    }
+
     #endregion
 }
