@@ -22,7 +22,7 @@ public class BaseStatManager : NetworkBehaviour, IDamagable
                 onDamaged?.Invoke();
             }
 
-            if (health < 0)
+            if (health <= 0)
             {
                 onDied?.Invoke();
             }
