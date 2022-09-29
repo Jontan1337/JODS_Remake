@@ -1203,7 +1203,6 @@ public abstract class UnitBase : BaseStatManager, IParticleEffect
     [Server]
     public virtual void Svr_Die()
     {
-        print("uwu");
         EnablePathfinding(false, true); //Stop the current path
         ai.enabled = false; //Disable the AIPath component
 
@@ -1553,11 +1552,6 @@ public abstract class UnitBase : BaseStatManager, IParticleEffect
         //gameMode.Svr_ModifyStat(playerId, 10, PlayerDataStat.Points);
         //gameMode.Svr_ModifyStat(playerId, 1, PlayerDataStat.Kills);
 
-    }
-
-    public void Cmd_Damage(int damage)
-    {
-        throw new System.NotImplementedException();
     }
 
     #endregion
