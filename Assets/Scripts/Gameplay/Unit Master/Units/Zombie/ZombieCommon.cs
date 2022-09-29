@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Sirenix.OdinInspector;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -13,16 +14,7 @@ public class ZombieCommon : UnitBase, IControllable
         }
     }
 
-    public override void OnSelect()
-    {
-        //throw new System.NotImplementedException();
-    }
-
-    public override void OnDeselect()
-    {
-        //throw new System.NotImplementedException();
-    }
-    [Header("Traits")]
+    [Title("Zombie Common", titleAlignment: TitleAlignments.Centered)]
     [SerializeField] private StatusEffectToApply damageStatusEffect = new StatusEffectToApply();
     public override void ApplyHealthTrait()
     {

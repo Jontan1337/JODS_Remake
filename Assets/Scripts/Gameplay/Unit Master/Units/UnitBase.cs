@@ -1440,8 +1440,8 @@ public abstract class UnitBase : BaseStatManager, IParticleEffect
     }
     #endregion
 
-    public abstract void OnSelect();
-    public abstract void OnDeselect();
+    public virtual void OnSelect() { }
+    public virtual void OnDeselect() { }
 
     public void TakeControl()
     {

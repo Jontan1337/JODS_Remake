@@ -29,16 +29,6 @@ public class ZombieSpitter : UnitBase, IControllable
         throw new System.NotImplementedException();
     }
 
-    public override void OnSelect()
-    {
-        //throw new System.NotImplementedException();
-    }
-
-    public override void OnDeselect()
-    {
-        //throw new System.NotImplementedException();
-    }
-
     #region Interface Functions
     public void TakeControl()
     {

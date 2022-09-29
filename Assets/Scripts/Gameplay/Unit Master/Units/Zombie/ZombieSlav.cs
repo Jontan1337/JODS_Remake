@@ -30,15 +30,6 @@ public class ZombieSlav : UnitBase, IControllable
 
     }
 
-    public override void OnSelect()
-    {
-        //throw new System.NotImplementedException();
-    }
-
-    public override void OnDeselect()
-    {
-        //throw new System.NotImplementedException();
-    }
 
     #region Interface Functions
     public void TakeControl()
