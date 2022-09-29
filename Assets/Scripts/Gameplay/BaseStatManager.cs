@@ -7,7 +7,7 @@ using UnityEngine.Events;
 
 public class BaseStatManager : NetworkBehaviour, IDamagable
 {
-    [BoxGroup("Health Stats")]
+    [Title("Base Stat Manager", titleAlignment: TitleAlignments.Centered)]
     [SerializeField, SyncVar(hook = nameof(HealthHook))] protected int health = 100;
     public virtual int Health
     {
@@ -19,7 +19,7 @@ public class BaseStatManager : NetworkBehaviour, IDamagable
 
             if (prevHealth < health)
             {
-                onDamaged?.Invoke(health);
+                onDamaged?.Invoke();
             }
 
             if (health < 0)
@@ -30,7 +30,8 @@ public class BaseStatManager : NetworkBehaviour, IDamagable
     }
     protected virtual void HealthHook(int oldVal, int newVal) { }
 
-    [BoxGroup("Health Stats")]
+    public bool IsDead => health > 0;
+
     [SerializeField, SyncVar(hook = nameof(MaxHealthHook))] protected int maxHealth = 100;
 
     protected virtual void MaxHealthHook(int oldVal, int newVal) { }
@@ -45,10 +46,11 @@ public class BaseStatManager : NetworkBehaviour, IDamagable
 
     [Header("Events")]
     public UnityEvent onDied = null;
-    public UnityEvent<int> onDamaged = null;
+    public UnityEvent onDamaged = null;
+
 
     public virtual void Svr_Damage(int damage, Transform source = null)
     {
-        throw new System.NotImplementedException();
+        Health -= damage;
     }
 }

@@ -17,17 +17,28 @@ using Sirenix.OdinInspector;
 [RequireComponent(typeof(AIPath))]
 [RequireComponent(typeof(ModifierManagerUnit))]
 
-public abstract class UnitBase : NetworkBehaviour, IDamagableTeam, IParticleEffect
+public abstract class UnitBase : BaseStatManager, IParticleEffect
 {
     #region Fields
 
-    [Title("Necessities", titleAlignment: TitleAlignments.Centered)]
+    [Title("Unit Base", titleAlignment: TitleAlignments.Centered)]
     [SerializeField] private UnitSO unitSO;
     public UnitSO UnitSO{ get { return unitSO; }}
 
+    public override int Health 
+    {
+        get => base.Health;
+        set
+        {
+            base.Health = value;
+            if (health <= 0)
+            {
+                Svr_Die();
+            }
+        }
+    }
 
     [Title("Stats", titleAlignment: TitleAlignments.Centered)]
-    [SyncVar] public bool isDead = false;
     [SyncVar] private int refundAmount = 0;
     [Space]
     [SerializeField] private bool isMelee;
@@ -133,9 +144,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagableTeam, IParticleEffe
     [SerializeField] private SkinnedMeshRenderer headRenderer = null;
     [SerializeField] private SkinnedMeshRenderer leftArmRenderer = null;
     [SerializeField] private SkinnedMeshRenderer rightArmRenderer = null;
-    private UnitStatManager statManager;
 
-    private ModifierManagerUnit modifiers = null;
+    protected ModifierManagerUnit modifiers = null;
 
     [Title("Detatchable References", titleAlignment: TitleAlignments.Centered)]
     [SerializeField] private UnitBodyPart leftArm = null;
@@ -304,8 +314,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagableTeam, IParticleEffe
             }
         }
 
-        statManager = GetComponent<UnitStatManager>();
-
         modifiers = GetComponent<ModifierManagerUnit>();
 
         InitialUnitSetup();
@@ -319,7 +327,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagableTeam, IParticleEffe
 
             return;
         }
-
 
         StartCoroutine(MovementAnimationCoroutine());
         
@@ -338,8 +345,8 @@ public abstract class UnitBase : NetworkBehaviour, IDamagableTeam, IParticleEffe
 
         //Health
         int newMaxHealth = Mathf.RoundToInt(unitSO.health * modifiers.data.Health);
-        statManager.MaxHealth = newMaxHealth;
-        statManager.Health = newMaxHealth;
+        MaxHealth = newMaxHealth;
+        Health = newMaxHealth;
 
         //Attack bools
         isMelee = unitSO.hasMelee;
@@ -654,7 +661,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagableTeam, IParticleEffe
 
     private IEnumerator MovementAnimationCoroutine()
     {
-        while (!isDead)
+        while (true)
         {
             yield return new WaitForSeconds(0.2f);
 
@@ -668,7 +675,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagableTeam, IParticleEffe
 
     private IEnumerator SearchCoroutine()
     {
-        while (!isDead)
+        while (true)
         {
             yield return new WaitForSeconds(currentTarget ? 1.5f : 0.5f);
 
@@ -707,7 +714,6 @@ public abstract class UnitBase : NetworkBehaviour, IDamagableTeam, IParticleEffe
                 //If my new target is not closer than my current target, I will continue to chase my current target.
                 if (!CloserThanTarget(newTarget)) return;
                 //If it is closer, then it will become my new target.
-                print(name + ": this " + newTarget.name + " guy is closer than my current target! imma chase him instead.");
             }
         }
 
@@ -745,8 +751,20 @@ public abstract class UnitBase : NetworkBehaviour, IDamagableTeam, IParticleEffe
 
     private void SetTarget(Transform newTarget, bool? permanent = false)
     {
-        if (currentTarget != null) currentTarget.GetComponent<BaseStatManager>().onDied.RemoveListener(delegate { LoseTarget(); });
-        if (newTarget != null) newTarget.GetComponent<BaseStatManager>().onDied.AddListener(delegate { LoseTarget(); });
+        if (currentTarget != null)
+        {
+            if (currentTarget.TryGetComponent(out BaseStatManager statManager))
+            {
+                statManager.onDied.RemoveListener(delegate { LoseTarget(); });
+            }
+        }
+        if (newTarget != null)
+        {
+            if (newTarget.TryGetComponent(out BaseStatManager statManager))
+            {
+                statManager.onDied.AddListener(delegate { LoseTarget(); });
+            }
+        }
 
         currentTarget = newTarget;
         permanentTarget = permanent ?? false; //If the target is permanent, the unit will never stop chasing the target.
@@ -778,7 +796,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagableTeam, IParticleEffe
 
     private IEnumerator ChaseCoroutine()
     {
-        while (!isDead)
+        while (true)
         {
             yield return new WaitForSeconds(0.5f);
 
@@ -1181,27 +1199,21 @@ public abstract class UnitBase : NetworkBehaviour, IDamagableTeam, IParticleEffe
 
     #region Health
 
-    public bool IsMaxHealth => statManager.Health == statManager.MaxHealth; 
-
 
     [Server]
     public virtual void Svr_Die()
     {
-        if (!isDead)
-        {
-            isDead = true; //Bool used to ensure this only happens once
+        print("uwu");
+        EnablePathfinding(false, true); //Stop the current path
+        ai.enabled = false; //Disable the AIPath component
 
-            EnablePathfinding(false, true); //Stop the current path
-            ai.enabled = false; //Disable the AIPath component
+        Svr_DisableCollider();
 
-            Svr_DisableCollider();
+        Svr_SetDeathAnimation();
 
-            Svr_SetDeathAnimation();
-
-            Svr_PostDeath();
+        Svr_PostDeath();
             
-            OnDeath?.Invoke(unitSO);
-        }
+        OnDeath?.Invoke(unitSO);
     }
 
     #region Dismemberment
@@ -1455,7 +1467,7 @@ public abstract class UnitBase : NetworkBehaviour, IDamagableTeam, IParticleEffe
     #region Refunding
 
     //Meet the requirements to refund (Is max health)
-    public int Refund => IsMaxHealth ? refundAmount : 0;
+    public int Refund => Health == MaxHealth ? refundAmount : 0;
 
     #endregion
 
@@ -1518,9 +1530,9 @@ public abstract class UnitBase : NetworkBehaviour, IDamagableTeam, IParticleEffe
     #region IDamagable
 
     [Server]
-    public void Svr_Damage(int damage, Transform target = null)
+    public override void Svr_Damage(int damage, Transform target = null)
     {
-        if (isDead) return;
+        base.Svr_Damage(damage, target);
         if (target != null)
         {
             if (currentTarget)
@@ -1537,24 +1549,15 @@ public abstract class UnitBase : NetworkBehaviour, IDamagableTeam, IParticleEffe
             }
         }
 
-        statManager.Health -= damage;
-
-        if (IsDead)
-        {
-            if (!target)
-            {
-                return;
-            }
-
-            uint playerId = target.GetComponent<NetworkIdentity>().netId;
-            var gameMode = GamemodeBase.Instance;
-
-            target.GetComponent<SurvivorStatManager>().points = gameMode.Svr_GetPoints(playerId) + 10;
-            gameMode.Svr_ModifyStat(playerId, 10, PlayerDataStat.Points);
-            gameMode.Svr_ModifyStat(playerId, 1, PlayerDataStat.Kills);
-        }
-
         animator.SetTrigger("Hit");
+
+        //uint playerId = target.GetComponent<NetworkIdentity>().netId;
+        //var gameMode = GamemodeBase.Instance;
+
+        //target.GetComponent<SurvivorStatManager>().points = gameMode.Svr_GetPoints(playerId) + 10;
+        //gameMode.Svr_ModifyStat(playerId, 10, PlayerDataStat.Points);
+        //gameMode.Svr_ModifyStat(playerId, 1, PlayerDataStat.Kills);
+
     }
 
     public void Cmd_Damage(int damage)

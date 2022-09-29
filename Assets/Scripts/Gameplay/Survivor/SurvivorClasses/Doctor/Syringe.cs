@@ -44,6 +44,7 @@ public class Syringe : Projectile
             else
             {
                 UnitBase ub = hit.collider.transform.root.gameObject.GetComponent<UnitBase>();
+                BaseStatManager baseStatManager = hit.collider.transform.root.gameObject.GetComponent<BaseStatManager>();
 
                 if (!ub.TryGetComponent(out ZombieStronk stronk))
                 {
@@ -51,7 +52,7 @@ public class Syringe : Projectile
                     {
                         ub.Dismember_BodyPart(i, (int)DamageTypes.Blunt);
                     }
-                    idmg?.Svr_Damage(ub.Health, owner);
+                    idmg?.Svr_Damage(baseStatManager.Health, owner);
                 }
 
 

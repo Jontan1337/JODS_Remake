@@ -1369,7 +1369,7 @@ public class UnitMaster : NetworkBehaviour
             //If I click on a unit, try and select that unit
             if (hit.collider.TryGetComponent(out UnitBase unit))
             {
-                if (unit.select.canSelect && !unit.isDead)
+                if (unit.select.canSelect && !unit.IsDead)
                 {
                     SelectUnit(unit);
                 }

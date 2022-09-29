@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEffect
+public class UnitBodyPart : MonoBehaviour, IDamagableTeam, IDetachable, IParticleEffect
 {
     private readonly float[] multiplierArray = new float[]
     {
@@ -29,9 +29,6 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEff
     public Transform partTransform;
     [Space]
     public GameObject bodyBloodEmitter;
-
-    public int GetHealth => unitBase.Health;
-    public bool IsDead => unitBase.isDead;
 
     #endregion
 
@@ -107,18 +104,13 @@ public class UnitBodyPart : MonoBehaviour, IDamagable, IDetachable, IParticleEff
 
     private bool CanDetach()
     {
-        return (onlyDetachOnDeath && IsDead || !onlyDetachOnDeath);
+        return (onlyDetachOnDeath && unitBase.IsDead || !onlyDetachOnDeath);
     }
 
-
+    [Server]
     public void Svr_Damage(int damage, Transform target = null)
     {
         unitBase.Svr_Damage(Mathf.RoundToInt(damage * multiplier), target);
-    }
-
-    public void Cmd_Damage(int damage)
-    {
-        throw new System.NotImplementedException();
     }
 
     void Start()

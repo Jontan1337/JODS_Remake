@@ -42,7 +42,7 @@ public class ZombieCommon : UnitBase, IControllable
 
     private IEnumerator Regeneration()
     {
-        while (!IsDead)
+        while (true)
         {
             yield return new WaitForSeconds(1);
 

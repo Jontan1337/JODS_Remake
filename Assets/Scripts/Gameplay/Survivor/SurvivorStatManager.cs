@@ -32,7 +32,7 @@ public class SurvivorStatManager : BaseStatManager, IDamagableTeam
     public override int Health
     {
         get => health;
-        protected set
+        set
         {
             health = Mathf.Clamp(value, 0, maxHealth);
 
