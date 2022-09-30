@@ -33,8 +33,7 @@ public class RaycastWeapon : RangedWeapon
                 {
                     if (shootHit.collider.TryGetComponent(out IDamagable damagable))
                     {
-                        BaseStatManager statManagerBase = shootHit.collider.GetComponentInParent<BaseStatManager>();
-                        statManagerBase.onDied.AddListener(delegate { Svr_OnTargetDied(); });
+                        //statManagerBase.onDied.AddListener(delegate { Svr_OnTargetDied(); });
                         bool detach = highPower ? highPower : Random.value > 0.6f;
                         if (detach)
                         {
@@ -52,7 +51,16 @@ public class RaycastWeapon : RangedWeapon
                             }
                         }
                         damagable.Svr_Damage((int)finalDamage, owner);
-                        statManagerBase.onDied.RemoveListener(delegate { Svr_OnTargetDied(); });
+                        //BaseStatManager statManagerBase;
+                        //if (shootHit.collider.GetComponentInParent<BaseStatManager>())
+                        //{
+                        //    statManagerBase = shootHit.collider.GetComponentInParent<BaseStatManager>();
+                        //    if (statManagerBase.IsDead)
+                        //    {
+                        //        Svr_OnTargetDied();
+                        //    }
+                        //}
+                        //statManagerBase.onDied.RemoveListener(delegate { Svr_OnTargetDied(); });
                     }
                     // This ray shoots it's own collider on the other side to get the "penetration point"
                     // on the opposite side of the collider where the bullet should leave.
@@ -93,16 +101,18 @@ public class RaycastWeapon : RangedWeapon
                     if (shootHit.collider.TryGetComponent(out IDamagable damagable))
                     {
                         target = shootHit.collider.transform;
-                        //if (highPower)
-                        //{
-                        //    if (damagable.IsDead)
-                        //    {
-                        //        if (shootHit.collider.TryGetComponent(out Rigidbody rb))
-                        //        {
-                        //            rb.AddForce(transform.forward * rigidbodyPunchback * 10f, ForceMode.Impulse);
-                        //        }
-                        //    }
-                        //}
+                        if (highPower)
+                        {
+                            BaseStatManager statManagerBase;
+                            if (shootHit.collider.GetComponentInParent<BaseStatManager>())
+                            {
+                                statManagerBase = shootHit.collider.GetComponentInParent<BaseStatManager>();
+                                if (statManagerBase.IsDead)
+                                {
+                                    PushTarget(shootHit.collider.transform);
+                                }
+                            }
+                        }
                     }
                     PhysicMaterial phyMat = shootHit.collider.sharedMaterial;
                     Bullethole(shootHit.point, shootHit.normal, phyMat ? phyMat.name : "");
@@ -128,13 +138,7 @@ public class RaycastWeapon : RangedWeapon
         }
     }
 
-    [Server]
-    private void Svr_OnTargetDied()
-    {
-        Rpc_OnTargetDied();
-    }
-    [ClientRpc]
-    private void Rpc_OnTargetDied()
+    private void PushTarget(Transform target)
     {
         if (target.TryGetComponent(out Rigidbody rb))
         {
