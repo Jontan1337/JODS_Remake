@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Sirenix.OdinInspector;
 using Mirror;
 using DG.Tweening;
@@ -45,14 +43,15 @@ public class RaycastWeapon : RangedWeapon
                                 detachable.Detach((int)DamageTypes.Pierce);
                             }
                         }
+                        float finalDamage = currentDamage;
                         if (shootHit.collider.TryGetComponent(out IDamagableTeam damagableTeam))
                         {
                             if (damagableTeam.Team == Teams.Player)
                             {
-                                currentDamage /= 2;
+                                finalDamage /= 2;
                             }
                         }
-                        damagable.Svr_Damage((int)currentDamage, owner);
+                        damagable.Svr_Damage((int)finalDamage, owner);
                         statManagerBase.onDied.RemoveListener(delegate { Svr_OnTargetDied(); });
                     }
                     // This ray shoots it's own collider on the other side to get the "penetration point"
