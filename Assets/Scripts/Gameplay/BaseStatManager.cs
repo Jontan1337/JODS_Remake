@@ -30,7 +30,7 @@ public class BaseStatManager : NetworkBehaviour, IDamagable
     }
     protected virtual void HealthHook(int oldVal, int newVal) { }
 
-    public bool IsDead => health > 0;
+    public bool IsDead => health <= 0;
 
     [SerializeField, SyncVar(hook = nameof(MaxHealthHook))] protected int maxHealth = 100;
 
