@@ -26,20 +26,20 @@ public class PlayerData
     [Header("Shared")]
     public string playerName;
     public uint playerId;
-    public bool alive;
-    public int score;
-    public int exp;
-    public int level;
+    public bool alive;//s
+    public int score;//s
+    public int exp; //x
+    public int level; //s
     public bool isMaster;
 
     [Header("Survivor")]
-    public int points;
-    public int kills;
+    public int points; //x
+    public int kills;//s
 
     [Header("Master")]
-    public int unitsPlaced;
-    public int totalUpgrades;
-    public int totalUnitUpgrades;
+    public int unitsPlaced; //s
+    public int totalUpgrades; //s
+    public int totalUnitUpgrades; //s
 }
 
 public enum PlayerDataStat
