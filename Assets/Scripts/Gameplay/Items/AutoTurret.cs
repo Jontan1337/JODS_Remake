@@ -6,7 +6,7 @@ using UnityEngine;
 
 
 
-public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
+public class AutoTurret : BaseStatManager, IPlaceable
 {
     [Header("Stats")]
     [SerializeField] private float range = 30;
@@ -15,7 +15,6 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
     [SerializeField] private float searchInterval = 1f;
     [SerializeField] private int damage = 20;
     [SerializeField, SyncVar] private int duration = 20;
-    [SerializeField, SyncVar] private int health = 200;
 
 
     [Header("References")]
@@ -34,7 +33,6 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 
     private List<Collider> enemiesInSight = new List<Collider>();
     private bool barrelAnimation = false;
-    [SyncVar] private bool isDead;
 
 
 
@@ -177,8 +175,6 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
     [Server]
     private void Svr_Shoot(RaycastHit didHit)
     {
-        Debug.DrawRay(barrel.position, barrel.forward * 10, Color.red, 0.1f);
-
         // A shooting animation coroutine is played.
         Rpc_Shoot();
         PhysicMaterial phyMat = didHit.collider.sharedMaterial;
@@ -314,7 +310,6 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
             }
             else if (!lineOfSightCheck)
             {
-                //Debug.LogError(didHit.transform.name);
                 Svr_LostTarget();
             }
         }
@@ -420,13 +415,12 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
 
     // The turret loses health and dies if its health is 0 or less.
     [Server]
-    public void Svr_Damage(int damage, Transform target = null)
+    public override void Svr_Damage(int damage, Transform target = null)
     {
         if (IsDead) return;
         health -= damage;
         if (health <= 0)
         {
-            isDead = true;
             Svr_Die();
         }
     }
@@ -435,12 +429,6 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
     {
         throw new System.NotImplementedException();
     }
-
-    public int GetHealth => health;
-    public bool IsDead => isDead;
-
-
-
 
 
     #endregion
