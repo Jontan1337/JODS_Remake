@@ -271,8 +271,6 @@ public class AutoTurret : NetworkBehaviour, IDamagable, IPlaceable
     [Server]
     private void Svr_LostTarget()
     {
-        print("hallo?");
-
         target = null;
         //target.GetComponent<BaseStatManager>().onDied.RemoveListener(delegate { Svr_LostTarget(); });
 
