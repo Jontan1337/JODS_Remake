@@ -64,7 +64,7 @@ public class SurvivorLevelManager : NetworkBehaviour
     {
         if (GUI.Button(new Rect(10, 150, 50, 20), "exp"))
         {
-            GainExp(50);
+            GainExp(500);
         }
     }
 

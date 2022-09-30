@@ -340,14 +340,6 @@ public class AutoTurret : BaseStatManager, IPlaceable
 
         // A bool that is determined by a raycast that checks if there is a straight line between the turret and the target, without any structures in between.
         Physics.Raycast(transform.position, ((target.position + target.GetComponent<BoxCollider>().center) - transform.position), out RaycastHit hitLOS, LOSLayer);
-
-        if (hitLOS.transform == null)
-        {
-            lineOfSightCheck = false;
-            Svr_LostTarget();
-            return;
-        }
-
         lineOfSightCheck = hitLOS.transform.root == target;
 
     }

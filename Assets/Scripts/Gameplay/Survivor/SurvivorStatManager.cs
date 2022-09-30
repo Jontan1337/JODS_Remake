@@ -228,9 +228,13 @@ public class SurvivorStatManager : BaseStatManager, IDamagableTeam
         //        }
         //    }
         //}
-        float floatDmg = damage;
+
         print(damage);
-        damage = Mathf.RoundToInt(floatDmg /= GetComponent<ModifierManagerSurvivor>().data.DamageResistance);
+        if (damage > 0)
+        {
+            float floatDmg = damage;
+            damage = Mathf.RoundToInt(floatDmg /= GetComponent<ModifierManagerSurvivor>().data.DamageResistance);
+        }
         print(damage);
 
         if (!IsDown)
