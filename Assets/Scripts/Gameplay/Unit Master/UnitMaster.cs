@@ -728,7 +728,7 @@ public class UnitMaster : NetworkBehaviour
         Cmd_UpgradeEnergy(upgradeType);
 
         //Update scoreboard stat
-        Cmd_UpdateScore(1, PlayerDataStat.TotalUpgrades);        
+        //Cmd_UpdateScore(1, PlayerDataStat.TotalUpgrades);        
     }
 
     [Command]
@@ -1173,7 +1173,7 @@ public class UnitMaster : NetworkBehaviour
             //This is because there can be multiple variations of one unit.
             spawnName = chosenUnit.unitPrefab.name;
 
-            Cmd_UpdateScore(1, PlayerDataStat.UnitsPlaced);
+            //Cmd_UpdateScore(1, PlayerDataStat.UnitsPlaced);
         }
 
         Cmd_Spawn(hit.point, spawnName, spawningADeployable);
@@ -1227,7 +1227,7 @@ public class UnitMaster : NetworkBehaviour
         Cmd_PlayGlobalSound(true);
 
         //Update scoreboard stat
-        Cmd_UpdateScore(1, PlayerDataStat.TotalUnitUpgrades);
+        //Cmd_UpdateScore(1, PlayerDataStat.TotalUnitUpgrades);
     }
 
     [Command]
@@ -1298,7 +1298,7 @@ public class UnitMaster : NetworkBehaviour
         Cmd_PlayGlobalSound(true);
 
         //Update scoreboard stat
-        Cmd_UpdateScore(1, PlayerDataStat.TotalUnitUpgrades);
+        //Cmd_UpdateScore(1, PlayerDataStat.TotalUnitUpgrades);
     }
 
     [Command]
@@ -1748,9 +1748,9 @@ public class UnitMaster : NetworkBehaviour
         selectedUnit.Svr_MoveToLocation(location);
     }
     [Command]
-    void Cmd_UpdateScore(int amount, PlayerDataStat stat)
+    void Cmd_UpdateScore(int amount, BasePlayerData stat)
     {
-        GamemodeBase.Instance.Svr_ModifyStat(GetComponent<NetworkIdentity>().netId, amount, stat);
+        //GamemodeBase.Instance.Svr_ModifyStat(GetComponent<NetworkIdentity>().netId, amount, stat);
     }
 
     [Command]

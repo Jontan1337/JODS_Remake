@@ -8,50 +8,6 @@ using UnityEngine.InputSystem;
 using System;
 using Sirenix.OdinInspector;
 
-[Serializable]
-public class PlayerData
-{
-    public PlayerData() { }
-    public PlayerData(uint playerId, string playerName, bool isMaster)
-    {
-        this.playerName = playerName;
-
-        this.playerId = playerId;
-
-        this.alive = true;
-
-        this.isMaster = isMaster; 
-    }
-
-    [Header("Shared")]
-    public string playerName;
-    public uint playerId;
-    public bool alive;//s
-    public int score;//s
-    public int exp; //x
-    public int level; //s
-    public bool isMaster;
-
-    [Header("Survivor")]
-    public int points; //x
-    public int kills;//s
-
-    [Header("Master")]
-    public int unitsPlaced; //s
-    public int totalUpgrades; //s
-    public int totalUnitUpgrades; //s
-}
-
-public enum PlayerDataStat
-{
-    Score,
-    Points,
-    Kills,
-    UnitsPlaced,
-    TotalUpgrades,
-    TotalUnitUpgrades,
-    Alive
-}
 
 [RequireComponent(typeof(AudioSource))]
 public abstract class GamemodeBase : NetworkBehaviour
@@ -72,8 +28,24 @@ public abstract class GamemodeBase : NetworkBehaviour
     protected AudioSource AS;
     public MapSettingsSO mapSettings;
 
+    [SerializeField] private int survivorsAlive = 0;
+    public int SurvivorsAlive
+    {
+        get { return survivorsAlive; }
+        set
+        { 
+            survivorsAlive = value; 
+
+            if (survivorsAlive <= 0)
+            {
+                Svr_EndGame();
+            }
+        }
+    }
+
+
     [Header("Points System Management")]
-    [SerializeField] private List<PlayerData> playerList = new List<PlayerData>();
+    [SerializeField] private List<BasePlayerData> playerList = new List<BasePlayerData>();
 
     [Header("Endgame Management")]
     [SerializeField] private GameObject endgameCamera = null;
@@ -87,9 +59,6 @@ public abstract class GamemodeBase : NetworkBehaviour
 
     private void Start()
     {
-        JODSInput.Controls.General.Scoreboard.performed += ToggleScoreboard;
-        JODSInput.Controls.General.Scoreboard.canceled += ToggleScoreboard;
-
         AS = GetComponent<AudioSource>();
         endgameCamera.SetActive(false);
 
@@ -102,77 +71,6 @@ public abstract class GamemodeBase : NetworkBehaviour
 
     #region Point System and Player Scores
 
-    private PlayerData GetPlayer(uint playerId)
-    {
-        int index = 0;
-        foreach(PlayerData player in playerList)
-        {
-            if(player.playerId == playerId)
-            {
-                index = playerList.IndexOf(player);
-            }
-        }
-        return playerList[index];
-    }
-
-    [Server]
-    public int Svr_GetPoints(uint playerId)
-    {
-        return GetPlayer(playerId).points;
-    }
-
-    [Server]
-    public void Svr_ModifyStat(uint playerId, int amount, PlayerDataStat stat = PlayerDataStat.Score)
-    {
-        PlayerData playerToModify = GetPlayer(playerId);
-
-        switch (stat)
-        {
-            case PlayerDataStat.Points:
-                playerToModify.points += amount;
-                break;
-            case PlayerDataStat.Kills:
-                playerToModify.kills += amount;
-                break;
-            case PlayerDataStat.UnitsPlaced:
-                playerToModify.unitsPlaced += amount;
-                break;
-            case PlayerDataStat.TotalUnitUpgrades:
-                playerToModify.totalUnitUpgrades += amount;
-                break;
-            case PlayerDataStat.TotalUpgrades:
-                playerToModify.totalUpgrades += amount;
-                break;
-            case PlayerDataStat.Alive:
-                playerToModify.alive = amount != 0; //False if 0, true if 1
-                break;
-            default:
-                playerToModify.score += amount;
-                break;
-        }
-
-        if (amount > 0)
-        {
-            playerToModify.score += amount;
-        }
-
-        Rpc_UpdateScoreboardRow(playerToModify);
-
-        if (!playerToModify.isMaster && amount == 0 && stat == PlayerDataStat.Alive) //Did the Alive stat get changed to 0? (Someone died)
-        {
-            bool everyoneIsDead = true;
-
-            //Iterate through all players and check if they're alive.
-            foreach(PlayerData pd in playerList)
-            {
-                if (pd == playerToModify) continue; //Skip the initial player, we know it's dead.
-
-                if (pd.alive) everyoneIsDead = false; //If the player we're checking is alive, then we don't end the game
-            }
-            if (everyoneIsDead) Svr_EndGame(); //All players are dead, end the game.
-        }
-    }
-
     //When a player joins the server, a PlayerData gets created with the player's info.
     //This PlayerData then gets added to the list of players.
     //The server then tells all clients to update the visual scoreboard with the new list of players.
@@ -181,50 +79,33 @@ public abstract class GamemodeBase : NetworkBehaviour
     [Server]
     public void Svr_AddPlayer(uint playerId, string playerName, bool isMaster = false)
     {
-        PlayerData newPlayer = new PlayerData(playerId, playerName, isMaster);
-
-        bool playerExists = false;
-
-        int index = 0;
-
-        foreach (PlayerData player in playerList)
+        if (!isMaster)
         {
-            if (player.playerId == newPlayer.playerId)
-            {
-                index = playerList.IndexOf(player);
-                playerExists = true;
-            }
+            NetworkIdentity.spawned[playerId].GetComponent<BaseStatManager>().onDied.AddListener(delegate { survivorsAlive--; });
+            survivorsAlive++;
         }
 
-        if (playerExists)
-        {
-            playerList[index] = newPlayer;
-        }
+        //BasePlayerData newPlayer =  PlayerData(playerId, playerName, isMaster);
 
-        else playerList.Add(newPlayer);
+        //bool playerExists = false;
 
-        Rpc_ChangePlayerList(playerList);
-    }
+        //int index = 0;
 
-    //This method overrides the visual scoreboard, inserting all players in the list into their own row.
-    [ClientRpc]
-    private void Rpc_ChangePlayerList(List<PlayerData> playerData)
-    {
-       List<ScoreboardRow> usedRows = new List<ScoreboardRow>();
-        foreach (PlayerData player in playerData)
-        {
-            //Assign the player to a scoreboard row
-            foreach (ScoreboardRow row in player.isMaster ? masterRows : survivorRows)
-            {
-                if (!usedRows.Contains(row))
-                {
-                    row.playerId = player.playerId;
-                    row.SetupPlayerScore(player);
-                    usedRows.Add(row);
-                    break;
-                }
-            }
-        }
+        //foreach (PlayerData player in playerList)
+        //{
+        //    if (player.playerId == newPlayer.playerId)
+        //    {
+        //        index = playerList.IndexOf(player);
+        //        playerExists = true;
+        //    }
+        //}
+
+        //if (playerExists)
+        //{
+        //    playerList[index] = newPlayer;
+        //}
+
+        //else playerList.Add(newPlayer);
     }
 
     #endregion
@@ -318,45 +199,6 @@ public abstract class GamemodeBase : NetworkBehaviour
 
     #region Scoreboard
 
-    [Header("Scoreboard Management")]
-    [SerializeField] private GameObject scoreboard = null;
-    [Space]
-    [SerializeField] private ScoreboardRow[] survivorRows = null;
-    [SerializeField] private ScoreboardRow[] masterRows = null;
-    [Space]
-    [SerializeField] private bool scoreboardIsOpen = false;
-
-    private void ToggleScoreboard(InputAction.CallbackContext obj)
-    {
-        scoreboardIsOpen = !scoreboardIsOpen;
-        scoreboard.SetActive(scoreboardIsOpen);
-    }
-
-    [Server]
-    private void Svr_UpdateScoreboardRow(PlayerData pd)
-    {
-        foreach (ScoreboardRow row in pd.isMaster ? masterRows : survivorRows)
-        {
-            if (row.playerId == pd.playerId)
-            {
-                row.ChangeScores(pd);
-                break;
-            }
-        }
-    }
-
-    [ClientRpc]
-    private void Rpc_UpdateScoreboardRow(PlayerData pd)
-    {
-        foreach (ScoreboardRow row in pd.isMaster ? masterRows : survivorRows)
-        {
-            if (row.playerId == pd.playerId)
-            {
-                row.ChangeScores(pd);
-                break;
-            }
-        }
-    }
 
     #endregion
 
@@ -394,7 +236,6 @@ public abstract class GamemodeBase : NetworkBehaviour
         else { endgameCamera.transform.position = new Vector3(0, 5, 0); }
         */
 
-        if (!scoreboardIsOpen) ToggleScoreboard(default); //Open the scoreboard
 
         AS.PlayOneShot(endgameSound, 1f);
 
