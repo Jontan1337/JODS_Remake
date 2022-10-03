@@ -6,14 +6,14 @@ using UnityEngine;
 public class BasePlayerData : MonoBehaviour
 {
     [Header("Shared")]
-    public string playerName;
+    public string playerName = "Player 1";
     public uint playerId;
 
-    private int score;
+    [SerializeField] private int score;
 
-    private int exp;
-    public int expRequired;
-    private int level;
+    [SerializeField] private int exp;
+    [SerializeField] private int expRequired;
+    [SerializeField] private int level;
 
 
     #region Actions

@@ -44,18 +44,10 @@ public abstract class GamemodeBase : NetworkBehaviour
     }
 
 
-    [Header("Points System Management")]
-    [SerializeField] private List<BasePlayerData> playerList = new List<BasePlayerData>();
-
     [Header("Endgame Management")]
     [SerializeField] private GameObject endgameCamera = null;
     [SerializeField] private AudioClip endgameSound = null;
     [SerializeField] private Image endgameFade = null;
-
-    public int PlayerCount
-    {
-        get => playerList.Count;
-    }
 
     private void Start()
     {
@@ -77,12 +69,19 @@ public abstract class GamemodeBase : NetworkBehaviour
     //
     //Only the server has these PlayerDatas, as it is the only one allowed to modify them.
     [Server]
-    public void Svr_AddPlayer(uint playerId, string playerName, bool isMaster = false)
+    public void Svr_AddPlayer(uint playerId, bool isMaster = false)
     {
+        GameObject player = NetworkIdentity.spawned[playerId].gameObject;
+
         if (!isMaster)
         {
-            NetworkIdentity.spawned[playerId].GetComponent<BaseStatManager>().onDied.AddListener(delegate { survivorsAlive--; });
+            player.GetComponent<BaseStatManager>().onDied.AddListener(delegate { survivorsAlive--; });
             survivorsAlive++;
+            Scoreboard.Instance.Svr_AddSurvivor(player.GetComponent<SurvivorPlayerData>());
+        }
+        else
+        {
+            Scoreboard.Instance.Svr_AddMaster(player.GetComponent<MasterPlayerData>());
         }
 
         //BasePlayerData newPlayer =  PlayerData(playerId, playerName, isMaster);

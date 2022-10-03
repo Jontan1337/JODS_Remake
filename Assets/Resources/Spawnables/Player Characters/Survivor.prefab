@@ -4664,15 +4664,16 @@ GameObject:
   - component: {fileID: 748090733530408348}
   - component: {fileID: 140378723284269972}
   - component: {fileID: 8458703505067804603}
+  - component: {fileID: 904722284761003952}
   - component: {fileID: 140378723284269974}
   - component: {fileID: 8343324270182000405}
   - component: {fileID: 1949857670246666142}
   - component: {fileID: 5922127114697802274}
   - component: {fileID: 6043028673134938683}
   - component: {fileID: 8049337140043942677}
-  - component: {fileID: 904722284761003952}
   - component: {fileID: 2735478398350233815}
   - component: {fileID: 4047303356966882284}
+  - component: {fileID: 6478709549993977186}
   m_Layer: 13
   m_Name: Survivor
   m_TagString: Player
@@ -4800,9 +4801,6 @@ MonoBehaviour:
     healing: 1
     damage: 1
     damageResistance: 1
-    slashResistance: 1
-    bluntResistance: 1
-    pierceResistance: 1
     fireResistance: 1
     rangedDamage: 1
     meleeDamage: 1
@@ -4923,9 +4921,6 @@ MonoBehaviour:
     healing: 1
     damage: 1
     damageResistance: 1
-    slashResistance: 1
-    bluntResistance: 1
-    pierceResistance: 1
     fireResistance: 1
     rangedDamage: 1
     meleeDamage: 1
@@ -5014,8 +5009,6 @@ MonoBehaviour:
   canvasMenu: {fileID: 5359896376376361524}
   canvasInGame: {fileID: 1167403141699751331}
   hideCursorOnDisable: 1
-  hasEquipment: 1
-  equipmentBehaviourDropDown: {fileID: 8513568407848534108}
   activeMenuCanvas: {fileID: 0}
 --- !u!114 &1553288617611644362
 MonoBehaviour:
@@ -5108,6 +5101,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+--- !u!114 &904722284761003952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5922127114707202486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8891c7de3b5658f4481530f05f4b82f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemContainerAnimatorController: {fileID: 0}
+  survivorSetup: {fileID: 6930014499059818200}
 --- !u!114 &140378723284269974
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5654,20 +5661,6 @@ MonoBehaviour:
     spineStiffness: 0.5
     pullBodyVertical: 0.5
     pullBodyHorizontal: 0
---- !u!114 &904722284761003952
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5922127114707202486}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8891c7de3b5658f4481530f05f4b82f6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemContainerAnimatorController: {fileID: 0}
-  survivorSetup: {fileID: 6930014499059818200}
 --- !u!114 &2735478398350233815
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5750,6 +5743,23 @@ MonoBehaviour:
     poleTarget: {fileID: 0}
     clampWeight: 0.1
     clampSmoothing: 2
+--- !u!114 &6478709549993977186
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5922127114707202486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b68391c57465bed49bb3aacfde2e9ddc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerName: Player 1
+  playerId: 0
+  expRequired: 0
+  points: 0
+  kills: 0
 --- !u!1 &5972193784617847827
 GameObject:
   m_ObjectHideFlags: 0
@@ -8622,18 +8632,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9391a5d900ecdd640b5af37994dea7d1, type: 3}
---- !u!114 &8513568407848534108 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 778214079386882643, guid: 9391a5d900ecdd640b5af37994dea7d1,
-    type: 3}
-  m_PrefabInstance: {fileID: 9001148406866694671}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d0b652f32a2cc243917e4028fa0f046, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &5359896376376361524 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3929581517643042875, guid: 9391a5d900ecdd640b5af37994dea7d1,

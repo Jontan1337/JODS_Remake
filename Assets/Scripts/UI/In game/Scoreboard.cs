@@ -32,6 +32,12 @@ public class Scoreboard : NetworkBehaviour
     [Server]
     public void Svr_AddSurvivor(SurvivorPlayerData data)
     {
+        if (data == null)
+        {
+            Debug.LogError("New Player (survivor) had no SurvivorPlayerData!");
+            return;
+        }
+
         SurvivorScoreboardRow newPlayerRow = null;
         foreach(SurvivorScoreboardRow scoreboardRow in survivorRows)
         {
@@ -52,13 +58,21 @@ public class Scoreboard : NetworkBehaviour
         data.onLevelChanged += newPlayerRow.SetPlayerLevelText;
         data.onScoreChanged += newPlayerRow.SetPlayerScoreText;
         newPlayerRow.SetPlayerAliveStatus(true);
+
+        newPlayerRow.SetPlayerNameText(data.playerName);
     }
 
     [Server]
     public void Svr_AddMaster(MasterPlayerData data)
     {
+        if (data == null)
+        {
+            Debug.LogError("New Player (master) had no MasterPlayerData!");
+            return;
+        }
+
         MasterScoreboardRow newPlayerRow = null;
-        foreach (MasterScoreboardRow scoreboardRow in survivorRows)
+        foreach (MasterScoreboardRow scoreboardRow in masterRows)
         {
             if (scoreboardRow.playerId == 0)
             {
@@ -78,6 +92,8 @@ public class Scoreboard : NetworkBehaviour
         data.onTotalUnitUpgradesChanged += newPlayerRow.SetTotalUnitUpgradesText;
         data.onUnitsPlacedChanged += newPlayerRow.SetUnitsPlacedText;
         newPlayerRow.SetPlayerAliveStatus(true);
+
+        newPlayerRow.SetPlayerNameText(data.playerName);
     }
 
     private void OpenScoreboard(InputAction.CallbackContext context)

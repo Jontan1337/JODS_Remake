@@ -73,7 +73,8 @@ public class NetworkTest : NetworkManager
     {
         base.OnServerAddPlayer(conn);
         bool master = playerPrefab == masterPrefab;
-        GamemodeBase.Instance.Svr_AddPlayer(conn.identity.netId, "Player" + GamemodeBase.Instance.PlayerCount + 1, master);
+        GamemodeBase.Instance.Svr_AddPlayer(conn.identity.netId, master);
+        
         playerIds.Add(conn);
         StartCoroutine(DispatchNewConnection(conn));
     }

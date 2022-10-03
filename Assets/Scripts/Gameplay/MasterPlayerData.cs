@@ -6,8 +6,8 @@ using UnityEngine;
 public class MasterPlayerData : BasePlayerData
 {
     [Header("Master")]
-    public int unitsPlaced;
-    public int totalUnitUpgrades;
+    [SerializeField] private int unitsPlaced;
+    [SerializeField] private int totalUnitUpgrades;
 
     #region Actions
 

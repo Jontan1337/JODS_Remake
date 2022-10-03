@@ -20,7 +20,7 @@ public class UnitList
     public int upgradesAvailable = 0;
     [Space]
     [Space]
-    public ModifierManagerUnitData modifiers;
+    public ModifierManagerUnitData modifiers;    
     [Space]
     [Space]
     public int upgradesTillHealthTrait = 5;
@@ -115,6 +115,7 @@ public class UnitMaster : NetworkBehaviour
     [Header("Master Class")]
     [SerializeField] private UnitMasterSO masterSO = null;
     UnitMasterClass mClass = null;
+    private MasterPlayerData playerData = null;
 
     [Title("Stats", titleAlignment: TitleAlignments.Centered)]
 
@@ -392,6 +393,8 @@ public class UnitMaster : NetworkBehaviour
 
         if (isServer)
         {
+            playerData = GetComponent<MasterPlayerData>();
+
             //Default starting energy stats
             expRequirementCurve = masterSO.energyRequirementCurve;
             currentEnergy = masterSO.startEnergy;
@@ -723,12 +726,9 @@ public class UnitMaster : NetworkBehaviour
         TryToRefundUnit();
     }
     #endregion
-    public void UpgradeMaster(MasterUpgradeType upgradeType)
+    public void UpgradeMasterEnergy(MasterUpgradeType upgradeType)
     {
-        Cmd_UpgradeEnergy(upgradeType);
-
-        //Update scoreboard stat
-        //Cmd_UpdateScore(1, PlayerDataStat.TotalUpgrades);        
+        Cmd_UpgradeEnergy(upgradeType);       
     }
 
     [Command]
@@ -1172,8 +1172,6 @@ public class UnitMaster : NetworkBehaviour
             //A random unit from the chosen unit's prefab list gets picked, and the name gets sent to the server, which then spawns the unit.
             //This is because there can be multiple variations of one unit.
             spawnName = chosenUnit.unitPrefab.name;
-
-            //Cmd_UpdateScore(1, PlayerDataStat.UnitsPlaced);
         }
 
         Cmd_Spawn(hit.point, spawnName, spawningADeployable);
@@ -1225,9 +1223,6 @@ public class UnitMaster : NetworkBehaviour
 
         //Play spooky sound
         Cmd_PlayGlobalSound(true);
-
-        //Update scoreboard stat
-        //Cmd_UpdateScore(1, PlayerDataStat.TotalUnitUpgrades);
     }
 
     [Command]
@@ -1296,9 +1291,6 @@ public class UnitMaster : NetworkBehaviour
 
         //Play spooky sound
         Cmd_PlayGlobalSound(true);
-
-        //Update scoreboard stat
-        //Cmd_UpdateScore(1, PlayerDataStat.TotalUnitUpgrades);
     }
 
     [Command]
@@ -1323,12 +1315,14 @@ public class UnitMaster : NetworkBehaviour
                 break;
         }
 
-        UnitLevelUp(unit);
+        UnitLevelUp(unit);        
     }
     #endregion
 
     private void UnitLevelUp(UnitList unit)
     {
+        playerData.TotalUnitUpgrades++;
+
         unit.upgradesAvailable--;
         Rpc_SetUpgradesAvailable(netIdentity.connectionToClient, unit.unitIndex, unit.upgradesAvailable);
     }
@@ -1747,11 +1741,6 @@ public class UnitMaster : NetworkBehaviour
     {
         selectedUnit.Svr_MoveToLocation(location);
     }
-    //[Command]
-    //void Cmd_UpdateScore(int amount, BasePlayerData stat)
-    //{
-    //    //GamemodeBase.Instance.Svr_ModifyStat(GetComponent<NetworkIdentity>().netId, amount, stat);
-    //}
 
     [Command]
     void Cmd_Spawn(Vector3 pos, string name, bool deployable)
@@ -1840,6 +1829,8 @@ public class UnitMaster : NetworkBehaviour
             Energy += -chosenUnitList.unit.energyCost;
 
             CurrentXP += chosenUnitList.unit.xpGain; //Master gains xp though
+
+            playerData.UnitsPlaced++;
         }
         else
         {

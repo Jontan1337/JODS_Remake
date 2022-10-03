@@ -49,7 +49,7 @@ public class MasterUpgradeUIButton : MonoBehaviour
     public void Upgrade()
     {
         currentUpgrades++;
-        masterReference.UpgradeMaster(upgradeType);
+        masterReference.UpgradeMasterEnergy(upgradeType);
 
         for (int i = 0; i < totalUpgrades.Length; i++)
         {

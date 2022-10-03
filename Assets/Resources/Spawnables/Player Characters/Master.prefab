@@ -4491,6 +4491,7 @@ GameObject:
   - component: {fileID: -4473047815289651044}
   - component: {fileID: 4540335981313188789}
   - component: {fileID: 4468011969109619371}
+  - component: {fileID: 8336954980602863418}
   m_Layer: 0
   m_Name: Master
   m_TagString: Untagged
@@ -4539,11 +4540,11 @@ MonoBehaviour:
   maxEnergy: 100
   energyRechargeIncrement: 1
   maxEnergyIncrement: 20
-  currentXP: 0
-  energyUntilNextUpgradeValue: 50
-  energyUntilNextUpgradeTarget: 50
-  energyUntilNextUpgradeBase: 50
-  energyRequirementCurve:
+  currentEXP: 0
+  expUntilNextUpgradeValue: 0
+  expUntilNextUpgradeTarget: 50
+  expUntilNextUpgradeBase: 50
+  expRequirementCurve:
     serializedVersion: 2
     m_Curve: []
     m_PreInfinity: 2
@@ -4585,9 +4586,6 @@ MonoBehaviour:
       healing: 1
       damage: 1
       damageResistance: 1
-      slashResistance: 1
-      bluntResistance: 1
-      pierceResistance: 1
       fireResistance: 1
       health: 1
       meleeDamage: 1
@@ -4596,10 +4594,10 @@ MonoBehaviour:
       rangedDamage: 1
       rangedRange: 1
       rangedCooldown: 1
-      specialDamage: 0
-      specialCooldown: 0
-      specialRange: 0
-      chaseTime: 0
+      specialDamage: 1
+      specialCooldown: 1
+      specialRange: 1
+      chaseTime: 1
       sightDistance: 1
       alertSize: 1
     upgradesTillHealthTrait: 4
@@ -4647,27 +4645,24 @@ MonoBehaviour:
     totalUpgrades: 12
     upgradesAvailable: 0
     modifiers:
-      movementSpeed: 0
-      healing: 0
-      damage: 0
-      damageResistance: 0
-      slashResistance: 0
-      bluntResistance: 0
-      pierceResistance: 0
-      fireResistance: 0
-      health: 0
-      meleeDamage: 0
-      meleeRange: 0
-      meleeCooldown: 0
-      rangedDamage: 0
-      rangedRange: 0
-      rangedCooldown: 0
-      specialDamage: 0
-      specialCooldown: 0
-      specialRange: 0
-      chaseTime: 0
-      sightDistance: 0
-      alertSize: 0
+      movementSpeed: 1
+      healing: 1
+      damage: 1
+      damageResistance: 1
+      fireResistance: 1
+      health: 1
+      meleeDamage: 1
+      meleeRange: 1
+      meleeCooldown: 1
+      rangedDamage: 1
+      rangedRange: 1
+      rangedCooldown: 1
+      specialDamage: 1
+      specialCooldown: 1
+      specialRange: 1
+      chaseTime: 1
+      sightDistance: 1
+      alertSize: 1
     upgradesTillHealthTrait: 4
     hasHealthTrait: 0
     upgradesTillDamageTrait: 4
@@ -4713,27 +4708,24 @@ MonoBehaviour:
     totalUpgrades: 12
     upgradesAvailable: 0
     modifiers:
-      movementSpeed: 0
-      healing: 0
-      damage: 0
-      damageResistance: 0
-      slashResistance: 0
-      bluntResistance: 0
-      pierceResistance: 0
-      fireResistance: 0
-      health: 0
-      meleeDamage: 0
-      meleeRange: 0
-      meleeCooldown: 0
-      rangedDamage: 0
-      rangedRange: 0
-      rangedCooldown: 0
-      specialDamage: 0
-      specialCooldown: 0
-      specialRange: 0
-      chaseTime: 0
-      sightDistance: 0
-      alertSize: 0
+      movementSpeed: 1
+      healing: 1
+      damage: 1
+      damageResistance: 1
+      fireResistance: 1
+      health: 1
+      meleeDamage: 1
+      meleeRange: 1
+      meleeCooldown: 1
+      rangedDamage: 1
+      rangedRange: 1
+      rangedCooldown: 1
+      specialDamage: 1
+      specialCooldown: 1
+      specialRange: 1
+      chaseTime: 1
+      sightDistance: 1
+      alertSize: 1
     upgradesTillHealthTrait: 4
     hasHealthTrait: 0
     upgradesTillDamageTrait: 4
@@ -4779,27 +4771,24 @@ MonoBehaviour:
     totalUpgrades: 12
     upgradesAvailable: 0
     modifiers:
-      movementSpeed: 0
-      healing: 0
-      damage: 0
-      damageResistance: 0
-      slashResistance: 0
-      bluntResistance: 0
-      pierceResistance: 0
-      fireResistance: 0
-      health: 0
-      meleeDamage: 0
-      meleeRange: 0
-      meleeCooldown: 0
-      rangedDamage: 0
-      rangedRange: 0
-      rangedCooldown: 0
-      specialDamage: 0
-      specialCooldown: 0
-      specialRange: 0
-      chaseTime: 0
-      sightDistance: 0
-      alertSize: 0
+      movementSpeed: 1
+      healing: 1
+      damage: 1
+      damageResistance: 1
+      fireResistance: 1
+      health: 1
+      meleeDamage: 1
+      meleeRange: 1
+      meleeCooldown: 1
+      rangedDamage: 1
+      rangedRange: 1
+      rangedCooldown: 1
+      specialDamage: 1
+      specialCooldown: 1
+      specialRange: 1
+      chaseTime: 1
+      sightDistance: 1
+      alertSize: 1
     upgradesTillHealthTrait: 4
     hasHealthTrait: 0
     upgradesTillDamageTrait: 4
@@ -4845,27 +4834,24 @@ MonoBehaviour:
     totalUpgrades: 12
     upgradesAvailable: 0
     modifiers:
-      movementSpeed: 0
-      healing: 0
-      damage: 0
-      damageResistance: 0
-      slashResistance: 0
-      bluntResistance: 0
-      pierceResistance: 0
-      fireResistance: 0
-      health: 0
-      meleeDamage: 0
-      meleeRange: 0
-      meleeCooldown: 0
-      rangedDamage: 0
-      rangedRange: 0
-      rangedCooldown: 0
-      specialDamage: 0
-      specialCooldown: 0
-      specialRange: 0
-      chaseTime: 0
-      sightDistance: 0
-      alertSize: 0
+      movementSpeed: 1
+      healing: 1
+      damage: 1
+      damageResistance: 1
+      fireResistance: 1
+      health: 1
+      meleeDamage: 1
+      meleeRange: 1
+      meleeCooldown: 1
+      rangedDamage: 1
+      rangedRange: 1
+      rangedCooldown: 1
+      specialDamage: 1
+      specialCooldown: 1
+      specialRange: 1
+      chaseTime: 1
+      sightDistance: 1
+      alertSize: 1
     upgradesTillHealthTrait: 4
     hasHealthTrait: 0
     upgradesTillDamageTrait: 4
@@ -5088,9 +5074,24 @@ MonoBehaviour:
   canvasMenu: {fileID: 470506853469038775}
   canvasInGame: {fileID: 6008515586547939063}
   hideCursorOnDisable: 0
-  hasEquipment: 0
-  equipmentBehaviourDropDown: {fileID: 0}
   activeMenuCanvas: {fileID: 0}
+--- !u!114 &8336954980602863418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7458314931304268821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d10a6f93a02406041b24551dab4c3780, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerName: Player 1
+  playerId: 0
+  expRequired: 0
+  unitsPlaced: 0
+  totalUnitUpgrades: 0
 --- !u!1 &7609751050057994080
 GameObject:
   m_ObjectHideFlags: 0

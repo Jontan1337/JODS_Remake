@@ -6,8 +6,8 @@ using UnityEngine;
 public class SurvivorPlayerData : BasePlayerData
 {
     [Header("Survivor")]
-    public int points;
-    public int kills;
+    [SerializeField] private int points;
+    [SerializeField] private int kills;
 
     #region Actions
 
