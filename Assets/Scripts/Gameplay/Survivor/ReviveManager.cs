@@ -54,6 +54,15 @@ public class ReviveManager : NetworkBehaviour, IInteractable
     {
         if (isDown)
         {
+            Rpc_DisableEverythingButMenu(connectionToClient);
+        }
+        else
+        {
+            Rpc_EnableEverythingButMenu(connectionToClient);
+        }
+
+        if (isDown)
+        {
             characterStatManager.onDamaged.AddListener(delegate { OnDamaged(); });
             DownCo = Down();
             StartCoroutine(DownCo);
@@ -204,5 +213,33 @@ public class ReviveManager : NetworkBehaviour, IInteractable
     private void Rpc_EnableMovement(NetworkConnection target)
     {
         JODSInput.EnableMovement();
+    }
+
+    [TargetRpc]
+    public void Rpc_EnableEverythingButMenu(NetworkConnection target)
+    {
+        JODSInput.EnableMovement();
+        JODSInput.EnableJump();
+        JODSInput.EnableDrop();
+        JODSInput.EnableInteract();
+        JODSInput.EnableReload();
+        JODSInput.EnableLMB();
+        JODSInput.EnableRMB();
+        JODSInput.EnableHotbarControl();
+        JODSInput.EnableCamera();
+    }
+
+    [TargetRpc]
+    public void Rpc_DisableEverythingButMenu(NetworkConnection target)
+    {
+        JODSInput.DisableMovement();
+        JODSInput.DisableJump();
+        JODSInput.DisableDrop();
+        JODSInput.DisableInteract();
+        JODSInput.DisableReload();
+        JODSInput.DisableLMB();
+        JODSInput.DisableRMB();
+        JODSInput.DisableHotbarControl();
+        JODSInput.DisableCamera();
     }
 }

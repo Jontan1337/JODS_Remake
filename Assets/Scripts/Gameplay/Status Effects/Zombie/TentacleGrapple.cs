@@ -24,7 +24,7 @@ public class TentacleGrapple : StatusEffect
     [Server]
     public override void Svr_End()
     {
-        PlayerManager.Instance.Rpc_EnableEverythingButMenuAndCamera(target.GetComponent<NetworkIdentity>().connectionToClient);
+        Rpc_EnableEverythingButMenuAndCamera(target.GetComponent<NetworkIdentity>().connectionToClient);
     }
 
     [Server]
@@ -38,7 +38,31 @@ public class TentacleGrapple : StatusEffect
     [Server]
     public override void Svr_OnEffectApplied()
     {
-        PlayerManager.Instance.Rpc_DisableEverythingButMenuAndCamera(target.GetComponent<NetworkIdentity>().connectionToClient);
+        Rpc_DisableEverythingButMenuAndCamera(target.GetComponent<NetworkIdentity>().connectionToClient);
     }
+    [TargetRpc]
+    public void Rpc_EnableEverythingButMenuAndCamera(NetworkConnection target)
+    {
+        JODSInput.EnableMovement();
+        JODSInput.EnableJump();
+        JODSInput.EnableDrop();
+        JODSInput.EnableInteract();
+        JODSInput.EnableReload();
+        JODSInput.EnableLMB();
+        JODSInput.EnableRMB();
+        JODSInput.EnableHotbarControl();
 
+    }
+    [TargetRpc]
+    public void Rpc_DisableEverythingButMenuAndCamera(NetworkConnection target)
+    {
+        JODSInput.DisableMovement();
+        JODSInput.DisableJump();
+        JODSInput.DisableDrop();
+        JODSInput.DisableInteract();
+        JODSInput.DisableReload();
+        JODSInput.DisableLMB();
+        JODSInput.DisableRMB();
+        JODSInput.DisableHotbarControl();
+    }
 }

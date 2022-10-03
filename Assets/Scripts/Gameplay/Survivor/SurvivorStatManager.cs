@@ -88,7 +88,7 @@ public class SurvivorStatManager : BaseStatManager, IDamagableTeam
     }
 
     private bool isDead;
-    public bool IsDead
+    public new bool IsDead
     {
         get { return isDead; }
         set

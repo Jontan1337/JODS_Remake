@@ -14,8 +14,8 @@ public class PlayerManager : NetworkBehaviour
     [Space]
     [SerializeField] private bool hideCursorOnDisable = true;
     [Space]
-    [SerializeField] private bool hasEquipment = false;
-    [SerializeField] private Dropdown equipmentBehaviourDropDown = null;
+    //[SerializeField] private bool hasEquipment = false;
+    //[SerializeField] private Dropdown equipmentBehaviourDropDown = null;
 
     public Action onMenuOpened;
     public Action onMenuClosed;
@@ -24,8 +24,6 @@ public class PlayerManager : NetworkBehaviour
     public Transform activeMenuCanvas;
 
     private static PlayerManager instance;
-    private ActiveSurvivorClass activeSClass;
-    private SurvivorStatManager characterStatManager;
 
 
     public Transform ActiveMenuCanvas
@@ -50,47 +48,19 @@ public class PlayerManager : NetworkBehaviour
         instance = this;
         activeMenuCanvas = canvasMenu;
         JODSInput.Controls.MainMenu.Escape.performed += ToggleMenuControls;
-        if (hasEquipment)
-        {
-            equipmentBehaviourDropDown.onValueChanged.AddListener(GameSettings.Instance.SetPickupBehaviour);
-        }
-        activeSClass = GetComponent<ActiveSurvivorClass>();
-    }
-
-    private async void FindComponents()
-    {
-        await JODSTime.WaitTime(0.1f);
+        //if (hasEquipment)
+        //{
+        //    equipmentBehaviourDropDown.onValueChanged.AddListener(GameSettings.Instance.SetPickupBehaviour);
+        //}
     }
 
     public override void OnStopAuthority()
     {
         JODSInput.Controls.MainMenu.Escape.performed -= ToggleMenuControls;
-        if (hasEquipment)
-        {
-            equipmentBehaviourDropDown.onValueChanged.RemoveListener(GameSettings.Instance.SetPickupBehaviour);
-        }
-    }
-    public override void OnStartClient()
-    {
-        if (isServer)
-        {
-            characterStatManager = GetComponent<SurvivorStatManager>();
-            characterStatManager.onDownChanged.AddListener(delegate (bool isDown) { OnDownChanged(isDown); });
-        }
-    }
-
-    private void OnDownChanged(bool isDown)
-    {
-        if (isDown)
-        {
-            Rpc_DisableEverythingButMenuAndCamera(connectionToClient);
-            Rpc_DisableCamera(connectionToClient);
-        }
-        else
-        {
-            Rpc_EnableEverythingButMenuAndCamera(connectionToClient);
-            Rpc_EnableCamera(connectionToClient);
-        }
+        //if (hasEquipment)
+        //{
+        //    equipmentBehaviourDropDown.onValueChanged.RemoveListener(GameSettings.Instance.SetPickupBehaviour);
+        //}
     }
 
     private void ToggleMenuControls(InputAction.CallbackContext obj)
@@ -178,40 +148,5 @@ public class PlayerManager : NetworkBehaviour
         SceneManager.LoadSceneAsync(sceneName);
     }
 
-    [TargetRpc]
-    public void Rpc_EnableEverythingButMenuAndCamera(NetworkConnection target)
-    {
-        JODSInput.EnableMovement();
-        JODSInput.EnableJump();
-        JODSInput.EnableDrop();
-        JODSInput.EnableInteract();
-        JODSInput.EnableReload();
-        JODSInput.EnableLMB();
-        JODSInput.EnableRMB();
-        JODSInput.EnableHotbarControl();
 
-    }
-    [TargetRpc]
-    public void Rpc_DisableEverythingButMenuAndCamera(NetworkConnection target)
-    {
-        JODSInput.DisableMovement();
-        JODSInput.DisableJump();
-        JODSInput.DisableDrop();
-        JODSInput.DisableInteract();
-        JODSInput.DisableReload();
-        JODSInput.DisableLMB();
-        JODSInput.DisableRMB();
-        JODSInput.DisableHotbarControl();
-    }
-
-    [TargetRpc]
-    public void Rpc_EnableCamera(NetworkConnection target)
-    {
-        JODSInput.EnableCamera();
-    }
-    [TargetRpc]
-    public void Rpc_DisableCamera(NetworkConnection target)
-    {
-        JODSInput.DisableCamera();
-    }
 }
