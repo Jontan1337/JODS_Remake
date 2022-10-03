@@ -94,7 +94,7 @@ public class SurvivorStatManager : BaseStatManager, IDamagableTeam
         set
         {
             //Update scoreboard stat
-            GamemodeBase.Instance.Svr_ModifyStat(GetComponent<NetworkIdentity>().netId, 0, PlayerDataStat.Alive);
+            //GamemodeBase.Instance.Svr_ModifyStat(GetComponent<NetworkIdentity>().netId, 0, PlayerDataStat.Alive);
 
             isDead = value;
             onDied?.Invoke();

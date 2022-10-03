@@ -229,8 +229,8 @@ public class WeaponShop : NetworkBehaviour, IInteractable
                 Rpc_ShopVisuals(true);
                 if (!GamemodeBase.Instance) return;
                 NetworkIdentity identity = interactor.GetComponent<NetworkIdentity>();
-                Rpc_ShowPoints(identity.connectionToClient,
-                GamemodeBase.Instance.Svr_GetPoints(identity.netId));
+                //Rpc_ShowPoints(identity.connectionToClient,
+                //GamemodeBase.Instance.Svr_GetPoints(identity.netId));
             }
 
             //Svr_SetupAmmunitionRefillers(interactor);
@@ -343,13 +343,13 @@ public class WeaponShop : NetworkBehaviour, IInteractable
         RangedWeapon weapon = playerEquipment.EquipmentSlots[index].EquipmentItem.GetComponent<RangedWeapon>();
         NetworkIdentity networkIdentity = interactor.GetComponent<NetworkIdentity>();
         int price = GetAmmunitionPrice(weapon.AmmunitionType);
-        if (gamemode.Svr_GetPoints(networkIdentity.netId) >= price)
-        {
-            weapon.ExtraAmmunition += weapon.MagazineSize;
-            gamemode.Svr_ModifyStat(networkIdentity.netId, -price, PlayerDataStat.Points);
-            await JODSTime.WaitTime(0.1f);
-            Rpc_ShowPoints(networkIdentity.connectionToClient, gamemode.Svr_GetPoints(networkIdentity.netId));
-        }
+        //if (gamemode.Svr_GetPoints(networkIdentity.netId) >= price)
+        //{
+        //    weapon.ExtraAmmunition += weapon.MagazineSize;
+        //    gamemode.Svr_ModifyStat(networkIdentity.netId, -price, PlayerDataStat.Points);
+        //    await JODSTime.WaitTime(0.1f);
+        //    Rpc_ShowPoints(networkIdentity.connectionToClient, gamemode.Svr_GetPoints(networkIdentity.netId));
+        //}
     }
 
     [TargetRpc]
@@ -466,17 +466,17 @@ public class WeaponShop : NetworkBehaviour, IInteractable
             uint playerId = identity.netId;
 
             //Check if the player has enough points to buy the item
-            if (gamemode.Svr_GetPoints(playerId) < item.shopItemPrice)
-            {
-                //If not, nothing happens.
-                return;
-            }
-            else
-            {
-                //If they have enough, detract the price from their points,
-                gamemode.Svr_ModifyStat(playerId, -item.shopItemPrice, PlayerDataStat.Points);
-                Rpc_ShowPoints(identity.connectionToClient, gamemode.Svr_GetPoints(playerId));
-            }
+            //if (gamemode.Svr_GetPoints(playerId) < item.shopItemPrice)
+            //{
+            //    //If not, nothing happens.
+            //    return;
+            //}
+            //else
+            //{
+            //    //If they have enough, detract the price from their points,
+            //    gamemode.Svr_ModifyStat(playerId, -item.shopItemPrice, PlayerDataStat.Points);
+            //    Rpc_ShowPoints(identity.connectionToClient, gamemode.Svr_GetPoints(playerId));
+            //}
 
         }
 

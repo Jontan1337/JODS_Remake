@@ -5,9 +5,8 @@ using UnityEngine.UI;
 
 public class SurvivorScoreboardRow : ScoreboardRow
 {
-    [Header("Survivor Stats")]
-    [SerializeField] private Text pointsText = null; private const string pointsTextDefault = "Points: ";
+    [Header("Survivor UI References")]
     [SerializeField] private Text killsText = null; private const string killsTextDefault = "Kills: ";
 
-    public void PointsText(int value) => pointsText.text = pointsTextDefault + value;
+    public void SetKillsText(int value) => killsText.text = killsTextDefault + value;
 }

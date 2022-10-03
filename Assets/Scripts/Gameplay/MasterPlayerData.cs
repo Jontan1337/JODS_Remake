@@ -7,13 +7,11 @@ public class MasterPlayerData : BasePlayerData
 {
     [Header("Master")]
     public int unitsPlaced;
-    public int totalUpgrades;
     public int totalUnitUpgrades;
 
     #region Actions
 
     public Action<int> onUnitsPlacedChanged;
-    public Action<int> onTotalUpgradesChanged;
     public Action<int> onTotalUnitUpgradesChanged;
 
     #endregion
@@ -25,15 +23,6 @@ public class MasterPlayerData : BasePlayerData
         {
             unitsPlaced = value;
             onUnitsPlacedChanged?.Invoke(value);
-        }
-    }
-    public int TotalUpgrades
-    {
-        get => totalUpgrades;
-        set
-        {
-            totalUpgrades = value;
-            onTotalUpgradesChanged?.Invoke(value);
         }
     }
     public int TotalUnitUpgrades

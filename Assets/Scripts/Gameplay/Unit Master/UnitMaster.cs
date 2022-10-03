@@ -1747,11 +1747,11 @@ public class UnitMaster : NetworkBehaviour
     {
         selectedUnit.Svr_MoveToLocation(location);
     }
-    [Command]
-    void Cmd_UpdateScore(int amount, BasePlayerData stat)
-    {
-        //GamemodeBase.Instance.Svr_ModifyStat(GetComponent<NetworkIdentity>().netId, amount, stat);
-    }
+    //[Command]
+    //void Cmd_UpdateScore(int amount, BasePlayerData stat)
+    //{
+    //    //GamemodeBase.Instance.Svr_ModifyStat(GetComponent<NetworkIdentity>().netId, amount, stat);
+    //}
 
     [Command]
     void Cmd_Spawn(Vector3 pos, string name, bool deployable)
