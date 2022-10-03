@@ -40,34 +40,12 @@ public abstract class ModifierManagerBase
     [Title("Resistance Modifiers", titleAlignment: TitleAlignments.Centered)]
     [SerializeField, Range(0, 10)] private float damageResistance = 1;
     [Space]
-    [SerializeField, Range(0, 10)] private float slashResistance = 1;
-    [SerializeField, Range(0, 10)] private float bluntResistance = 1;
-    [SerializeField, Range(0, 10)] private float pierceResistance = 1;
-    [Space]
     [SerializeField, Range(0, 10)] private float fireResistance = 1;
 
     public float DamageResistance
     {
         get { return damageResistance; }
         set { damageResistance = Mathf.Clamp(value, 0, 10); }
-    }
-
-    public float SlashResistance
-    {
-        get { return slashResistance; }
-        set { slashResistance = Mathf.Clamp(value, 0, 10); }
-    }
-
-    public float BluntResistance
-    {
-        get { return bluntResistance; }
-        set { bluntResistance = Mathf.Clamp(value, 0, 10); }
-    }
-
-    public float PierceResistance
-    {
-        get { return pierceResistance; }
-        set { pierceResistance = Mathf.Clamp(value, 0, 10); }
     }
 
     public float FireResistance

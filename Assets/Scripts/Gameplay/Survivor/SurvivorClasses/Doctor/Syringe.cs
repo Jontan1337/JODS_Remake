@@ -5,26 +5,28 @@ using Mirror;
 
 public class Syringe : Projectile
 {
+    private Survivor survivor;
     [SerializeField] StatusEffectSO statusEffect = null;
     public override void Start()
     {
         base.Start();
         objectPoolTag = Tags.Syringe;
         transform.Rotate(new Vector3(90, 0, 0));
+        survivor = owner.GetComponent<Survivor>();
         //StartCoroutine(LifeTime());
     }
     [Server]
     public override void OnHit(Collision hit)
     {
-        var surv = hit.collider.transform.root.gameObject.GetComponent<SurvivorStatManager>();
+        var reviveManager = hit.collider.transform.root.gameObject.GetComponent<ReviveManager>();
         base.OnHit(hit);
         if (hit.collider.TryGetComponent(out IDamagableTeam idmg))
         {
             if (idmg?.Team == Teams.Player)
             {
-                if (surv.IsDown)
+                if (survivor.optionOneFirstChoice && GetComponent<SurvivorStatManager>().IsDown)
                 {
-                    //surv.StartCoroutine(surv.BeingRevived());
+                    reviveManager.StartCoroutine(reviveManager.BeingRevived());
                 }
                 else if (statusEffectsToApply.Count > 0)
                 {
