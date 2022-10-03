@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ScoreboardRow : MonoBehaviour
+public abstract class ScoreboardRow : MonoBehaviour
 {
     public uint playerId;
     [Space]
@@ -13,20 +13,15 @@ public class ScoreboardRow : MonoBehaviour
     [Header("Shared Stats")]
     [SerializeField] private Text playerNameText = null;
     [SerializeField] private Text playerScoreText = null; private const string playerScoreTextDefault = "Score: ";
-    [Header("Survivor Stats")]
-    [SerializeField] private Text pointsText = null; private const string pointsTextDefault = "Points: ";
-    [SerializeField] private Text killsText = null; private const string killsTextDefault = "Kills: ";
-    [Header("Master Stats")]
-    [SerializeField] private Text unitsPlacedText = null; private const string unitsPlacedTextDefault = "Units Placed: ";
-    [SerializeField] private Text totalUpgradesText = null; private const string totalUpgradesTextDefault = "Total Upgrades: ";
-    [SerializeField] private Text totalUnitUpgradesText = null; private const string totalUnitUpgradesTextDefault = "Total Unit Upgrades: ";
+
+
 
     public void ChangeScores(PlayerData playerData)
     {
         playerScoreText.text = playerScoreTextDefault + playerData.score;
 
         //Survivor
-        if (pointsText) pointsText.text = pointsTextDefault + playerData.points;
+        
         if (killsText) killsText.text = killsTextDefault + playerData.kills;
 
         //Master
