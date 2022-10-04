@@ -25,13 +25,20 @@ public abstract class UnitBase : BaseStatManager, IParticleEffect
     [SerializeField] private UnitSO unitSO;
     public UnitSO UnitSO{ get { return unitSO; }}
 
-    public override int Health 
+    private bool isDead;
+    new public bool IsDead
+    {
+        get { return isDead; }
+        set { isDead = value; }
+    }
+
+    public override int Health
     {
         get => base.Health;
         set
         {
             base.Health = value;
-            if (health <= 0)
+            if (health <= 0 && !IsDead)
             {
                 Svr_Die();
             }
@@ -1203,7 +1210,7 @@ public abstract class UnitBase : BaseStatManager, IParticleEffect
     [Server]
     public virtual void Svr_Die()
     {
-        print("fuck");
+        IsDead = true;
         EnablePathfinding(false, true); //Stop the current path
         ai.enabled = false; //Disable the AIPath component
 

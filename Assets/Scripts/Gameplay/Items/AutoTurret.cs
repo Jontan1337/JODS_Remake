@@ -38,6 +38,7 @@ public class AutoTurret : BaseStatManager, IPlaceable
 
     #region Placeable
     public Transform Owner { get; set; }
+    private SurvivorPlayerData survivorPlayerData;
 
     // Invoked when the turret is put down on the ground.
     // Starts the searching coroutine, the time until the turret dies and the cooldown on the engineers ability.
@@ -45,6 +46,7 @@ public class AutoTurret : BaseStatManager, IPlaceable
     public void Svr_OnPlaced()
     {
         Owner.GetComponentInParent<SurvivorClassStatManager>()?.Rpc_StartAbilityCooldown(Owner.GetComponent<NetworkIdentity>().connectionToClient, Owner);
+        survivorPlayerData = Owner.GetComponent<SurvivorPlayerData>();
         Rpc_ShowTurret();
         //damage =  Mathf.RoundToInt(Owner.GetComponentInParent<Survivor>().abilityDamage * Owner.GetComponentInParent<ModifierManagerSurvivor>().data.AbilityDamage);
         StartCoroutine(StartUp());
@@ -173,21 +175,29 @@ public class AutoTurret : BaseStatManager, IPlaceable
     #region Methods
 
     [Server]
-    private void Svr_Shoot(RaycastHit didHit)
+    private void Svr_Shoot(RaycastHit hit)
     {
         // A shooting animation coroutine is played.
         Rpc_Shoot();
-        PhysicMaterial phyMat = didHit.collider.sharedMaterial;
-        Rpc_Bullethole(didHit.point, didHit.normal, phyMat ? phyMat.name : "");
-        Rpc_BulletTrail(didHit.point);
+        PhysicMaterial phyMat = hit.collider.sharedMaterial;
+        Rpc_Bullethole(hit.point, hit.normal, phyMat ? phyMat.name : "");
+        Rpc_BulletTrail(hit.point);
 
         // The turret uses a raycast to check if a damagable unit is in front of its barrel.
         // The turret will shoot at any unit that can be damaged, even if it's not the target.
-        didHit.transform.GetComponent<IDamagable>()?.Svr_Damage(damage, Owner);
-        // If the target is dead after the shot, the target is lost.
-        if (target.GetComponent<BaseStatManager>().IsDead)
+        hit.transform.GetComponent<IDamagable>()?.Svr_Damage(damage, Owner);
+        BaseStatManager statManagerBase = hit.collider.GetComponentInParent<BaseStatManager>();
+        if (statManagerBase != null)
         {
-            Svr_LostTarget();
+            if (statManagerBase.IsDead)
+            {
+                Svr_LostTarget();
+                survivorPlayerData.Points += (int)PointsTable.Kill;
+            }
+            else
+            {
+                survivorPlayerData.Points += (int)PointsTable.Damage;
+            }
         }
     }
 

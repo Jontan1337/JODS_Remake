@@ -1,5 +1,6 @@
 ﻿using Mirror;
 using RootMotion.FinalIK;
+using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,13 +14,15 @@ public class ActiveSurvivorClass : NetworkBehaviour
     public bool test;
     [Space]
 
+    [Title("Data")]
+    public SurvivorSO survivorSO;
+
     [SyncVar(hook = nameof(SetSurvivorClassSettings))] public Survivor sClass;
     private SurvivorClassStatManager sClassStatManager;
     private SurvivorStatManager characterStatManager;
     private SurvivorLevelManager survivorLvlManager;
     private ModifierManagerSurvivor survivorModifiers;
 
-    [SerializeField] private SurvivorSO survivorSO;
 
     [SerializeField] private SkinnedMeshRenderer bodyRenderer = null;
     [SerializeField] private SkinnedMeshRenderer headRenderer = null;
@@ -33,9 +36,6 @@ public class ActiveSurvivorClass : NetworkBehaviour
     public override void OnStartAuthority()
     {
         if (test) SetSurvivorClass(survivorSO);
-
-        print(characterStatManager);
-
     }
 
     #region Class Stuff
@@ -83,11 +83,6 @@ public class ActiveSurvivorClass : NetworkBehaviour
         survivorModifiers.data.Cooldown = survivorSO.baseModifiers.Cooldown;
         survivorModifiers.data.ReloadSpeed = survivorSO.baseModifiers.ReloadSpeed;
         survivorModifiers.data.Accuracy = survivorSO.baseModifiers.Accuracy;
-
-
-        survivorLvlManager.LevelUpModifiersSetup(survivorSO.levelUpModifiers);
-
-
 
         characterStatManager.SetStats(survivorSO.maxHealth, survivorSO.startingArmor);
         sClassStatManager.SetStats(survivorSO.abilityCooldown);

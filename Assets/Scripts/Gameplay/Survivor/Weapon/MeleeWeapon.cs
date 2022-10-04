@@ -83,7 +83,12 @@ public class MeleeWeapon : EquipmentItem, IImpacter
         material = GetComponent<MeshRenderer>().material;
         networkAnimator = GetComponent<NetworkAnimator>();
         weaponAnimator.speed = 1f / attackInterval;
-        ignoreLayer = LayerMask.GetMask("Unit", "Survivor", "StatusEffectApplier", "StatusEffectApplierOnlySurvivor");
+        ignoreLayer = LayerMask.GetMask(
+            "Unit",
+            "Survivor",
+            "StatusEffectApplier",
+            "StatusEffectApplierOnlySurvivor"
+        );
     }
 
     public override void OnStartClient()
@@ -158,8 +163,6 @@ public class MeleeWeapon : EquipmentItem, IImpacter
 
         if (isServer)
         {
-            print(other.gameObject);
-            print("Damage!");
             IDamagable damagable = null;
             // Damage the target root unless it's the same as previous root
             // (prevent multiple attacks on child colliders of same parent).
@@ -169,6 +172,11 @@ public class MeleeWeapon : EquipmentItem, IImpacter
                 {
                     previousHitColliderParent = other.transform.root;
                     damagable?.Svr_Damage(currentDamage, transform.root);
+                    BaseStatManager statManagerBase = other.GetComponentInParent<BaseStatManager>();
+                    if (statManagerBase != null)
+                    {
+                        SurvivorPlayerData.Instance.Points += statManagerBase.IsDead ? (int)PointsTable.Kill : (int)PointsTable.Damage;
+                    }
                 }
                 amountSlashed++;
             }

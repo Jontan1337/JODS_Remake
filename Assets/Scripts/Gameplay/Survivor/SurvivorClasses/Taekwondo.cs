@@ -12,6 +12,7 @@ public class Taekwondo : Survivor, IHitter
     private SurvivorClassStatManager sClass;
     private PlayerEquipment playerEquipment;
     ModifierManagerSurvivor modifiers;
+    private SurvivorPlayerData survivorPlayerData;
 
     [SerializeField, SyncVar] private float flyingKickStart = 0;
     [SerializeField, SyncVar] private float flyingKickEnd = 100;
@@ -72,7 +73,7 @@ public class Taekwondo : Survivor, IHitter
             playerEquipment = transform.parent.GetComponentInChildren<PlayerEquipment>();
             sClass = GetComponentInParent<SurvivorClassStatManager>();
             lowerLeg = transform.parent.Find("Armature").GetComponentInChildren<Collider>();
-
+            survivorPlayerData = GetComponentInParent<SurvivorPlayerData>();
         }
     }
 
@@ -213,20 +214,24 @@ public class Taekwondo : Survivor, IHitter
         {
             BaseStatManager statManagerBase = hitObject.GetComponent<BaseStatManager>(); 
 
-            statManagerBase.onDied.AddListener(delegate { ApplyForce(hitObject); });
-
             damagable.Svr_Damage(dmg, transform.root);
 
-            statManagerBase.onDied.RemoveListener(delegate { ApplyForce(hitObject); });
-        }
-    }
-
-    private void ApplyForce(Transform hitObject)
-    {
-        Rigidbody[] rbColliderList = hitObject.GetComponentsInChildren<Rigidbody>();
-        foreach (Rigidbody rb in rbColliderList)
-        {
-            rb.AddForce(transform.forward * 10, ForceMode.Impulse);
+            if (statManagerBase != null)
+            {
+                if (statManagerBase.IsDead)
+                {
+                    survivorPlayerData.Points += (int)PointsTable.Kill;
+                    Rigidbody[] rbColliderList = hitObject.GetComponentsInChildren<Rigidbody>();
+                    foreach (Rigidbody rb in rbColliderList)
+                    {
+                        rb.AddForce(transform.forward * 10, ForceMode.Impulse);
+                    }
+                }
+                else
+                {
+                    survivorPlayerData.Points += (int)PointsTable.Damage;
+                }
+            }
         }
     }
 }

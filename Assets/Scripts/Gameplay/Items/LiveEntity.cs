@@ -294,6 +294,11 @@ public class LiveEntity : NetworkBehaviour, IDamagable, IExplodable
                             //Is this a unit that we're damaging?
                             if (damagable?.Team == Teams.Unit)
                             {
+                                BaseStatManager statManagerBase = target.GetComponentInParent<BaseStatManager>();
+                                if (statManagerBase != null)
+                                {
+                                    owner.GetComponent<SurvivorPlayerData>().Points += statManagerBase.IsDead ? (int)PointsTable.Kill : (int)PointsTable.Damage;
+                                }
                                 float chance = 1 - (((hit.distance / explosionRadius) * 100) * 0.01f);
 
                                 if (chance > 0)

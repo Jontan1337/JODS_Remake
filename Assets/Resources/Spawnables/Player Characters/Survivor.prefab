@@ -4659,6 +4659,7 @@ GameObject:
   - component: {fileID: 5375102334846030558}
   - component: {fileID: 6904755547420367345}
   - component: {fileID: 6930014499059818200}
+  - component: {fileID: 6478709549993977186}
   - component: {fileID: 7813640879047218699}
   - component: {fileID: 1553288617611644362}
   - component: {fileID: 748090733530408348}
@@ -4673,7 +4674,6 @@ GameObject:
   - component: {fileID: 8049337140043942677}
   - component: {fileID: 2735478398350233815}
   - component: {fileID: 4047303356966882284}
-  - component: {fileID: 6478709549993977186}
   m_Layer: 13
   m_Name: Survivor
   m_TagString: Player
@@ -4725,8 +4725,8 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   test: 1
-  sClass: {fileID: 0}
   survivorSO: {fileID: 11400000, guid: 01e3a2fd5de2ca54093550f70bd3b953, type: 2}
+  sClass: {fileID: 0}
   bodyRenderer: {fileID: 8146840676092125171}
   headRenderer: {fileID: 2690098373533844718}
   starterWeapon: {fileID: 0}
@@ -4791,20 +4791,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  levelUpModifiers:
-    movementSpeed: 1
-    healing: 1
-    damage: 1
-    damageResistance: 1
-    fireResistance: 1
-    rangedDamage: 1
-    meleeDamage: 1
-    abilityDamage: 1
-    cooldown: 1
-    reloadSpeed: 1
-    accuracy: 1
-  level: 0
-  experience: 0
 --- !u!114 &-2541738587506703838
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4987,6 +4973,32 @@ MonoBehaviour:
   enableIfPlayer: []
   enableIfNotPlayer: []
   dynamicallySpawnedItems: []
+--- !u!114 &6478709549993977186
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5922127114707202486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b68391c57465bed49bb3aacfde2e9ddc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  playerName: Player 1
+  playerId: 0
+  score: 0
+  exp: 0
+  expRequired: 0
+  level: 0
+  points: 0
+  kills: 0
+  pointsText: {fileID: 7966863143780647685}
+  pointGainPrefab: {fileID: 9064455069424791838, guid: c13d45a4ca89bed4784eb1ce03ef13d5,
+    type: 3}
+  inGameCanvas: {fileID: 8050693953223198890}
 --- !u!114 &7813640879047218699
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5738,32 +5750,6 @@ MonoBehaviour:
     poleTarget: {fileID: 0}
     clampWeight: 0.1
     clampSmoothing: 2
---- !u!114 &6478709549993977186
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5922127114707202486}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b68391c57465bed49bb3aacfde2e9ddc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  playerName: Player 1
-  playerId: 0
-  score: 0
-  exp: 0
-  expRequired: 0
-  level: 0
-  points: 0
-  kills: 0
-  pointsText: {fileID: 7966863143780647685}
-  pointGainPrefab: {fileID: 9064455069424791838, guid: c13d45a4ca89bed4784eb1ce03ef13d5,
-    type: 3}
-  inGameCanvas: {fileID: 8050693953223198890}
 --- !u!1 &5972193784617847827
 GameObject:
   m_ObjectHideFlags: 0

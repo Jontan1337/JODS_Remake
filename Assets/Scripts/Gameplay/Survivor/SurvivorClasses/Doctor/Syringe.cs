@@ -7,13 +7,16 @@ public class Syringe : Projectile
 {
     private Survivor survivor;
     [SerializeField] StatusEffectSO statusEffect = null;
+
+    private SurvivorPlayerData survivorPlayerData;
+
     public override void Start()
     {
         base.Start();
         objectPoolTag = Tags.Syringe;
         transform.Rotate(new Vector3(90, 0, 0));
         survivor = owner.GetComponent<Survivor>();
-        //StartCoroutine(LifeTime());
+        survivorPlayerData = owner.GetComponent<SurvivorPlayerData>();
     }
     [Server]
     public override void OnHit(Collision hit)
@@ -24,7 +27,9 @@ public class Syringe : Projectile
         {
             if (idmg?.Team == Teams.Player)
             {
-                if (survivor.optionOneFirstChoice && GetComponent<SurvivorStatManager>().IsDown)
+                survivorPlayerData.Points += (int)PointsTable.Heal;
+                // u stoopid.
+                if (survivor.optionOneFirstChoice && hit.collider.GetComponent<SurvivorStatManager>().IsDown)
                 {
                     reviveManager.StartCoroutine(reviveManager.BeingRevived());
                 }
@@ -55,6 +60,7 @@ public class Syringe : Projectile
                         ub.Dismember_BodyPart(i, (int)DamageTypes.Blunt);
                     }
                     idmg?.Svr_Damage(baseStatManager.Health, owner);
+                    survivorPlayerData.Points += (int)PointsTable.Kill;
                 }
 
 
@@ -64,11 +70,5 @@ public class Syringe : Projectile
 
 
     }
-
-    //IEnumerator LifeTime()
-    //{
-    //    yield return new WaitForSeconds(5f);
-    //    Destroy();
-    //}
 }
 

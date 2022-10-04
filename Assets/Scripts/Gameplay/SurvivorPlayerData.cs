@@ -34,6 +34,10 @@ public class SurvivorPlayerData : BasePlayerData
         get => points;
         set
         {
+            if (value > points) // Don't xp when lose points.
+            {
+                Exp += value - points;
+            }
             points = value;
             onPointsChanged?.Invoke(value);
         }
@@ -65,8 +69,6 @@ public class SurvivorPlayerData : BasePlayerData
         {
             PointsQueueCo = StartCoroutine(PointsQueue());
         }
-
-        //level.GainExp(newVal - oldVal);
     }
 
     bool pointsQueueBool = false;

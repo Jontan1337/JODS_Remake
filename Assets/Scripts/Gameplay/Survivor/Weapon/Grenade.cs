@@ -6,18 +6,6 @@ using Mirror;
 public class Grenade : Projectile
 {
 	[SerializeField] private float explosionTimer = 0;
-	public override void Start()
-	{
-		base.Start();
-		
-	}
-
-    //public override void OnHit(Collision collision)
-    //{
-    //    if (!isServer) return;
-
-    //    //base.OnHit(collision);
-    //}
 
     public override void Activate() 
 	{

@@ -16,6 +16,9 @@ public class BasePlayerData : NetworkBehaviour
     [SerializeField] private int expRequired;
     [SerializeField] private int level;
 
+    private int baseExpRequired = 100;
+    private int previousExpRequired = 0;
+
 
     #region Actions
 
@@ -24,24 +27,44 @@ public class BasePlayerData : NetworkBehaviour
 
     #endregion
 
-    public int Score 
-    { 
-        get => score; 
-        set 
-        { 
+    public int Score
+    {
+        get => score;
+        set
+        {
             score = value;
             onScoreChanged?.Invoke(value);
         }
     }
-    public int Level 
-    { 
-        get => level; 
-        set 
-        { 
+    public int Level
+    {
+        get => level;
+        set
+        {
             level = value;
             onLevelChanged?.Invoke(value);
-        } 
+            previousExpRequired = baseExpRequired + Mathf.RoundToInt(previousExpRequired * 0.25f);
+            expRequired += previousExpRequired;
+        }
     }
-    public int Exp { get => exp; set => exp = value; }
+    public int Exp
+    {
+        get => exp;
+        set
+        {
+            exp = value;
+            if (exp >= expRequired) Level++;
+        }
+    }
 
+    public int BaseExpRequired
+    {
+        get => baseExpRequired;
+        set
+        {
+            baseExpRequired = value;
+            expRequired = baseExpRequired;
+            previousExpRequired = expRequired;
+        }
+    }
 }

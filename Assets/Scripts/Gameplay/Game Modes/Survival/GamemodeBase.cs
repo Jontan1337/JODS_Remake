@@ -9,6 +9,12 @@ using System;
 using Sirenix.OdinInspector;
 
 
+public enum wahta
+{
+    common = 2,
+    stronk = 20,
+}
+
 [RequireComponent(typeof(AudioSource))]
 public abstract class GamemodeBase : NetworkBehaviour
 {
@@ -33,7 +39,9 @@ public abstract class GamemodeBase : NetworkBehaviour
     {
         get { return survivorsAlive; }
         set
-        { 
+        {
+            wahta w = wahta.common;
+            int point = (int)w;
             survivorsAlive = value; 
 
             if (survivorsAlive <= 0)

@@ -5,67 +5,42 @@ using Mirror;
 
 public class SurvivorLevelManager : NetworkBehaviour
 {
-    private ModifierManagerSurvivor survivorModifiers;
-    public ModifierManagerSurvivorData levelUpModifiers;
+    [SerializeField] private int baseExpRequired = 100;
 
-    [SyncVar, SerializeField] private int level = 0;
-    public int Level
+    private ModifierManagerSurvivorData modifiers;
+    private ModifierManagerSurvivorData levelUpModifiers;
+    private SurvivorPlayerData survivorPlayerData;
+
+    public override void OnStartServer()
     {
-        get { return level; }
-        set { level = Mathf.Clamp(value, 0, 10); ; }
+        modifiers = GetComponent<ModifierManagerSurvivor>().data;
+        levelUpModifiers = GetComponent<ActiveSurvivorClass>().survivorSO.levelUpModifiers;
+        survivorPlayerData = GetComponent<SurvivorPlayerData>();
+        survivorPlayerData.onLevelChanged += Svr_OnLevelChanged;
+        survivorPlayerData.BaseExpRequired = baseExpRequired;
     }
 
-    [SyncVar, SerializeField] int experience = 0;
-    public int Experience
+    [Server]
+    private void Svr_OnLevelChanged(int level)
     {
-        get { return experience; }
-        set { experience = value; }
+        // Add where modify based on level up or down.
+        modifiers.MovementSpeed += levelUpModifiers.MovementSpeed;
+        modifiers.Healing += levelUpModifiers.Healing;
+        modifiers.DamageResistance += levelUpModifiers.DamageResistance;
+        modifiers.FireResistance += levelUpModifiers.FireResistance;
+        modifiers.RangedDamage += levelUpModifiers.RangedDamage;
+        modifiers.MeleeDamage += levelUpModifiers.MeleeDamage;
+        modifiers.AbilityDamage += levelUpModifiers.AbilityDamage;
+        modifiers.Cooldown += levelUpModifiers.Cooldown;
+        modifiers.ReloadSpeed += levelUpModifiers.ReloadSpeed;
+        modifiers.Accuracy += levelUpModifiers.Accuracy;
     }
 
-    public void LevelUpModifiersSetup(ModifierManagerSurvivorData levelUpModifiersData)
-    {
-        levelUpModifiers = levelUpModifiersData;
-    }
-
-    [Command]
-    private void Cmd_LevelUp()
-    {
-        survivorModifiers = GetComponentInParent<ModifierManagerSurvivor>();
-        level++;
-
-        survivorModifiers.data.MovementSpeed += levelUpModifiers.MovementSpeed;
-        survivorModifiers.data.Healing += levelUpModifiers.Healing;
-        survivorModifiers.data.DamageResistance += levelUpModifiers.DamageResistance;
-        survivorModifiers.data.FireResistance += levelUpModifiers.FireResistance;
-        survivorModifiers.data.RangedDamage += levelUpModifiers.RangedDamage;
-        survivorModifiers.data.MeleeDamage += levelUpModifiers.MeleeDamage;
-        survivorModifiers.data.AbilityDamage += levelUpModifiers.AbilityDamage;
-        survivorModifiers.data.Cooldown += levelUpModifiers.Cooldown;
-        survivorModifiers.data.ReloadSpeed += levelUpModifiers.ReloadSpeed;
-        survivorModifiers.data.Accuracy += levelUpModifiers.Accuracy;
-
-        print("Level up");
-
-        experience = 0;
-    }
-
-    public void GainExp(int exp)
-    {
-        if (level < 10)
-        {
-            experience += exp;
-            if (experience >= 100 + (level * 125))
-            {
-                Cmd_LevelUp();
-            }
-        }
-    }
     private void OnGUI()
     {
         if (GUI.Button(new Rect(10, 150, 50, 20), "exp"))
         {
-            GainExp(500);
+            survivorPlayerData.Exp += 500;
         }
     }
-
 }
