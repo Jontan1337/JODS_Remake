@@ -27,7 +27,7 @@ public abstract class GamemodeBase : NetworkBehaviour
     [SerializeField] private AudioClip countdownEndAudio = null;
     protected AudioSource AS;
     public MapSettingsSO mapSettings;
-
+    [Space]
     [SerializeField] private int survivorsAlive = 0;
     public int SurvivorsAlive
     {
