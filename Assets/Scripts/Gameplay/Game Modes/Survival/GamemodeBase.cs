@@ -83,28 +83,6 @@ public abstract class GamemodeBase : NetworkBehaviour
         {
             Scoreboard.Instance.Svr_AddMaster(player.GetComponent<MasterPlayerData>());
         }
-
-        //BasePlayerData newPlayer =  PlayerData(playerId, playerName, isMaster);
-
-        //bool playerExists = false;
-
-        //int index = 0;
-
-        //foreach (PlayerData player in playerList)
-        //{
-        //    if (player.playerId == newPlayer.playerId)
-        //    {
-        //        index = playerList.IndexOf(player);
-        //        playerExists = true;
-        //    }
-        //}
-
-        //if (playerExists)
-        //{
-        //    playerList[index] = newPlayer;
-        //}
-
-        //else playerList.Add(newPlayer);
     }
 
     #endregion

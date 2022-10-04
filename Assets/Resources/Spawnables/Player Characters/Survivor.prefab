@@ -4758,14 +4758,9 @@ MonoBehaviour:
   armorBar: {fileID: 8494075140871504275}
   lowHealthImage: {fileID: 840600718719910551}
   damagedImage: {fileID: 8739871650305063704}
-  inGameCanvas: {fileID: 8050693953223198890}
-  survivorSetup: {fileID: 6930014499059818200}
   onDownChanged:
     m_PersistentCalls:
       m_Calls: []
-  pointsText: {fileID: 0}
-  pointGainPrefab: {fileID: 0}
-  points: 0
 --- !u!114 &2712400697136503757
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5755,11 +5750,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b68391c57465bed49bb3aacfde2e9ddc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   playerName: Player 1
   playerId: 0
+  score: 0
+  exp: 0
   expRequired: 0
+  level: 0
   points: 0
   kills: 0
+  pointsText: {fileID: 7966863143780647685}
+  pointGainPrefab: {fileID: 9064455069424791838, guid: c13d45a4ca89bed4784eb1ce03ef13d5,
+    type: 3}
+  inGameCanvas: {fileID: 8050693953223198890}
 --- !u!1 &5972193784617847827
 GameObject:
   m_ObjectHideFlags: 0

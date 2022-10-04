@@ -2,8 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class BasePlayerData : MonoBehaviour
+public class BasePlayerData : NetworkBehaviour
 {
     [Header("Shared")]
     public string playerName = "Player 1";

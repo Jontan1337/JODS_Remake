@@ -462,16 +462,16 @@ MonoBehaviour:
   owner: {fileID: 0}
   rb: {fileID: 7123553018159626968}
   outline: {fileID: 7123553018159626973}
-  onPickupEvents:
+  onPickupEvent:
     m_PersistentCalls:
       m_Calls: []
-  onDropEvents:
+  onDropEvent:
     m_PersistentCalls:
       m_Calls: []
-  onEquipEvents:
+  onEquipEvent:
     m_PersistentCalls:
       m_Calls: []
-  onUnequipEvents:
+  onUnequipEvent:
     m_PersistentCalls:
       m_Calls: []
   damage: 20
@@ -493,6 +493,7 @@ MonoBehaviour:
   aimingVisualPunchback: 0.1
   rigidbodyPunchback: 0.2
   aimingSpeed: 0.1
+  reloadSpeed: 1
   stabilization: 2
   currentAccuracy: 0
   currentCurveAccuracy: 5
@@ -535,11 +536,10 @@ MonoBehaviour:
     type: 3}
   shootSound: {fileID: 8300000, guid: 59033cce093954c4e968552b47b09c6a, type: 3}
   emptySound: {fileID: 8300000, guid: 6e8772b49f34d402a90016ed445d8a2f, type: 3}
-  debugWeapon: 1
   range: 1000
   ignoreLayer:
     serializedVersion: 2
-    m_Bits: 12675588
+    m_Bits: 1086417412
   bulletTrail: {fileID: 8004482161814986818}
   muzzleFlashLight: {fileID: 7910390085223996357}
 --- !u!114 &7123553018159626975
@@ -1725,8 +1725,6 @@ MonoBehaviour:
     - {x: -0.47253016, y: -0.6231821, z: -0.62318486}
     - {x: -0.45478523, y: -0.89060116, z: -0.00000047898624}
     - {x: -0.47110233, y: -0.8820786, z: -0.0000004884486}
-  materialIndex: 0
-  useMaterialIndex: 1
 --- !u!54 &7123553018159626968
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -1203,6 +1203,7 @@ public abstract class UnitBase : BaseStatManager, IParticleEffect
     [Server]
     public virtual void Svr_Die()
     {
+        print("fuck");
         EnablePathfinding(false, true); //Stop the current path
         ai.enabled = false; //Disable the AIPath component
 
@@ -1290,6 +1291,7 @@ public abstract class UnitBase : BaseStatManager, IParticleEffect
             rb.useGravity = true;
         }
     }
+
     [Server]
     private void Svr_DisableCollider()
     {
@@ -1304,6 +1306,7 @@ public abstract class UnitBase : BaseStatManager, IParticleEffect
         }
         Rpc_DisableCollider();
     }
+
     [ClientRpc]
     private void Rpc_DisableCollider()
     {

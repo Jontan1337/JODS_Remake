@@ -1729,9 +1729,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  onBeforeEquipEvent:
-    m_PersistentCalls:
-      m_Calls: []
   onEquipEvent:
     m_PersistentCalls:
       m_Calls:
@@ -1824,11 +1821,10 @@ MonoBehaviour:
     type: 3}
   shootSound: {fileID: 8300000, guid: 4cec65af975f1ff47991f10f96662acf, type: 3}
   emptySound: {fileID: 8300000, guid: 6e8772b49f34d402a90016ed445d8a2f, type: 3}
-  debugWeapon: 0
   range: 1000
   ignoreLayer:
     serializedVersion: 2
-    m_Bits: 12675588
+    m_Bits: 1086417412
   bulletTrail: {fileID: 804564897765936440}
   muzzleFlashLight: {fileID: 4904267514545505104}
 --- !u!114 &496574792408258469
@@ -3014,8 +3010,6 @@ MonoBehaviour:
     - {x: -0.47253016, y: -0.6231821, z: -0.62318486}
     - {x: -0.45478523, y: -0.89060116, z: -0.00000047898624}
     - {x: -0.47110233, y: -0.8820786, z: -0.0000004884486}
-  materialIndex: 0
-  useMaterialIndex: 1
 --- !u!54 &496574792408258466
 Rigidbody:
   m_ObjectHideFlags: 0

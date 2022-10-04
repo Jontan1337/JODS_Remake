@@ -64,28 +64,10 @@ public class SurvivorStatManager : BaseStatManager, IDamagableTeam
     [SerializeField] private Slider armorBar = null;
     [SerializeField] private Image lowHealthImage = null;
     [SerializeField] private Image damagedImage = null;
-    [SerializeField] private GameObject inGameCanvas = null;
-    [Space]
-    [SerializeField] private SurvivorSetup survivorSetup = null;
-
-
-    private const string inGameUIPath = "UI/Canvas - In Game";
-
 
     public UnityEvent<bool> onDownChanged = null;
 
-    [SerializeField] private Text pointsText = null;
-    [SerializeField] private GameObject pointGainPrefab = null;
     public Teams Team => Teams.Player;
-
-
-    [SyncVar(hook = nameof(pointsHook))] public int points;
-    private void pointsHook(int oldVal, int newVal)
-    {
-        pointsText.text = "Points: " + newVal;
-        StartCoroutine(PointsIE(newVal - oldVal));
-        level.GainExp(newVal - oldVal);
-    }
 
     private bool isDead;
     public new bool IsDead
@@ -93,9 +75,6 @@ public class SurvivorStatManager : BaseStatManager, IDamagableTeam
         get { return isDead; }
         set
         {
-            //Update scoreboard stat
-            //GamemodeBase.Instance.Svr_ModifyStat(GetComponent<NetworkIdentity>().netId, 0, PlayerDataStat.Alive);
-
             isDead = value;
             onDied?.Invoke();
             NetworkServer.Destroy(gameObject);
@@ -113,17 +92,6 @@ public class SurvivorStatManager : BaseStatManager, IDamagableTeam
 
     }
 
-    private async void FindComponents()
-    {
-        await JODSTime.WaitTime(0.1f);
-        survivorSetup = GetComponent<SurvivorSetup>();
-    }
-
-    private async void FindCamera()
-    {
-        await JODSTime.WaitTime(0.2f);
-        inGameCanvas = transform.Find($"{inGameUIPath}").gameObject;
-    }
 
     public void SetStats(int maxHealth, int armor)
     {
@@ -142,21 +110,7 @@ public class SurvivorStatManager : BaseStatManager, IDamagableTeam
         armorBar.value = armor;
     }
 
-    private IEnumerator PointsIE(int pointGain)
-    {
-        GameObject pText = Instantiate(pointGainPrefab, inGameCanvas.transform);
-        Text text = pText.GetComponent<Text>();
-        text.text = "+ " + pointGain;
-        float time = 1;
-        while (time > 0)
-        {
-            yield return null;
-            time -= Time.deltaTime;
-            text.color = new Color(1, 1, 1, time);
-            text.transform.Translate(new Vector3(0, 0.5f, 0));
-        }
-        Destroy(pText);
-    }
+
 
     #region Damaged
 

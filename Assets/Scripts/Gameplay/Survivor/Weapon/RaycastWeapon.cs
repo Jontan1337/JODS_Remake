@@ -33,7 +33,6 @@ public class RaycastWeapon : RangedWeapon
                 {
                     if (shootHit.collider.TryGetComponent(out IDamagable damagable))
                     {
-                        //statManagerBase.onDied.AddListener(delegate { Svr_OnTargetDied(); });
                         bool detach = highPower ? highPower : Random.value > 0.6f;
                         if (detach)
                         {
@@ -51,16 +50,12 @@ public class RaycastWeapon : RangedWeapon
                             }
                         }
                         damagable.Svr_Damage((int)finalDamage, owner);
-                        //BaseStatManager statManagerBase;
-                        //if (shootHit.collider.GetComponentInParent<BaseStatManager>())
-                        //{
-                        //    statManagerBase = shootHit.collider.GetComponentInParent<BaseStatManager>();
-                        //    if (statManagerBase.IsDead)
-                        //    {
-                        //        Svr_OnTargetDied();
-                        //    }
-                        //}
-                        //statManagerBase.onDied.RemoveListener(delegate { Svr_OnTargetDied(); });
+
+                        BaseStatManager statManagerBase = shootHit.collider.GetComponentInParent<BaseStatManager>();
+                        if (statManagerBase != null)
+                        {
+                            SurvivorPlayerData.Instance.Points += statManagerBase.IsDead ? 20 : 2;
+                        }
                     }
                     // This ray shoots it's own collider on the other side to get the "penetration point"
                     // on the opposite side of the collider where the bullet should leave.
@@ -85,6 +80,7 @@ public class RaycastWeapon : RangedWeapon
     [ClientRpc]
     protected override void Rpc_Shoot(Vector2 recoil)
     {
+
         base.Rpc_Shoot(recoil);
         muzzleFlashLight.DOComplete();
         muzzleFlashLight.DOIntensity(0.4f, 0.01f).OnComplete(() => { muzzleFlashLight.DOIntensity(0f, 0.01f); });

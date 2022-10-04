@@ -136,15 +136,6 @@ public class WeaponShop : NetworkBehaviour, IInteractable
         }
     }
 
-    // Destroying objects on the server only disables them on clients.
-    // so this does not work for clients.
-    //private void OnDestroy()
-    //{
-    //    if (playerGameObject != null)
-    //    {
-    //        CloseShop();
-    //    }
-    //}
     private void OnDisable()
     {
         if (playerGameObject != null)
@@ -194,9 +185,19 @@ public class WeaponShop : NetworkBehaviour, IInteractable
     }
 
     [TargetRpc]
-    private void Rpc_ShowPoints(NetworkConnection target, int points)
+    private void Rpc_ShowPoints(NetworkConnection target, int value)
     {
-        playerPointsText.text = pointsTextDefault + points;
+        playerPointsText.text = pointsTextDefault + value;
+    }
+
+    private void PointsSubscribe(NetworkConnection target)
+    {
+        target.identity.GetComponent<SurvivorPlayerData>().onPointsChanged += delegate(int points) { Rpc_ShowPoints(target, points); };
+    }
+
+    private void PointsUnsubscribe(NetworkConnection target)
+    {
+        target.identity.GetComponent<SurvivorPlayerData>().onPointsChanged -= delegate (int points) { Rpc_ShowPoints(target, points); };
     }
 
     [Server]
@@ -214,9 +215,13 @@ public class WeaponShop : NetworkBehaviour, IInteractable
     [Server]
     private void Svr_HandleUser(GameObject interactor)
     {
+        NetworkIdentity identity = interactor.GetComponent<NetworkIdentity>();
+
         if (playersInShop.Contains(interactor))
         {
             playersInShop.Remove(interactor);
+            PointsUnsubscribe(identity.connectionToClient);
+
             if (playersInShop.Count == 0)
             {
                 Rpc_ShopVisuals(false);
@@ -227,13 +232,10 @@ public class WeaponShop : NetworkBehaviour, IInteractable
             if (playersInShop.Count == 0)
             {
                 Rpc_ShopVisuals(true);
-                if (!GamemodeBase.Instance) return;
-                NetworkIdentity identity = interactor.GetComponent<NetworkIdentity>();
-                //Rpc_ShowPoints(identity.connectionToClient,
-                //GamemodeBase.Instance.Svr_GetPoints(identity.netId));
-            }
 
-            //Svr_SetupAmmunitionRefillers(interactor);
+                Rpc_ShowPoints(identity.connectionToClient, identity.GetComponent<SurvivorPlayerData>().Points);
+                PointsSubscribe(identity.connectionToClient);
+            }
 
             PlayerEquipment playerEquipment = interactor.GetComponentInChildren<PlayerEquipment>();
             GameObject goWeapon1 = playerEquipment.EquipmentSlots[0].EquipmentItem;
@@ -242,39 +244,6 @@ public class WeaponShop : NetworkBehaviour, IInteractable
 
             playersInShop.Add(interactor);
         }
-    }
-
-    [Server]
-    private void Svr_SetupAmmunitionRefillers(GameObject interactor)
-    {
-        PlayerEquipment playerEquipment = interactor.GetComponentInChildren<PlayerEquipment>();
-
-        GameObject[] goWeapons = new GameObject[2];
-        for (int i = 0; i < 2; i++)
-        {
-            GameObject goWeapon = playerEquipment.EquipmentSlots[i].EquipmentItem;
-            goWeapons[i] = goWeapon;
-            if (goWeapon)
-            {
-                int price = 0;
-                string weaponName = string.Empty;
-                if (goWeapon.TryGetComponent(out RangedWeapon rangedWeapon))
-                {
-                    price = GetAmmunitionPrice(rangedWeapon.AmmunitionType);
-                    weaponName = rangedWeapon.Name;
-                }
-                weaponAmmunitionRefill[i].Item = new ShopItem(
-                    weaponName,
-                    goWeapon,
-                    price
-                );
-            }
-            else
-            {
-                weaponAmmunitionRefill[i].Item = new ShopItem("", null, default);
-            }
-        }
-        Rpc_SetAmmunitionRefillers(interactor.GetComponent<NetworkIdentity>().connectionToClient, goWeapons[0], goWeapons[1]);
     }
 
     private int GetAmmunitionPrice(AmmunitionTypes type)
@@ -336,20 +305,19 @@ public class WeaponShop : NetworkBehaviour, IInteractable
     }
 
     [Command(ignoreAuthority = true)]
-    private async void Cmd_BuyAmmunition(GameObject interactor, int index)
+    private void Cmd_BuyAmmunition(GameObject interactor, int index)
     {
-        GamemodeBase gamemode = GamemodeBase.Instance;
         PlayerEquipment playerEquipment = interactor.GetComponentInChildren<PlayerEquipment>();
         RangedWeapon weapon = playerEquipment.EquipmentSlots[index].EquipmentItem.GetComponent<RangedWeapon>();
-        NetworkIdentity networkIdentity = interactor.GetComponent<NetworkIdentity>();
+        SurvivorPlayerData playerData = interactor.GetComponent<SurvivorPlayerData>();
+
         int price = GetAmmunitionPrice(weapon.AmmunitionType);
-        //if (gamemode.Svr_GetPoints(networkIdentity.netId) >= price)
-        //{
-        //    weapon.ExtraAmmunition += weapon.MagazineSize;
-        //    gamemode.Svr_ModifyStat(networkIdentity.netId, -price, PlayerDataStat.Points);
-        //    await JODSTime.WaitTime(0.1f);
-        //    Rpc_ShowPoints(networkIdentity.connectionToClient, gamemode.Svr_GetPoints(networkIdentity.netId));
-        //}
+
+        if (playerData.Points >= price)
+        {
+            weapon.ExtraAmmunition += weapon.MagazineSize;
+            playerData.Points -= price;
+        }
     }
 
     [TargetRpc]
@@ -458,27 +426,15 @@ public class WeaponShop : NetworkBehaviour, IInteractable
         UIShopButton button = allSlots[index];
         ShopItem item = button.Item;
 
-        if (GamemodeBase.Instance)
+        SurvivorPlayerData playerData = player.GetComponent<SurvivorPlayerData>();
+
+        //Check if the player has enough points to buy the item
+        if (playerData.Points < item.shopItemPrice)
         {
-            GamemodeBase gamemode = GamemodeBase.Instance;
-
-            NetworkIdentity identity = player.GetComponent<NetworkIdentity>();
-            uint playerId = identity.netId;
-
-            //Check if the player has enough points to buy the item
-            //if (gamemode.Svr_GetPoints(playerId) < item.shopItemPrice)
-            //{
-            //    //If not, nothing happens.
-            //    return;
-            //}
-            //else
-            //{
-            //    //If they have enough, detract the price from their points,
-            //    gamemode.Svr_ModifyStat(playerId, -item.shopItemPrice, PlayerDataStat.Points);
-            //    Rpc_ShowPoints(identity.connectionToClient, gamemode.Svr_GetPoints(playerId));
-            //}
-
+            //If not, nothing happens.
+            return;
         }
+        playerData.Points -= item.shopItemPrice;
 
         //Buy the item for the player
         var spawnedItem = Instantiate(item.shopItemPrefab);
@@ -500,11 +456,10 @@ public class WeaponShop : NetworkBehaviour, IInteractable
             }
         }
 
-        //PlayerEquipment playerEquipment = player.GetComponentInChildren<PlayerEquipment>();
-        //GameObject goWeapon1 = playerEquipment.EquipmentSlots[0].EquipmentItem;
-        //GameObject goWeapon2 = playerEquipment.EquipmentSlots[1].EquipmentItem;
-        //Rpc_SetAmmunitionRefillers(player.GetComponent<NetworkIdentity>().connectionToClient, goWeapon1, goWeapon2);
-        //Svr_SetupAmmunitionRefillers(player);
+        PlayerEquipment playerEquipment = player.GetComponentInChildren<PlayerEquipment>();
+        GameObject goWeapon1 = playerEquipment.EquipmentSlots[0].EquipmentItem;
+        GameObject goWeapon2 = playerEquipment.EquipmentSlots[1].EquipmentItem;
+        Rpc_SetAmmunitionRefillers(player.GetComponent<NetworkIdentity>().connectionToClient, goWeapon1, goWeapon2);
     }
 
     [ClientRpc]
