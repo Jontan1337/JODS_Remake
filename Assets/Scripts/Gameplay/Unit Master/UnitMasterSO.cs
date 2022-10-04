@@ -17,8 +17,7 @@ public class UnitMasterSO : ScriptableObject
     public int energyRechargeIncrement = 1;
     public int maxEnergyUpgradeIncrement = 20;
     [Space]
-    public int energyUntilNextUpgrade = 50; //When does the next upgrade decision become available
-    public AnimationCurve energyRequirementCurve;
+    public int baseExpRequired = 50; //When does the next upgrade decision become available
 
     [Header("Units (In descending order)")]
     public UnitSO[] units;

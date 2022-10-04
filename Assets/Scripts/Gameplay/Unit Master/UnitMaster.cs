@@ -117,33 +117,15 @@ public class UnitMaster : NetworkBehaviour
     UnitMasterClass mClass = null;
     private MasterPlayerData playerData = null;
 
-    [Title("Stats", titleAlignment: TitleAlignments.Centered)]
-
-    [SerializeField, SyncVar(hook = nameof(MasterLevelHook))] private int masterLevel = 0;
-    private void MasterLevelHook(int oldVal, int newVal)
-    {
-        if (UI.masterLevelText == null) return;
-        UI.masterLevelText.text = newVal.ToString();
-    }
-
-    [Space]
-
     [SerializeField, BoxGroup("Energy"),
         SyncVar(hook = nameof(CurrentEnergy_Hook))] private int currentEnergy = 50; //Current amount of master energy
-    [Command] private void Cmd_SetCurrentEnergy(int newVal)
-    {
-        Energy = newVal;
-    }
     private void CurrentEnergy_Hook(int oldVal, int newVal)
     {
         UpdateEnergyUI();
     }
     [SerializeField, BoxGroup("Energy"),
         SyncVar(hook = nameof(MaxEnergy_Hook))] private int maxEnergy = 100; //Maximum amount of energy that can be stored
-    [Command] private void Cmd_SetMaxEnergy(int newVal)
-    {
-        maxEnergy = newVal;
-    }
+
     private void MaxEnergy_Hook(int oldVal, int newVal)
     {
         //Set the UI slider's max value
@@ -156,42 +138,49 @@ public class UnitMaster : NetworkBehaviour
 
     [SerializeField, BoxGroup("Energy"),
         SyncVar] private int energyRechargeIncrement = 1; //How much energy recharges per second
+
     [SerializeField, BoxGroup("Energy")] private int maxEnergyIncrement = 20; //Amount to increase max energy
-    [Space]
-    [SerializeField, SyncVar, BoxGroup("Experience")] private int currentEXP = 0; //Current amount of master xp
-    [Command] private void Cmd_SetCurrentXP(int newVal) { CurrentXP = newVal; }
-    [Space]
-    [SerializeField, BoxGroup("Experience"),
-        SyncVar(hook = nameof(ExpUntilNextUpgradeHook))] private int expUntilNextUpgradeValue = 0; //Current progress
-    private void ExpUntilNextUpgradeHook(int oldVal, int newVal)
+
+    [TargetRpc]
+    private void Rpc_UpdateXPProgressBar(NetworkConnection target, int newVal, int maxVal)
     {
         if (UI.masterLevelImage == null) return;
-        UI.masterLevelImage.fillAmount = (float)newVal / (float)expUntilNextUpgradeTarget;
+        UI.masterLevelImage.fillAmount = (float)newVal / (float)maxVal;
     }
-    [SerializeField, BoxGroup("Experience"),
-        SyncVar] private int expUntilNextUpgradeTarget = 50; //When does the next upgrade decision become available
-    [Server] private void Svr_ExpUntilNextUpgrade()
+    [TargetRpc]
+    private void Rpc_UpdateMasterLevelUI(NetworkConnection target, int newVal)
     {
-        int newMilestone = Mathf.RoundToInt(expUntilNextUpgradeBase *
-            (1 + expRequirementCurve.Evaluate(
-        (expRequirementCurve.keys[expRequirementCurve.keys.Length - 1].time / 10) * (masterLevel + 1))));
-
-        expUntilNextUpgradeTarget = newMilestone;
-        expUntilNextUpgradeValue = 0; 
-        masterLevel++;
-        masterUpgrades++;
+        if (UI.masterLevelText == null) return;
+        UI.masterLevelText.text = newVal.ToString();
     }
+
+
+
+
     [Space]
-    [SerializeField, BoxGroup("Experience")] private int expUntilNextUpgradeBase = 50; //When does the next upgrade decision become available 
-    [SerializeField, BoxGroup("Experience")] private AnimationCurve expRequirementCurve;
+
     [SyncVar(hook = nameof(MasterUpgradesHook))]private int masterUpgrades = 0;
+
+    public int MasterUpgrades
+    {
+        get { return masterUpgrades; }
+        set 
+        { 
+            masterUpgrades = value; 
+            Rpc_UnlockMasterUpgradeButtons(connectionToClient, playerData.Level);
+        }
+    }
+
     private void MasterUpgradesHook(int oldVal, int newVal)
     {
         UI.masterUpgradePointsText.text = "Upgrade Points: " + newVal;
-
-        foreach(Button b in UI.masterUpgradeButtons)
+    }
+    [TargetRpc]
+    private void Rpc_UnlockMasterUpgradeButtons(NetworkConnection target, int masterLevel)
+    {
+        foreach (Button b in UI.masterUpgradeButtons)
         {
-            b.GetComponent<MasterUpgradeUIButton>().UnlockButton(masterLevel, newVal > 0);
+            b.GetComponent<MasterUpgradeUIButton>().UnlockButton(masterLevel, masterUpgrades > 0);
         }
     }
 
@@ -205,31 +194,7 @@ public class UnitMaster : NetworkBehaviour
             currentEnergy = Mathf.Clamp(value, 0, maxEnergy);
         }
     }
-    private int CurrentXP
-    {
-        get { return currentEXP; }
-        set
-        {
-            if (!isServer) return;
 
-            bool gain = value > currentEXP;
-            int diff = 0;
-            if (gain) diff = value - currentEXP;
-
-            currentEXP = value;
-
-            Rpc_UpdateXpUI(netIdentity.connectionToClient, value);
-
-            if (gain)
-            {
-                expUntilNextUpgradeValue += diff;
-                if (expUntilNextUpgradeValue >= expUntilNextUpgradeTarget)
-                {
-                    Svr_ExpUntilNextUpgrade();
-                }
-            }
-        }
-    }
 
     [TargetRpc]
     private void Rpc_UpdateXpUI(NetworkConnection target, int value)
@@ -384,6 +349,26 @@ public class UnitMaster : NetworkBehaviour
         }
     }
 
+    private void OnLevelChanged(int value)
+    {
+        Rpc_UpdateMasterLevelUI(connectionToClient, value);
+
+        MasterUpgrades++;
+
+        Rpc_UnlockMasterUpgradeButtons(connectionToClient, value);
+    }
+    private void OnExpChanged(int value)
+    {
+        Rpc_UpdateXPProgressBar(connectionToClient, value - playerData.previousExpRequired, playerData.ExpRequired - playerData.previousExpRequired);
+
+        Rpc_UpdateXpUI(connectionToClient, value);
+    }
+    private void OnExpRequirementChanged(int value)
+    {
+        Rpc_UpdateXPProgressBar(connectionToClient, playerData.Exp - playerData.previousExpRequired, value - playerData.previousExpRequired);
+    }
+
+
     public void Initialize()
     {
         name += $" ({masterSO.masterName})";       
@@ -396,14 +381,17 @@ public class UnitMaster : NetworkBehaviour
             playerData = GetComponent<MasterPlayerData>();
 
             //Default starting energy stats
-            expRequirementCurve = masterSO.energyRequirementCurve;
             currentEnergy = masterSO.startEnergy;
             maxEnergy = masterSO.startMaxEnergy;
             energyRechargeIncrement = masterSO.energyRechargeIncrement;
             maxEnergyIncrement = masterSO.maxEnergyUpgradeIncrement;
-            expUntilNextUpgradeTarget = masterSO.energyUntilNextUpgrade;
-            expUntilNextUpgradeValue = 0;
-            expUntilNextUpgradeBase = masterSO.energyUntilNextUpgrade;
+
+            playerData.BaseExpRequired = masterSO.baseExpRequired;
+            playerData.onExpChanged += OnExpChanged;
+            playerData.onExpRequirementChanged += OnExpRequirementChanged;
+            playerData.onLevelChanged += OnLevelChanged;
+
+            Rpc_UnlockMasterUpgradeButtons(connectionToClient, 0);
 
             StartCoroutine(EnergyCoroutine());
         }
@@ -734,7 +722,7 @@ public class UnitMaster : NetworkBehaviour
     [Command]
     private void Cmd_UpgradeEnergy(MasterUpgradeType upgradeType)
     {
-        masterUpgrades--;
+        MasterUpgrades--;
 
         //Play a sound
         Rpc_PlayGlobalSound(true);
@@ -921,14 +909,6 @@ public class UnitMaster : NetworkBehaviour
     {
         bool active = !UI.masterUpgradeMenu.activeSelf;
         UI.masterUpgradeMenu.SetActive(active);
-
-        if (active)
-        {
-            foreach (Button b in UI.masterUpgradeButtons)
-            {
-                b.GetComponent<MasterUpgradeUIButton>().UnlockButton(masterLevel, masterUpgrades > 0);
-            }
-        }
     }
 
     #endregion
@@ -1335,7 +1315,7 @@ public class UnitMaster : NetworkBehaviour
 
             deployable.unlocked = true;
 
-            Cmd_SetCurrentXP(CurrentXP - deployable.deployable.xpToUnlock);
+            //Cmd_SetCurrentXP(CurrentXP - deployable.deployable.xpToUnlock);
         }
         else if (unit != null)
         {
@@ -1345,7 +1325,7 @@ public class UnitMaster : NetworkBehaviour
             unit.unlocked = true;
 
             //Decrease xp by amount required to unlock the unit
-            Cmd_SetCurrentXP(CurrentXP - unit.unit.xpToUnlock);
+            //Cmd_SetCurrentXP(CurrentXP - unit.unit.xpToUnlock);
         }
 
         //Play spooky sound
@@ -1828,7 +1808,7 @@ public class UnitMaster : NetworkBehaviour
             //Master loses energy, because nothing is free in life
             Energy += -chosenUnitList.unit.energyCost;
 
-            CurrentXP += chosenUnitList.unit.xpGain; //Master gains xp though
+            playerData.Exp += chosenUnitList.unit.xpGain; //Master gains xp though
 
             playerData.UnitsPlaced++;
         }

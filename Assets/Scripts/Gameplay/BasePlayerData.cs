@@ -17,12 +17,14 @@ public class BasePlayerData : NetworkBehaviour
     [SerializeField] private int level;
 
     private int baseExpRequired = 100;
-    private int previousExpRequired = 0;
+    public int previousExpRequired = 0;
 
 
     #region Actions
 
     public Action<int> onScoreChanged;
+    public Action<int> onExpChanged;
+    public Action<int> onExpRequirementChanged;
     public Action<int> onLevelChanged;
 
     #endregion
@@ -43,8 +45,9 @@ public class BasePlayerData : NetworkBehaviour
         {
             level = value;
             onLevelChanged?.Invoke(value);
-            previousExpRequired = baseExpRequired + Mathf.RoundToInt(previousExpRequired * 0.25f);
-            expRequired += previousExpRequired;
+            int newXpReq = Mathf.RoundToInt(previousExpRequired > 0 ? Mathf.RoundToInt(previousExpRequired * 0.25f) : Mathf.RoundToInt(baseExpRequired * 0.25f));
+            previousExpRequired = ExpRequired;
+            ExpRequired += newXpReq;
         }
     }
     public int Exp
@@ -53,18 +56,26 @@ public class BasePlayerData : NetworkBehaviour
         set
         {
             exp = value;
-            if (exp >= expRequired) Level++;
+            onExpChanged?.Invoke(value);
+            if (exp >= ExpRequired) Level++;
         }
     }
-
+    public int ExpRequired
+    {
+        get => expRequired;
+        set
+        {
+            expRequired = value;
+            onExpRequirementChanged?.Invoke(value);
+        }
+    }
     public int BaseExpRequired
     {
         get => baseExpRequired;
         set
         {
             baseExpRequired = value;
-            expRequired = baseExpRequired;
-            previousExpRequired = expRequired;
+            ExpRequired = baseExpRequired;
         }
     }
 }

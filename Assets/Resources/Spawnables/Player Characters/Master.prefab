@@ -4540,16 +4540,6 @@ MonoBehaviour:
   maxEnergy: 100
   energyRechargeIncrement: 1
   maxEnergyIncrement: 20
-  currentEXP: 0
-  expUntilNextUpgradeValue: 0
-  expUntilNextUpgradeTarget: 50
-  expUntilNextUpgradeBase: 50
-  expRequirementCurve:
-    serializedVersion: 2
-    m_Curve: []
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
   unitList:
   - name: Common
     unit: {fileID: 11400000, guid: 254796e5ec2c1ff49a903f70e84b5945, type: 2}
@@ -5087,9 +5077,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d10a6f93a02406041b24551dab4c3780, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   playerName: Player 1
   playerId: 0
+  score: 0
+  exp: 0
   expRequired: 0
+  level: 0
+  previousExpRequired: 0
   unitsPlaced: 0
   totalUnitUpgrades: 0
 --- !u!1 &7609751050057994080

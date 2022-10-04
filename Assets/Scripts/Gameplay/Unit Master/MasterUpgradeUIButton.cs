@@ -48,6 +48,8 @@ public class MasterUpgradeUIButton : MonoBehaviour
 
     public void Upgrade()
     {
+        if (masterReference.MasterUpgrades == 0) return;
+
         currentUpgrades++;
         masterReference.UpgradeMasterEnergy(upgradeType);
 
