@@ -47,7 +47,7 @@ public class BasePlayerData : NetworkBehaviour
             onLevelChanged?.Invoke(value);
             int newXpReq = Mathf.RoundToInt(previousExpRequired > 0 ? Mathf.RoundToInt(previousExpRequired * 0.25f) : Mathf.RoundToInt(baseExpRequired * 0.25f));
             previousExpRequired = ExpRequired;
-            ExpRequired += newXpReq;
+            ExpRequired += baseExpRequired + newXpReq;
         }
     }
     public int Exp
