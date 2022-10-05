@@ -77,7 +77,6 @@ public class ReviveManager : NetworkBehaviour, IInteractable
     private IEnumerator Down()
     {
         Rpc_Down(connectionToClient);
-        //animatorController.SetBool("IsDown", true);
         IsInteractable = true;
         downImageOpacity = 0;
         downImage.color = new Color(1f, 1f, 1f, 0f);
@@ -100,7 +99,6 @@ public class ReviveManager : NetworkBehaviour, IInteractable
     {
         JODSInput.DisableCamera();
         JODSInput.DisableHotbarControl();
-        //animatorController.SetBool("IsDown", true);
         inGameCanvas.SetActive(false);
         downCanvas.SetActive(true);
     }
@@ -127,7 +125,6 @@ public class ReviveManager : NetworkBehaviour, IInteractable
     {
         onRevived?.Invoke();
 
-        //animatorController.SetBool("IsDown", false);
         downTime = 30;
         reviveTime = 5;
         StopCoroutine(DownCo);

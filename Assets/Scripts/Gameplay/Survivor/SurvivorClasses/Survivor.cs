@@ -8,12 +8,12 @@ public abstract class Survivor : NetworkBehaviour
 {
     public GameObject abilityObject;
 
-    public bool optionOne = false;
-    public bool optionOneFirstChoice = false;
-    public bool optionOneSecondChoice = false;
-    public bool optionTwo = false;
-    public bool optionTwoFirstChoice = false;
-    public bool optionTwoSecondChoice = false;
+    public bool optionA = false;
+    public bool optionA1 = false;
+    public bool optionA2 = false;
+    public bool optionB = false;
+    public bool optionB1 = false;
+    public bool optionB2 = false;
 
     [SerializeField, SyncVar] public int abilityDamage;
 

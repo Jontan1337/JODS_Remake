@@ -7,6 +7,8 @@ public class Syringe : Projectile
 {
     private Survivor survivor;
     [SerializeField] StatusEffectSO statusEffect = null;
+    [SerializeField] StatusEffectToApply buff = new StatusEffectToApply();
+
 
     private SurvivorPlayerData survivorPlayerData;
 
@@ -17,7 +19,12 @@ public class Syringe : Projectile
         transform.Rotate(new Vector3(90, 0, 0));
 
         survivorPlayerData = owner.GetComponent<SurvivorPlayerData>();
-        survivor = owner.GetComponent<Survivor>();
+        survivor = owner.GetComponentInChildren<Survivor>();
+
+        if (survivor.optionB)
+        {
+            statusEffectsToApply.Add(buff);
+        }
     }
 
     [Server]
@@ -34,11 +41,11 @@ public class Syringe : Projectile
             if (idmg?.Team == Teams.Player)
             {
                 survivorPlayerData.Points += (int)PointsTable.Heal;
-                //if (survivor.optionOneFirstChoice && hit.collider.GetComponent<SurvivorStatManager>().IsDown)
-                //{
-                //    reviveManager.StartCoroutine(reviveManager.BeingRevived());
-                //}
-                if (statusEffectsToApply.Count > 0)
+                if (survivor.optionB1 && hit.collider.GetComponent<SurvivorStatManager>().IsDown)
+                {
+                    reviveManager.StartCoroutine(reviveManager.BeingRevived());
+                }
+                else if (statusEffectsToApply.Count > 0)
                 {
                     foreach (StatusEffectToApply statusEffectToApply in statusEffectsToApply)
                     {
@@ -56,7 +63,7 @@ public class Syringe : Projectile
             {
                 UnitBase ub = hit.collider.transform.root.gameObject.GetComponent<UnitBase>();
 
-                if (!ub.TryGetComponent(out ZombieStronk stronk))
+                if (!ub.TryGetComponent(out ZombieStronk stronk) && survivor.optionA)
                 {
                     idmg?.Svr_Damage(int.MaxValue, owner);
 
@@ -66,6 +73,10 @@ public class Syringe : Projectile
                     }
 
                     survivorPlayerData.Points += (int)PointsTable.Kill;
+                }
+                else
+                {
+                    idmg?.Svr_Damage(1, owner);
                 }
             }
         }

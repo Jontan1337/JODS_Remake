@@ -100,8 +100,6 @@ public class SurvivorStatManager : BaseStatManager, IDamagableTeam
         this.maxHealth = maxHealth;
         health = maxHealth;
         this.armor = armor;
-        //GetComponent<ModifierManagerSurvivor>().data.MovementSpeed = movementSpeed;
-        //GetComponent<SurvivorAnimationManager>().characerAnimator.speed = movementSpeed;
 
 
         healthBar.maxValue = maxHealth;
@@ -214,35 +212,17 @@ public class SurvivorStatManager : BaseStatManager, IDamagableTeam
     public bool IsDown
     {
         get { return isDown; }
-        set
-        {
+        set {
+
             isDown = value;
             onDownChanged?.Invoke(value);
-            //if (isDown)
-            //{
-
-            //    var equip = playerEquipment.EquipmentItem;
-            //    if (equip)
-            //    {
-            //        equip.Svr_Unequip();
-            //    }
-            //    fullBodyBipedIK.enabled = false;
-            //    //survivorSetup.Rpc_ToggleHead(connectionToClient);
-            //    Rpc_SetCameraForDownedState(connectionToClient);
-            //}
-            //else
-            //{
-            //    playerEquipment.EquipmentItem?.Svr_Equip();
-            //    fullBodyBipedIK.enabled = true;
-            //    //survivorSetup.Rpc_ToggleHead(connectionToClient);
-            //    Rpc_SetCameraForRevivedState(connectionToClient);
-            //}
         }
     }
 
 
     private void OnDownTimerFinished()
     {
+        print("dead");
         IsDead = true;
     }
 
