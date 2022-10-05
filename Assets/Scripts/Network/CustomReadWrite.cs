@@ -344,6 +344,33 @@ public static class CustomReadWrite
         }
         return identity.GetComponent<Camera>();
     }
+    public static void WriteAudioSource(this NetworkWriter writer, AudioSource value)
+    {
+        if (value == null)
+        {
+            writer.WriteUInt32(0);
+            return;
+        }
+        NetworkIdentity identity = value.GetComponent<NetworkIdentity>();
+        if (identity != null)
+        {
+            writer.WriteUInt32(identity.netId);
+        }
+        else
+        {
+            logger.LogWarning("NetworkWriter " + value + " has no NetworkIdentity");
+            writer.WriteUInt32(0);
+        }
+    }
+    public static AudioSource ReadAudioSource(this NetworkReader reader)
+    {
+        NetworkIdentity identity = reader.ReadNetworkIdentity();
+        if (identity == null)
+        {
+            return null;
+        }
+        return identity.GetComponent<AudioSource>();
+    }
 
     /*
     public static void WriteActiveSClass(this NetworkWriter writer, ActiveSClass value)
