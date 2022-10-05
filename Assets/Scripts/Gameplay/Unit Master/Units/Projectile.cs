@@ -40,7 +40,7 @@ public abstract class Projectile : NetworkBehaviour
 		rb = GetComponent<Rigidbody>();
 	}
 
-    public override void OnStartServer()
+    public virtual void OnInstantiate()
     {
 		if (!isServer) return;
 		if (!enabledFromAwake) return;
@@ -94,13 +94,11 @@ public abstract class Projectile : NetworkBehaviour
 	public virtual void OnHit(Collider objectHit)
 	{
 		if (!isServer) return;
-
 		if (!piercing && !hasHit)
 		{
 			hasHit = true; //Prevents the projectile from hitting multiple times
 			if (sticky)
 			{
-				print(objectHit.transform);
 				transform.SetParent(objectHit.transform);
 				rb.velocity = Vector3.zero;
 			}
@@ -113,8 +111,7 @@ public abstract class Projectile : NetworkBehaviour
 
 	public virtual void OnHit(Collision objectHit)
 	{
-		ContactPoint point = objectHit.GetContact(0);
-
+		if (!isServer) return;
 		if (!piercing && !hasHit)
 		{
 			hasHit = true; //Prevents the projectile from hitting multiple times

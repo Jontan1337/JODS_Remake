@@ -1535,7 +1535,10 @@ public abstract class UnitBase : BaseStatManager, IParticleEffect
     [Server]
     public override void Svr_Damage(int damage, Transform target = null)
     {
+        print("UnitBase: " + damage);
+
         base.Svr_Damage(damage, target);
+
         if (target != null)
         {
             if (currentTarget)

@@ -10,12 +10,12 @@ public class Syringe : Projectile
 
     private SurvivorPlayerData survivorPlayerData;
 
-    public override void OnStartServer()
+    public override void OnInstantiate()
     {
-        base.OnStartServer();
-        print(owner);
+        base.OnInstantiate();
         objectPoolTag = Tags.Syringe;
         transform.Rotate(new Vector3(90, 0, 0));
+
         survivorPlayerData = owner.GetComponent<SurvivorPlayerData>();
         survivor = owner.GetComponent<Survivor>();
     }
@@ -24,7 +24,11 @@ public class Syringe : Projectile
     public override void OnHit(Collision hit)
     {
         var reviveManager = hit.collider.transform.root.gameObject.GetComponent<ReviveManager>();
+
+        if (hasHit) return;
+
         base.OnHit(hit);
+
         if (hit.collider.TryGetComponent(out IDamagableTeam idmg))
         {
             if (idmg?.Team == Teams.Player)
@@ -54,11 +58,15 @@ public class Syringe : Projectile
                 BaseStatManager baseStatManager = hit.collider.transform.root.gameObject.GetComponent<BaseStatManager>();
                 if (!ub.TryGetComponent(out ZombieStronk stronk))
                 {
+                    print("Syringe: " + baseStatManager.MaxHealth);
+                    idmg?.Svr_Damage(baseStatManager.MaxHealth, owner);
+                    print("Syringe2: " + baseStatManager.MaxHealth);
+
                     for (int i = 1; i < 4; i++)
                     {
                         ub.Dismember_BodyPart(i, (int)DamageTypes.Blunt);
                     }
-                    idmg?.Svr_Damage(baseStatManager.Health, owner);
+
                     survivorPlayerData.Points += (int)PointsTable.Kill;
                 }
             }

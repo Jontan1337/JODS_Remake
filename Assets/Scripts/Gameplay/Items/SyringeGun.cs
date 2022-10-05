@@ -49,7 +49,7 @@ public class SyringeGun : ProjectileWeapon
         Cmd_Destroy();
     }
 
-    [Command]
+    [Command(ignoreAuthority = true)]
     private void Cmd_StartCooldown()
     {
         if (magazine < magazineSize && magazine > 0)

@@ -51,6 +51,7 @@ public class BaseStatManager : NetworkBehaviour, IDamagable
 
     public virtual void Svr_Damage(int damage, Transform source = null)
     {
+        print("Base: " + damage);
         Health -= damage;
     }
 }
