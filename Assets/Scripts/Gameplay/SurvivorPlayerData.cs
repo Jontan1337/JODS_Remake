@@ -36,8 +36,11 @@ public class SurvivorPlayerData : BasePlayerData
         {
             if (value > points) // Don't xp when lose points.
             {
-                Exp += value - points;
+                int diff = value - points;
+                Exp += diff;
+                Score += diff;
             }
+
             points = value;
             onPointsChanged?.Invoke(value);
         }
@@ -48,6 +51,7 @@ public class SurvivorPlayerData : BasePlayerData
         set
         {
             kills = value;
+            Points += (int)PointsTable.Kill;
             onKillsChanged?.Invoke(value);
         }
     }

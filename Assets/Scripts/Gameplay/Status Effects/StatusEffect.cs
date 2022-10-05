@@ -82,5 +82,5 @@ public abstract class StatusEffect
 
         else return 100;
     }
-    public virtual Sprite GetImage() => effect.uIImage[currentImageIndex];
+    public virtual Sprite GetImage() => effect.uIImage.Length > 0 ? effect.uIImage[currentImageIndex] : null;
 }

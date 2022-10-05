@@ -21,6 +21,7 @@ public class MasterPlayerData : BasePlayerData
         get => unitsPlaced;
         set
         {
+            Score += 10;
             unitsPlaced = value;
             onUnitsPlacedChanged?.Invoke(value);
         }
@@ -30,6 +31,7 @@ public class MasterPlayerData : BasePlayerData
         get => totalUnitUpgrades;
         set
         {
+            Score += 100;
             totalUnitUpgrades = value;
             onTotalUnitUpgradesChanged?.Invoke(value);
         }

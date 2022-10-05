@@ -354,6 +354,7 @@ public class UnitMaster : NetworkBehaviour
         Rpc_UpdateMasterLevelUI(connectionToClient, value);
 
         MasterUpgrades++;
+        playerData.Score += 100;
 
         Rpc_UnlockMasterUpgradeButtons(connectionToClient, value);
     }

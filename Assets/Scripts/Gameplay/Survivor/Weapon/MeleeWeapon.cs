@@ -172,10 +172,15 @@ public class MeleeWeapon : EquipmentItem, IImpacter
                 {
                     previousHitColliderParent = other.transform.root;
                     damagable?.Svr_Damage(currentDamage, transform.root);
+
                     BaseStatManager statManagerBase = other.GetComponentInParent<BaseStatManager>();
+
                     if (statManagerBase != null)
                     {
-                        owner.GetComponent<SurvivorPlayerData>().Points += statManagerBase.IsDead ? (int)PointsTable.Kill : (int)PointsTable.Damage;
+                        SurvivorPlayerData data = owner.GetComponent<SurvivorPlayerData>();
+
+                        if (statManagerBase.IsDead) data.Kills += 1;
+                        else data.Points += (int)PointsTable.Damage;
                     }
                 }
                 amountSlashed++;
