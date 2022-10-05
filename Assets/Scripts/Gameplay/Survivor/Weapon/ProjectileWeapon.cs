@@ -15,8 +15,8 @@ public class ProjectileWeapon : RangedWeapon
 		base.Svr_Shoot(aimPoint);
 		Rpc_Shoot(Vector2.zero);
 		GameObject projectileToSpawn = Instantiate(projectile, shootOrigin.position, shootOrigin.rotation);
-		NetworkServer.Spawn(projectileToSpawn);
 		projectileToSpawn.GetComponent<Projectile>().owner = transform.root;
+		NetworkServer.Spawn(projectileToSpawn);
 		//projectile = ObjectPool.Instance.SpawnFromLocalPool(bulletTag, shootOrigin.position, shootOrigin.rotation, timeToLive);
 		ProjectileShoot(projectileToSpawn);
 	}

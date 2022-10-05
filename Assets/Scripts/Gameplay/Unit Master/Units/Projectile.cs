@@ -9,6 +9,7 @@ public abstract class Projectile : NetworkBehaviour
 	[Header("State")]
 	[SerializeField] private bool active = false;
 	public virtual void Activate() { active = true; }
+	public Transform owner;
 
 	[Header("Settings")]
 	[SerializeField] private bool objectPooled = false; //TEMPORARY
@@ -20,7 +21,6 @@ public abstract class Projectile : NetworkBehaviour
 	[SerializeField] protected int lifetime = 5;
 	[SerializeField] private bool destroyAfterLifetime = false;
 	[SerializeField] private bool sticky = false;
-	[SerializeField] public Transform owner;
 	[Space]
 	[SerializeField] protected bool hasDropoff = true;
 	[SerializeField] protected int timeBeforeDropoff = 3;

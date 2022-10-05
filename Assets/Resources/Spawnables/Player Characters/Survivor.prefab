@@ -4725,7 +4725,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   test: 1
-  survivorSO: {fileID: 11400000, guid: 01e3a2fd5de2ca54093550f70bd3b953, type: 2}
+  survivorSO: {fileID: 11400000, guid: a6c4c8d579e294a4b88b3f2d90be9e20, type: 2}
   sClass: {fileID: 0}
   bodyRenderer: {fileID: 8146840676092125171}
   headRenderer: {fileID: 2690098373533844718}
@@ -4791,6 +4791,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  baseExpRequired: 100
 --- !u!114 &-2541738587506703838
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4993,6 +4994,7 @@ MonoBehaviour:
   exp: 0
   expRequired: 0
   level: 0
+  previousExpRequired: 0
   points: 0
   kills: 0
   pointsText: {fileID: 7966863143780647685}

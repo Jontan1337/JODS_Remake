@@ -10,14 +10,16 @@ public class Syringe : Projectile
 
     private SurvivorPlayerData survivorPlayerData;
 
-    public override void Start()
+    public override void OnStartServer()
     {
-        base.Start();
+        base.OnStartServer();
+        print(owner);
         objectPoolTag = Tags.Syringe;
         transform.Rotate(new Vector3(90, 0, 0));
-        survivor = owner.GetComponent<Survivor>();
         survivorPlayerData = owner.GetComponent<SurvivorPlayerData>();
+        survivor = owner.GetComponent<Survivor>();
     }
+
     [Server]
     public override void OnHit(Collision hit)
     {
@@ -28,31 +30,28 @@ public class Syringe : Projectile
             if (idmg?.Team == Teams.Player)
             {
                 survivorPlayerData.Points += (int)PointsTable.Heal;
-                // u stoopid.
-                if (survivor.optionOneFirstChoice && hit.collider.GetComponent<SurvivorStatManager>().IsDown)
-                {
-                    reviveManager.StartCoroutine(reviveManager.BeingRevived());
-                }
-                else if (statusEffectsToApply.Count > 0)
+                //if (survivor.optionOneFirstChoice && hit.collider.GetComponent<SurvivorStatManager>().IsDown)
+                //{
+                //    reviveManager.StartCoroutine(reviveManager.BeingRevived());
+                //}
+                if (statusEffectsToApply.Count > 0)
                 {
                     foreach (StatusEffectToApply statusEffectToApply in statusEffectsToApply)
                     {
                         hit.collider.transform.root.gameObject.GetComponent<StatusEffectManager>()?
                             .Svr_ApplyStatusEffect(statusEffectToApply.statusEffect.ApplyEffect(hit.collider.transform.root.gameObject));
                     }
-
-
-                    Infection infect = (Infection)hit.collider.transform.root.gameObject.GetComponent<StatusEffectManager>()?.Svr_GetStatusEffect(statusEffect);
-
-                    infect.infectionLevel -= 1;
+                    Infection infect = (Infection)hit.collider.transform.root.gameObject.GetComponent<StatusEffectManager>().Svr_GetStatusEffect(statusEffect);
+                    if (infect != null)
+                    {
+                        infect.infectionLevel -= 1;
+                    }
                 }
-
             }
             else
             {
                 UnitBase ub = hit.collider.transform.root.gameObject.GetComponent<UnitBase>();
                 BaseStatManager baseStatManager = hit.collider.transform.root.gameObject.GetComponent<BaseStatManager>();
-
                 if (!ub.TryGetComponent(out ZombieStronk stronk))
                 {
                     for (int i = 1; i < 4; i++)
@@ -62,8 +61,6 @@ public class Syringe : Projectile
                     idmg?.Svr_Damage(baseStatManager.Health, owner);
                     survivorPlayerData.Points += (int)PointsTable.Kill;
                 }
-
-
             }
         }
 
