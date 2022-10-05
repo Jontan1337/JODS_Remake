@@ -32,7 +32,8 @@ public class SurvivorAnimationManager : NetworkBehaviour
     private void Awake()
 	{
 		GetComponent<SurvivorSetup>().onServerSpawnItem += GetReferences;
-	}
+        GetComponent<SurvivorSetup>().onClientSpawnItem += GetReferences;
+    }
 
     public override void OnStartClient()
 	{
@@ -63,10 +64,13 @@ public class SurvivorAnimationManager : NetworkBehaviour
 						originalCameraTransformParent = transform.Find("Virtual Head(Clone)");
 					break;
                 case ItemNames.Equipment:
-					if (item.TryGetComponent(out PlayerEquipment playerEquipment))
-					{
-						playerEquipment.onServerEquippedItemChange += OnServerEquippedItemChange;
-					}
+					if (isServer)
+                    {
+						if (item.TryGetComponent(out PlayerEquipment playerEquipment))
+						{
+							playerEquipment.onServerEquippedItemChange += OnServerEquippedItemChange;
+						}
+                    }
                     break;
             }
 		}
@@ -110,23 +114,23 @@ public class SurvivorAnimationManager : NetworkBehaviour
         {
 			Rpc_SetCameraForDownedState(connectionToClient);
 			fullBodyBipedIK.enabled = false;
-			characerAnimator.SetBool("IsDown", true);
         }
 		else
         {
 			Rpc_SetCameraForRevivedState(connectionToClient);
 			fullBodyBipedIK.enabled = true;
-			characerAnimator.SetBool("IsDown", false);
         }
     }
 	[TargetRpc]
 	private void Rpc_SetCameraForDownedState(NetworkConnection target)
 	{
-        cameraTransform.SetParent(fullBodyBipedIK.references.head.GetChild(0));
+		characerAnimator.SetBool("IsDown", true);
+		cameraTransform.SetParent(fullBodyBipedIK.references.head.GetChild(0));
     }
 	[TargetRpc]
 	private void Rpc_SetCameraForRevivedState(NetworkConnection target)
 	{
+		characerAnimator.SetBool("IsDown", false);
 		cameraTransform.SetParent(originalCameraTransformParent);
 		cameraTransform.localPosition = new Vector3(0f, 0.1f, 0f);
 		cameraTransform.rotation = originalCameraTransformParent.rotation;
