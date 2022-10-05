@@ -55,12 +55,10 @@ public class Syringe : Projectile
             else
             {
                 UnitBase ub = hit.collider.transform.root.gameObject.GetComponent<UnitBase>();
-                BaseStatManager baseStatManager = hit.collider.transform.root.gameObject.GetComponent<BaseStatManager>();
+
                 if (!ub.TryGetComponent(out ZombieStronk stronk))
                 {
-                    print("Syringe: " + baseStatManager.MaxHealth);
-                    idmg?.Svr_Damage(baseStatManager.MaxHealth, owner);
-                    print("Syringe2: " + baseStatManager.MaxHealth);
+                    idmg?.Svr_Damage(int.MaxValue, owner);
 
                     for (int i = 1; i < 4; i++)
                     {
