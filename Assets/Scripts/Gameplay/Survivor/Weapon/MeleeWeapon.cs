@@ -175,7 +175,7 @@ public class MeleeWeapon : EquipmentItem, IImpacter
                     BaseStatManager statManagerBase = other.GetComponentInParent<BaseStatManager>();
                     if (statManagerBase != null)
                     {
-                        SurvivorPlayerData.Instance.Points += statManagerBase.IsDead ? (int)PointsTable.Kill : (int)PointsTable.Damage;
+                        owner.GetComponent<SurvivorPlayerData>().Points += statManagerBase.IsDead ? (int)PointsTable.Kill : (int)PointsTable.Damage;
                     }
                 }
                 amountSlashed++;

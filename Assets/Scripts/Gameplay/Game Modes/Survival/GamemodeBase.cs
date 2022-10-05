@@ -8,16 +8,12 @@ using UnityEngine.InputSystem;
 using System;
 using Sirenix.OdinInspector;
 
-
-public enum wahta
-{
-    common = 2,
-    stronk = 20,
-}
-
 [RequireComponent(typeof(AudioSource))]
 public abstract class GamemodeBase : NetworkBehaviour
 {
+    [BoxGroup("Debug")]
+    [SerializeField] private bool test = false;
+
     #region Singleton
     public static GamemodeBase Instance;
     private void Awake()
@@ -40,8 +36,6 @@ public abstract class GamemodeBase : NetworkBehaviour
         get { return survivorsAlive; }
         set
         {
-            wahta w = wahta.common;
-            int point = (int)w;
             survivorsAlive = value; 
 
             if (survivorsAlive <= 0)
@@ -262,7 +256,4 @@ public abstract class GamemodeBase : NetworkBehaviour
 
 
     #endregion
-
-    [BoxGroup("Debug")]
-    [SerializeField] private bool test = false;
 }

@@ -54,7 +54,7 @@ public class RaycastWeapon : RangedWeapon
                         BaseStatManager statManagerBase = shootHit.collider.GetComponentInParent<BaseStatManager>();
                         if (statManagerBase != null)
                         {
-                            SurvivorPlayerData.Instance.Points += statManagerBase.IsDead ? (int)PointsTable.Kill : (int)PointsTable.Damage;
+                            owner.GetComponent<SurvivorPlayerData>().Points += statManagerBase.IsDead ? (int)PointsTable.Kill : (int)PointsTable.Damage;
                         }
                     }
                     // This ray shoots it's own collider on the other side to get the "penetration point"
