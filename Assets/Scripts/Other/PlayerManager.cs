@@ -13,9 +13,6 @@ public class PlayerManager : NetworkBehaviour
     [SerializeField] private Transform canvasInGame = null;
     [Space]
     [SerializeField] private bool hideCursorOnDisable = true;
-    [Space]
-    //[SerializeField] private bool hasEquipment = false;
-    //[SerializeField] private Dropdown equipmentBehaviourDropDown = null;
 
     public Action onMenuOpened;
     public Action onMenuClosed;
@@ -48,19 +45,11 @@ public class PlayerManager : NetworkBehaviour
         instance = this;
         activeMenuCanvas = canvasMenu;
         JODSInput.Controls.MainMenu.Escape.performed += ToggleMenuControls;
-        //if (hasEquipment)
-        //{
-        //    equipmentBehaviourDropDown.onValueChanged.AddListener(GameSettings.Instance.SetPickupBehaviour);
-        //}
     }
 
     public override void OnStopAuthority()
     {
         JODSInput.Controls.MainMenu.Escape.performed -= ToggleMenuControls;
-        //if (hasEquipment)
-        //{
-        //    equipmentBehaviourDropDown.onValueChanged.RemoveListener(GameSettings.Instance.SetPickupBehaviour);
-        //}
     }
 
     private void ToggleMenuControls(InputAction.CallbackContext obj)
