@@ -31,6 +31,7 @@ public abstract class GamemodeBase : NetworkBehaviour
     public MapSettingsSO mapSettings;
     [Space]
     [SerializeField] private int survivorsAlive = 0;
+    [SerializeField] private List<BasePlayerData> playerDataList = new List<BasePlayerData>();// use this playerlist to upload the scoreboard to web / server
     public int SurvivorsAlive
     {
         get { return survivorsAlive; }
@@ -65,15 +66,12 @@ public abstract class GamemodeBase : NetworkBehaviour
 
     #region Point System and Player Scores
 
-    //When a player joins the server, a PlayerData gets created with the player's info.
-    //This PlayerData then gets added to the list of players.
-    //The server then tells all clients to update the visual scoreboard with the new list of players.
-    //
-    //Only the server has these PlayerDatas, as it is the only one allowed to modify them.
     [Server]
     public void Svr_AddPlayer(uint playerId, bool isMaster = false)
     {
         GameObject player = NetworkIdentity.spawned[playerId].gameObject;
+
+        playerDataList.Add(player.GetComponent<BasePlayerData>()); // use this playerlist to upload the scoreboard to web / server
 
         if (!isMaster)
         {
