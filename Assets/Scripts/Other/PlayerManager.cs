@@ -42,7 +42,11 @@ public class PlayerManager : NetworkBehaviour
 
     public override void OnStartAuthority()
     {
-        instance = this;
+        if (instance == null)
+        {
+            instance = this;
+        }
+
         activeMenuCanvas = canvasMenu;
         JODSInput.Controls.MainMenu.Escape.performed += ToggleMenuControls;
     }
@@ -64,17 +68,6 @@ public class PlayerManager : NetworkBehaviour
         {
             EnableMenu();
         }
-    }
-
-    [TargetRpc]
-    public void Rpc_EnableMenu(NetworkConnection target)
-    {
-        EnableMenu();
-    }
-    [TargetRpc]
-    public void Rpc_DisableMenu(NetworkConnection target)
-    {
-        DisableMenu();
     }
 
     public void EnableMenu()

@@ -4752,6 +4752,8 @@ MonoBehaviour:
   onDamaged:
     m_PersistentCalls:
       m_Calls: []
+  spectatorPrefab: {fileID: 8254277384412570557, guid: c9f3bf72ab09d9a44bcb4f99827d35d3,
+    type: 3}
   armor: 0
   healthBar: {fileID: 5834093433503493102}
   healthLossBar: {fileID: 6616134530017234065}
@@ -4812,7 +4814,7 @@ MonoBehaviour:
   downCanvas: {fileID: 2982439891624587407}
   inGameCanvas: {fileID: 8050693953223198890}
   reviveTime: 5
-  downTime: 30
+  downTime: 2
   onDownTimerFinished:
     m_PersistentCalls:
       m_Calls: []
@@ -4886,6 +4888,7 @@ MonoBehaviour:
   easingSpeed: 500
   minRotY: -75
   maxRotY: 75
+  useUpdate: 0
 --- !u!114 &6904755547420367345
 MonoBehaviour:
   m_ObjectHideFlags: 0

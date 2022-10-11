@@ -3,27 +3,46 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-public class Spectator : NetworkBehaviour
+public class Spectator : MonoBehaviour
 {
-    float rotY = 0;
-    float rotX = 0;
-    void Update()
+    private CharacterController characterController = null;
+    Vector3 moveDirection = Vector3.zero;
+
+    [SerializeField] private float movementSpeed = 10f;
+    [SerializeField] private float gravity = 20f;
+
+    private float m_horizontal;
+    private float m_vertical;
+
+    private void Start()
     {
-        if (hasAuthority == false)
+        characterController = GetComponent<CharacterController>();
+    }
+
+    private void OnEnable()
+    {
+        JODSInput.Controls.Survivor.Movement.performed += ctx => Move(ctx.ReadValue<Vector2>());
+    }
+
+    private void OnDisable()
+    {
+        JODSInput.Controls.Survivor.Movement.performed -= ctx => Move(ctx.ReadValue<Vector2>());
+    }
+
+    private void Move(Vector2 moveValues)
+    {
+        m_horizontal = moveValues.x;
+        m_vertical = moveValues.y;
+    }
+
+    private void Update()
+    {
+        //Movement
+        if (characterController.isGrounded)
         {
-            return;
+            moveDirection = transform.TransformDirection(new Vector3(m_horizontal, 0.00f, m_vertical)) * movementSpeed;
         }
-        var hor = Input.GetAxis("Horizontal") * 5;
-        var ver = Input.GetAxis("Vertical") * 5;
-        rotY += Input.GetAxis("Mouse Y") * 2;
-        rotX += Input.GetAxis("Mouse X") * 2;
-
-        transform.position += transform.forward * ver * Time.deltaTime;
-        transform.position += transform.right * hor * Time.deltaTime;
-
-        rotY = Mathf.Clamp(rotY, -75f, 75f);
-        //camera.transform.Rotate(-rotY, 0f, 0f);
-
-        transform.rotation = Quaternion.Euler(-rotY, rotX, 0f);
+        moveDirection.y -= gravity * Time.deltaTime;
+        characterController.Move(moveDirection * Time.deltaTime);
     }
 }

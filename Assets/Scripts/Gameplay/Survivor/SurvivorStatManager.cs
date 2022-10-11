@@ -9,8 +9,12 @@ using UnityEngine.Events;
 
 public class SurvivorStatManager : BaseStatManager, IDamagableTeam
 {
+    [SerializeField] private GameObject spectatorPrefab;
+
     private SurvivorLevelManager level;
     private ReviveManager reviveManager;
+
+    private GameObject spectatorGO;
 
     [Title("Stats")]
     [SerializeField, SyncVar(hook = nameof(ArmorHook))] private int armor = 0;
@@ -77,7 +81,12 @@ public class SurvivorStatManager : BaseStatManager, IDamagableTeam
         {
             isDead = value;
             onDied?.Invoke();
-            NetworkServer.Destroy(gameObject);
+
+            if (isServer)
+            {
+                Svr_SpawnSpectatorCharacterForPlayer();
+                Rpc_DisableThisGameObject();
+            }
         }
     }
 
@@ -91,7 +100,6 @@ public class SurvivorStatManager : BaseStatManager, IDamagableTeam
         }
 
     }
-
 
     public void SetStats(int maxHealth, int armor)
     {
@@ -107,8 +115,6 @@ public class SurvivorStatManager : BaseStatManager, IDamagableTeam
         healthLossBar.maxValue = maxHealth;
         armorBar.value = armor;
     }
-
-
 
     #region Damaged
 
@@ -219,10 +225,8 @@ public class SurvivorStatManager : BaseStatManager, IDamagableTeam
         }
     }
 
-
     private void OnDownTimerFinished()
     {
-        print("dead");
         IsDead = true;
     }
 
@@ -230,5 +234,19 @@ public class SurvivorStatManager : BaseStatManager, IDamagableTeam
     {
         Health = 50;
         IsDown = false;
+    }
+
+    [Server]
+    private void Svr_SpawnSpectatorCharacterForPlayer()
+    {
+        spectatorGO = Instantiate(spectatorPrefab);
+        NetworkServer.Spawn(spectatorGO);
+        spectatorGO.transform.position = transform.position + new Vector3(0f, 1f, 0f);
+        NetworkServer.ReplacePlayerForConnection(connectionToClient, spectatorGO);
+    }
+    [ClientRpc]
+    private void Rpc_DisableThisGameObject()
+    {
+        gameObject.SetActive(false);
     }
 }

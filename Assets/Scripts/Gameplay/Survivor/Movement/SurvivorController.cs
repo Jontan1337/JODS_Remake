@@ -97,7 +97,6 @@ public class SurvivorController : NetworkBehaviour
         if (!hasAuthority) return;
 
         CheckGround();
-        //print(IsMoving());
 
         if (cController.isGrounded)
         {
@@ -118,7 +117,6 @@ public class SurvivorController : NetworkBehaviour
 
     private void Move(InputAction.CallbackContext context)
     {
-
         Vector2 moveValues = context.ReadValue<Vector2>();
         horizontal = moveValues.x;
         vertical = moveValues.y;

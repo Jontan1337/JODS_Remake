@@ -15,6 +15,7 @@ public class FirstPersonLookController : MonoBehaviour, IBindable
 	[SerializeField] private float easingSpeed = 500f;
 	[SerializeField] private float minRotY = -75f;
 	[SerializeField] private float maxRotY = 75f;
+	[SerializeField] private bool useUpdate = true;
 
 	private Vector2 rotation;
 	private float targetRotX, targetRotY = 0f;
@@ -25,8 +26,27 @@ public class FirstPersonLookController : MonoBehaviour, IBindable
 		SetMouseSettings();
 	}
 
+	private void OnEnable()
+	{
+		if (useUpdate)
+			Bind();
+	}
+	private void OnDisable()
+	{
+		if (useUpdate)
+			Unbind();
+	}
+
+	private void Update()
+	{
+		if (useUpdate)
+			DoRotation();
+	}
+
 	public void Bind()
 	{
+		JODSInput.Controls.Enable();
+		Debug.Log("Bootleg enable", this);
 		JODSInput.Controls.Survivor.Camera.performed += Look;
 		JODSInput.onCameraDisabled += OnCameraDisabled;
 		GameSettings.onMouseSensitivityChanged += OnMouseSensitivityChanged;
