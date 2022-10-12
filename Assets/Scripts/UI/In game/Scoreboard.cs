@@ -101,4 +101,9 @@ public class Scoreboard : NetworkBehaviour
         scoreboardIsOpen = !scoreboardIsOpen;
         scoreboard.SetActive(scoreboardIsOpen);
     }
+
+    public void OpenScoreboard(bool enable)
+    {
+        scoreboard.SetActive(enable);
+    }
 }

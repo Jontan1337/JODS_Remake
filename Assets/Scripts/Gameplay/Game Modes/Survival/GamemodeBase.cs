@@ -37,9 +37,9 @@ public abstract class GamemodeBase : NetworkBehaviour
         get { return survivorsAlive; }
         set
         {
-            survivorsAlive = value; 
+            survivorsAlive = value;
 
-            if (survivorsAlive <= 0)
+            if (survivorsAlive <= 0 && endGameWhenSurvivors0)
             {
                 Svr_EndGame();
             }
@@ -48,6 +48,7 @@ public abstract class GamemodeBase : NetworkBehaviour
 
 
     [Header("Endgame Management")]
+    [SerializeField] private bool endGameWhenSurvivors0 = true;
     [SerializeField] private GameObject endgameCamera = null;
     [SerializeField] private AudioClip endgameSound = null;
     [SerializeField] private Image endgameFade = null;
@@ -75,8 +76,8 @@ public abstract class GamemodeBase : NetworkBehaviour
 
         if (!isMaster)
         {
-            player.GetComponent<BaseStatManager>().onDied.AddListener(delegate { survivorsAlive--; });
-            survivorsAlive++;
+            player.GetComponent<BaseStatManager>().onDied.AddListener(delegate { SurvivorsAlive--; });
+            SurvivorsAlive++;
             Scoreboard.Instance.Svr_AddSurvivor(player.GetComponent<SurvivorPlayerData>());
         }
         else
@@ -183,7 +184,7 @@ public abstract class GamemodeBase : NetworkBehaviour
 
     [Server]
     private void Svr_EndGame()
-    {
+    {        
         EndGame();
         Rpc_EndGame(); //Client stuff, like disable controls and cameras, enable end game camera and enable scoreboard.
 
@@ -200,6 +201,9 @@ public abstract class GamemodeBase : NetworkBehaviour
         endgameCamera.SetActive(true); //Enable the endgame camera
         endgameCamera.GetComponent<Camera>().enabled = true; //Enable the endgame camera
         endgameCamera.transform.position = new Vector3(0, 5, 0);
+
+        Scoreboard.Instance.OpenScoreboard(true);
+
         /*
         if (mapSettings)
         {
