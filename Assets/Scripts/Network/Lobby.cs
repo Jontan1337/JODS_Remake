@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Mirror;
 using System;
+using UnityEngine.Events;
 
 public struct NetworkBufferItem
 {
@@ -74,6 +75,7 @@ public class Lobby : NetworkManager
     private bool isInitialized = false;
 
     public static Action OnServerGameStarted;
+    public UnityEvent OnClientDisconnectEvent;
 
     #region Singleton
     public static Lobby Instance;
@@ -216,7 +218,17 @@ public class Lobby : NetworkManager
         Instance.roomPlayers.Remove(conn.identity.GetComponent<LobbyPlayer>());
         NetworkServer.DestroyPlayerForConnection(conn);
 
+        if (conn.connectionId == 0)
+        {
+            OnClientDisconnectEvent?.Invoke();
+        }
         base.OnServerDisconnect(conn);
+    }
+
+    public override void OnClientDisconnect(NetworkConnection conn)
+    {
+        OnClientDisconnectEvent?.Invoke();
+        base.OnClientDisconnect(conn);
     }
 
     public override void OnServerSceneChanged(string sceneName)
