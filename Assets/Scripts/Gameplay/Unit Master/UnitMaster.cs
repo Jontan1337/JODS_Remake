@@ -12,6 +12,9 @@ public class UnitList
 {  
     public string name;
     public UnitSO unit;
+    [Space]
+    [ShowIf("masterReference", null)] public UnitMaster masterReference;
+
     [Header("Upgrades")]
     [SyncVar] public int level = 0;
     public int upgradeMilestone = 50;
@@ -59,14 +62,13 @@ public class UnitList
     [Space]
     public int maxAmount;
     [SerializeField] private int currentAmount;
-
     public int CurrentAmount
     {
         get { return currentAmount; }
         set 
         { 
             currentAmount = value;
-            if (unitButton) unitButton.UpdateUnitAmount(value, maxAmount);
+            if (unitButton) masterReference.Svr_SetUnitAmountText(value, maxAmount, unitIndex);
         }
     }
 
@@ -76,7 +78,7 @@ public class UnitList
     public void Unlock(bool unlock)
     {
         unitButton.Unlock(unlock);
-        unitButton.UpdateUnitAmount(CurrentAmount, maxAmount);
+        masterReference.Svr_SetUnitAmountText(CurrentAmount, maxAmount, unitIndex);
     }
     [Space]
     public int unitIndex;
@@ -912,6 +914,18 @@ public class UnitMaster : NetworkBehaviour
         UI.masterUpgradeMenu.SetActive(active);
     }
 
+    [Server]
+    public void Svr_SetUnitAmountText(int amount, int maxAmount, int index)
+    {
+        Rpc_SetUnitAmountText(connectionToClient, amount, maxAmount, index);
+    }
+
+    [TargetRpc]
+    private void Rpc_SetUnitAmountText(NetworkConnection target, int amount, int maxAmount, int index)
+    {
+       GetUnitList(index).unitButton.UpdateUnitAmount(amount, maxAmount);
+    }
+
     #endregion
 
     #region Particles and Effects Functions
@@ -1651,6 +1665,8 @@ public class UnitMaster : NetworkBehaviour
             u.upgradeCurve = u.unit.upgrades.upgradeCurve;
 
             u.modifiers = new ModifierManagerUnitData();
+
+            u.masterReference = this;
         }
     }
 
