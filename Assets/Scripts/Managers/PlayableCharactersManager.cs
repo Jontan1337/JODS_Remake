@@ -15,10 +15,12 @@ public class PlayableCharactersManager : MonoBehaviour
         }
         Instance = this;
         Lobby.OnServerGameStarted += delegate { DontDestroyOnLoad(this); };
+        Lobby.OnClientGameStarted += delegate { DontDestroyOnLoad(this); };
     }
     private void OnDisable()
     {
         Lobby.OnServerGameStarted -= delegate { DontDestroyOnLoad(this); };
+        Lobby.OnClientGameStarted -= delegate { DontDestroyOnLoad(this); };
     }
 
     #endregion

@@ -17,10 +17,12 @@ public class LobbyFade : NetworkBehaviour
         //    Destroy(gameObject);
         //}
         Lobby.OnServerGameStarted += delegate { DontDestroyOnLoad(this); };
+        Lobby.OnClientGameStarted += delegate { DontDestroyOnLoad(this); };
     }
     private void OnDisable()
     {
         Lobby.OnServerGameStarted -= delegate { DontDestroyOnLoad(this); };
+        Lobby.OnClientGameStarted -= delegate { DontDestroyOnLoad(this); };
     }
 
     public void BeginFade(float time)

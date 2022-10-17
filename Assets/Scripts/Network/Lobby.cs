@@ -75,6 +75,7 @@ public class Lobby : NetworkManager
     private bool isInitialized = false;
 
     public static Action OnServerGameStarted;
+    public static Action OnClientGameStarted;
     public UnityEvent OnClientDisconnectEvent;
 
     #region Singleton
@@ -90,6 +91,7 @@ public class Lobby : NetworkManager
         {
             Instance = this;
             OnServerGameStarted += delegate { DontDestroyOnLoad(this); };
+            OnClientGameStarted += delegate { DontDestroyOnLoad(this); };
         }
     }
     #endregion
@@ -569,6 +571,7 @@ public class Lobby : NetworkManager
 
     public void ClientCountdownCompleted()
     {
+        OnClientGameStarted?.Invoke();
         //Disable the ready button for everyone
         readyToggle.gameObject.SetActive(false);
         //Disable the master toggle for everyone

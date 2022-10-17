@@ -24,6 +24,7 @@ public class LobbySync : NetworkBehaviour
         {
             lobbySync = this;
             Lobby.OnServerGameStarted += delegate { DontDestroyOnLoad(this); };
+            Lobby.OnClientGameStarted += delegate { DontDestroyOnLoad(this); };
         }
         else
         {
@@ -33,6 +34,7 @@ public class LobbySync : NetworkBehaviour
     private void OnDisable()
     {
         Lobby.OnServerGameStarted -= delegate { DontDestroyOnLoad(this); };
+        Lobby.OnClientGameStarted -= delegate { DontDestroyOnLoad(this); };
     }
     #endregion
 
