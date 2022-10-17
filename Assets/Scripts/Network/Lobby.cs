@@ -73,11 +73,23 @@ public class Lobby : NetworkManager
     [Header("Debug")]
     private bool isInitialized = false;
 
-    private static Action<NetworkConnection> RelayOnServerPlayerReady;
-    public static Action<NetworkConnection> RelayOnServerGameStarted;
+    public static Action OnServerGameStarted;
 
     #region Singleton
     public static Lobby Instance;
+    public override void Awake()
+    {
+        base.Awake();
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+            OnServerGameStarted += delegate { DontDestroyOnLoad(this); };
+        }
+    }
     #endregion
 
     #region Match Making
@@ -91,14 +103,6 @@ public class Lobby : NetworkManager
 #endif
         isInitialized = true;
 
-        if (Instance != null)
-        {
-            Destroy(gameObject);
-        }
-        else
-        {
-            Instance = this;
-        }
 
         MMPanel.SetActive(false);
         LobbyPanel.SetActive(false);
@@ -264,14 +268,14 @@ public class Lobby : NetworkManager
         // If host/server then stop server.
         if (LobbySync.Instance.isServer)
         {
-            NetworkServer.DisconnectAllConnections();
+            //NetworkServer.DisconnectAllConnections();
             //for (int i = numPlayers-1; i >= 0; i--)
             //{
             //    Debug.Log($"Destroying player connection {roomPlayers[i].connectionToServer}");
             //    NetworkServer.DestroyPlayerForConnection(roomPlayers[i].connectionToServer);
             //}
             MatchListing.StopDiscovery();
-            Shutdown();
+            StopHost();
         }
         else
         {
@@ -283,8 +287,8 @@ public class Lobby : NetworkManager
     {
         base.OnStopServer();
 
-        Destroy(LobbySync.Instance.gameObject);
-        Destroy(gameObject);
+        //Destroy(LobbySync.Instance.gameObject);
+        //Destroy(gameObject);
     }
 
     public override void OnDestroy()
@@ -545,6 +549,8 @@ public class Lobby : NetworkManager
 
     public void ServerCountdownCompleted()
     {
+        // Set objects in DontDestroyOnLoad.
+        OnServerGameStarted?.Invoke();
         StartCoroutine(StartGame());
     }
 

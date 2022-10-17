@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Mirror;
+using UnityEngine.SceneManagement;
 
 public class LobbyFade : NetworkBehaviour
 {
@@ -10,7 +11,16 @@ public class LobbyFade : NetworkBehaviour
 
     private void Start()
     {
-        DontDestroyOnLoad(this);
+        //var e = FindObjectsOfType<LobbyFade>();
+        //if (e.Length > 1)
+        //{
+        //    Destroy(gameObject);
+        //}
+        Lobby.OnServerGameStarted += delegate { DontDestroyOnLoad(this); };
+    }
+    private void OnDisable()
+    {
+        Lobby.OnServerGameStarted -= delegate { DontDestroyOnLoad(this); };
     }
 
     public void BeginFade(float time)

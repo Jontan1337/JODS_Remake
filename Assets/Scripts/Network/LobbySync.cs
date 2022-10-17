@@ -23,17 +23,22 @@ public class LobbySync : NetworkBehaviour
         if (lobbySync == null)
         {
             lobbySync = this;
+            Lobby.OnServerGameStarted += delegate { DontDestroyOnLoad(this); };
         }
         else
         {
             Destroy(gameObject);
         }
     }
+    private void OnDisable()
+    {
+        Lobby.OnServerGameStarted -= delegate { DontDestroyOnLoad(this); };
+    }
     #endregion
 
     private void Start()
     {
-        DontDestroyOnLoad(this);
+
     }
 
     [Server]

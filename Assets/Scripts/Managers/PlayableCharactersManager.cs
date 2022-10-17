@@ -9,14 +9,16 @@ public class PlayableCharactersManager : MonoBehaviour
     public static PlayableCharactersManager Instance;
     private void Awake()
     {
-        PlayableCharactersManager[] otherInstance = FindObjectsOfType<PlayableCharactersManager>(true);
-        DontDestroyOnLoad(this);
-
         if (Instance)
         {
             Destroy(gameObject);
         }
         Instance = this;
+        Lobby.OnServerGameStarted += delegate { DontDestroyOnLoad(this); };
+    }
+    private void OnDisable()
+    {
+        Lobby.OnServerGameStarted -= delegate { DontDestroyOnLoad(this); };
     }
 
     #endregion

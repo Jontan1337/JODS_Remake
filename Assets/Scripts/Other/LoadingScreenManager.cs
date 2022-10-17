@@ -14,12 +14,17 @@ public class LoadingScreenManager : NetworkBehaviour
             Destroy(gameObject);
         }
         Instance = this;
+        Lobby.OnServerGameStarted += delegate { DontDestroyOnLoad(this); };
+    }
+
+    private void OnDisable()
+    {
+        Lobby.OnServerGameStarted -= delegate { DontDestroyOnLoad(this); };
     }
     #endregion
 
     private void Start()
     {
-        DontDestroyOnLoad(this);
         loadingScreen.SetActive(false);
     }
 
