@@ -228,6 +228,7 @@ public class Lobby : NetworkManager
     public override void OnClientDisconnect(NetworkConnection conn)
     {
         OnClientDisconnectEvent?.Invoke();
+
         base.OnClientDisconnect(conn);
     }
 

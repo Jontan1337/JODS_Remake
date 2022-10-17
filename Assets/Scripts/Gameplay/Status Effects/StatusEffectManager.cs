@@ -101,7 +101,8 @@ public class StatusEffectManager : NetworkBehaviour
                 //Call Tick, which does an effect over time and reduces the duration of the effect
                 effect.Svr_Tick();
 
-                if(playerObject && indexDict.ContainsKey(effect.effect.name)) Rpc_ChangeVisualAlpha(connectionToClient, indexDict[effect.effect.name], effect.GetImageAlpha());
+                if(playerObject && indexDict.ContainsKey(effect.effect.name) && connectionToClient != null) 
+                    Rpc_ChangeVisualAlpha(connectionToClient, indexDict[effect.effect.name], effect.GetImageAlpha());
 
                 //If the duration of this effect has reached 0, then stop the effect and remove it.
                 if (effect.isFinished)

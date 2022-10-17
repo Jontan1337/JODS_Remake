@@ -25,11 +25,7 @@ public class MainMenuVisuals : MonoBehaviour
 
     private void Start()
     {
-        foreach(WorldVisual world in worldVisuals)
-        {
-            world.visual.SetActive(false);
-        }
-        defaultWorld.SetActive(true);
+        LoadDefault();
     }
     public void LoadVisual()
     {
@@ -50,7 +46,15 @@ public class MainMenuVisuals : MonoBehaviour
         {
             Debug.LogWarning($"No world with index: ({value}) could be found. Make sure the indexes match." +
                 $" Loading Default World.");
-            defaultWorld.SetActive(true);
+            LoadDefault();
         }
+    }
+    public void LoadDefault()
+    {
+        foreach (WorldVisual world in worldVisuals)
+        {
+            world.visual.SetActive(false);
+        }
+        defaultWorld.SetActive(true);
     }
 }
