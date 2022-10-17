@@ -35,6 +35,7 @@ MonoBehaviour:
   xpToUpgrade: 150
   starterUnit: 0
   maxAmountAlive: 4
+  maxAmountAliveIncrement: 1
   health: 150
   unitDamageType: 2
   hasMelee: 1
@@ -101,14 +102,17 @@ MonoBehaviour:
       amountOfUpgrades: 4
       upgradeAmount: 0.3
     traitHealth: Health Trait
+    traitHealthDescription: 
     unitUpgradesDamage:
       amountOfUpgrades: 4
       upgradeAmount: 0.1
     traitDamage: Damage Trait
+    traitDamageDescription: 
     unitUpgradesSpeed:
       amountOfUpgrades: 4
       upgradeAmount: 0.3
     traitSpeed: Speed Trait
+    traitSpeedDescription: 
   movementSpeed: 1.8
   chaseTime: 10
   sightDistance: 20
@@ -151,7 +155,6 @@ MonoBehaviour:
     footstepVolume: 0.1
   select:
     canSelect: 1
-  unitAnimator: {fileID: 9100000, guid: 97d4f1c96b0601f4ea43d958986889ba, type: 2}
   description: Able to grab survivors and disarm them temporarily, the Tentacle zombie
     is a dangerous support unit.
   powerStat: 2

@@ -36,6 +36,7 @@ MonoBehaviour:
   xpToUpgrade: 100
   starterUnit: 0
   maxAmountAlive: 10
+  maxAmountAliveIncrement: 3
   health: 100
   unitDamageType: 1
   hasMelee: 1
@@ -104,14 +105,17 @@ MonoBehaviour:
       amountOfUpgrades: 4
       upgradeAmount: 0.2
     traitHealth: Health Trait
+    traitHealthDescription: 
     unitUpgradesDamage:
       amountOfUpgrades: 4
       upgradeAmount: 0.2
     traitDamage: Damage Trait
+    traitDamageDescription: 
     unitUpgradesSpeed:
       amountOfUpgrades: 4
       upgradeAmount: 0.2
     traitSpeed: Speed Trait
+    traitSpeedDescription: 
   movementSpeed: 1.5
   chaseTime: 20
   sightDistance: 30
@@ -154,7 +158,6 @@ MonoBehaviour:
     footstepVolume: 0.1
   select:
     canSelect: 1
-  unitAnimator: {fileID: 9100000, guid: 75b137201dc35bd458c6e7d4b579ffcf, type: 2}
   description: With a deadly ranged attack, the Spitter is not to be underestimated.
   powerStat: 8
   healthStat: 6

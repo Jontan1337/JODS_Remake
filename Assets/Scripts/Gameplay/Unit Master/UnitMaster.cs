@@ -1330,7 +1330,7 @@ public class UnitMaster : NetworkBehaviour
 
             deployable.unlocked = true;
 
-            //Cmd_SetCurrentXP(CurrentXP - deployable.deployable.xpToUnlock);
+            Cmd_ModifyEXP(-deployable.deployable.xpToUnlock);
         }
         else if (unit != null)
         {
@@ -1340,12 +1340,19 @@ public class UnitMaster : NetworkBehaviour
             unit.unlocked = true;
 
             //Decrease xp by amount required to unlock the unit
-            //Cmd_SetCurrentXP(CurrentXP - unit.unit.xpToUnlock);
+            Cmd_ModifyEXP(-unit.unit.xpToUnlock);
         }
 
         //Play spooky sound
         Cmd_PlayGlobalSound(true);
     }
+
+    [Command]
+    private void Cmd_ModifyEXP(int amount)
+    {
+        playerData.Exp += amount;
+    }
+
     #endregion
 
     #region Selecting & Commanding
