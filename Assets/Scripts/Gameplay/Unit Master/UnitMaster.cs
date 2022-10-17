@@ -78,7 +78,7 @@ public class UnitList
     public void Unlock(bool unlock)
     {
         unitButton.Unlock(unlock);
-        masterReference.Svr_SetUnitAmountText(CurrentAmount, maxAmount, unitIndex);
+        unitButton.UpdateUnitAmount(currentAmount, maxAmount);
     }
     [Space]
     public int unitIndex;
