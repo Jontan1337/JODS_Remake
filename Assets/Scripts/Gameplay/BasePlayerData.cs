@@ -50,7 +50,7 @@ public class BasePlayerData : NetworkBehaviour
             ExpRequired += baseExpRequired + newXpReq;
         }
     }
-    public int Exp
+    public virtual int Exp
     {
         get => exp;
         set

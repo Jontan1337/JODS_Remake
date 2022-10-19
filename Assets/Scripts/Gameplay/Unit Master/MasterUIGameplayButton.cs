@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using Mirror;
 using TMPro;
 
-public class MasterUIGameplayButton : NetworkBehaviour
+public class MasterUIGameplayButton : MonoBehaviour
 {
     Button btn;
 

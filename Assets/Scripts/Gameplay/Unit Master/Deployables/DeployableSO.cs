@@ -8,7 +8,7 @@ public class DeployableSO : ScriptableObject
     [Header("Deployable Settings")]
     public GameObject deployablePrefab;
     [Space]
-    public int xpToUnlock = 100;
+    public int pointsToUnlock = 100;
     [Space]
     public int cooldownOnUse = 60;
 

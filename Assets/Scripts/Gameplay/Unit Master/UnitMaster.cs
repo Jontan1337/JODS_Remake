@@ -156,9 +156,6 @@ public class UnitMaster : NetworkBehaviour
         UI.masterLevelText.text = newVal.ToString();
     }
 
-
-
-
     [Space]
 
     [SyncVar(hook = nameof(MasterUpgradesHook))]private int masterUpgrades = 0;
@@ -197,23 +194,28 @@ public class UnitMaster : NetworkBehaviour
         }
     }
 
-
     [TargetRpc]
-    private void Rpc_UpdateXpUI(NetworkConnection target, int value)
+    private void Rpc_UnitUpgradePointsUI(NetworkConnection target, int newVal)
     {
-        //XP UI
-        UI.xpText.text = value.ToString() + "XP";
-        UI.upgradeMenuXpText.text = "Current XP: " + value.ToString();
+        UI.upgradeMenuXpText.text = "Unit Upgrade Points: " + newVal.ToString();
 
         foreach (UnitList unitListItem in unitList)
         {
-            unitListItem.upgradePanel.UnlockCheck(value);
+            unitListItem.upgradePanel.UnlockCheck(newVal);
         }
 
         foreach (DeployableList deployableListItem in deployableList)
         {
-            deployableListItem.upgradePanel.UnlockCheck(value);
+            deployableListItem.upgradePanel.UnlockCheck(newVal);
         }
+    }
+
+
+    [TargetRpc]
+    private void Rpc_UpdateXpUI(NetworkConnection target, int newVal)
+    {
+        //XP UI
+        UI.xpText.text = newVal.ToString() + "XP";
     }
 
 
@@ -370,6 +372,10 @@ public class UnitMaster : NetworkBehaviour
     {
         Rpc_UpdateXPProgressBar(connectionToClient, playerData.Exp - playerData.previousExpRequired, value - playerData.previousExpRequired);
     }
+    private void OnUnitUpgradePointsChanged(int value)
+    {
+        Rpc_UnitUpgradePointsUI(connectionToClient, value);
+    }
 
 
     public void Initialize()
@@ -393,6 +399,7 @@ public class UnitMaster : NetworkBehaviour
             playerData.onExpChanged += OnExpChanged;
             playerData.onExpRequirementChanged += OnExpRequirementChanged;
             playerData.onLevelChanged += OnLevelChanged;
+            playerData.onUnitUpgradePointsChanged += OnUnitUpgradePointsChanged;
 
             Rpc_UnlockMasterUpgradeButtons(connectionToClient, 0);
 
@@ -1330,7 +1337,7 @@ public class UnitMaster : NetworkBehaviour
 
             deployable.unlocked = true;
 
-            Cmd_ModifyEXP(-deployable.deployable.xpToUnlock);
+            Cmd_ModifyUnitUpgradePoints(-deployable.deployable.pointsToUnlock);
         }
         else if (unit != null)
         {
@@ -1340,7 +1347,7 @@ public class UnitMaster : NetworkBehaviour
             unit.unlocked = true;
 
             //Decrease xp by amount required to unlock the unit
-            Cmd_ModifyEXP(-unit.unit.xpToUnlock);
+            Cmd_ModifyUnitUpgradePoints(-unit.unit.pointsToUnlock);
         }
 
         //Play spooky sound
@@ -1348,9 +1355,9 @@ public class UnitMaster : NetworkBehaviour
     }
 
     [Command]
-    private void Cmd_ModifyEXP(int amount)
+    private void Cmd_ModifyUnitUpgradePoints(int amount)
     {
-        playerData.Exp += amount;
+        playerData.UnitUpgradePoints += amount;
     }
 
     #endregion

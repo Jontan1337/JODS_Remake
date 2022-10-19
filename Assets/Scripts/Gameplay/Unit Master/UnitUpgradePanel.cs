@@ -81,7 +81,7 @@ public class UnitUpgradePanel : MonoBehaviour
 
         unlockPanel.SetActive(!unitSO.starterUnit);
         unlockButton.interactable = false;
-        unlockButtonText.text = $"Unlock {unitSO.name} \nRequired XP: {unitSO.xpToUnlock}";
+        unlockButtonText.text = $"Unlock {unitSO.name} \nRequired Points: {unitSO.pointsToUnlock}";
 
         unityEnergyCostText.text = "Energy Cost: " + unitSO.energyCost;
 
@@ -127,10 +127,10 @@ public class UnitUpgradePanel : MonoBehaviour
         unlockSpeedTraitButton.interactable = traitUnlocked[2] == false ? (speedProgressSlider.value == speedProgressSlider.maxValue ? enable : false) : false;
     }
     
-    public void UnlockCheck(int xp)
+    public void UnlockCheck(int points)
     {
         if (unlocked) return;
-        unlockButton.interactable = xp >= unitSO.xpToUnlock;
+        unlockButton.interactable = points >= unitSO.pointsToUnlock;
     }
 
     public void UnlockUnit()

@@ -47,9 +47,9 @@ public class UnitSO : ScriptableObject
     public int refundAmount = 5;
     [Header("Experience")]
     public int xpGain = 10;
-    public int xpToUnlock = 100;
-    public int xpToUpgrade = 100;
     [Header("Other Gameplay")]
+    public int pointsToUnlock = 100;
+    public int pointsToUpgrade = 100;
     public bool starterUnit;
     [Space]
     public int maxAmountAlive = 50;

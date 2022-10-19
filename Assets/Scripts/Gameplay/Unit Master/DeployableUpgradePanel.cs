@@ -32,7 +32,7 @@ public class DeployableUpgradePanel : MonoBehaviour
 
         unlockPanel.SetActive(true);
         unlockButton.interactable = false;
-        unlockButtonText.text = $"Unlock {deployableSO.name} \nRequired XP: {deployableSO.xpToUnlock}";
+        unlockButtonText.text = $"Unlock {deployableSO.name} \nRequired Points: {deployableSO.pointsToUnlock}";
 
         deployableImage.sprite = deployableSO.deployableSprite;
         deployableName.text = deployableSO.name;
@@ -41,7 +41,7 @@ public class DeployableUpgradePanel : MonoBehaviour
     public void UnlockCheck(int xp)
     {
         if (unlocked) return;
-        unlockButton.interactable = xp >= deployableSO.xpToUnlock;
+        unlockButton.interactable = xp >= deployableSO.pointsToUnlock;
     }
 
     public void UnlockDeployable()
