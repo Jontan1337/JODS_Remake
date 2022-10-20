@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
 public class MasterPlayerData : BasePlayerData
 {
@@ -31,6 +32,9 @@ public class MasterPlayerData : BasePlayerData
             base.Exp = value;
         }
     }
+
+
+
     public int UnitUpgradePoints
     {
         get => unitUpgradePoints;
@@ -40,6 +44,8 @@ public class MasterPlayerData : BasePlayerData
             onUnitUpgradePointsChanged?.Invoke(value);
         }
     }
+
+
     public int UnitsPlaced
     {
         get => unitsPlaced;
@@ -47,8 +53,13 @@ public class MasterPlayerData : BasePlayerData
         {
             Score += 10;
             unitsPlaced = value;
-            onUnitsPlacedChanged?.Invoke(value);
+            Rpc_UnitsPlaced(value);
         }
+    }
+    [ClientRpc]
+    private void Rpc_UnitsPlaced(int value)
+    {
+        onUnitsPlacedChanged?.Invoke(value);
     }
     public int TotalUnitUpgrades
     {
@@ -57,8 +68,12 @@ public class MasterPlayerData : BasePlayerData
         {
             Score += 100;
             totalUnitUpgrades = value;
-            onTotalUnitUpgradesChanged?.Invoke(value);
+            Rpc_TotalUnitUpgrades(value);
         }
     }
-
+    [ClientRpc]
+    private void Rpc_TotalUnitUpgrades(int value)
+    {
+        onTotalUnitUpgradesChanged?.Invoke(value);
+    }
 }

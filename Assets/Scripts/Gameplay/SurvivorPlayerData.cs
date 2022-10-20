@@ -52,8 +52,13 @@ public class SurvivorPlayerData : BasePlayerData
         {
             kills = value;
             Points += (int)PointsTable.Kill;
-            onKillsChanged?.Invoke(value);
+            Rpc_Kills(value);
         }
+    }
+    [ClientRpc]
+    private void Rpc_Kills(int value)
+    {
+        onKillsChanged?.Invoke(value);
     }
 
     [SerializeField] private Text pointsText = null;

@@ -35,21 +35,35 @@ public class BasePlayerData : NetworkBehaviour
         set
         {
             score = value;
-            onScoreChanged?.Invoke(value);
+            Rpc_Score(value);
         }
     }
+
+    [ClientRpc]
+    private void Rpc_Score(int value)
+    {
+        onScoreChanged?.Invoke(value);
+    }
+
     public int Level
     {
         get => level;
         set
         {
             level = value;
-            onLevelChanged?.Invoke(value);
+            Rpc_Level(value);
             int newXpReq = Mathf.RoundToInt(previousExpRequired > 0 ? Mathf.RoundToInt(previousExpRequired * 0.25f) : Mathf.RoundToInt(baseExpRequired * 0.25f));
             previousExpRequired = ExpRequired;
             ExpRequired += baseExpRequired + newXpReq;
         }
     }
+
+    [ClientRpc]
+    private void Rpc_Level(int value)
+    {
+        onLevelChanged?.Invoke(value);
+    }
+
     public virtual int Exp
     {
         get => exp;

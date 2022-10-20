@@ -345,6 +345,62 @@ public static class CustomReadWrite
         return identity.GetComponent<Camera>();
     }
 
+    public static void WriteSurvivorPlayerData(this NetworkWriter writer, SurvivorPlayerData value)
+    {
+        if (value == null)
+        {
+            writer.WriteUInt32(0);
+            return;
+        }
+        NetworkIdentity identity = value.GetComponent<NetworkIdentity>();
+        if (identity != null)
+        {
+            writer.WriteUInt32(identity.netId);
+        }
+        else
+        {
+            logger.LogWarning("NetworkWriter " + value + " has no NetworkIdentity");
+            writer.WriteUInt32(0);
+        }
+    }
+    public static SurvivorPlayerData ReadSurvivorPlayerData(this NetworkReader reader)
+    {
+        NetworkIdentity identity = reader.ReadNetworkIdentity();
+        if (identity == null)
+        {
+            return null;
+        }
+        return identity.GetComponent<SurvivorPlayerData>();
+    }
+
+    public static void WriteMasterPlayerData(this NetworkWriter writer, MasterPlayerData value)
+    {
+        if (value == null)
+        {
+            writer.WriteUInt32(0);
+            return;
+        }
+        NetworkIdentity identity = value.GetComponent<NetworkIdentity>();
+        if (identity != null)
+        {
+            writer.WriteUInt32(identity.netId);
+        }
+        else
+        {
+            logger.LogWarning("NetworkWriter " + value + " has no NetworkIdentity");
+            writer.WriteUInt32(0);
+        }
+    }
+    public static MasterPlayerData ReadMasterPlayerData(this NetworkReader reader)
+    {
+        NetworkIdentity identity = reader.ReadNetworkIdentity();
+        if (identity == null)
+        {
+            return null;
+        }
+        return identity.GetComponent<MasterPlayerData>();
+    }
+
     /*
     public static void WriteActiveSClass(this NetworkWriter writer, ActiveSClass value)
     {

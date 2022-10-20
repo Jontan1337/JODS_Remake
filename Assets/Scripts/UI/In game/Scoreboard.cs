@@ -38,8 +38,35 @@ public class Scoreboard : NetworkBehaviour
             return;
         }
 
+        //SurvivorScoreboardRow newPlayerRow = null;
+        //foreach(SurvivorScoreboardRow scoreboardRow in survivorRows)
+        //{
+        //    if (scoreboardRow.playerId == 0)
+        //    {
+        //        newPlayerRow = scoreboardRow;
+        //        break;
+        //    }
+        //}
+
+        //if (newPlayerRow == null)
+        //{
+        //    Debug.LogError("New Player (survivor) was not assigned to a scoreboard row!");
+        //    return;
+        //}
+
+
+        //newPlayerRow.SetPlayerAliveStatus(true);
+
+        //newPlayerRow.SetPlayerNameText(data.playerName);
+
+        Rpc_AddSurvivor(data);
+    }
+
+    [ClientRpc]
+    private void Rpc_AddSurvivor(SurvivorPlayerData data)
+    {
         SurvivorScoreboardRow newPlayerRow = null;
-        foreach(SurvivorScoreboardRow scoreboardRow in survivorRows)
+        foreach (SurvivorScoreboardRow scoreboardRow in survivorRows)
         {
             if (scoreboardRow.playerId == 0)
             {
@@ -57,6 +84,7 @@ public class Scoreboard : NetworkBehaviour
         data.onKillsChanged += newPlayerRow.SetKillsText;
         data.onLevelChanged += newPlayerRow.SetPlayerLevelText;
         data.onScoreChanged += newPlayerRow.SetPlayerScoreText;
+
         newPlayerRow.SetPlayerAliveStatus(true);
 
         newPlayerRow.SetPlayerNameText(data.playerName);
@@ -71,6 +99,36 @@ public class Scoreboard : NetworkBehaviour
             return;
         }
 
+        //MasterScoreboardRow newPlayerRow = null;
+        //foreach (MasterScoreboardRow scoreboardRow in masterRows)
+        //{
+        //    if (scoreboardRow.playerId == 0)
+        //    {
+        //        newPlayerRow = scoreboardRow;
+        //        break;
+        //    }
+        //}
+
+        //if (newPlayerRow == null)
+        //{
+        //    Debug.LogError("New Player (master) was not assigned to a scoreboard row!");
+        //    return;
+        //}
+
+        //data.onLevelChanged += newPlayerRow.SetPlayerLevelText;
+        //data.onScoreChanged += newPlayerRow.SetPlayerScoreText;
+        //data.onTotalUnitUpgradesChanged += newPlayerRow.SetTotalUnitUpgradesText;
+        //data.onUnitsPlacedChanged += newPlayerRow.SetUnitsPlacedText;
+        //newPlayerRow.SetPlayerAliveStatus(true);
+
+        //newPlayerRow.SetPlayerNameText(data.playerName);
+
+        Rpc_AddMaster(data);
+    }
+
+    [ClientRpc]
+    private void Rpc_AddMaster(MasterPlayerData data)
+    {
         MasterScoreboardRow newPlayerRow = null;
         foreach (MasterScoreboardRow scoreboardRow in masterRows)
         {
