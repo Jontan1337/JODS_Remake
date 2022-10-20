@@ -10,7 +10,7 @@ public class Grenade : Projectile
     public override void Activate() 
 	{
 		base.Activate(); 
-		GetComponent<LiveEntity>().owner = owner;
+		GetComponent<Explosive>().owner = owner;
 		StartCoroutine(Explode()); 
 	}
 
@@ -23,6 +23,6 @@ public class Grenade : Projectile
 	[Server]
 	private void Svr_Explode()
 	{
-		GetComponent<LiveEntity>()?.Svr_DestroyEntity(transform);
+		GetComponent<IExplodable>()?.Explode(transform);
 	}
 }

@@ -544,7 +544,10 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
         if (!isLocalPlayer)
             Rpc_PostShoot(connectionToClient);
         Svr_StartCooldown();
-        Rpc_ReloadAnimation(reloadSpeed);
+        if (ExtraAmmunition > 0)
+        {
+            Rpc_ReloadAnimation(reloadSpeed);
+        }
         if (!isLocalPlayer)
             Rpc_StartCooldown(connectionToClient);
         Rpc_Reload(connectionToClient);
@@ -604,7 +607,7 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     private async void Cmd_Reload()
     {
         if (Magazine == MagazineSize) return;
-
+        if (ExtraAmmunition == 0) return;
         Rpc_Reload(connectionToClient);
         Rpc_ReloadAnimation(reloadSpeed);
         await JODSTime.WaitTime(reloadSpeed);
@@ -747,15 +750,10 @@ public abstract class RangedWeapon : EquipmentItem, IImpacter
     protected void Rpc_ReloadAnimation(float reloadSpeed)
     {
         transform.DOComplete();
-        //Vector3 initialRotation = transform.rotation.eulerAngles;
-        //Vector3 initialPosition = transform.rotation.eulerAngles;
         transform.DOLocalRotate(new Vector3(-80f, 5f, 0f), 0.2f, RotateMode.Fast).SetEase(Ease.Flash);
         transform.DOLocalMove(new Vector3(0.2f, 0.1f, -0.05f), 0.2f).SetEase(Ease.Flash).OnComplete(Do);
-        //transform.DOPunchRotation(new Vector3(-80f, 5f, 0f), 1f, 0, 0f).SetEase(Ease.InOutQuint);
-        //transform.DOPunchPosition(new Vector3(0.1f, 0.1f, -0.05f), 1f, 0, 0f).SetEase(Ease.InOutQuint);
         async void Do()
         {
-            //transform.DOShakePosition(0.1f, 0.02f, 50, 90f).SetEase(Ease.Flash);
             transform.DOShakeRotation(0.1f, 5f, 15, 90f).SetEase(Ease.InOutBounce);
             await JODSTime.WaitTime(reloadSpeed - 0.4f);
             transform.DOLocalRotate(new Vector3(0f, 0f, 0f), 0.2f, RotateMode.Fast).SetEase(Ease.OutBack);

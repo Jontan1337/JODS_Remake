@@ -17,7 +17,7 @@ using Sirenix.OdinInspector;
 [RequireComponent(typeof(AIPath))]
 [RequireComponent(typeof(ModifierManagerUnit))]
 
-public abstract class UnitBase : BaseStatManager, IParticleEffect
+public abstract class UnitBase : BaseStatManager, IParticleEffect, IDamagableTeam
 {
     #region Fields
 

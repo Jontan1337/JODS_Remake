@@ -4822,7 +4822,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3668033450558780112}
   - component: {fileID: 4218760247496730268}
-  - component: {fileID: 8977616527943871417}
+  - component: {fileID: 5689923688531512396}
   - component: {fileID: 3668033450561647344}
   - component: {fileID: 3668033450560679984}
   - component: {fileID: 3668033450558384238}
@@ -4865,6 +4865,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   active: 0
+  owner: {fileID: 0}
   objectPooled: 0
   objectPoolTag: 7
   enabledFromAwake: 1
@@ -4872,12 +4873,11 @@ MonoBehaviour:
   lifetime: 5
   destroyAfterLifetime: 0
   sticky: 0
-  owner: {fileID: 0}
   hasDropoff: 1
   timeBeforeDropoff: 1
   piercing: 0
   statusEffectsToApply: []
---- !u!114 &8977616527943871417
+--- !u!114 &5689923688531512396
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4886,14 +4886,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 3668033450558484208}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 707f53f782d0f044982b5af80ab22aaa, type: 3}
+  m_Script: {fileID: 11500000, guid: fb90065a4a1256941a6bf14dc763af88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
   health: 50
-  maxHealth: 50
-  entityType: 0
+  maxHealth: 100
   explosionTag: 1
   criticalEffect: {fileID: 0}
   criticalHealth: 20
@@ -4904,17 +4903,7 @@ MonoBehaviour:
   criticalEffectDamage: 3
   criticalDamageInterval: 0.8
   damageLossOverDistance: 2
-  pieces: []
-  singleDestructable: 0
-  removeDebris: 0
-  singleBrokenObject: {fileID: 0}
-  wallDestruction: {fileID: 0}
-  destroySelf: 0
   owner: {fileID: 0}
-  objectPoolTag: 0
-  objectPooled: 0
-  isBurning: 0
-  destroyed: 0
 --- !u!33 &3668033450561647344
 MeshFilter:
   m_ObjectHideFlags: 0

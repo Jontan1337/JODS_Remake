@@ -141,6 +141,7 @@ public class WeaponShop : NetworkBehaviour, IInteractable
         if (playerGameObject != null)
         {
             PlayerManager.Instance.DisableMenu();
+            PointsUnsubscribe(connectionToClient);
         }
     }
 

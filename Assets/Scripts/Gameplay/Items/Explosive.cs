@@ -3,46 +3,25 @@ using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using UnityEngine;
 
-public sealed class Explosive : NetworkBehaviour, IDamagable, IExplodable
+public sealed class Explosive : NetworkBehaviour, IExplodable
 {
-    [Title("Stats")]
-    [SerializeField] private int health = 50;
-    [SerializeField] private int maxHealth = 100;
-
     [Title("Explosive entity settings")]
     [SerializeField] private Tags explosionTag = Tags.ExplosionMedium;
-    [Space]
-    [SerializeField] private ParticleSystem criticalEffect = null;
-    [SerializeField] private int criticalHealth = 20;
     [SerializeField] private float explosionRadius = 4.5f;
     [SerializeField] private int explosionDamage = 30;
     [SerializeField] private float explosionForce = 5f;
     [SerializeField] private float upwardExplosionForce = 1f;
-    [SerializeField] private int criticalEffectDamage = 3;
-    [SerializeField] private float criticalDamageInterval = 0.8f;
     [SerializeField] private int damageLossOverDistance = 2;
+    [SerializeField] private LayerMask layerMask;
 
     public Transform owner;
 
-    public Teams Team => throw new System.NotImplementedException();
+    public bool Exploded { get; private set; }
 
-    public int GetHealth => throw new System.NotImplementedException();
-
-    public bool IsDead => throw new System.NotImplementedException();
-
-    [Command]
-    public void Cmd_Damage(int damage)
+    private void Awake()
     {
-        Svr_Damage(damage, transform);
+        layerMask = LayerMask.GetMask("Unit", "Survivor", "Dynamic Object");
     }
-
-    [Server]
-    public void Svr_Damage(int damage, Transform source = null)
-    {
-        health -= damage;
-        owner = source;
-    }
-
 
     // Used for checking explosion hits
     private Vector3 fromPosMid = Vector3.zero;
@@ -66,6 +45,8 @@ public sealed class Explosive : NetworkBehaviour, IDamagable, IExplodable
     [Server]
     public void Explode(Transform explosionSource = null)
     {
+        if (Exploded) return;
+        Exploded = true;
         // Get the middle, top and bottom of this gameobject
         // as to be more precise with other objects being hit by it.
         fromPosMid = new Vector3(transform.position.x, transform.position.y + transform.localScale.y / 2, transform.position.z);
@@ -77,7 +58,7 @@ public sealed class Explosive : NetworkBehaviour, IDamagable, IExplodable
 
         // Filter through all objects with multiple colliders before doing a foreach.
         // Save all Colliders from the gameobjects the OverlapSphere hits.
-        Collider[] collidersInRange = Physics.OverlapSphere(transform.position, explosionRadius); // Run through each collider the OverlapSphere hit.
+        Collider[] collidersInRange = Physics.OverlapSphere(transform.position, explosionRadius, layerMask); // Run through each collider the OverlapSphere hit.
         List<GameObject> list = new List<GameObject>(); //Add all the gameobjects connected to each collider to a list
         foreach (Collider targetCollider in collidersInRange)
         {
@@ -90,18 +71,11 @@ public sealed class Explosive : NetworkBehaviour, IDamagable, IExplodable
         // Go through the filtered list.
         foreach (GameObject target in list)
         {
-            // Store the collider component for later use
-            Collider targetCollider = target.GetComponent<Collider>();
-
             // OverlapSphere also detects itself,
             // so we first check if the current target is that.
             if (target.gameObject == gameObject) { continue; }
 
             #region TryGet_Target_Components
-
-            Rigidbody targetRB = null;
-            // Does the object it hit have a LiveEntity component.
-            target.TryGetComponent(out LiveEntity targetLE);
 
             // Does the object it hit have a Rigidbody component. Used for simple rigidbody objects near the explosion.
             //if (lesserExplosionForce == (lesserExplosionForce | (1 << target.gameObject.layer))) wtf is dis, seems dumb - John
@@ -164,7 +138,6 @@ public sealed class Explosive : NetworkBehaviour, IDamagable, IExplodable
                     //            newExplosionDamage /= friendlyFireReduction;
 
                     int finalDamage = Mathf.Clamp(newExplosionDamage - (int)hit.distance * damageLossOverDistance, 0, int.MaxValue);
-                    print(name + ": " + finalDamage + " | " + target.name);
                     if (finalDamage > 0)
                         damagable?.Svr_Damage(finalDamage, owner);
 
@@ -188,8 +161,15 @@ public sealed class Explosive : NetworkBehaviour, IDamagable, IExplodable
                     }
                 }
                 target.GetComponent<IExplodable>()?.Explode(transform);
+                WaitDestroy();
             }
         }
+    }
+
+    private async void WaitDestroy()
+    {
+        await JODSTime.WaitTime(0.1f);
+        NetworkServer.Destroy(gameObject);
     }
 
 }

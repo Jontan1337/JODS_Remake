@@ -7,7 +7,7 @@ public class SoldierRocket : Projectile
     public override void Start()
     {
 		base.Start();
-		GetComponent<LiveEntity>().owner = owner;
+		GetComponent<Explosive>().owner = owner;
 	}
 
 	public override void OnHit(Collision collision)
@@ -19,6 +19,6 @@ public class SoldierRocket : Projectile
 	[Server]
 	private void Svr_Explode()
 	{
-		GetComponent<LiveEntity>()?.Svr_DestroyEntity(transform);
+		GetComponent<IExplodable>()?.Explode(transform);
 	}
 }
