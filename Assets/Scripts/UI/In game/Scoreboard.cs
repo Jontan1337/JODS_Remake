@@ -81,13 +81,12 @@ public class Scoreboard : NetworkBehaviour
             return;
         }
 
+        data.onPlayerNameChanged += newPlayerRow.SetPlayerNameText;
         data.onKillsChanged += newPlayerRow.SetKillsText;
         data.onLevelChanged += newPlayerRow.SetPlayerLevelText;
         data.onScoreChanged += newPlayerRow.SetPlayerScoreText;
 
         newPlayerRow.SetPlayerAliveStatus(true);
-
-        newPlayerRow.SetPlayerNameText(data.playerName);
     }
 
     [Server]
@@ -145,13 +144,14 @@ public class Scoreboard : NetworkBehaviour
             return;
         }
 
+        data.onPlayerNameChanged += newPlayerRow.SetPlayerNameText;
         data.onLevelChanged += newPlayerRow.SetPlayerLevelText;
         data.onScoreChanged += newPlayerRow.SetPlayerScoreText;
         data.onTotalUnitUpgradesChanged += newPlayerRow.SetTotalUnitUpgradesText;
         data.onUnitsPlacedChanged += newPlayerRow.SetUnitsPlacedText;
+
         newPlayerRow.SetPlayerAliveStatus(true);
 
-        newPlayerRow.SetPlayerNameText(data.playerName);
     }
 
     private void OpenScoreboard(InputAction.CallbackContext context)

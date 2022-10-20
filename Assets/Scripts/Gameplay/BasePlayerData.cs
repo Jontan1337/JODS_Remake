@@ -7,7 +7,7 @@ using Mirror;
 public class BasePlayerData : NetworkBehaviour
 {
     [Header("Shared")]
-    [SyncVar] public string playerName = "Player 1";
+    [SerializeField] private string playerName = "Player 1";
     public uint playerId;
 
     [SerializeField] private int score;
@@ -22,13 +22,27 @@ public class BasePlayerData : NetworkBehaviour
 
     #region Actions
 
+    public Action<string> onPlayerNameChanged;
     public Action<int> onScoreChanged;
     public Action<int> onExpChanged;
     public Action<int> onExpRequirementChanged;
     public Action<int> onLevelChanged;
 
     #endregion
-
+    public string PlayerName
+    {
+        get => playerName;
+        set
+        {
+            playerName = value;
+            Rpc_PlayerName(value);
+        }
+    }
+    [ClientRpc]
+    private void Rpc_PlayerName(string value)
+    {
+        onPlayerNameChanged?.Invoke(value);
+    }
     public int Score
     {
         get => score;
