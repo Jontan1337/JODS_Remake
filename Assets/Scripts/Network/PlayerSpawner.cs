@@ -99,11 +99,11 @@ public class PlayerSpawner : NetworkBehaviour
                     }
                 }
             }
+            GamemodeBase.Instance.Svr_AddPlayer(conn.identity.netId,  _isMaster);
 
             newPlayerInstance.GetComponent<BasePlayerData>().PlayerName = 
                 oldPlayerInstance.GetComponent<LobbyPlayer>().PlayerName;
 
-            GamemodeBase.Instance.Svr_AddPlayer(conn.identity.netId,  _isMaster);
 
             //When the new player instance is all set and ready, then destroy the old one, as it is no longer needed.
             NetworkServer.Destroy(oldPlayerInstance);
