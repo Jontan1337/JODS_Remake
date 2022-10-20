@@ -100,7 +100,7 @@ public class PlayerSpawner : NetworkBehaviour
                 }
             }
 
-            newPlayerInstance.GetComponent<BasePlayerData>().playerName = 
+            newPlayerInstance.GetComponent<BasePlayerData>().PlayerName = 
                 oldPlayerInstance.GetComponent<LobbyPlayer>().PlayerName;
 
             GamemodeBase.Instance.Svr_AddPlayer(conn.identity.netId,  _isMaster);
