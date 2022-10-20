@@ -7,7 +7,7 @@ using Mirror;
 public class BasePlayerData : NetworkBehaviour
 {
     [Header("Shared")]
-    public string playerName = "Player 1";
+    [SyncVar] public string playerName = "Player 1";
     public uint playerId;
 
     [SerializeField] private int score;
