@@ -12,8 +12,6 @@ public class LobbySync : NetworkBehaviour
     public GameObject[] playersInLobby = null;
     public LobbyAudio sound = null;
 
-
-
     #region Singleton
     private static LobbySync lobbySync;
     public static LobbySync Instance { get => lobbySync; }
