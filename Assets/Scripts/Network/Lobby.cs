@@ -67,7 +67,8 @@ public class Lobby : NetworkManager
 
     [Header("Map Settings (Runtime)")] 
     public MapSettingsSO currentMapSettings;
-    [Scene] private string gameplayScene;
+    [SerializeField, Scene] private string gameplayScene;
+    [SerializeField, Scene] private string lobbyScene;
     [Space]
     public int gamemodeInt;
 
@@ -112,6 +113,25 @@ public class Lobby : NetworkManager
         LobbyPanel.SetActive(false);
         MainMenuPanel.SetActive(true);
     }
+
+    public void FindReferencesInLobby()
+    {
+        matchListContent = GameObject.Find("Match List Content Panel").transform;
+        matchNameInputField = GameObject.Find("MatchNameInputField").GetComponent<InputField>();
+        ipAddressInputField = GameObject.Find("IpAddressInputField").GetComponent<InputField>();
+        MMPanel = GameObject.Find("Match Making Panel");
+        LobbyPanel = GameObject.Find("Lobby Panel");
+        MainMenuPanel = GameObject.Find("Main Menu Panel");
+        mainCamera = GameObject.Find("Main Camera");
+        masterToggle = GameObject.Find("Master Toggle").GetComponent<Button>();
+        readyToggle = GameObject.Find("Ready Toggle").GetComponent<Button>();
+        survivorSelectionButton = GameObject.Find("Survivor Selection Button");
+        disconnectButton = GameObject.Find("Exit Button");
+        survivorSelection = GameObject.Find("Survivor Selection").GetComponent<SurvivorSelection>();
+        countdown = GameObject.Find("Lobby Countdown").GetComponent<LobbyCountdown>();
+        lobbyFade = GameObject.Find("Lobby Fade").GetComponent<LobbyFade>();
+    }
+
     //Match list join
     public void MMJoinMatch(Uri uri)
     {
@@ -259,6 +279,19 @@ public class Lobby : NetworkManager
             gamemodeManager.GetComponent<GamemodeBase>().mapSettings = currentMapSettings;
             NetworkServer.Spawn(gamemodeManager);
         }
+        if (SceneManager.GetActiveScene().path == lobbyScene)
+        {
+            GameObject lobbyPlayer;
+            GameObject oldPlayerInstance;
+            foreach (var player in NetworkServer.connections.Values)
+            {
+                lobbyPlayer = Instantiate(this.lobbyPlayer);
+                oldPlayerInstance = player.identity.gameObject;
+                NetworkServer.Spawn(lobbyPlayer);
+                NetworkServer.ReplacePlayerForConnection(player, lobbyPlayer);
+                NetworkServer.Destroy(oldPlayerInstance);
+            }
+        }
     }
 
     public override void OnClientSceneChanged(NetworkConnection conn)
@@ -269,6 +302,11 @@ public class Lobby : NetworkManager
         LoadingScreenManager.Instance.ShowLoadingScreen(false);
 
         base.OnClientSceneChanged(conn);
+
+        if (SceneManager.GetActiveScene().path == lobbyScene)
+        {
+            FindReferencesInLobby();
+        }
     }
 
     public override void OnServerError(NetworkConnection conn, int errorCode)

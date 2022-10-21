@@ -33464,7 +33464,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7107372925841329410}
   m_Layer: 5
-  m_Name: Main Menu
+  m_Name: Main Menu Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -33876,7 +33876,7 @@ GameObject:
   - component: {fileID: 7107372926176858249}
   - component: {fileID: 7107372926176858246}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: Match List Content Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -34316,7 +34316,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7107372926844460088}
   m_Layer: 5
-  m_Name: Lobby
+  m_Name: Lobby Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -34879,8 +34879,8 @@ MonoBehaviour:
   serverTickRate: 60
   serverBatching: 0
   serverBatchInterval: 0
-  offlineScene: Assets/Scenes/Offline Scenes/Lobby.unity
-  onlineScene: Assets/Scenes/Offline Scenes/Lobby.unity
+  offlineScene: 
+  onlineScene: 
   transport: {fileID: 7107372927296446057}
   networkAddress: localhost
   maxConnections: 5
@@ -35000,6 +35000,8 @@ MonoBehaviour:
   roomPlayers: []
   MatchListing: {fileID: 7107372926057023631}
   currentMapSettings: {fileID: 0}
+  gameplayScene: Assets/Scenes/Online Scenes/City.unity
+  lobbyScene: Assets/Scenes/Offline Scenes/Lobby.unity
   gamemodeInt: 0
   OnClientDisconnectEvent:
     m_PersistentCalls:
