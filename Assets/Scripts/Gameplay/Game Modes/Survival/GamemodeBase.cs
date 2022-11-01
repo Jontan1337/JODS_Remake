@@ -188,6 +188,11 @@ public abstract class GamemodeBase : NetworkBehaviour
         EndGame();
         Rpc_EndGame(); //Client stuff, like disable controls and cameras, enable end game camera and enable scoreboard.
 
+        foreach(BasePlayerData playerData in playerDataList)
+        {
+            PostScoreboard.Instance.UserPostScoreboard(playerData);
+        }
+
         Invoke(nameof(StopGame), endgameSound.length);
     }
 
@@ -258,4 +263,6 @@ public abstract class GamemodeBase : NetworkBehaviour
 
 
     #endregion
+
+
 }

@@ -56,6 +56,9 @@ public class ActiveSurvivorClass : NetworkBehaviour
     public void SetSurvivorClass(SurvivorSO survivorSO)
     {
         this.survivorSO = survivorSO;
+
+        GetComponent<SurvivorPlayerData>().classType = survivorSO.survivorName;
+
         if (hasAuthority)
         {
             Cmd_SpawnClass();

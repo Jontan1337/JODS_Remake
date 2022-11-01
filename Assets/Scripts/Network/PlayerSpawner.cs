@@ -94,7 +94,7 @@ public class PlayerSpawner : NetworkBehaviour
                 {
                     if (survivor.name == _class)
                     {
-                        newPlayerInstance.GetComponent<ActiveSurvivorClass>().Rpc_SetSurvivorClass(_class);
+                        newPlayerInstance.GetComponent<ActiveSurvivorClass>().Rpc_SetSurvivorClass(_class);                        
                         break;
                     }
                 }

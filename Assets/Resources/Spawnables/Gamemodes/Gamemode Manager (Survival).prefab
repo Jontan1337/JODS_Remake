@@ -126,6 +126,7 @@ GameObject:
   - component: {fileID: 5475870583975361425}
   - component: {fileID: 5475870583975361424}
   - component: {fileID: 6477213571821011435}
+  - component: {fileID: 6756394150198667802}
   - component: {fileID: 5475870583975361135}
   - component: {fileID: 5475870583975361426}
   m_Layer: 0
@@ -165,17 +166,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  test: 0
   gameStartCountdown: 1
   gameStartCountdownText: {fileID: 5475870585490503284}
   countdownAudio: {fileID: 8300000, guid: 32d4b1811dda14a6cb9e059ee8ad17d2, type: 3}
   countdownEndAudio: {fileID: 8300000, guid: 6e8772b49f34d402a90016ed445d8a2f, type: 3}
   mapSettings: {fileID: 0}
   survivorsAlive: 0
-  playerList: []
+  playerDataList: []
+  endGameWhenSurvivors0: 1
   endgameCamera: {fileID: 4859531343849221829}
   endgameSound: {fileID: 8300000, guid: 5db11c5cfc82c544d8ef11c91227e6f0, type: 3}
   endgameFade: {fileID: 633400486815205570}
-  test: 0
   timeSurvived: 0
   timeSurvivedText: {fileID: 7499271558537831577}
   timeTillNextShopPeriod: 0
@@ -206,6 +208,20 @@ MonoBehaviour:
   masterRows:
   - {fileID: 6772564946620449376}
   scoreboardIsOpen: 0
+--- !u!114 &6756394150198667802
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5475870583975361134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1af18513e6118a34d9c68850c147eb38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  go: 0
+  send: 0
 --- !u!82 &5475870583975361135
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1038,9 +1054,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74d8f6c534b24504b9050a8eb72464d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &5268074551380514651 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4253959975166927101, guid: df4466db360d5a544af4b39751df80bc,
+--- !u!224 &5380809379186980072 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 4088870939465728846, guid: df4466db360d5a544af4b39751df80bc,
     type: 3}
   m_PrefabInstance: {fileID: 8219896064745043878}
   m_PrefabAsset: {fileID: 0}
@@ -1056,9 +1072,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &5380809379186980072 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4088870939465728846, guid: df4466db360d5a544af4b39751df80bc,
+--- !u!1 &5268074551380514651 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4253959975166927101, guid: df4466db360d5a544af4b39751df80bc,
     type: 3}
   m_PrefabInstance: {fileID: 8219896064745043878}
   m_PrefabAsset: {fileID: 0}

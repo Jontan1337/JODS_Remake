@@ -19,6 +19,7 @@ public class SurvivorPlayerData : BasePlayerData
     #endregion
 
     [Header("Survivor")]
+    public string classType;
     [SerializeField, SyncVar(hook = nameof(PointsHook))] private int points;
     [SerializeField] private int kills;
 
