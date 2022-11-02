@@ -880,6 +880,14 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Chat"",
+                    ""type"": ""Button"",
+                    ""id"": ""4fb25f25-5ff4-490c-947a-f933b4d220a4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -959,6 +967,17 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""63b66966-df62-4b4a-aed2-a957a4c552c3"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Chat"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -1011,6 +1030,7 @@ public class @Controls : IInputActionCollection, IDisposable
         m_General_MouseDelta = m_General.FindAction("MouseDelta", throwIfNotFound: true);
         m_General_Movement = m_General.FindAction("Movement", throwIfNotFound: true);
         m_General_Scoreboard = m_General.FindAction("Scoreboard", throwIfNotFound: true);
+        m_General_Chat = m_General.FindAction("Chat", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -1370,6 +1390,7 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_General_MouseDelta;
     private readonly InputAction m_General_Movement;
     private readonly InputAction m_General_Scoreboard;
+    private readonly InputAction m_General_Chat;
     public struct GeneralActions
     {
         private @Controls m_Wrapper;
@@ -1377,6 +1398,7 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @MouseDelta => m_Wrapper.m_General_MouseDelta;
         public InputAction @Movement => m_Wrapper.m_General_Movement;
         public InputAction @Scoreboard => m_Wrapper.m_General_Scoreboard;
+        public InputAction @Chat => m_Wrapper.m_General_Chat;
         public InputActionMap Get() { return m_Wrapper.m_General; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1395,6 +1417,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Scoreboard.started -= m_Wrapper.m_GeneralActionsCallbackInterface.OnScoreboard;
                 @Scoreboard.performed -= m_Wrapper.m_GeneralActionsCallbackInterface.OnScoreboard;
                 @Scoreboard.canceled -= m_Wrapper.m_GeneralActionsCallbackInterface.OnScoreboard;
+                @Chat.started -= m_Wrapper.m_GeneralActionsCallbackInterface.OnChat;
+                @Chat.performed -= m_Wrapper.m_GeneralActionsCallbackInterface.OnChat;
+                @Chat.canceled -= m_Wrapper.m_GeneralActionsCallbackInterface.OnChat;
             }
             m_Wrapper.m_GeneralActionsCallbackInterface = instance;
             if (instance != null)
@@ -1408,6 +1433,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Scoreboard.started += instance.OnScoreboard;
                 @Scoreboard.performed += instance.OnScoreboard;
                 @Scoreboard.canceled += instance.OnScoreboard;
+                @Chat.started += instance.OnChat;
+                @Chat.performed += instance.OnChat;
+                @Chat.canceled += instance.OnChat;
             }
         }
     }
@@ -1464,5 +1492,6 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnMouseDelta(InputAction.CallbackContext context);
         void OnMovement(InputAction.CallbackContext context);
         void OnScoreboard(InputAction.CallbackContext context);
+        void OnChat(InputAction.CallbackContext context);
     }
 }
