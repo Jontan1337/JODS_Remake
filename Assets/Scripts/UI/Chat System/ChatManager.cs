@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Mirror;
 
-public class ChatManager : MonoBehaviour
+public class ChatManager : NetworkBehaviour
 {
     [Header("References")]
     [SerializeField] private Image[] chatGameObjects = null;
@@ -20,8 +21,10 @@ public class ChatManager : MonoBehaviour
     public static Action OnCloseChat;
 
 
-    private void Awake()
+    public override void OnStartClient()
     {
+        base.OnStartClient();
+
         JODSInput.Controls.General.Chat.performed += ctx => OpenChat();
 
         ChatVisuals(chatIsOpen);
@@ -31,7 +34,8 @@ public class ChatManager : MonoBehaviour
     {
         if (chatIsOpen && chatInputField.text.Length > 0)
         {
-            SendChatMessage();
+            Cmd_SendChatMessage("User" + UnityEngine.Random.Range(0, 1000), chatInputField.text);
+            chatInputField.text = "";
         }
 
         chatIsOpen = !chatIsOpen;
@@ -65,10 +69,16 @@ public class ChatManager : MonoBehaviour
         }
     }
 
-    private void SendChatMessage()
+    [Command(ignoreAuthority = true)]
+    private void Cmd_SendChatMessage(string user, string message)
+    {
+        Rpc_SendChatMessage(user, message);
+    }
+
+    [ClientRpc]
+    private void Rpc_SendChatMessage(string user, string message)
     {
         ChatMessage msg = Instantiate(messagePrefab, messageArea).GetComponent<ChatMessage>();
-        msg.SetMessage("User" + UnityEngine.Random.Range(0, 1000), chatInputField.text);
-        chatInputField.text = "";
+        msg.SetMessage(user, message);
     }
 }

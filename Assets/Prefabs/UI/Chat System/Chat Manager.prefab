@@ -730,6 +730,7 @@ GameObject:
   m_Component:
   - component: {fileID: 918626752726546067}
   - component: {fileID: 1691493601}
+  - component: {fileID: 7791540513046990040}
   m_Layer: 0
   m_Name: Chat Manager
   m_TagString: Untagged
@@ -764,6 +765,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee79cdefc6bffc74387bf623079835e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   chatGameObjects:
   - {fileID: 8684612716704137928}
   - {fileID: 6536285847476553820}
@@ -772,6 +775,22 @@ MonoBehaviour:
   messagePrefab: {fileID: 2111282894340931798, guid: 241006811ebdebc488e26dfcd6f5de66,
     type: 3}
   chatIsOpen: 0
+--- !u!114 &7791540513046990040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5826882295200799270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  serverOnly: 0
+  m_AssetId: 
+  hasSpawned: 0
 --- !u!1 &6673194265724117143
 GameObject:
   m_ObjectHideFlags: 0
@@ -1070,7 +1089,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 0
     m_HorizontalOverflow: 1
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 
 --- !u!1 &8489970528572837308

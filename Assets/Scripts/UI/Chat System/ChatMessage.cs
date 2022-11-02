@@ -76,12 +76,6 @@ public class ChatMessage : MonoBehaviour
             yield return null;
         }
 
-        //Wait 10 seconds
-        yield return new WaitForSeconds(10f);
-
-        //If a message is active for 20 seconds (invisible) it will get deleted from the chat board.
-
-        //Destroy the chat message gameobject
-        Destroy(gameObject);
+        fading = false;
     }
 }
