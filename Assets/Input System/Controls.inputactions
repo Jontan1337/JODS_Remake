@@ -116,6 +116,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Scroll Wheel",
+                    "type": "Value",
+                    "id": "4c01f54c-6ffc-4624-917e-5ad065e75dd1",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -402,6 +410,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Open Master Upgrade Menu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "33b61952-eff7-4d65-a9ca-84b7e6d56031",
+                    "path": "<Mouse>/scroll",
+                    "interactions": "",
+                    "processors": "NormalizeVector2",
+                    "groups": "",
+                    "action": "Scroll Wheel",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

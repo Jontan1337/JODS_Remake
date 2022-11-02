@@ -129,6 +129,14 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Scroll Wheel"",
+                    ""type"": ""Value"",
+                    ""id"": ""4c01f54c-6ffc-4624-917e-5ad065e75dd1"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -415,6 +423,17 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Open Master Upgrade Menu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""33b61952-eff7-4d65-a9ca-84b7e6d56031"",
+                    ""path"": ""<Mouse>/scroll"",
+                    ""interactions"": """",
+                    ""processors"": ""NormalizeVector2"",
+                    ""groups"": """",
+                    ""action"": ""Scroll Wheel"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1006,6 +1025,7 @@ public class @Controls : IInputActionCollection, IDisposable
         m_Master_TakeControl = m_Master.FindAction("Take Control", throwIfNotFound: true);
         m_Master_OpenUnitUpgradeMenu = m_Master.FindAction("Open Unit Upgrade Menu", throwIfNotFound: true);
         m_Master_OpenMasterUpgradeMenu = m_Master.FindAction("Open Master Upgrade Menu", throwIfNotFound: true);
+        m_Master_ScrollWheel = m_Master.FindAction("Scroll Wheel", throwIfNotFound: true);
         // Survivor
         m_Survivor = asset.FindActionMap("Survivor", throwIfNotFound: true);
         m_Survivor_LMB = m_Survivor.FindAction("LMB", throwIfNotFound: true);
@@ -1094,6 +1114,7 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_Master_TakeControl;
     private readonly InputAction m_Master_OpenUnitUpgradeMenu;
     private readonly InputAction m_Master_OpenMasterUpgradeMenu;
+    private readonly InputAction m_Master_ScrollWheel;
     public struct MasterActions
     {
         private @Controls m_Wrapper;
@@ -1112,6 +1133,7 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @TakeControl => m_Wrapper.m_Master_TakeControl;
         public InputAction @OpenUnitUpgradeMenu => m_Wrapper.m_Master_OpenUnitUpgradeMenu;
         public InputAction @OpenMasterUpgradeMenu => m_Wrapper.m_Master_OpenMasterUpgradeMenu;
+        public InputAction @ScrollWheel => m_Wrapper.m_Master_ScrollWheel;
         public InputActionMap Get() { return m_Wrapper.m_Master; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1163,6 +1185,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @OpenMasterUpgradeMenu.started -= m_Wrapper.m_MasterActionsCallbackInterface.OnOpenMasterUpgradeMenu;
                 @OpenMasterUpgradeMenu.performed -= m_Wrapper.m_MasterActionsCallbackInterface.OnOpenMasterUpgradeMenu;
                 @OpenMasterUpgradeMenu.canceled -= m_Wrapper.m_MasterActionsCallbackInterface.OnOpenMasterUpgradeMenu;
+                @ScrollWheel.started -= m_Wrapper.m_MasterActionsCallbackInterface.OnScrollWheel;
+                @ScrollWheel.performed -= m_Wrapper.m_MasterActionsCallbackInterface.OnScrollWheel;
+                @ScrollWheel.canceled -= m_Wrapper.m_MasterActionsCallbackInterface.OnScrollWheel;
             }
             m_Wrapper.m_MasterActionsCallbackInterface = instance;
             if (instance != null)
@@ -1209,6 +1234,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @OpenMasterUpgradeMenu.started += instance.OnOpenMasterUpgradeMenu;
                 @OpenMasterUpgradeMenu.performed += instance.OnOpenMasterUpgradeMenu;
                 @OpenMasterUpgradeMenu.canceled += instance.OnOpenMasterUpgradeMenu;
+                @ScrollWheel.started += instance.OnScrollWheel;
+                @ScrollWheel.performed += instance.OnScrollWheel;
+                @ScrollWheel.canceled += instance.OnScrollWheel;
             }
         }
     }
@@ -1465,6 +1493,7 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnTakeControl(InputAction.CallbackContext context);
         void OnOpenUnitUpgradeMenu(InputAction.CallbackContext context);
         void OnOpenMasterUpgradeMenu(InputAction.CallbackContext context);
+        void OnScrollWheel(InputAction.CallbackContext context);
     }
     public interface ISurvivorActions
     {

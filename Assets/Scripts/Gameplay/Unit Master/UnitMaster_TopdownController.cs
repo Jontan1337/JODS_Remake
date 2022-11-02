@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class UnitMaster_TopdownController : MonoBehaviour
 {
@@ -48,7 +49,17 @@ public class UnitMaster_TopdownController : MonoBehaviour
         //Floor Input
         JODSInput.Controls.Master.FloorDown.performed += ctx => ChangeFloor(false);
         JODSInput.Controls.Master.FloorUp.performed += ctx => ChangeFloor(true);
+
+        JODSInput.Controls.Master.ScrollWheel.performed += OnScroll;
     }
+
+    private void OnScroll(InputAction.CallbackContext context)
+    {        
+        scrollInput = context.ReadValue<Vector2>();
+    }
+
+    public Vector2 scrollInput = new Vector2(0, 0);
+
     #region Movement
     private void Update()
     {
@@ -60,9 +71,10 @@ public class UnitMaster_TopdownController : MonoBehaviour
             Space.World);
 
         //Mouse Scroll / Camera Zoom
-        if (Input.GetAxis("Mouse ScrollWheel") != 0f)
+        if (scrollInput.y != 0f)
         {
-            cam.orthographicSize = Mathf.Clamp(cam.orthographicSize + -Input.GetAxis("Mouse ScrollWheel") * 5, 10, 20);
+            cam.orthographicSize = Mathf.Clamp(cam.orthographicSize + -scrollInput.y, 10, 20);
+            scrollInput = Vector2.zero;
         }
     }
     private void Move(Vector2 moveValues)
