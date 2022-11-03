@@ -12,8 +12,10 @@ public class WSRequests
     public string type;
 }
 
+[System.Serializable]
 public class LoginRequest : WSRequests
 {
+    public string username;
     public string email;
     public string password;
 }
@@ -36,4 +38,11 @@ public class MasterScoreboardRequest : ScoreboardRequest
 {
     public int unitsPlaced;
     public int totalUnitUpgrades;
+}
+
+public class WSResponse<T> : WSRequests
+{
+    public int code;
+    public string message;
+    public List<T> data;
 }

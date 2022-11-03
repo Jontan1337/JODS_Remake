@@ -8,11 +8,13 @@ using UnityEngine;
 
 public class WebsocketManager : MonoBehaviour
 {
-    public static WebsocketManager instance;
+    public static WebsocketManager Instance;
+
+    public WSRequests response;
 
     private void Awake()
     {
-        instance = this;
+        Instance = this;
     }
 
     private ClientWebSocket webSocket = null;
@@ -51,6 +53,17 @@ public class WebsocketManager : MonoBehaviour
             string message = System.Text.Encoding.UTF8.GetString(buffer.Array, 0, result.Count);
 
             Debug.LogWarning(message);
+
+            response = JsonUtility.FromJson<WSRequests>(message);
+
+            switch (response.type)
+            {
+                case "login":
+                    LoginManager.Instance.LoginResponce(JsonUtility.FromJson<WSResponse<LoginRequest>>(message));
+                    break;
+
+                default: break;
+            }
         }
     }
 
