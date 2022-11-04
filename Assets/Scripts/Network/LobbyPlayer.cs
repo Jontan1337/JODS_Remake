@@ -71,7 +71,7 @@ public class LobbyPlayer : NetworkBehaviour
     }
 
     public override void OnStartClient()
-    {        
+    {
         lobbyCharacters = GetComponent<LobbyCharacters>();
 
         // Is this the Host
@@ -95,21 +95,14 @@ public class LobbyPlayer : NetworkBehaviour
 
                 GetAndSetMasterSelection();
             }
-            
+
             MainMenuVisuals.instance.LoadVisual();
 
             isMe = true;
             // Is the player logged in via the launcher
             string newName;
 
-            if (!launcherLogin)
-            {
-                newName = "Player_" + UnityEngine.Random.Range(1, 1000).ToString();
-            }
-            else
-            {
-                newName = userName;
-            }
+            newName = WebsocketManager.Instance.playerProfile.data[0].username;
 
             Cmd_ChangeName(newName);
 
@@ -187,7 +180,7 @@ public class LobbyPlayer : NetworkBehaviour
     #region ChangeName
 
 
-    public void ChangeName(string old,string newName)
+    public void ChangeName(string old, string newName)
     {
         if (!isServer)
         {
@@ -200,7 +193,7 @@ public class LobbyPlayer : NetworkBehaviour
     public void Cmd_ChangeName(string newName)
     {
         playerName = newName;
-        ChangeName("",newName);
+        ChangeName("", newName);
     }
 
     #endregion

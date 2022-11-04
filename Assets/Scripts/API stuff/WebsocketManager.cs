@@ -5,6 +5,7 @@ using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class WebsocketManager : MonoBehaviour
 {
@@ -12,9 +13,21 @@ public class WebsocketManager : MonoBehaviour
 
     public WSRequests response;
 
+    public WSResponse<LoginRequest> playerProfile;
+
     private void Awake()
     {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        DontDestroyOnLoad(this);
         Instance = this;
+    }
+
+    private void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
+    {
+        if (arg0.name == "Lobby")
+        {
+
+        }
     }
 
     private ClientWebSocket webSocket = null;

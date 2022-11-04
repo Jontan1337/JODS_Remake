@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LoginManager : MonoBehaviour
@@ -14,9 +16,9 @@ public class LoginManager : MonoBehaviour
     [SerializeField] private Text errorMessage;
     [SerializeField] private Button loginButton;
 
+    [SerializeField, Scene] private string lobbyScene;
+
     LoginRequest loginRequest;
-
-
 
     private void Awake()
     {
@@ -43,8 +45,9 @@ public class LoginManager : MonoBehaviour
         // Success!!!
         if (response.code == 0)
         {
-            print(response.data[0].username);
-            errorMessage.text = "";
+            WebsocketManager.Instance.playerProfile = response;
+            SceneManager.LoadSceneAsync(lobbyScene);
+
         }
         else
         {
