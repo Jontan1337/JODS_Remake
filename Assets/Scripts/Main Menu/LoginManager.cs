@@ -11,12 +11,12 @@ public class LoginManager : MonoBehaviour
 {
     public static LoginManager Instance;
 
-    [SerializeField] private InputField email;
-    [SerializeField] private InputField password;
-    [SerializeField] private Text errorMessage;
-    [SerializeField] private Button loginButton;
+    [SerializeField] private InputField email = null;
+    [SerializeField] private InputField password = null;
+    [SerializeField] private Text errorMessage = null;
+    [SerializeField] private Button loginButton = null;
 
-    [SerializeField, Scene] private string lobbyScene;
+    [SerializeField, Scene] private string lobbyScene = "";
 
     LoginRequest loginRequest;
 
@@ -40,7 +40,7 @@ public class LoginManager : MonoBehaviour
         await WebsocketManager.Instance.Send(loginRequest);
     }
 
-    public void LoginResponce(WSResponse<LoginRequest> response)
+    public void LoginResponse(WSResponse<LoginRequest> response)
     {
         // Success!!!
         if (response.code == 0)
