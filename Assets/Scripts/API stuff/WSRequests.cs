@@ -20,6 +20,7 @@ public class LoginRequest : WSRequests
     public string password;
 }
 
+[System.Serializable]
 public class ScoreboardRequest : WSRequests
 {
     public bool isMaster;

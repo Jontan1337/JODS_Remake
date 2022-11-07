@@ -15,61 +15,31 @@ public class PostScoreboard : MonoBehaviour
         Instance = this;
     }
 
-    // We need a reference to the users profile here, to identify which user's scoreboard we're uploading.
-    // For now we just hardcode it
     public async void UserPostScoreboard(BasePlayerData playerData)
     {
-        await Connect(url);
+        WebsocketManager websocketManager = WebsocketManager.Instance;
+
+        if (websocketManager != null)
+        {
+            webSocket = websocketManager.WebSocket;
+
+            if (webSocket.State != WebSocketState.Open)
+            {
+                Debug.LogError("Websocket Connection Closed!");
+                return;
+            }
+        }
+
+        Debug.LogWarning("Websocket State: " + webSocket.State);
 
         await Send(playerData);
     }
 
     private ClientWebSocket webSocket = null;
-
-    private readonly string url = "ws://localhost:7777";
-
-    public async Task Connect(string uri)
-    {
-        try
-        {
-            webSocket = new ClientWebSocket();
-            await webSocket.ConnectAsync(new Uri(uri), CancellationToken.None);
-
-            Debug.LogWarning(webSocket.State);
-
-            Receive();            
-        }
-        catch (Exception ex)
-        {
-            Debug.LogWarning(ex);
-        }
-    }
-
-    private async Task Receive()
-    {
-        ArraySegment<byte> buffer = new ArraySegment<byte>(new byte[8192]);
-
-        while(webSocket.State == WebSocketState.Open)
-        {
-            WebSocketReceiveResult result;
-
-            do
-            {
-                result = await webSocket.ReceiveAsync(buffer, CancellationToken.None);
-            }
-            while (!result.EndOfMessage);
-
-            string message = System.Text.Encoding.UTF8.GetString(buffer.Array, 0, result.Count);
-
-            Debug.LogWarning(message);
-        }
-    }
-
     private async Task Send(BasePlayerData playerData)
     {
         //Cache a reference to a ScoreboardRequest
         ScoreboardRequest request = new ScoreboardRequest();
-
 
         //Here we check what kind of playerdata we're handling
 
@@ -110,58 +80,11 @@ public class PostScoreboard : MonoBehaviour
             //Then we send the ArraySegment to the websocket.
             await webSocket.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
 
-            Debug.LogWarning("message sent");
+            Debug.LogWarning("Scoreboard sent");
         }
         catch (Exception ex)
         {
             Debug.LogWarning(ex);
         }         
     }
-
-    #region Debug
-
-    private async void DebugSend()
-    {
-        SurvivorScoreboardRequest request = new SurvivorScoreboardRequest
-        {
-            type = RequestType.uploadScoreboard.ToString(),
-            highscore = 200,
-            classType = "Doctor",
-            isMaster = false
-        };
-
-        try
-        {
-            var encoded = System.Text.Encoding.UTF8.GetBytes(JsonUtility.ToJson(request));
-
-            ArraySegment<byte> buffer = new ArraySegment<byte>(encoded, 0, encoded.Length);
-
-            await webSocket.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
-
-            Debug.Log("message :'" + request.highscore + "' sent");
-        }
-        catch (Exception ex)
-        {
-            Debug.Log(ex);
-        }
-    }
-
-    public bool go;
-    public bool send;
-
-    private void OnValidate()
-    {
-        if (go)
-        {
-            go = false;
-            Task connect = Connect(url);
-        }
-        if (send)
-        {
-            send = false;
-            DebugSend();
-        }
-    }
-
-    #endregion
 }

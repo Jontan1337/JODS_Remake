@@ -21,7 +21,7 @@ public class SurvivorPlayerData : BasePlayerData
     [Header("Survivor")]
     public string classType;
     [SerializeField, SyncVar(hook = nameof(PointsHook))] private int points;
-    [SerializeField] private int kills;
+    [SerializeField, SyncVar] private int kills;
 
     #region Actions
 

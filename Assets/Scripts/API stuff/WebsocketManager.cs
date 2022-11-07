@@ -31,7 +31,11 @@ public class WebsocketManager : MonoBehaviour
     }
 
     private ClientWebSocket webSocket = null;
-
+    public ClientWebSocket WebSocket
+    {
+        get => webSocket;
+    }
+    
     public async Task Connect()
     {
         try

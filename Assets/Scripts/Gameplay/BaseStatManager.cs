@@ -8,6 +8,18 @@ using UnityEngine.Events;
 public class BaseStatManager : NetworkBehaviour, IDamagable
 {
     [Title("Base Stat Manager", titleAlignment: TitleAlignments.Centered)]
+    public bool debugKill = false;
+    private void OnValidate()
+    {
+        if (debugKill) { debugKill = false; Cmd_DebugKill(); }
+    }
+    [Command(ignoreAuthority = true)]
+    private void Cmd_DebugKill()
+    {
+        Health = 0;
+    }
+
+    [Title("Base Stat Manager", titleAlignment: TitleAlignments.Centered)]
     [SerializeField, SyncVar(hook = nameof(HealthHook))] protected int health = 100;
     public virtual int Health
     {

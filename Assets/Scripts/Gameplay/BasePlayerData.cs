@@ -12,12 +12,19 @@ public class BasePlayerData : NetworkBehaviour
 
     [SerializeField] private int score;
 
-    [SerializeField] private int exp;
-    [SerializeField] private int expRequired;
-    [SerializeField] private int level;
+    [SerializeField, SyncVar] private int exp;
+    [SerializeField, SyncVar] private int expRequired;
+    [SerializeField, SyncVar] private int level;
 
     private int baseExpRequired = 100;
     public int previousExpRequired = 0;
+
+
+    public static BasePlayerData Instance;
+    public override void OnStartClient()
+    {
+        Instance = this;
+    }
 
 
     #region Actions

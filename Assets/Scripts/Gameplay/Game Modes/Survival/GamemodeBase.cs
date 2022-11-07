@@ -188,11 +188,6 @@ public abstract class GamemodeBase : NetworkBehaviour
         EndGame();
         Rpc_EndGame(); //Client stuff, like disable controls and cameras, enable end game camera and enable scoreboard.
 
-        foreach(BasePlayerData playerData in playerDataList)
-        {
-            PostScoreboard.Instance.UserPostScoreboard(playerData);
-        }
-
         Invoke(nameof(StopGame), endgameSound.length);
     }
 
@@ -209,18 +204,8 @@ public abstract class GamemodeBase : NetworkBehaviour
 
         Scoreboard.Instance.OpenScoreboard(true);
 
-        /*
-        if (mapSettings)
-        {
-            if (mapSettings.endGameCameraPoints.Length > 0)
-            {
-                PositionAndRotationPoint camPoint = mapSettings.endGameCameraPoints[Random.Range(0, mapSettings.endGameCameraPoints.Length)];
-                endgameCamera.transform.position = camPoint.position;
-                endgameCamera.transform.rotation = camPoint.rotation;
-            }
-        }
-        else { endgameCamera.transform.position = new Vector3(0, 5, 0); }
-        */
+
+        PostScoreboard.Instance.UserPostScoreboard(BasePlayerData.Instance);
 
 
         AS.PlayOneShot(endgameSound, 1f);

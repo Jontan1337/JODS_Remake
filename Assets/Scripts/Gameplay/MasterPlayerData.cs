@@ -7,9 +7,9 @@ using Mirror;
 public class MasterPlayerData : BasePlayerData
 {
     [Header("Master")]
-    [SerializeField] private int unitsPlaced;
-    [SerializeField] private int totalUnitUpgrades;
-    [SerializeField] private int unitUpgradePoints;
+    [SerializeField, SyncVar] private int unitsPlaced;
+    [SerializeField, SyncVar] private int totalUnitUpgrades;
+    [SerializeField, SyncVar] private int unitUpgradePoints;
 
     #region Actions
 
