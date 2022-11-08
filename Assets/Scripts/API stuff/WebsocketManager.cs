@@ -43,7 +43,7 @@ public class WebsocketManager : MonoBehaviour
             webSocket = new ClientWebSocket();
             await webSocket.ConnectAsync(new Uri("ws://localhost:7777"), CancellationToken.None);
 
-            Debug.LogWarning(webSocket.State);
+            Debug.LogWarning("Websocket: " +webSocket.State);
 
             Receive();
         }
@@ -79,6 +79,15 @@ public class WebsocketManager : MonoBehaviour
                     LoginManager.Instance.LoginResponse(JsonUtility.FromJson<WSResponse<LoginRequest>>(message));
                     break;
 
+                case "setActive":
+                    await Send(response);
+                    break;
+
+                case "disconnect":
+                    SceneManager.LoadScene(0);
+                    Destroy(gameObject);
+                    break;
+
                 default: break;
             }
         }
@@ -96,11 +105,24 @@ public class WebsocketManager : MonoBehaviour
             //Then we send the ArraySegment to the websocket.
             await webSocket.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
 
-            Debug.LogWarning("message sent");
+            Debug.LogWarning(request.type + " request: sent");
         }
         catch (Exception ex)
         {
             Debug.LogWarning(ex);
         }
+    }
+
+    private void OnApplicationQuit()
+    {
+        if (webSocket.State != WebSocketState.Open) return;
+
+        var request = new DisconnectRequest()
+        {
+            type = RequestType.disconnect.ToString(),
+            reason = "Application Quit"
+        };
+
+         Send(request);
     }
 }

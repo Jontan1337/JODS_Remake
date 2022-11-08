@@ -32,7 +32,7 @@ public class LoginManager : MonoBehaviour
 
         loginRequest = new LoginRequest()
         {
-            type = "login",
+            type = RequestType.login.ToString(),
             email = email.text,
             password = password.text
         };

@@ -5,7 +5,9 @@ using UnityEngine;
 public enum RequestType
 {
     login,
-    uploadScoreboard
+    uploadScoreboard,
+    sendMessage,
+    disconnect
 }
 public class WSRequests
 {
@@ -46,4 +48,9 @@ public class WSResponse<T> : WSRequests
     public int code;
     public string message;
     public List<T> data;
+}
+
+public class DisconnectRequest : WSRequests
+{
+    public string reason;
 }
