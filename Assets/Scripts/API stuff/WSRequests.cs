@@ -56,3 +56,34 @@ public class DisconnectRequest : WSRequests
 {
     public string reason;
 }
+[System.Serializable]
+public class UserStats
+{
+    [System.Serializable]
+    public class MasterStats
+    {
+        public int highscore;
+        public int unitsPlaced;
+        public int unitUpgrades;
+    }
+    public MasterStats masterStats;
+
+    [System.Serializable]
+    public class SurvivorStats
+    {
+        public int classType;
+        public int highscore;
+        public int kills;
+        public int specialUsed;
+        public int deaths;
+    }
+    public SurvivorStats[] classes;
+}
+
+public enum SurvivorType
+{
+    Soldier,
+    Taekwondo,
+    Engineer,
+    Doctor
+}

@@ -7,5 +7,6 @@ public class ProfileStatRow_Survivor : ProfileStatRow
 {
     [Header("Survivor UI References")]
     public Text killsText = null;
+    public Text specialUsed = null;
     public Text deathsText = null;
 }
