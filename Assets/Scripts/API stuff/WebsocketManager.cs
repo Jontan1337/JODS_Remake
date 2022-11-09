@@ -71,9 +71,10 @@ public class WebsocketManager : MonoBehaviour
 
             string message = System.Text.Encoding.UTF8.GetString(buffer.Array, 0, result.Count);
 
-            Debug.LogWarning(message);
 
             response = JsonUtility.FromJson<WSRequests>(message);
+
+            Debug.LogWarning(response.type + " response: received");
 
             switch (response.type)
             {
