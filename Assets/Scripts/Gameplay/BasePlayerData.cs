@@ -10,7 +10,7 @@ public class BasePlayerData : NetworkBehaviour
     [SerializeField] private string playerName = "Player 1";
     public uint playerId;
 
-    [SerializeField] private int score;
+    [SerializeField, SyncVar] private int score;
 
     [SerializeField, SyncVar] private int exp;
     [SerializeField, SyncVar] private int expRequired;
