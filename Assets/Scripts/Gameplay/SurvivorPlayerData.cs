@@ -8,16 +8,6 @@ using DG.Tweening;
 
 public class SurvivorPlayerData : BasePlayerData
 {
-    #region Singleton
-
-    public static SurvivorPlayerData Instance;
-    public override void OnStartAuthority()
-    {
-        Instance = this;
-    }
-
-    #endregion
-
     [Header("Survivor")]
     public string classType;
     [SerializeField, SyncVar(hook = nameof(PointsHook))] private int points;

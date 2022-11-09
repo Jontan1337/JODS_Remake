@@ -37,8 +37,8 @@ public class ProfileViewer : MonoBehaviour
         await WebsocketManager.Instance.Send(getRequest);
     }
 
-    private void ShowUserStats(WSRequests response)
+    private void ShowUserStats(WSResponse<WSRequests> response)
     {
-        Debug.LogWarning(response);
+        Debug.LogWarning(response.data[0]);
     }
 }

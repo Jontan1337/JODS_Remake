@@ -53,7 +53,7 @@ public class WebsocketManager : MonoBehaviour
         }
     }
 
-    public static Action<WSRequests> onGetStats;
+    public static Action<WSResponse<WSRequests>> onGetStats;
 
     private async Task Receive()
     {
@@ -91,8 +91,7 @@ public class WebsocketManager : MonoBehaviour
                     break;
 
                 case "getStats":
-                    Debug.LogWarning("uwu");
-                    onGetStats?.Invoke(response);
+                    onGetStats?.Invoke(JsonUtility.FromJson<WSResponse<WSRequests>>(message));
                     break;
 
                 default: break;
