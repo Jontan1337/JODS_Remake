@@ -53,6 +53,8 @@ public class WebsocketManager : MonoBehaviour
         }
     }
 
+    public static Action<WSRequests> onGetStats;
+
     private async Task Receive()
     {
         ArraySegment<byte> buffer = new ArraySegment<byte>(new byte[8192]);
@@ -88,6 +90,11 @@ public class WebsocketManager : MonoBehaviour
                     Destroy(gameObject);
                     break;
 
+                case "getStats":
+                    Debug.LogWarning("uwu");
+                    onGetStats?.Invoke(response);
+                    break;
+
                 default: break;
             }
         }
@@ -115,6 +122,7 @@ public class WebsocketManager : MonoBehaviour
 
     private void OnApplicationQuit()
     {
+        if (webSocket == null) return;
         if (webSocket.State != WebSocketState.Open) return;
 
         var request = new DisconnectRequest()

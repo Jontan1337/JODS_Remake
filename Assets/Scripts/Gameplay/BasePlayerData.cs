@@ -21,7 +21,7 @@ public class BasePlayerData : NetworkBehaviour
 
 
     public static BasePlayerData Instance;
-    public override void OnStartClient()
+    public override void OnStartAuthority()
     {
         Instance = this;
     }

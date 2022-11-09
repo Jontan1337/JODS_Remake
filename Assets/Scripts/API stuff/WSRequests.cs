@@ -7,7 +7,9 @@ public enum RequestType
     login,
     uploadScoreboard,
     sendMessage,
-    disconnect
+    disconnect,
+    setActive,
+    getStats
 }
 public class WSRequests
 {

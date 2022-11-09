@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,15 +12,33 @@ public class ProfileViewer : MonoBehaviour
     [Space]
     [SerializeField] private ProfileStatRow_Master masterRow = null;
 
+    private void Awake()
+    {
+        WebsocketManager.onGetStats += ShowUserStats;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         usernameText.text = WebsocketManager.Instance.playerProfile.data[0].username;
-        LoadUserStats();
+
+    }
+    public void LoadPanel()
+    {
+        RequestUserStats();
+    }
+    private async Task RequestUserStats()
+    {
+        var getRequest = new WSRequests()
+        {
+            type = RequestType.getStats.ToString(),
+        };
+
+        await WebsocketManager.Instance.Send(getRequest);
     }
 
-    private void LoadUserStats()
+    private void ShowUserStats(WSRequests response)
     {
-
+        Debug.LogWarning(response);
     }
 }
