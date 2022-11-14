@@ -20,6 +20,18 @@ public class ChatManager : NetworkBehaviour
     public static Action OnOpenChat;
     public static Action OnCloseChat;
 
+    public override void OnStartServer()
+    {
+        WSRequests ws = new WSRequests()
+        {
+            type = "openChatroom"
+        };
+
+        WebsocketManager.Instance.Send(ws);
+
+        Lobby.OnServerGameStarted += delegate { DontDestroyOnLoad(this); };
+
+    }
 
     public override void OnStartClient()
     {
@@ -28,13 +40,24 @@ public class ChatManager : NetworkBehaviour
         JODSInput.Controls.General.Chat.performed += ctx => OpenChat();
 
         ChatVisuals(chatIsOpen);
+
+        Lobby.OnClientGameStarted += delegate { DontDestroyOnLoad(this); };
     }
 
     private void OpenChat()
     {
+        //Send message
         if (chatIsOpen && chatInputField.text.Length > 0)
         {
-            Cmd_SendChatMessage("User" + UnityEngine.Random.Range(0, 1000), chatInputField.text);
+            ChatRequest ws = new ChatRequest()
+            {
+                type = "sendMessage",
+                message = chatInputField.text
+            };
+
+            WebsocketManager.Instance.Send(ws);
+
+            Cmd_SendChatMessage(WebsocketManager.Instance.playerProfile.data[0].username, chatInputField.text);
             chatInputField.text = "";
         }
 

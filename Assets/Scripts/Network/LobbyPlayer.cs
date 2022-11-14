@@ -246,6 +246,18 @@ public class LobbyPlayer : NetworkBehaviour
         masterSelection.SetMasterName(host.masterClass);
     }
 
+    [TargetRpc]
+    public void Rpc_ClientChatStart(NetworkConnection target,string hostGuid)
+    {
+        ChatRequest ws = new ChatRequest()
+        {
+            type = "joinChatroom",
+            authorId = hostGuid
+        };
+
+        WebsocketManager.Instance.Send(ws);
+    }
+
     #endregion
 
 

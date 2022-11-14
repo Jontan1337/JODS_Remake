@@ -218,11 +218,15 @@ public class Lobby : NetworkManager
 
         GameObject newLobbyPlayerInstance = conn.identity.gameObject;
 
-        roomPlayers.Add(newLobbyPlayerInstance.GetComponent<LobbyPlayer>());
+        LobbyPlayer lobbyPlayer = newLobbyPlayerInstance.GetComponent<LobbyPlayer>();
+
+        roomPlayers.Add(lobbyPlayer);
         // We don't use the conn.connectionId because the network
         // doesn't increment relative to player count.
         //LobbySync.Instance.Svr_AddPlayerLabel(Instance.roomPlayers.Count - 1);
         LobbySync.Instance.Svr_AddPlayer(Instance.roomPlayers.Count - 1);
+
+        if(conn.connectionId != 0) lobbyPlayer.Rpc_ClientChatStart(conn, WebsocketManager.Instance.playerProfile.data[0].guid);
 
         ReadyCheck();
     }

@@ -19,6 +19,7 @@ public class WSRequests
 [System.Serializable]
 public class LoginRequest : WSRequests
 {
+    public string guid;
     public string username;
     public string email;
     public string password;
@@ -78,6 +79,12 @@ public class UserStats
         public int deaths;
     }
     public SurvivorStats[] classes;
+}
+
+public class ChatRequest: WSRequests
+{
+    public string authorId;
+    public string message;
 }
 
 public enum SurvivorType
