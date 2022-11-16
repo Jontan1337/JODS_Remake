@@ -16,7 +16,6 @@ public class ChatManager : NetworkBehaviour
     [Header("Other")]
     [SerializeField] private bool chatIsOpen = false;
 
-
     public static Action OnOpenChat;
     public static Action OnCloseChat;
 

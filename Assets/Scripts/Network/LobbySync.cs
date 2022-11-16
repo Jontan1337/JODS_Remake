@@ -7,7 +7,6 @@ using Mirror;
 public class LobbySync : NetworkBehaviour
 {
     [Header("Session Info")]
-    private List<GameObject> PlayerLabels = new List<GameObject>();
     public LobbySeat[] lobbySeats = null;
     public GameObject[] playersInLobby = null;
     public LobbyAudio sound = null;
