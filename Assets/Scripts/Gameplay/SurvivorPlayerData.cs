@@ -12,6 +12,8 @@ public class SurvivorPlayerData : BasePlayerData
     public string classType;
     [SerializeField, SyncVar(hook = nameof(PointsHook))] private int points;
     [SerializeField, SyncVar] private int kills;
+    [SerializeField, SyncVar] private int downs;
+    [SerializeField, SyncVar] private int specialUsed;
 
     #region Actions
 
@@ -50,6 +52,24 @@ public class SurvivorPlayerData : BasePlayerData
     private void Rpc_Kills(int value)
     {
         onKillsChanged?.Invoke(value);
+    }
+
+    public int Downs
+    {
+        get => downs;
+        set
+        {
+            downs = value;
+        }
+    }
+
+    public int SpecialUsed
+    {
+        get => specialUsed;
+        set
+        {
+            specialUsed = value;
+        }
     }
 
     [SerializeField] private Text pointsText = null;

@@ -37,7 +37,7 @@ public class SurvivorScoreboardRequest : ScoreboardRequest
     public string classType;
     public int kills;
     public int deaths; //actually a Down
-    public int specialsUsed;
+    public int specialUsed;
 }
 
 public class MasterScoreboardRequest : ScoreboardRequest
