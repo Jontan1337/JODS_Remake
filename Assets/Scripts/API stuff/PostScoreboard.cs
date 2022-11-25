@@ -54,7 +54,7 @@ public class PostScoreboard : MonoBehaviour
                 classType = survivorData.classType, //and set the classType to the player's classType
                 kills = survivorData.Kills,
                 deaths = survivorData.Downs,
-                specialsUsed = survivorData.SpecialUsed
+                specialUsed = survivorData.SpecialUsed
             };
         }
         //If it's a MasterPlayerData
