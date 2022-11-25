@@ -30,7 +30,7 @@ public class PostScoreboard : MonoBehaviour
             }
         }
 
-        Debug.LogWarning("Websocket State: " + webSocket.State);
+        Debug.Log("Websocket State: " + webSocket.State);
 
         await Send(playerData);
     }
@@ -80,7 +80,7 @@ public class PostScoreboard : MonoBehaviour
             //Then we send the ArraySegment to the websocket.
             await webSocket.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
 
-            Debug.LogWarning("Scoreboard sent");
+            Debug.Log("Scoreboard sent");
         }
         catch (Exception ex)
         {
