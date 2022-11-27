@@ -19,15 +19,18 @@ public class PostScoreboard : MonoBehaviour
     {
         WebsocketManager websocketManager = WebsocketManager.Instance;
 
-        if (websocketManager != null)
+        if (websocketManager == null)
         {
-            webSocket = websocketManager.WebSocket;
+            Debug.LogError("WebsocketManager Singleton not found!");
+            return;
+        }
 
-            if (webSocket.State != WebSocketState.Open)
-            {
-                Debug.LogError("Websocket Connection Closed!");
-                return;
-            }
+        webSocket = websocketManager.WebSocket;
+
+        if (webSocket.State != WebSocketState.Open)
+        {
+            Debug.LogError("Websocket Connection Closed!");
+            return;
         }
 
         Debug.Log("Websocket State: " + webSocket.State);

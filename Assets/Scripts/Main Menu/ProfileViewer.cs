@@ -12,16 +12,16 @@ public class ProfileViewer : MonoBehaviour
     [Space]
     [SerializeField] private ProfileStatRow_Master masterRow = null;
 
+    public static ProfileViewer Instance;
     private void Awake()
     {
-        WebsocketManager.onGetStats += ShowUserStats;
+        Instance = this;
     }
 
     // Start is called before the first frame update
     void Start()
     {
         usernameText.text = WebsocketManager.Instance.playerProfile.data[0].username;
-
     }
     public void LoadPanel()
     {
@@ -29,6 +29,7 @@ public class ProfileViewer : MonoBehaviour
     }
     private async Task RequestUserStats()
     {
+        print("hallo");
         var getRequest = new WSRequests()
         {
             type = RequestType.getStats.ToString(),
@@ -37,8 +38,10 @@ public class ProfileViewer : MonoBehaviour
         await WebsocketManager.Instance.Send(getRequest);
     }
 
-    private void ShowUserStats(WSResponse<UserStats> response)
+    public void ShowUserStats(WSResponse<UserStats> response)
     {
+        print("Kom nu med de statss");
+        print(response.data[0].classes[0].highscore);
         //Extract the data from the JSON response and insert them into rows
         //For each survivor in the Classes array
         for (int i = 0; i < response.data[0].classes.Length; i++)

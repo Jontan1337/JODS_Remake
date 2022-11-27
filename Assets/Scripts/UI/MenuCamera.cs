@@ -18,6 +18,11 @@ public class MenuCamera : MonoBehaviour
 
     [SerializeField] private List<CameraPosition> cameraPositions = new List<CameraPosition>();
 
+    private void Start()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
 
     #region Camera Position Changes
 

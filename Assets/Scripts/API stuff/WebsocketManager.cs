@@ -53,8 +53,6 @@ public class WebsocketManager : MonoBehaviour
         }
     }
 
-    public static Action<WSResponse<UserStats>> onGetStats;
-
     private async Task Receive()
     {
         ArraySegment<byte> buffer = new ArraySegment<byte>(new byte[8192]);
@@ -93,7 +91,7 @@ public class WebsocketManager : MonoBehaviour
                     break;
 
                 case "getStats":
-                    onGetStats?.Invoke(JsonUtility.FromJson<WSResponse<UserStats>>(message));
+                    ProfileViewer.Instance.ShowUserStats(JsonUtility.FromJson<WSResponse<UserStats>>(message));
                     break;
 
                 default: break;
